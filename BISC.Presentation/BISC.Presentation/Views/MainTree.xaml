@@ -6,6 +6,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <TreeView >
-<TreeViewItem Header="jopa"></TreeViewItem>
+<TreeViewItem Header="jopa">
+            <TreeViewItem Header="jopa"></TreeViewItem>
+            <TreeViewItem Header="jopa"></TreeViewItem>
+        </TreeViewItem>
     </TreeView>
 </UserControl>
