@@ -18,14 +18,10 @@ namespace BISC.Modules.Device.Presentation.TreeItem
             
         }
 
-
         #region Implementation of IMainTreeItem
 
         public string TreeItemName { get; set; }
         public ObservableCollection<IMainTreeItem> ChildTreeItems { get; }
-        public ObservableCollection<ITreeCommand> TreeItemCommands { get; }
-        public ICommand TreeItemSelectedCommand { get; }
-        public string TreeItemDetailsRegionName { get; }
 
         #endregion
     }

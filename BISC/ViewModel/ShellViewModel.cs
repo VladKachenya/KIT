@@ -22,10 +22,7 @@ namespace BISC.ViewModel
         {
             _userNotificationService = userNotificationService;
             GlobalCommands=new ObservableCollection<IGlobalCommand>();
-            GlobalCommands.Add(new GlobalCommand(){CommandName = "Add",Command = new DelegateCommand((() =>
-            {
-               _userNotificationService.NotifyUserGlobal("Jopa");
-            }))});
+        
             ShellLoadedCommand = new DelegateCommand((() => eventAggregator.GetEvent<ShellLoadedEvent>().Publish(new ShellLoadedEventArgs())));
 
         }

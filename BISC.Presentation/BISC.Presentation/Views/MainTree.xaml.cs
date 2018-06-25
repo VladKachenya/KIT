@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using BISC.Presentation.Infrastructure.Tree;
 
 namespace BISC.Presentation.Views
 {
@@ -7,9 +8,10 @@ namespace BISC.Presentation.Views
     /// </summary>
     public partial class MainTreeView : UserControl
     {
-        public MainTreeView()
+        public MainTreeView(IMainTreeItem mainTreeItem)
         {
             InitializeComponent();
+            DataContext = mainTreeItem;
         }
     }
 }

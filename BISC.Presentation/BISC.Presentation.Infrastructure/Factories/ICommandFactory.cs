@@ -5,6 +5,11 @@ namespace BISC.Presentation.Infrastructure.Factories
 {
     public interface ICommandFactory
     {
-        ICommand CreateDelegateCommand(Action<object> execute, Func<object, bool> canExecute);
+        ICommand CreateDelegateCommand(Action<CommandArguments> execute, Func<CommandArguments, bool> canExecute);
+    }
+
+    public class CommandArguments
+    {
+
     }
 }

@@ -4,18 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FCA3F7FE-D64B-4C3C-9F8D-85753FC944BE}</ProjectGuid>
+    <ProjectGuid>{1642183D-562D-4E50-B8F7-22205D731E45}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BISC.Model.Global</RootNamespace>
-    <AssemblyName>BISC.Model.Global</AssemblyName>
+    <RootNamespace>BISC.Modules.InformationModel.Infrastucture</RootNamespace>
+    <AssemblyName>BISC.Modules.InformationModel.Infrastucture</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,27 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Default\DefaultModelElementSerializator.cs" />
-    <Compile Include="Elements\DefaultModelElement.cs" />
-    <Compile Include="Module\GlobalModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\ModelComposingService.cs" />
-    <Compile Include="Services\ModelElementsRegistryService.cs" />
-    <Compile Include="Services\ModelTypesResolvingService.cs" />
-    <Compile Include="StaticSerializingDirectives.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Project\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
-      <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
-      <Name>BISC.Infrastructure.Global</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
-      <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
-      <Name>BISC.Model.Infrastructure</Name>
-    </ProjectReference>
+    <Folder Include="Elements\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

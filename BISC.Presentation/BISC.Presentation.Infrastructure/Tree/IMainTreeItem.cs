@@ -10,8 +10,5 @@ namespace BISC.Presentation.Infrastructure.Tree
     {
         string TreeItemName { get; set; }
         ObservableCollection<IMainTreeItem> ChildTreeItems { get; }
-        ObservableCollection<ITreeCommand> TreeItemCommands { get; }
-        ICommand TreeItemSelectedCommand { get; }
-        string TreeItemDetailsRegionName { get; }
     }
 }

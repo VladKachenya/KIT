@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BISC", "BISC\BISC.csproj", "{6538F683-BD3F-494E-916D-60C8A35E64F3}"
 EndProject
@@ -36,6 +36,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BISC.Modules.Device", "BISC.Modules.Device", "{85B6CDAD-10DB-40F6-ADC7-D21EC7388D46}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BISC.Modules.Device.Presentation", "BISC.Modules\BISC.Modules.Device\BISC.Modules.Device.Presentation\BISC.Modules.Device.Presentation.csproj", "{736992EE-8449-49AA-8A40-B2462AD51ECD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BISC.Modules.InformationModel", "BISC.Modules.InformationModel", "{4E0F5849-5290-438A-95C8-0BBF34AD4409}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BISC.Modules.InformationModel.Infrastucture", "BISC.Modules\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Infrastucture\BISC.Modules.InformationModel.Infrastucture.csproj", "{1642183D-562D-4E50-B8F7-22205D731E45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BISC.Modules.InformationModel.Model", "BISC.Modules\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Model\BISC.Modules.InformationModel.Model.csproj", "{346395B5-8238-45AE-B002-C22B816AC135}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BISC.Modules.Device.Infrastructure", "BISC.Modules\BISC.Modules.Device\BISC.Modules.Device.Infrastructure\BISC.Modules.Device.Infrastructure.csproj", "{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +91,18 @@ Global
 		{736992EE-8449-49AA-8A40-B2462AD51ECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{736992EE-8449-49AA-8A40-B2462AD51ECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{736992EE-8449-49AA-8A40-B2462AD51ECD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1642183D-562D-4E50-B8F7-22205D731E45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1642183D-562D-4E50-B8F7-22205D731E45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1642183D-562D-4E50-B8F7-22205D731E45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1642183D-562D-4E50-B8F7-22205D731E45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{346395B5-8238-45AE-B002-C22B816AC135}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{346395B5-8238-45AE-B002-C22B816AC135}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{346395B5-8238-45AE-B002-C22B816AC135}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{346395B5-8238-45AE-B002-C22B816AC135}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,12 +120,16 @@ Global
 		{39501F05-C2AA-48B3-BDE8-6009E16980CD} = {1A9857B4-FC9C-4896-821D-D020C7728183}
 		{85B6CDAD-10DB-40F6-ADC7-D21EC7388D46} = {A261E46B-6D8A-4129-B56A-D0B41F72389A}
 		{736992EE-8449-49AA-8A40-B2462AD51ECD} = {85B6CDAD-10DB-40F6-ADC7-D21EC7388D46}
+		{4E0F5849-5290-438A-95C8-0BBF34AD4409} = {A261E46B-6D8A-4129-B56A-D0B41F72389A}
+		{1642183D-562D-4E50-B8F7-22205D731E45} = {4E0F5849-5290-438A-95C8-0BBF34AD4409}
+		{346395B5-8238-45AE-B002-C22B816AC135} = {4E0F5849-5290-438A-95C8-0BBF34AD4409}
+		{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07} = {85B6CDAD-10DB-40F6-ADC7-D21EC7388D46}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {26FBBC2A-5B37-40D9-B56C-1606A4156B85}
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 11
+		SccNumberOfProjects = 14
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://unicon2.visualstudio.com/
 		SccLocalPath0 = .
@@ -148,5 +172,17 @@ Global
 		SccProjectTopLevelParentUniqueName10 = BISC.sln
 		SccProjectName10 = BISC.Modules/BISC.Modules.Device/BISC.Modules.Device.Presentation
 		SccLocalPath10 = BISC.Modules\\BISC.Modules.Device\\BISC.Modules.Device.Presentation
+		SccProjectUniqueName11 = BISC.Modules\\BISC.Modules.InformationModel\\BISC.Modules.InformationModel.Infrastucture\\BISC.Modules.InformationModel.Infrastucture.csproj
+		SccProjectTopLevelParentUniqueName11 = BISC.sln
+		SccProjectName11 = BISC.Modules/BISC.Modules.InformationModel/BISC.Modules.InformationModel.Infrastucture
+		SccLocalPath11 = BISC.Modules\\BISC.Modules.InformationModel\\BISC.Modules.InformationModel.Infrastucture
+		SccProjectUniqueName12 = BISC.Modules\\BISC.Modules.InformationModel\\BISC.Modules.InformationModel.Model\\BISC.Modules.InformationModel.Model.csproj
+		SccProjectTopLevelParentUniqueName12 = BISC.sln
+		SccProjectName12 = BISC.Modules/BISC.Modules.InformationModel/BISC.Modules.InformationModel.Model
+		SccLocalPath12 = BISC.Modules\\BISC.Modules.InformationModel\\BISC.Modules.InformationModel.Model
+		SccProjectUniqueName13 = BISC.Modules\\BISC.Modules.Device\\BISC.Modules.Device.Infrastructure\\BISC.Modules.Device.Infrastructure.csproj
+		SccProjectTopLevelParentUniqueName13 = BISC.sln
+		SccProjectName13 = BISC.Modules/BISC.Modules.Device/BISC.Modules.Device.Infrastructure
+		SccLocalPath13 = BISC.Modules\\BISC.Modules.Device\\BISC.Modules.Device.Infrastructure
 	EndGlobalSection
 EndGlobal

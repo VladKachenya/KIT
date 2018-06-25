@@ -31,13 +31,12 @@ namespace BISC.Bootstrapper
 
         protected override void ConfigureContainer()
         {
-            base.ConfigureContainer();
             Container.RegisterType<IServiceLocator>();
             Container.RegisterType<IUserInterfaceComposingService,UserInterfaceComposingService>();
             Container.RegisterType<IShellViewModel, ShellViewModel>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IGlobalCommand, GlobalCommand>();
             Container.RegisterType<IUserNotificationService, UserNotificationService>(new ContainerControlledLifetimeManager());
-
+            base.ConfigureContainer();
             Container.RegisterType<Shell>();
         }
     }

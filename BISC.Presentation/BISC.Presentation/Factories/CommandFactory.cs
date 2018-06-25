@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Presentation.Commands;
 using BISC.Presentation.Infrastructure.Factories;
+using Prism.Commands;
 
 namespace BISC.Presentation.Factories
 {
@@ -25,9 +26,16 @@ namespace BISC.Presentation.Factories
 
         #region Implementation of ICommandFactory
 
-        public ICommand CreateDelegateCommand(Action<object> execute, Func<object, bool> canExecute)
+        public ICommand CreateDelegateCommand(Action<CommandArguments> execute, Func<CommandArguments, bool> canExecute)
         {
-            throw new NotImplementedException();
+            if (canExecute == null)
+            {
+                return new DelegateCommand<CommandArguments>(execute);
+            }
+            else
+            {
+                return new DelegateCommand<CommandArguments>(execute, canExecute);
+            }
         }
 
         #endregion

@@ -94,6 +94,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Device\BISC.Modules.Device.Presentation\BISC.Modules.Device.Presentation.csproj">
+      <Project>{736992ee-8449-49aa-8a40-b2462ad51ecd}</Project>
+      <Name>BISC.Modules.Device.Presentation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BISC.Presentation\BISC.Presentation\BISC.Presentation.csproj">
       <Project>{11E0533C-FBCF-411F-85C4-771840C700B5}</Project>
       <Name>BISC.Presentation</Name>

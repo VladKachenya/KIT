@@ -1,5 +1,7 @@
 ﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
+using BISC.Presentation.Factories;
+using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Interfaces;
@@ -26,6 +28,7 @@ namespace BISC.Presentation.Module
             _injectionContainer.RegisterType<ITabViewModel,TabViewModel>();
             _injectionContainer.RegisterType<INavigationService, NavigationService>(true);
             _injectionContainer.RegisterType<IMainTreeViewModel, MainTreeViewModel>(true);
+            _injectionContainer.RegisterType<ICommandFactory, CommandFactory>(true);
 
             _injectionContainer.RegisterTypeForNavigation<TabHostView>(KeysForNavigation.ViewNames.MainTabHostViewName);
             _injectionContainer.RegisterTypeForNavigation<MainTreeView>(KeysForNavigation.ViewNames.MainTreeViewName);

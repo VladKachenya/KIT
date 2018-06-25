@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace BISC.Modules.Device.Presentation
+namespace BISC.Modules.Device.Presentation.Views
 {
     /// <summary>
-    /// Логика взаимодействия для UserControl1.xaml
+    /// Логика взаимодействия для DeviceAddingView.xaml
     /// </summary>
-    public partial class UserControl1 : UserControl
+    public partial class DeviceAddingView : UserControl
     {
-        public UserControl1()
+        public DeviceAddingView()
         {
             InitializeComponent();
         }

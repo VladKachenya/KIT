@@ -25,6 +25,8 @@ namespace BISC.Model.Global.Module
         public void Initialize()
         {
            _injectionContainer.RegisterType<IModelTypesResolvingService, ModelTypesResolvingService>(true);
+           _injectionContainer.RegisterType<IModelElementsRegistryService, ModelElementsRegistryService>(true);
+
         }
 
         #endregion
