@@ -40,6 +40,12 @@ namespace BISC.GlobalServices
             }
         }
 
+        public List<string> LastSuccessfullyConnectedIpAddress
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
+
         #endregion
     }
 }
