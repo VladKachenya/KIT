@@ -66,16 +66,24 @@
                     </Grid>
                 </GroupBox>
                 <GroupBox Grid.Column="1" Header="Текущий файл">
-                    <ListBox ItemsSource="{Binding CurrentDevicesToAdd}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <CheckBox IsChecked="{Binding IsSelected}" ></CheckBox>
-                                    <TextBlock Margin="5" Text="{Binding DeviceName}"></TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <ListBox x:Name="devicesListBox" Grid.Row="0" ItemsSource="{Binding CurrentDevicesToAdd}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding IsSelected}" ></CheckBox>
+                                        <TextBlock Margin="5" Text="{Binding DeviceName}"></TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <Button Grid.Row="1" Content="Добавить" ToolTip="Добавить выделенные устройства в проект" Command="{Binding DataContext.AddSelectedDevices,ElementName=devicesListBox}"></Button>
+                    </Grid>
+                    
                 </GroupBox>
             </Grid>
         </Grid>

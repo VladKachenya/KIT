@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
+using BISC.Model.Infrastructure;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
@@ -28,7 +29,7 @@ namespace BISC.Modules.Device.Model.Module
         {
             _injectionContainer.RegisterType<DeviceSerializer>();
             _injectionContainer.RegisterType<IDevice,Model.Device>();
-            _injectionContainer.RegisterType<IDeviceModelService, DeviceModelService>();
+            _injectionContainer.RegisterType<IDeviceModelService, DeviceModelService>(true);
 
             _injectionContainer.ResolveType<IModelElementsRegistryService>().RegisterModelElement(_injectionContainer.ResolveType<DeviceSerializer>(), DeviceKeys.DeviceModelKey);
         }

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Xml.Linq;
 using BISC.Infrastructure.Global.Modularity;
+using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Elements;
 
 namespace BISC.Model.Global.Model

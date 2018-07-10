@@ -29,10 +29,12 @@ namespace BISC.Presentation.Module
             _injectionContainer.RegisterType<INavigationService, NavigationService>(true);
             _injectionContainer.RegisterType<IMainTreeViewModel, MainTreeViewModel>(true);
             _injectionContainer.RegisterType<ICommandFactory, CommandFactory>(true);
+            _injectionContainer.RegisterType<ITreeManagementService, TreeManagementService>(true);
 
             _injectionContainer.RegisterTypeForNavigation<TabHostView>(KeysForNavigation.ViewNames.MainTabHostViewName);
             _injectionContainer.RegisterTypeForNavigation<MainTreeView>(KeysForNavigation.ViewNames.MainTreeViewName);
             _injectionContainer.RegisterType<PresentationInitialization>(true);
+            _injectionContainer.RegisterType<ITreeItemViewModelFactoryRegistryService, TreeItemViewModelFactoryRegistryService>(true);
 
             PresentationInitialization presentationInitialization = _injectionContainer.ResolveType(typeof(PresentationInitialization)) as PresentationInitialization;
 

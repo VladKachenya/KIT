@@ -4,12 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:regions="http://prismlibrary.com/"
+             xmlns:views="clr-namespace:BISC.Presentation.Views"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <TreeView ItemsSource="{Binding MainTreeItems}">
         <TreeView.ItemTemplate>
             <HierarchicalDataTemplate ItemsSource="{Binding ChildTreeItems}">
-                <ContentControl regions:RegionManager.RegionName="{Binding TreeItemRegionName}"></ContentControl>
+                <views:DynamicRegionView ></views:DynamicRegionView>
             </HierarchicalDataTemplate>
         </TreeView.ItemTemplate>
     </TreeView>

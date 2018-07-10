@@ -13,9 +13,11 @@ using BISC.Modules.Device.Presentation.Interfaces.Services;
 using BISC.Modules.Device.Presentation.Services;
 using BISC.Modules.Device.Presentation.ViewModels;
 using BISC.Modules.Device.Presentation.ViewModels.Factories;
+using BISC.Modules.Device.Presentation.ViewModels.Tree;
 using BISC.Modules.Device.Presentation.Views;
 using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.Module
 {
@@ -24,9 +26,8 @@ namespace BISC.Modules.Device.Presentation.Module
 
         private readonly IInjectionContainer _injectionContainer;
 
-        public DevicePresentationModule(IInjectionContainer injectionContainer)
+        public DevicePresentationModule(IInjectionContainer injectionContainer )
         {
-
             _injectionContainer = injectionContainer;
         }
 
@@ -39,6 +40,8 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<IFileViewModelFactory, FileViewModelFactory>();
             _injectionContainer.RegisterType<IDeviceViewModelFactory, DeviceViewModelFactory>();
             _injectionContainer.RegisterType<IDeviceViewModel, DeviceViewModel>(true);
+            _injectionContainer.RegisterType<DeviceTreeItemViewModelFactory>(true);
+            _injectionContainer.RegisterType<DeviceTreeItemViewModel>();
 
             var presentationInitialization = _injectionContainer.ResolveType(typeof(DevicePresentationInitialization)) as DevicePresentationInitialization;
 

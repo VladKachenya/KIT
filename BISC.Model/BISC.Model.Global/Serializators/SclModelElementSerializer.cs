@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Global.Model;
+using BISC.Model.Infrastructure;
 
 namespace BISC.Model.Global.Serializators
 {

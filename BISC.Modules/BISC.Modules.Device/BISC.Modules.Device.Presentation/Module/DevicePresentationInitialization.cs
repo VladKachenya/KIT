@@ -5,8 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Services;
+using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
+using BISC.Modules.Device.Presentation.ViewModels.Factories;
 using BISC.Presentation.Infrastructure.Factories;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.Module
 {
@@ -14,10 +17,12 @@ namespace BISC.Modules.Device.Presentation.Module
     {
         private readonly IInjectionContainer _injectionContainer;
 
-        public DevicePresentationInitialization(IUserInterfaceComposingService userInterfaceComposingService, ICommandFactory commandFactory,IInjectionContainer injectionContainer)
+        public DevicePresentationInitialization(IUserInterfaceComposingService userInterfaceComposingService, ICommandFactory commandFactory,IInjectionContainer injectionContainer
+            , DeviceTreeItemViewModelFactory treeItemViewModelFactory,ITreeItemViewModelFactoryRegistryService treeItemViewModelFactoryRegistryService)
         {
             _injectionContainer = injectionContainer;
             userInterfaceComposingService.AddGlobalCommand(commandFactory.CreateDelegateCommand(OnDeviceAdding, null), "Добавить устройство");
+            treeItemViewModelFactoryRegistryService.RegisterFactory(treeItemViewModelFactory,DeviceKeys.DeviceModelKey);
         }
         private void OnDeviceAdding()
         {

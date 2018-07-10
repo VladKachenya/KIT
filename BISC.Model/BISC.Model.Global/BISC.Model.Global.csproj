@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Project\BiscProject.cs" />
     <Compile Include="Serializators\DefaultModelElementSerializer.cs" />
     <Compile Include="Model\DefaultModelElement.cs" />
     <Compile Include="Model\SclModel.cs" />
@@ -58,7 +59,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Elements\" />
-    <Folder Include="Project\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">

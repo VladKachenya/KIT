@@ -49,17 +49,25 @@
   <ItemGroup>
     <Compile Include="Commands\IPesentationCommand.cs" />
     <Compile Include="Factories\ICommandFactory.cs" />
+    <Compile Include="Factories\ITreeItemViewModelFactory.cs" />
     <Compile Include="Keys\KeysForNavigation.cs" />
     <Compile Include="Parameters\NavigationParameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\INavigationService.cs" />
     <Compile Include="Services\ITabManagementService.cs" />
+    <Compile Include="Services\ITreeItemViewModelFactoryRegistryService.cs" />
     <Compile Include="Services\ITreeManagementService.cs" />
     <Compile Include="Tab\IDraggableTab.cs" />
     <Compile Include="Tree\IMainTreeItem.cs" />
     <Compile Include="Tree\TreeCommands\ITreeCommand.cs" />
     <Compile Include="ViewModel\IEditableViewModel.cs" />
     <Compile Include="ViewModel\ISelectableViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
+      <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
+      <Name>BISC.Model.Infrastructure</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

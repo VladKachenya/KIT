@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Presentation.BaseItems.Events;
+﻿using BISC.Presentation.BaseItems.Events;
 using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Services;
 using Prism.Events;
 
-namespace BISC.Presentation.Services
+namespace BISC.Presentation.Module
 {
    public class PresentationInitialization
     {

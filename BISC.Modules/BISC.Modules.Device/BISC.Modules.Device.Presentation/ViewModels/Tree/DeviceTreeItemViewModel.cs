@@ -4,25 +4,26 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Presentation.Infrastructure.Tree;
-using BISC.Presentation.Infrastructure.Tree.TreeCommands;
 
-namespace BISC.Modules.Device.Presentation.TreeItem
+namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 {
-   public class DeviceTreeItem:IMainTreeItem
+   public class DeviceTreeItemViewModel:IMainTreeItem
     {
-
-        public DeviceTreeItem()
+        public DeviceTreeItemViewModel()
         {
-            
+            ChildTreeItems=new ObservableCollection<IMainTreeItem>();
         }
 
         #region Implementation of IMainTreeItem
 
+        public string TreeRegionName { get; set; }
         public string TreeItemName { get; set; }
         public ObservableCollection<IMainTreeItem> ChildTreeItems { get; }
 
+        public string DeviceName { get; set; }
+        public IDevice Device { get; set; }
         #endregion
     }
 }

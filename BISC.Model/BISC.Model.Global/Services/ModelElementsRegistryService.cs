@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Global.Serializators;
+using BISC.Model.Infrastructure;
 
 namespace BISC.Model.Global.Services
 {

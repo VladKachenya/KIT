@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Global.Model;
 using BISC.Model.Global.Serializators;
+using BISC.Model.Infrastructure;
 using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.Device.Model.Serialization

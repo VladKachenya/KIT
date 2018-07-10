@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Interfaces\Factories\IDeviceViewModelFactory.cs" />
     <Compile Include="Interfaces\IDeviceAddingViewModel.cs" />
+    <Compile Include="Interfaces\IDeviceTreeItemViewModel.cs" />
     <Compile Include="Interfaces\IDeviceViewModel.cs" />
     <Compile Include="Interfaces\IFileViewModel.cs" />
     <Compile Include="Interfaces\Factories\IFileViewModelFactory.cs" />
@@ -59,16 +60,16 @@
     <Compile Include="Module\DevicePresentationInitialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DeviceAddingService.cs" />
-    <Compile Include="TreeItem\DeviceTreeItem.cs" />
     <Compile Include="ViewModels\DeviceAddingViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
+    <Compile Include="ViewModels\Factories\DeviceTreeItemViewModelFactory.cs" />
     <Compile Include="ViewModels\Factories\DeviceViewModelFactory.cs" />
     <Compile Include="ViewModels\Factories\FileViewModelFactory.cs" />
     <Compile Include="ViewModels\FileViewModel.cs" />
+    <Compile Include="ViewModels\Tree\DeviceTreeItemViewModel.cs" />
     <Compile Include="Views\DeviceTreeItemView.xaml.cs">
       <DependentUpon>DeviceTreeItemView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TreeItem\DeviceTreeItemDetailsViewModel.cs" />
     <Compile Include="Views\DeviceAddingView.xaml.cs">
       <DependentUpon>DeviceAddingView.xaml</DependentUpon>
     </Compile>

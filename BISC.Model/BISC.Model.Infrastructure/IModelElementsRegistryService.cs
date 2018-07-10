@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Xml.Linq;
+﻿using BISC.Infrastructure.Global.Modularity;
 
-namespace BISC.Infrastructure.Global.Modularity
+namespace BISC.Model.Infrastructure
 {
     public interface IModelElementsRegistryService
     {

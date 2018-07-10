@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Infrastructure.Global.Services;
+using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services;
 

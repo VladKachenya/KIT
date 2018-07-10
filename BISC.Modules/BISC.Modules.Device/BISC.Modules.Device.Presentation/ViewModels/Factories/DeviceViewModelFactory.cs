@@ -21,6 +21,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Factories
         {
             IDeviceViewModel deviceViewModel = _deviceViewModelCreator();
             deviceViewModel.DeviceName = device.Name;
+            deviceViewModel.Device = device;
             return deviceViewModel;
         }
     }

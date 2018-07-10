@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Infrastructure.Global.Services;
+using BISC.Model.Global.Model;
+using BISC.Model.Global.Project;
 using BISC.Model.Global.Serializators;
 using BISC.Model.Global.Services;
+using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Keys;
+using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services;
 
 namespace BISC.Model.Global.Module
@@ -30,6 +34,9 @@ namespace BISC.Model.Global.Module
             _injectionContainer.RegisterType<IModelTypesResolvingService, ModelTypesResolvingService>(true);
             _injectionContainer.RegisterType<IModelElementsRegistryService, ModelElementsRegistryService>(true);
             _injectionContainer.RegisterType<IModelComposingService, ModelComposingService>(true);
+            _injectionContainer.RegisterType<IBiscProject, BiscProject>(true);
+            _injectionContainer.RegisterType<ISclModel, SclModel>();
+
             _injectionContainer.RegisterType<SclModelElementSerializer>();
             _injectionContainer.ResolveType<IModelElementsRegistryService>()
                 .RegisterModelElement(_injectionContainer.ResolveType<SclModelElementSerializer>(),

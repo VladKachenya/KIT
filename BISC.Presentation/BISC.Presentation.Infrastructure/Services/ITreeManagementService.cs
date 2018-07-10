@@ -6,6 +6,7 @@ namespace BISC.Presentation.Infrastructure.Services
   
     public interface ITreeManagementService
     {
-        void AddTreeItem(IMainTreeItem treeItem);
+        void AddTreeItem(IMainTreeItem treeItem,string viewName);
+        
     }
 }

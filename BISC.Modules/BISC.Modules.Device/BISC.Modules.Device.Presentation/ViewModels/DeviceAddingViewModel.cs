@@ -28,10 +28,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IModelComposingService _modelComposingService;
         private readonly IDeviceModelService _deviceModelService;
         private readonly IDeviceViewModelFactory _deviceViewModelFactory;
+        private readonly IDeviceAddingService _deviceAddingService;
 
         public DeviceAddingViewModel(ICommandFactory commandFactory, IConfigurationService configurationService,
             IFileViewModelFactory fileViewModelFactory, IModelComposingService modelComposingService, IDeviceModelService deviceModelService,
-            IDeviceViewModelFactory deviceViewModelFactory)
+            IDeviceViewModelFactory deviceViewModelFactory,IDeviceAddingService deviceAddingService)
         {
             _commandFactory = commandFactory;
             _configurationService = configurationService;
@@ -39,12 +40,19 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _modelComposingService = modelComposingService;
             _deviceModelService = deviceModelService;
             _deviceViewModelFactory = deviceViewModelFactory;
+            _deviceAddingService = deviceAddingService;
             LastOpenedFiles = new ObservableCollection<IFileViewModel>();
             OpenFileWithDevices = _commandFactory.CreateDelegateCommand(OnOpenFileWithDevicesExecute);
             DeleteFileFromView = _commandFactory.CreateDelegateCommand<IFileViewModel>(OnDeleteFileFromViewExecute);
             LoadDevicesFromFile = _commandFactory.CreateDelegateCommand<IFileViewModel>(OnLoadDevicesFromFileExecute);
+            AddSelectedDevices = _commandFactory.CreateDelegateCommand(OnAddSelectedDevicesExecute);
             FillLastOpenedFilesFromConfig();
             CurrentDevicesToAdd=new ObservableCollection<IDeviceViewModel>();
+        }
+
+        private void OnAddSelectedDevicesExecute()
+        {
+            _deviceAddingService.AddDevicesInProject(CurrentDevicesToAdd.Where((model => model.IsSelected)).Select((model => model.Device)).ToList());
         }
 
         private void OnLoadDevicesFromFileExecute(IFileViewModel fileViewModel)

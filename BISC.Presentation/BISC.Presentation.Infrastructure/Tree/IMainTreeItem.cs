@@ -8,6 +8,7 @@ namespace BISC.Presentation.Infrastructure.Tree
 {
     public interface IMainTreeItem
     {
+        string TreeRegionName { get; set; }
         string TreeItemName { get; set; }
         ObservableCollection<IMainTreeItem> ChildTreeItems { get; }
     }
