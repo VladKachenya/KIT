@@ -40,10 +40,24 @@ namespace BISC.GlobalServices
             }
         }
 
-        public List<string> LastSuccessfullyConnectedIpAddress
+        public List<string> LastConnectedIpAddress
         {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
+            get
+            {
+                if (Settings.Default.LastConnectedIpAddress == null)
+                {
+                    Settings.Default.LastConnectedIpAddress = new StringCollection();
+                    Settings.Default.Save();
+                }
+                return Settings.Default.LastConnectedIpAddress.Cast<string>().ToList();
+            }
+            set
+            {
+                var lastConnectedIpAddress = new StringCollection();
+                lastConnectedIpAddress.AddRange(value.ToArray());
+                Settings.Default.LastConnectedIpAddress = lastConnectedIpAddress;
+                Settings.Default.Save();
+            }
         }
 
         #endregion

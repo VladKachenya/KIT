@@ -2,6 +2,7 @@
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Global.Module;
+using BISC.Modules.Connection.Presentation.Module;
 using BISC.Modules.Device.Model.Module;
 using BISC.Modules.Device.Presentation.Module;
 using BISC.Presentation.BaseItems.Module;
@@ -39,6 +40,7 @@ namespace BISC.Infrastructure.CompositionRoot.Bootstraper
             Container.RegisterType(typeof(IAppModule), typeof(GlobalPresentationModule),nameof(GlobalPresentationModule));
             Container.RegisterType(typeof(IAppModule), typeof(DevicePresentationModule), nameof(DevicePresentationModule));
             Container.RegisterType(typeof(IAppModule), typeof(DeviceModelModule), nameof(DeviceModelModule));
+            Container.RegisterType(typeof(IAppModule), typeof(ConnectionPresentationModule), nameof(ConnectionPresentationModule));
 
         }
     }

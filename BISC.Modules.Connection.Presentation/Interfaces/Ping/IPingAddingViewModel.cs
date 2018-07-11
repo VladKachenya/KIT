@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BISC.Modules.Connection.Presentation
+namespace BISC.Modules.Connection.Presentation.Interfaces.Ping
 {
-    public class Class1
+    public interface IPingAddingViewModel
     {
+        IIpAddress IpAddress { get; }
     }
 }

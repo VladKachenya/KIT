@@ -24,6 +24,7 @@ namespace BISC.Modules.Device.Presentation.Module
             userInterfaceComposingService.AddGlobalCommand(commandFactory.CreateDelegateCommand(OnDeviceAdding, null), "Добавить устройство");
             treeItemViewModelFactoryRegistryService.RegisterFactory(treeItemViewModelFactory,DeviceKeys.DeviceModelKey);
         }
+
         private void OnDeviceAdding()
         {
             _injectionContainer.ResolveType<IDeviceAddingService>().OpenDeviceAddingView();

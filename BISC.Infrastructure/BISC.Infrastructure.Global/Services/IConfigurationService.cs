@@ -6,6 +6,6 @@ namespace BISC.Infrastructure.Global.Services
     {
         List<string> LastOpenedFiles { get; set; }
 
-        List<string> LastSuccessfullyConnectedIpAddress { get; set; }
+        List<string> LastConnectedIpAddress { get; set; }
     }
 }
