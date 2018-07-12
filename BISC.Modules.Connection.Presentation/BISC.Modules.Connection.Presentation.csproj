@@ -66,6 +66,10 @@
       <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
       <Name>BISC.Infrastructure.Global</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BISC.Modules.Connection.Model\BISC.Modules.Connection.Model.csproj">
+      <Project>{91B85760-A120-4F20-9FBD-84DB863C460B}</Project>
+      <Name>BISC.Modules.Connection.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BISC.Modules\BISC.Modules.Connection\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
       <Project>{84925CA6-959A-4094-9688-622DC28B7452}</Project>
       <Name>BISC.Modules.Connection.Infrastructure</Name>

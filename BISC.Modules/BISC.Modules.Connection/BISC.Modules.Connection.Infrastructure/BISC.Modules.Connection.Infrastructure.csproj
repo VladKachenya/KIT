@@ -45,7 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeviceConnection\IConnections.cs" />
     <Compile Include="DeviceConnection\IDeviceConnection.cs" />
+    <Compile Include="Factorys\IDeviceConnectionFactory.cs" />
     <Compile Include="Keys\ConnectionKeys.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
