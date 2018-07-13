@@ -68,6 +68,7 @@
     <Compile Include="Interfaces\Tab\ITabHost.cs" />
     <Compile Include="Interfaces\Tab\ITabViewModel.cs" />
     <Compile Include="Interfaces\Tree\IMainTreeViewModel.cs" />
+    <Compile Include="Interfaces\Tree\ITreeItemViewModel.cs" />
     <Compile Include="Module\GlobalPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\NavigationService.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Services\TreeManagementService.cs" />
     <Compile Include="ViewModels\DynamicRegionViewModel.cs" />
     <Compile Include="ViewModels\Tree\MainTreeViewModel.cs" />
+    <Compile Include="ViewModels\Tree\TreeItemViewModel.cs" />
     <Compile Include="Views\DynamicRegionView.xaml.cs">
       <DependentUpon>DynamicRegionView.xaml</DependentUpon>
     </Compile>

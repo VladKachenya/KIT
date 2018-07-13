@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using BISC.Modules.Device.Presentation.Interfaces;
 using BISC.Modules.Device.Presentation.ViewModels.Tree;
 
 namespace BISC.Modules.Device.Presentation.Views
@@ -8,7 +9,7 @@ namespace BISC.Modules.Device.Presentation.Views
     /// </summary>
     public partial class DeviceTreeItemView : UserControl
     {
-        public DeviceTreeItemView(DeviceTreeItemViewModel deviceTreeItemViewModel)
+        public DeviceTreeItemView(IDeviceTreeItemViewModel deviceTreeItemViewModel)
         {
             InitializeComponent();
             DataContext = deviceTreeItemViewModel;

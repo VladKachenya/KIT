@@ -1,4 +1,6 @@
-﻿using BISC.Presentation.Infrastructure.Tree;
+﻿using System;
+using BISC.Presentation.Infrastructure.Navigation;
+using BISC.Presentation.Infrastructure.Tree;
 
 namespace BISC.Presentation.Infrastructure.Services
 {
@@ -6,7 +8,8 @@ namespace BISC.Presentation.Infrastructure.Services
   
     public interface ITreeManagementService
     {
-        void AddTreeItem(IMainTreeItem treeItem,string viewName);
-        
+        void AddTreeItem(BiscNavigationParameters parameters,string viewName,Guid? parentId);
+        void DeleteTreeItem(Guid treeItemId);
+
     }
 }

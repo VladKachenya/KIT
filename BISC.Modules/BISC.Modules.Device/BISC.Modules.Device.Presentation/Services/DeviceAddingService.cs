@@ -9,6 +9,7 @@ using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
+using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.Services
@@ -48,7 +49,9 @@ namespace BISC.Modules.Device.Presentation.Services
                 }
                 else
                 {
-                    //_treeManagementService.AddTreeItem(device,);
+                    BiscNavigationParameters navigationParameters=new BiscNavigationParameters();
+                    navigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey,device);
+                    _treeManagementService.AddTreeItem(navigationParameters,DeviceKeys.DeviceAddingViewKey,null);
                 }
             }
         }

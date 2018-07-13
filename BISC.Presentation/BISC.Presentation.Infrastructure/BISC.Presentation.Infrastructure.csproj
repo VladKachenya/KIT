@@ -69,7 +69,6 @@
     <Compile Include="Services\ITabManagementService.cs" />
     <Compile Include="Services\ITreeManagementService.cs" />
     <Compile Include="Tab\IDraggableTab.cs" />
-    <Compile Include="Tree\IMainTreeItem.cs" />
     <Compile Include="Tree\TreeCommands\ITreeCommand.cs" />
     <Compile Include="ViewModel\IBiscActiveAware.cs" />
     <Compile Include="ViewModel\IEditableViewModel.cs" />

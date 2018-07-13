@@ -28,7 +28,9 @@ namespace BISC.Presentation.Services
 
         public void NavigateViewToRegion(string viewName, string regionName, BiscNavigationParameters navigationParameters=null)
         {
-           _regionManager.RequestNavigate(regionName,new Uri(viewName,UriKind.Relative),PopulateNavigationParameters(navigationParameters));
+            var region = _regionManager.Regions[regionName];
+
+            _regionManager.RequestNavigate(regionName,new Uri(viewName,UriKind.Relative),PopulateNavigationParameters(navigationParameters));
         }
 
         public async void NavigateViewToGlobalRegion(string viewName, BiscNavigationParameters navigationParameters = null)

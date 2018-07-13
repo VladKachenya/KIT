@@ -4,8 +4,9 @@ using BISC.Presentation.Infrastructure.Tree;
 
 namespace BISC.Presentation.Interfaces.Tree
 {
-    public interface IMainTreeViewModel
+    public interface ITreeItemViewModel
     {
         ObservableCollection<ITreeItemViewModel> ChildItemViewModels { get; }
+        Guid DynamicRegionId { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using Prism.Regions;
 
 namespace BISC.Presentation.BaseItems.Behaviors
 {
-    public class DynamicRegionBehavior : Behavior<ContentControl>
+    public class DynamicRegionBehavior 
     {
         private readonly IRegionManager _regionManager;
 
@@ -32,9 +32,20 @@ namespace BISC.Presentation.BaseItems.Behaviors
             }
             RegionManager.SetRegionName(d,e.NewValue as string);
             RegionManager.SetRegionManager(d,regionManager);
+            (d as FrameworkElement).Unloaded += DynamicRegionBehavior_Unloaded;
         }
 
-        
+        private static void DynamicRegionBehavior_Unloaded(object sender, RoutedEventArgs e)
+        {
+            (sender as FrameworkElement).Unloaded -= DynamicRegionBehavior_Unloaded;
+            var regionManager = ServiceLocator.Current.GetInstance<IRegionManager>();
+            var regionName = RegionManager.GetRegionName(sender as FrameworkElement);
+            if (regionManager.Regions.ContainsRegionWithName(regionName))
+            {
+                regionManager.Regions.Remove(regionName);
+            }
+            
+        }
 
         public DynamicRegionBehavior(IRegionManager regionManager)
         {

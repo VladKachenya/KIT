@@ -9,6 +9,16 @@ namespace BISC.Presentation.ViewModels
 {
     public class DynamicRegionViewModel:ViewModelBase
     {
+        private Guid _dynamicRegionId;
 
+        public Guid DynamicRegionId
+        {
+            get => _dynamicRegionId;
+            set
+            {
+                _dynamicRegionId = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

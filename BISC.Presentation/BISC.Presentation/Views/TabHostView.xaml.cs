@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using BISC.Presentation.Interfaces;
+using BISC.Presentation.Interfaces.Tree;
 
 namespace BISC.Presentation.Views
 {
@@ -8,10 +9,10 @@ namespace BISC.Presentation.Views
     /// </summary>
     public partial class TabHostView : UserControl
     {
-        public TabHostView(ITabHostViewModel tabHostViewModel)
+        public TabHostView(IMainTreeViewModel mainTreeViewModel)
         {
             InitializeComponent();
-            DataContext = tabHostViewModel;
+            DataContext = mainTreeViewModel;
         }
     }
 }

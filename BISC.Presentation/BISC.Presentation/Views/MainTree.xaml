@@ -5,11 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:regions="http://prismlibrary.com/"
              xmlns:views="clr-namespace:BISC.Presentation.Views"
+             xmlns:tree="clr-namespace:BISC.Presentation.ViewModels.Tree"
+             xmlns:tree1="clr-namespace:BISC.Presentation.Interfaces.Tree"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <TreeView ItemsSource="{Binding MainTreeItems}">
+    <TreeView>
         <TreeView.ItemTemplate>
-            <HierarchicalDataTemplate ItemsSource="{Binding ChildTreeItems}">
+            <HierarchicalDataTemplate DataType="{x:Type tree1:ITreeItemViewModel}" ItemsSource="{Binding ChildItemViewModels}">
                 <views:DynamicRegionView ></views:DynamicRegionView>
             </HierarchicalDataTemplate>
         </TreeView.ItemTemplate>

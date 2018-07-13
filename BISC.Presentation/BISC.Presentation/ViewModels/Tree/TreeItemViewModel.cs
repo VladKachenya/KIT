@@ -10,14 +10,24 @@ using BISC.Presentation.Interfaces.Tree;
 
 namespace BISC.Presentation.ViewModels.Tree
 {
-    public class MainTreeViewModel :ViewModelBase, IMainTreeViewModel
+  public  class TreeItemViewModel:ViewModelBase,ITreeItemViewModel
     {
-        public MainTreeViewModel()
+        public TreeItemViewModel()
         {
-            ChildItemViewModels = new ObservableCollection<ITreeItemViewModel>();
+            ChildItemViewModels=new ObservableCollection<ITreeItemViewModel>();
         }
+        private Guid _dynamicRegionId;
 
-    
         public ObservableCollection<ITreeItemViewModel> ChildItemViewModels { get; }
+
+        public Guid DynamicRegionId
+        {
+            get => _dynamicRegionId;
+            set
+            {
+                _dynamicRegionId = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }
