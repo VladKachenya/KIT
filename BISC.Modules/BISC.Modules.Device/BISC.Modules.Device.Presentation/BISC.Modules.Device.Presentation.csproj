@@ -62,7 +62,6 @@
     <Compile Include="Services\DeviceAddingService.cs" />
     <Compile Include="ViewModels\DeviceAddingViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
-    <Compile Include="ViewModels\Factories\DeviceTreeItemViewModelFactory.cs" />
     <Compile Include="ViewModels\Factories\DeviceViewModelFactory.cs" />
     <Compile Include="ViewModels\Factories\FileViewModelFactory.cs" />
     <Compile Include="ViewModels\FileViewModel.cs" />

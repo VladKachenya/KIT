@@ -40,7 +40,6 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<IFileViewModelFactory, FileViewModelFactory>();
             _injectionContainer.RegisterType<IDeviceViewModelFactory, DeviceViewModelFactory>();
             _injectionContainer.RegisterType<IDeviceViewModel, DeviceViewModel>(true);
-            _injectionContainer.RegisterType<DeviceTreeItemViewModelFactory>(true);
             _injectionContainer.RegisterType<DeviceTreeItemViewModel>();
 
             var presentationInitialization = _injectionContainer.ResolveType(typeof(DevicePresentationInitialization)) as DevicePresentationInitialization;

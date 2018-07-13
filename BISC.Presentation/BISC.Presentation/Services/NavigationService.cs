@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Services;
 using BISC.Presentation.Infrastructure.Keys;
-using BISC.Presentation.Infrastructure.Parameters;
+using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Views;
 using Prism.Regions;
@@ -26,12 +26,12 @@ namespace BISC.Presentation.Services
 
         #region Implementation of INavigationService
 
-        public void NavigateViewToRegion(string viewName, string regionName, List<NavigationParameter> navigationParameters=null)
+        public void NavigateViewToRegion(string viewName, string regionName, BiscNavigationParameters navigationParameters=null)
         {
            _regionManager.RequestNavigate(regionName,new Uri(viewName,UriKind.Relative),PopulateNavigationParameters(navigationParameters));
         }
 
-        public async void NavigateViewToGlobalRegion(string viewName, List<NavigationParameter> navigationParameters = null)
+        public async void NavigateViewToGlobalRegion(string viewName, BiscNavigationParameters navigationParameters = null)
         {
             GlobalDialogView globalDialogView=new GlobalDialogView();
 
@@ -49,7 +49,7 @@ namespace BISC.Presentation.Services
         }
 
 
-        private NavigationParameters PopulateNavigationParameters(List<NavigationParameter> navigationParameters)
+        private NavigationParameters PopulateNavigationParameters(BiscNavigationParameters navigationParameters)
         {
             NavigationParameters navigationParametersToRegion = new NavigationParameters();
 

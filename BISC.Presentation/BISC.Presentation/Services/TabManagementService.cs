@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BISC.Presentation.Infrastructure.Parameters;
+using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Presentation.Services
@@ -11,7 +11,7 @@ namespace BISC.Presentation.Services
     public class TabManagementService: ITabManagementService
     {
         
-        public void NavigateToTab(string viewName, List<NavigationParameter> navigationParameters, object owner)
+        public void NavigateToTab(string viewName, BiscNavigationParameters navigationParameters, object owner)
         {
             throw new NotImplementedException();
         }

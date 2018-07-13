@@ -73,7 +73,6 @@
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Module\PresentationInitialization.cs" />
     <Compile Include="Services\TabManagementService.cs" />
-    <Compile Include="Services\TreeItemViewModelFactoryRegistryService.cs" />
     <Compile Include="Services\TreeManagementService.cs" />
     <Compile Include="ViewModels\DynamicRegionViewModel.cs" />
     <Compile Include="ViewModels\Tree\MainTreeViewModel.cs" />

@@ -17,12 +17,11 @@ namespace BISC.Modules.Device.Presentation.Module
     {
         private readonly IInjectionContainer _injectionContainer;
 
-        public DevicePresentationInitialization(IUserInterfaceComposingService userInterfaceComposingService, ICommandFactory commandFactory,IInjectionContainer injectionContainer
-            , DeviceTreeItemViewModelFactory treeItemViewModelFactory,ITreeItemViewModelFactoryRegistryService treeItemViewModelFactoryRegistryService)
+        public DevicePresentationInitialization(IUserInterfaceComposingService userInterfaceComposingService,
+            ICommandFactory commandFactory,IInjectionContainer injectionContainer)
         {
             _injectionContainer = injectionContainer;
             userInterfaceComposingService.AddGlobalCommand(commandFactory.CreateDelegateCommand(OnDeviceAdding, null), "Добавить устройство");
-            treeItemViewModelFactoryRegistryService.RegisterFactory(treeItemViewModelFactory,DeviceKeys.DeviceModelKey);
         }
 
         private void OnDeviceAdding()

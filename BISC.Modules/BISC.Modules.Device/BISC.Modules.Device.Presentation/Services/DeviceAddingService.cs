@@ -20,17 +20,16 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly IUserNotificationService _userNotificationService;
         private readonly IBiscProject _biscProject;
         private readonly ITreeManagementService _treeManagementService;
-        private readonly ITreeItemViewModelFactoryRegistryService _treeItemViewModelFactoryRegistryService;
 
         public DeviceAddingService(INavigationService navigationService ,IDeviceModelService deviceModelService,
-            IUserNotificationService userNotificationService,IBiscProject biscProject,ITreeManagementService treeManagementService,ITreeItemViewModelFactoryRegistryService treeItemViewModelFactoryRegistryService)
+            IUserNotificationService userNotificationService,IBiscProject biscProject,ITreeManagementService
+                treeManagementService)
         {
             _navigationService = navigationService;
             _deviceModelService = deviceModelService;
             _userNotificationService = userNotificationService;
             _biscProject = biscProject;
             _treeManagementService = treeManagementService;
-            _treeItemViewModelFactoryRegistryService = treeItemViewModelFactoryRegistryService;
         }
 
         public void OpenDeviceAddingView()
