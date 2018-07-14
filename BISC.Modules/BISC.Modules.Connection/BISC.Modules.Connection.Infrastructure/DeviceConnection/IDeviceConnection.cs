@@ -2,7 +2,7 @@
 {
     public interface IDeviceConnection
     {
-        string Ip { get; set; }
+        string Ip { get;}
         bool IsPingable { get; set; }
         bool TryConnect();
         void Disconnect();
