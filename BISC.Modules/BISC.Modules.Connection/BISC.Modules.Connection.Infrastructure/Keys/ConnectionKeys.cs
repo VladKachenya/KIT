@@ -8,6 +8,6 @@ namespace BISC.Modules.Connection.Infrastructure.Keys
 {
     public static class ConnectionKeys
     {
-        public const string PingAddingViewKey = "PingAddingView";
+        public const string PingViewKey = "PingView";
     }
 }
