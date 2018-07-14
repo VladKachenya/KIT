@@ -1,5 +1,6 @@
 ﻿using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Connection.Infrastructure.DeviceConnection;
+using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Connection.Presentation.Interfaces.Ping;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
@@ -18,18 +19,23 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
         private ICommandFactory _commandFactory;
         private IConfigurationService _configurationService;
+        private IPingService _pingService;
+        private string ip;
+        private bool isPing;
 
-        public PingAddingViewModel( ICommandFactory commandFactory, IConfigurationService configurationService )
+        public PingAddingViewModel( ICommandFactory commandFactory, IConfigurationService configurationService, IPingService pingService )
         {
+            _pingService = pingService;
             _configurationService = configurationService;
             LastConnections = new ObservableCollection<string>(_configurationService.LastIpAddresses);
             _commandFactory = commandFactory;
-            AddIpCommand = _commandFactory.CreateDelegateCommand(OnTestCommand);
+            PingCommand = _commandFactory.CreateDelegateCommand(OnPingCommand);
         }
 
-        private void OnTestCommand()
+        private async void OnPingCommand()
         {
-           
+            IsPing = await _pingService.GetPing(ip);
+
         }
 
 
@@ -39,6 +45,25 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         public ICommand PingCommand { get; }
 
         public ObservableCollection<string> LastConnections { get; }
+        public string IP
+        {
+            get { return ip; }
+            set
+            {
+                ip = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsPing
+        {
+            get { return isPing; }
+            set
+            {
+                isPing = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
     }
 }

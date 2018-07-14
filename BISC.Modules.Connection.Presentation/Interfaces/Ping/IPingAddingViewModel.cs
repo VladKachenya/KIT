@@ -18,6 +18,6 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.Ping
         ICommand PingCommand { get; }     
         ObservableCollection<string> LastConnections  { get; }
 
-
+        bool IsPing { get; set; }
     }
 }
