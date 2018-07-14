@@ -1,6 +1,8 @@
 ﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Modules.Connection.Infrastructure.Keys;
+using BISC.Modules.Connection.Presentation.Factorys;
+using BISC.Modules.Connection.Presentation.Interfaces.Factorys;
 using BISC.Modules.Connection.Presentation.Interfaces.Ping;
 using BISC.Modules.Connection.Presentation.Interfaces.Services;
 using BISC.Modules.Connection.Presentation.Services;
@@ -24,8 +26,11 @@ namespace BISC.Modules.Connection.Presentation.Module
         public void Initialize()
         {
             _injectionContainer.RegisterType<IPingAddingServise, PingAddingServise>(true);
-            _injectionContainer.RegisterType<object, PingAddingViev>(ConnectionKeys.PingAddingViewKey);
-            _injectionContainer.RegisterType<IPingAddingViewModel, PingAddingViewModel>(true);
+            _injectionContainer.RegisterType<object, PingView>(ConnectionKeys.PingViewKey);
+            _injectionContainer.RegisterType<IPingViewModel, PingViewModel>(true);
+            //Рекомендуется создавать экземпляры этого класса через Фабрику.
+            _injectionContainer.RegisterType<IPingItemViewModel, PingItemViewModel>();
+            _injectionContainer.RegisterType<IPingItemsViewModelFactory, PingItemsViewModelFactory>(true);
             var presentationInitialization = _injectionContainer.ResolveType(typeof(ConnectionPresentationInitialization)) as ConnectionPresentationInitialization;
 
         }

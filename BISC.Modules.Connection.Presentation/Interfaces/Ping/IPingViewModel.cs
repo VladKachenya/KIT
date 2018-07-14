@@ -9,15 +9,12 @@ using System.Windows.Input;
 
 namespace BISC.Modules.Connection.Presentation.Interfaces.Ping
 {
-    public interface IPingAddingViewModel
-    {
-
-
-        ICommand AddIpCommand { get; }
-
-        ICommand PingCommand { get; }     
-        ObservableCollection<string> LastConnections  { get; }
-
+    public interface IPingViewModel 
+    {            
+        ObservableCollection<IPingItemViewModel> LastConnections  { get; }
+        string SelectedIP { get; set; }
         bool IsPing { get; set; }
+        ICommand PingCommand { get; }
+        ICommand ClearSelectedIPCommand { get; }
     }
 }

@@ -18,7 +18,7 @@ namespace BISC.Modules.Connection.Presentation.Services
         }
         public void OpenPingsView()
         {
-            _navigationService.NavigateViewToGlobalRegion(ConnectionKeys.PingAddingViewKey);
+            _navigationService.NavigateViewToGlobalRegion(ConnectionKeys.PingViewKey);
         }
     }
 }

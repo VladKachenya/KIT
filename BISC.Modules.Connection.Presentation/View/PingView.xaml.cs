@@ -19,9 +19,9 @@ namespace BISC.Modules.Connection.Presentation.View
     /// <summary>
     /// Логика взаимодействия для PingsViev.xaml
     /// </summary>
-    public partial class PingAddingViev : UserControl
+    public partial class PingView : UserControl
     {
-        public PingAddingViev(IPingAddingViewModel pingAddingViewModel)
+        public PingView(IPingViewModel pingAddingViewModel)
         {
             InitializeComponent();
             DataContext = pingAddingViewModel;         
