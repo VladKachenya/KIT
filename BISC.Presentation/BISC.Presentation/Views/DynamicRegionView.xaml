@@ -9,6 +9,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <ContentControl MinHeight="100" MinWidth="100" behaviors:DynamicRegionBehavior.RegionKey="{Binding DynamicRegionId}" ></ContentControl>
+        <ContentControl behaviors:DynamicRegionBehavior.RegionKey="{Binding DynamicRegionId}" ></ContentControl>
 </Grid>
 </UserControl>

@@ -13,7 +13,7 @@ using Prism;
 
 namespace BISC.Presentation.BaseItems.ViewModels
 {
-    public abstract class NavigationViewModelBase : ComplexViewModelBase
+    public abstract class NavigationViewModelBase : ComplexViewModelBase,INavigationAware,IActiveAware
     {
         private bool _isActive;
 
@@ -39,7 +39,7 @@ namespace BISC.Presentation.BaseItems.ViewModels
 
         public event EventHandler IsActiveChanged;
 
-        private bool IsNavigationTarget(NavigationContext navigationContext)
+        public bool IsNavigationTarget(NavigationContext navigationContext)
         {
             return IsNavigationTarget(BiscNavigationContext.FromNavigationContext(navigationContext));
         }
@@ -49,7 +49,7 @@ namespace BISC.Presentation.BaseItems.ViewModels
             return true;
         }
 
-        private void OnNavigatedFrom(NavigationContext navigationContext)
+        void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
             OnNavigatedFrom(BiscNavigationContext.FromNavigationContext(navigationContext));
         }
@@ -57,7 +57,7 @@ namespace BISC.Presentation.BaseItems.ViewModels
         {
 
         }
-        private void OnNavigatedTo(NavigationContext navigationContext)
+         void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
         {
             OnNavigatedTo(BiscNavigationContext.FromNavigationContext(navigationContext));
         }

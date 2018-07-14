@@ -21,7 +21,7 @@ namespace BISC.Modules.Device.Presentation.Module
             ICommandFactory commandFactory,IInjectionContainer injectionContainer)
         {
             _injectionContainer = injectionContainer;
-            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreateDelegateCommand(OnDeviceAdding, null), "Добавить устройство");
+            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(OnDeviceAdding, null), "Добавить устройство");
         }
 
         private void OnDeviceAdding()

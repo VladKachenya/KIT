@@ -9,7 +9,7 @@ namespace BISC.Modules.Device.Presentation.Views
     /// </summary>
     public partial class DeviceTreeItemView : UserControl
     {
-        public DeviceTreeItemView(IDeviceTreeItemViewModel deviceTreeItemViewModel)
+        public DeviceTreeItemView(DeviceTreeItemViewModel deviceTreeItemViewModel)
         {
             InitializeComponent();
             DataContext = deviceTreeItemViewModel;

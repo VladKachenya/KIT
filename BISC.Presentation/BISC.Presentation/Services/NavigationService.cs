@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using BISC.Infrastructure.Global.Services;
 using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Navigation;
@@ -12,10 +14,11 @@ using Prism.Regions;
 
 namespace BISC.Presentation.Services
 {
-   public class NavigationService: INavigationService
+    public class NavigationService : INavigationService
     {
         private readonly IRegionManager _regionManager;
         private readonly IUserNotificationService _userNotificationService;
+        private Dictionary<string, Tuple<string, BiscNavigationParameters>> _waitingRegionsdictionary = new Dictionary<string, Tuple<string, BiscNavigationParameters>>();
 
         public NavigationService(IRegionManager regionManager, IUserNotificationService userNotificationService)
         {
@@ -26,18 +29,36 @@ namespace BISC.Presentation.Services
 
         #region Implementation of INavigationService
 
-        public void NavigateViewToRegion(string viewName, string regionName, BiscNavigationParameters navigationParameters=null)
+        public void NavigateViewToRegion(string viewName, string regionName, BiscNavigationParameters navigationParameters = null)
         {
-            var region = _regionManager.Regions[regionName];
 
-            _regionManager.RequestNavigate(regionName,new Uri(viewName,UriKind.Relative),PopulateNavigationParameters(navigationParameters));
+            var isRegionExists = _regionManager.Regions.ContainsRegionWithName(regionName);
+            if (!isRegionExists)
+            {
+                if (_waitingRegionsdictionary.ContainsKey(regionName))
+                {
+                    _waitingRegionsdictionary[regionName] = new Tuple<string, BiscNavigationParameters>(viewName, navigationParameters);
+                }
+                else
+                {
+                    _waitingRegionsdictionary.Add(regionName, new Tuple<string, BiscNavigationParameters>(viewName, navigationParameters));
+
+                }
+                return;
+            }
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                _regionManager.RequestNavigate(regionName, new Uri(viewName, UriKind.Relative),
+                    PopulateNavigationParameters(navigationParameters));
+
+            });
         }
 
         public async void NavigateViewToGlobalRegion(string viewName, BiscNavigationParameters navigationParameters = null)
         {
-            GlobalDialogView globalDialogView=new GlobalDialogView();
+            GlobalDialogView globalDialogView = new GlobalDialogView();
 
-           await _userNotificationService.ShowContentAsDialog(globalDialogView);
+            await _userNotificationService.ShowContentAsDialog(globalDialogView);
             var region = _regionManager.Regions[KeysForNavigation.RegionNames.GlobalDialogRegionKey];
             _regionManager.RequestNavigate(KeysForNavigation.RegionNames.GlobalDialogRegionKey, new Uri(viewName, UriKind.Relative),
                 (callback) =>
@@ -48,6 +69,16 @@ namespace BISC.Presentation.Services
                     }
                 }, PopulateNavigationParameters(navigationParameters));
 
+        }
+
+        public void TryNavigateToWaitingRegion(string regionId)
+        {
+            if (_waitingRegionsdictionary.ContainsKey(regionId))
+            {
+                _regionManager.RequestNavigate(regionId, new Uri(_waitingRegionsdictionary[regionId].Item1, UriKind.Relative),
+                    PopulateNavigationParameters(_waitingRegionsdictionary[regionId].Item2));
+                _waitingRegionsdictionary.Remove(regionId);
+            }
         }
 
 

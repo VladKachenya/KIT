@@ -9,11 +9,10 @@
              xmlns:tree1="clr-namespace:BISC.Presentation.Interfaces.Tree"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <TreeView>
+    <TreeView ItemsSource="{Binding ChildItemViewModels}">
         <TreeView.ItemTemplate>
             <HierarchicalDataTemplate DataType="{x:Type tree1:ITreeItemViewModel}" ItemsSource="{Binding ChildItemViewModels}">
-                <TextBlock Text="test"></TextBlock>
-                <!--<views:DynamicRegionView ></views:DynamicRegionView>-->
+                <views:DynamicRegionView ></views:DynamicRegionView>
             </HierarchicalDataTemplate>
         </TreeView.ItemTemplate>
     </TreeView>

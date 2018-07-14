@@ -17,10 +17,11 @@ using BISC.Modules.Device.Presentation.Interfaces.Services;
 using BISC.Presentation.BaseItems.Common;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
+using BISC.Presentation.Infrastructure.Navigation;
 
 namespace BISC.Modules.Device.Presentation.ViewModels
 {
-    public class DeviceAddingViewModel : DisposableViewModelBase, IDeviceAddingViewModel
+    public class DeviceAddingViewModel : NavigationViewModelBase, IDeviceAddingViewModel
     {
         private readonly ICommandFactory _commandFactory;
         private readonly IConfigurationService _configurationService;
@@ -42,10 +43,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _deviceViewModelFactory = deviceViewModelFactory;
             _deviceAddingService = deviceAddingService;
             LastOpenedFiles = new ObservableCollection<IFileViewModel>();
-            OpenFileWithDevices = _commandFactory.CreateDelegateCommand(OnOpenFileWithDevicesExecute);
-            DeleteFileFromView = _commandFactory.CreateDelegateCommand<IFileViewModel>(OnDeleteFileFromViewExecute);
-            LoadDevicesFromFile = _commandFactory.CreateDelegateCommand<IFileViewModel>(OnLoadDevicesFromFileExecute);
-            AddSelectedDevices = _commandFactory.CreateDelegateCommand(OnAddSelectedDevicesExecute);
+            OpenFileWithDevices = _commandFactory.CreatePresentationCommand(OnOpenFileWithDevicesExecute);
+            DeleteFileFromView = _commandFactory.CreatePresentationCommand<IFileViewModel>(OnDeleteFileFromViewExecute);
+            LoadDevicesFromFile = _commandFactory.CreatePresentationCommand<IFileViewModel>(OnLoadDevicesFromFileExecute);
+            AddSelectedDevices = _commandFactory.CreatePresentationCommand(OnAddSelectedDevicesExecute);
             FillLastOpenedFilesFromConfig();
             CurrentDevicesToAdd=new ObservableCollection<IDeviceViewModel>();
         }
@@ -79,6 +80,21 @@ namespace BISC.Modules.Device.Presentation.ViewModels
                 SaveChangesInConfig();
             }
         }
+
+        #region Overrides of NavigationViewModelBase
+
+        protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
+
+        {
+            base.OnNavigatedTo(navigationContext);
+        }
+
+        protected override void OnNavigatedFrom(BiscNavigationContext navigationContext)
+        {
+            base.OnNavigatedFrom(navigationContext);
+        }
+
+        #endregion
 
 
         private void OnOpenFileWithDevicesExecute()

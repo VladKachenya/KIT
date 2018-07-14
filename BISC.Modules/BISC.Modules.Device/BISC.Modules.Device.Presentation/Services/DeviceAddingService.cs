@@ -51,7 +51,7 @@ namespace BISC.Modules.Device.Presentation.Services
                 {
                     BiscNavigationParameters navigationParameters=new BiscNavigationParameters();
                     navigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey,device);
-                    _treeManagementService.AddTreeItem(navigationParameters,DeviceKeys.DeviceAddingViewKey,null);
+                    _treeManagementService.AddTreeItem(navigationParameters,DeviceKeys.DeviceTreeItemViewKey,null);
                 }
             }
         }

@@ -18,7 +18,7 @@ namespace BISC.Modules.Connection.Presentation.Module
         public ConnectionPresentationInitialization(IUserInterfaceComposingService userInterfaceComposingService, ICommandFactory commandFactory, IInjectionContainer injectionContainer)
         {
             _injectionContainer = injectionContainer;
-            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreateDelegateCommand(OnPingsPanelAdding, null), "Управление PING");
+            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(OnPingsPanelAdding, null), "Управление PING");
         }
 
         private void OnPingsPanelAdding()

@@ -43,7 +43,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             IDevice device= navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
-            
+            DeviceName = device.Name;
             base.OnNavigatedTo(navigationContext);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
+using BISC.Presentation.Infrastructure.Services;
 using Microsoft.Practices.ServiceLocation;
 using Prism.Regions;
 
@@ -33,6 +34,13 @@ namespace BISC.Presentation.BaseItems.Behaviors
             RegionManager.SetRegionName(d,e.NewValue as string);
             RegionManager.SetRegionManager(d,regionManager);
             (d as FrameworkElement).Unloaded += DynamicRegionBehavior_Unloaded;
+            OnRegionInitialized(e.NewValue as string);
+        }
+
+        private static void OnRegionInitialized(string regionId)
+        {
+            var navigationService = ServiceLocator.Current.GetInstance<INavigationService>();
+            navigationService.TryNavigateToWaitingRegion(regionId);
         }
 
         private static void DynamicRegionBehavior_Unloaded(object sender, RoutedEventArgs e)

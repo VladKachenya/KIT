@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using BISC.Modules.Device.Presentation.Interfaces;
+using BISC.Modules.Device.Presentation.ViewModels;
 
 namespace BISC.Modules.Device.Presentation.Views
 {
@@ -24,7 +25,7 @@ namespace BISC.Modules.Device.Presentation.Views
 
 
 
-        public DeviceAddingView(IDeviceAddingViewModel deviceAddingViewModel)
+        public DeviceAddingView(DeviceAddingViewModel deviceAddingViewModel)
         {
             InitializeComponent();
             DataContext = deviceAddingViewModel;

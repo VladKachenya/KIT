@@ -28,7 +28,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels.Ping
             _connections = connections;
             _deviceConnectionFactory = deviceConnactionFactory;
             _commandFactory = commandFactory;
-            TestCommand = _commandFactory.CreateDelegateCommand(OnTestCommand);
+            TestCommand = _commandFactory.CreatePresentationCommand(OnTestCommand);
         }
 
         private void OnTestCommand()

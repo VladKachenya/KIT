@@ -63,7 +63,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\PesentationCommand.cs" />
+    <Compile Include="Commands\PresentationCommand.cs" />
+    <Compile Include="Commands\TrackableCommand.cs" />
     <Compile Include="Factories\CommandFactory.cs" />
     <Compile Include="Interfaces\Tab\ITabHost.cs" />
     <Compile Include="Interfaces\Tab\ITabViewModel.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Module\PresentationInitialization.cs" />
     <Compile Include="Services\TabManagementService.cs" />
     <Compile Include="Services\TreeManagementService.cs" />
+    <Compile Include="Services\UiCommandService.cs" />
     <Compile Include="ViewModels\DynamicRegionViewModel.cs" />
     <Compile Include="ViewModels\Tree\MainTreeViewModel.cs" />
     <Compile Include="ViewModels\Tree\TreeItemViewModel.cs" />
