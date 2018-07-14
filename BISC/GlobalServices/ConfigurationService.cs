@@ -40,7 +40,7 @@ namespace BISC.GlobalServices
             }
         }
 
-        public List<string> LastConnectedIpAddress
+        public List<string> LastIpAddresses
         {
             get
             {
