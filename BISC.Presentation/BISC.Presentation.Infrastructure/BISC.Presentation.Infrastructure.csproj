@@ -70,13 +70,8 @@
     <Compile Include="Services\ITreeManagementService.cs" />
     <Compile Include="Tab\IDraggableTab.cs" />
     <Compile Include="Tree\TreeCommands\ITreeCommand.cs" />
-    <Compile Include="ViewModel\IBiscActiveAware.cs" />
     <Compile Include="ViewModel\IEditableViewModel.cs" />
-    <Compile Include="ViewModel\IBiscNavigationAware.cs" />
     <Compile Include="ViewModel\ISelectableViewModel.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

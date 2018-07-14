@@ -12,7 +12,8 @@
     <TreeView>
         <TreeView.ItemTemplate>
             <HierarchicalDataTemplate DataType="{x:Type tree1:ITreeItemViewModel}" ItemsSource="{Binding ChildItemViewModels}">
-                <views:DynamicRegionView ></views:DynamicRegionView>
+                <TextBlock Text="test"></TextBlock>
+                <!--<views:DynamicRegionView ></views:DynamicRegionView>-->
             </HierarchicalDataTemplate>
         </TreeView.ItemTemplate>
     </TreeView>
