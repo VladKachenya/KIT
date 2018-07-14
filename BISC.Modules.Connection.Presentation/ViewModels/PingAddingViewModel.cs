@@ -1,6 +1,5 @@
-﻿using BISC.Modules.Connection.Infrastructure.DeviceConnection;
-using BISC.Modules.Connection.Infrastructure.Factorys;
-using BISC.Modules.Connection.Model.Model;
+﻿using BISC.Infrastructure.Global.Services;
+using BISC.Modules.Connection.Infrastructure.DeviceConnection;
 using BISC.Modules.Connection.Presentation.Interfaces.Ping;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
@@ -17,28 +16,29 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
     public class PingAddingViewModel : DisposableViewModelBase, IPingAddingViewModel
     {
 
-        private IDeviceConnectionFactory _deviceConnectionFactory;
         private ICommandFactory _commandFactory;
-        private IConnectionsModel _connectionsModel;
+        private IConfigurationService _configurationService;
 
-        public PingAddingViewModel(IConnectionsModel connectionsModel, IDeviceConnectionFactory deviceConnactionFactory, ICommandFactory commandFactory )
+        public PingAddingViewModel( ICommandFactory commandFactory, IConfigurationService configurationService )
         {
-            _connectionsModel = connectionsModel;
-            _deviceConnectionFactory = deviceConnactionFactory;
+            _configurationService = configurationService;
+            LastConnections = new ObservableCollection<string>(_configurationService.LastIpAddresses);
             _commandFactory = commandFactory;
-            TestCommand = _commandFactory.CreateDelegateCommand(OnTestCommand);
+            AddIpCommand = _commandFactory.CreateDelegateCommand(OnTestCommand);
         }
 
         private void OnTestCommand()
         {
-            CurentConnections.Add(_deviceConnectionFactory.GetDeviceConnection());
+           
         }
 
 
         #region Implementation of IPingAddingViewModel
-        public ICommand TestCommand { get; }
+        public ICommand AddIpCommand { get; }
 
-        public ObservableCollection<IDeviceConnection> CurentConnections { get; }
+        public ICommand PingCommand { get; }
+
+        public ObservableCollection<string> LastConnections { get; }
         #endregion
     }
 }
