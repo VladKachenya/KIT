@@ -11,8 +11,13 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.Ping
 {
     public interface IPingAddingViewModel
     {
-        IIpAddress IpAddress { get; }
-        ICommand TestCommand { get; }
-        ObservableCollection<IDeviceConnection> CurentConnections { get; }
+
+
+        ICommand AddIpCommand { get; }
+
+        ICommand PingCommand { get; }     
+        ObservableCollection<string> LastConnections  { get; }
+
+
     }
 }
