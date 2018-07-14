@@ -36,7 +36,9 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             LastConnections = _pingItemsViewModelFactory.GetPingViewModelCollection(_configurationService.LastIpAddresses, (x) => SelectedIP = x);
             _commandFactory = commandFactory;
             PingCommand = _commandFactory.CreatePresentationCommand(OnPingCommand);
-            ClearSelectedIPCommand = _commandFactory.CreatePresentationCommand(OnPingCommand);
+            ClearSelectedIPCommand = _commandFactory.CreatePresentationCommand(OnClearSelectedIPCommand);
+
+            OnClearSelectedIPCommand();
         }
         #endregion
 
