@@ -20,8 +20,8 @@ namespace BISC.Presentation.Commands
         
         #region Implementation of IPesentationCommand
 
-        public Action<T> ExecuteAction { get; }
-        public Func<T, bool> CanExecuteAction { get;  }
+        public Action<T> ExecuteAction => _delegateCommand.Execute;
+        public Func<T, bool> CanExecuteAction => _delegateCommand.CanExecute;
 
 
         public void RaiseCanExecute()
@@ -59,8 +59,8 @@ namespace BISC.Presentation.Commands
 
         #region Implementation of IPesentationCommand
 
-        public Action ExecuteAction { get; }
-        public Func<bool> CanExecuteAction { get;}
+        public Action ExecuteAction => _delegateCommand.Execute;
+        public Func<bool> CanExecuteAction => _delegateCommand.CanExecute;
 
 
         public void RaiseCanExecute()
@@ -74,12 +74,13 @@ namespace BISC.Presentation.Commands
 
         public bool CanExecute(object parameter)
         {
+            if (CanExecuteAction == null) return true;
             return CanExecuteAction.Invoke();
         }
 
         public void Execute(object parameter)
         {
-            ExecuteAction.Invoke();
+            ExecuteAction?.Invoke();
         }
 
         public event EventHandler CanExecuteChanged;
