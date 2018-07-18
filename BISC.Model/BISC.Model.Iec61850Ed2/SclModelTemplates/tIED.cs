@@ -10,7 +10,6 @@ using BISC.Model.Iec61850Ed2.SclModelTemplates.Controls;
 using BISC.Model.Iec61850Ed2.SclModelTemplates.DataSet;
 using BISC.Model.Iec61850Ed2.SclModelTemplates.Services;
 using BISC.Model.Iec61850Ed2.TreeHelpers;
-using Microsoft.Practices.ObjectBuilder2;
 
 namespace BISC.Model.Iec61850Ed2.SclModelTemplates
 {
@@ -92,13 +91,14 @@ namespace BISC.Model.Iec61850Ed2.SclModelTemplates
             List < string > dataSetList=new List<string>();
             foreach (var ap in AccessPoint)
             {
-                ap.Server.LDevice.ForEach((device =>
+                foreach (var device in ap.Server.LDevice)
                 {
                     device.LN0.DataSet.ForEach((set =>
                     {
                         dataSetList.Add(set.name);
-                    } ));
-                }));
+                    }));
+                }
+              
             }
             return dataSetList;
         }
