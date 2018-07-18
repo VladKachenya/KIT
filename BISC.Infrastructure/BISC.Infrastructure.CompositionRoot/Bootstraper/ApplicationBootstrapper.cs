@@ -12,6 +12,7 @@ using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
 using Prism.Unity;
 
+
 namespace BISC.Infrastructure.CompositionRoot.Bootstraper
 {
     public class ApplicationBootstrapper : UnityBootstrapper
@@ -36,6 +37,7 @@ namespace BISC.Infrastructure.CompositionRoot.Bootstraper
 
         private void RegisterModules()
         {
+            
             Container.RegisterType(typeof(IAppModule), typeof(GlobalModelModule),nameof(GlobalModelModule));
             Container.RegisterType(typeof(IAppModule), typeof(PresentationBaseItemsModule),nameof(PresentationBaseItemsModule));
             Container.RegisterType(typeof(IAppModule), typeof(GlobalPresentationModule),nameof(GlobalPresentationModule));

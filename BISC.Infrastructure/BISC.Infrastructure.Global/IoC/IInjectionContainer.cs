@@ -14,7 +14,7 @@ namespace BISC.Infrastructure.Global.IoC
         void RegisterType<T>(bool isSingleton = false);
 
         void RegisterType<TFrom, TTo>(string key, bool isSingleton=false) where TTo : TFrom;
-        void RegisterTypeForNavigation<T>(string key);
+
 
     }
 }

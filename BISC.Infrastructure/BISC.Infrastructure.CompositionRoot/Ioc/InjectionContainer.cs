@@ -79,9 +79,5 @@ namespace BISC.Infrastructure.CompositionRoot.Ioc
             }
         }
 
-        public void RegisterTypeForNavigation<T>(string key)
-        {
-            _container.RegisterTypeForNavigation<T>(key);
-        }
     }
 }

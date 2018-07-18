@@ -30,20 +30,26 @@ namespace BISC.Model.Global.Services
             var path = "TempProject";
             if (String.IsNullOrEmpty(_configurationService.LastProjectPath))
             {
-              var stream=  File.Create(path);
-                stream.Close();
                 _currentProjectPath = path;
-                SaveCurrentProject();
                 _configurationService.LastProjectPath = path;
                 
             }
             else
             {
+                
                 path = _configurationService.LastProjectPath;
             }
 
             _currentProjectPath = path;
-           var project= _modelElementsRegistryService.GetModelElementSerializatorByKey(ModelKeys.BiscProjectKey)
+            FileInfo fileInfo = new FileInfo(_currentProjectPath);
+            if (!fileInfo.Exists)
+            {
+                var stream = File.Create(path);
+                stream.Close();
+                _currentProjectPath = path;
+                SaveCurrentProject();
+            }
+            var project= _modelElementsRegistryService.GetModelElementSerializatorByKey(ModelKeys.BiscProjectKey)
                 .DeserializeModelElement(XElement.Load(_currentProjectPath)) as IBiscProject;
             _biscProject.MainSclModel = project.MainSclModel;
         }
