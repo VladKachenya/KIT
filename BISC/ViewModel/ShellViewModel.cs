@@ -9,24 +9,51 @@ using System.Windows.Input;
 using BISC.Infrastructure.Global.Services;
 using BISC.Interfaces;
 using BISC.Presentation.BaseItems.Events;
+using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Keys;
+using BISC.Presentation.Infrastructure.Services;
 using Prism.Commands;
 using Prism.Events;
 
 namespace BISC.ViewModel
 {
-   public class ShellViewModel: IShellViewModel
+   public class ShellViewModel:ViewModelBase, IShellViewModel
     {
-        private readonly IUserNotificationService _userNotificationService;
+        private readonly IEventAggregator _eventAggregator;
+        private readonly INavigationService _navigationService;
+        private readonly IProjectService _projectService;
+        private bool _isLeftMenuEnabled;
+        private string _applicationTitle;
 
-        public ShellViewModel(IUserNotificationService userNotificationService,IEventAggregator eventAggregator)
+        public ShellViewModel(IEventAggregator eventAggregator,INavigationService navigationService,IProjectService projectService)
         {
-            _userNotificationService = userNotificationService;
-            GlobalCommands=new ObservableCollection<IGlobalCommand>();
-        
-            ShellLoadedCommand = new DelegateCommand((() => eventAggregator.GetEvent<ShellLoadedEvent>().Publish(new ShellLoadedEventArgs())));
+           
+               _eventAggregator = eventAggregator;
+            _navigationService = navigationService;
+            _projectService = projectService;
+            ShellLoadedCommand = new DelegateCommand(OnShellLoaded);
+        }
+
+        private void OnShellLoaded()
+        {
+            _eventAggregator.GetEvent<ShellLoadedEvent>().Publish(new ShellLoadedEventArgs());
+            ApplicationTitle = $"Bemn Intellectual Substation Control (Текущий проект: {_projectService.GetCurrentProjectPath(false)})";
 
         }
-        public ObservableCollection<IGlobalCommand> GlobalCommands { get; }
+
+
         public ICommand ShellLoadedCommand { get; }
+
+  
+
+        public string ApplicationTitle
+        {
+            get => _applicationTitle;
+            set
+            {
+               
+                SetProperty(ref _applicationTitle, value);
+            }
+        }
     }
 }

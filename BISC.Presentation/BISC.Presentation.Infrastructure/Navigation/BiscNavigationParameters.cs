@@ -42,9 +42,10 @@ namespace BISC.Presentation.Infrastructure.Navigation
             return default(T);
         }
 
-        public void AddParameterByName(string key, object parameter)
+        public BiscNavigationParameters AddParameterByName(string key, object parameter)
         {
             Add(new BiscNavigationParameter(key, parameter));
+            return this;
         }
     }
 

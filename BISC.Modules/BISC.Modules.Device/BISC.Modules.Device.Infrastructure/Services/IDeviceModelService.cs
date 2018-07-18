@@ -10,5 +10,6 @@ namespace BISC.Modules.Device.Infrastructure.Services
         List<IDevice> GetDevicesFromModel(ISclModel sclModel);
 
         OperationResult AddDeviceInModel(ISclModel sclModel,IDevice device);
+        OperationResult DeleteDeviceFromModel(ISclModel sclModel, IDevice device);
     }
 }

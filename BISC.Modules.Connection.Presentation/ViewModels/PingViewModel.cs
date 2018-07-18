@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace BISC.Modules.Connection.Presentation.ViewModels
 {
-    public class PingViewModel : DisposableViewModelBase, IPingViewModel
+    public class PingViewModel : ViewModelBase, IPingViewModel
     {
         #region private filds
         private ICommandFactory _commandFactory;

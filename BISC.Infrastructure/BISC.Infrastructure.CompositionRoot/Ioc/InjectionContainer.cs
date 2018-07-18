@@ -71,11 +71,11 @@ namespace BISC.Infrastructure.CompositionRoot.Ioc
         {
             if (isSingleton)
             {
-                _container.RegisterType<TFrom, TTo>(key);
+                _container.RegisterType<TFrom, TTo>(key,new ContainerControlledLifetimeManager());
             }
             else
             {
-                _container.RegisterType<TFrom, TTo>(key,new ContainerControlledLifetimeManager());
+                _container.RegisterType<TFrom, TTo>(key);
             }
         }
 

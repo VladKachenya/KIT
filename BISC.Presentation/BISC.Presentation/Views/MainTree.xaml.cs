@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls;
-using BISC.Presentation.Infrastructure.Tree;
 using BISC.Presentation.Interfaces.Tree;
 
 namespace BISC.Presentation.Views
@@ -13,6 +12,7 @@ namespace BISC.Presentation.Views
         {
             InitializeComponent();
             DataContext = mainTreeViewModel;
+
         }
     }
 }

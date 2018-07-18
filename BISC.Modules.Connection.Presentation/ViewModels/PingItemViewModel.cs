@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace BISC.Modules.Connection.Presentation.ViewModels
 {
-    public class PingItemViewModel : DisposableViewModelBase, IPingItemViewModel
+    public class PingItemViewModel : ViewModelBase, IPingItemViewModel
     {
         #region private filds
         private string _ip;

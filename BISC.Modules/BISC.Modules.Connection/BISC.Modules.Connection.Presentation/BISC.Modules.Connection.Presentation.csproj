@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{48F6571C-ED09-4ED9-B76A-AC78EF9E9890}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BISC.Modules.Connection.Presentation</RootNamespace>
+    <AssemblyName>BISC.Modules.Connection.Presentation</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Interfaces\Ping\IIpAddress.cs" />
+    <Compile Include="Interfaces\Ping\IPingAddingViewModel.cs" />
+    <Compile Include="Interfaces\Services\IPingAddingServise.cs" />
+    <Compile Include="Module\ConnectionPresentationInitialization.cs" />
+    <Compile Include="Module\ConnectionPresentationModule.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\PingAddingServise.cs" />
+    <Compile Include="ViewModels\Ping\IpAddress.cs" />
+    <Compile Include="ViewModels\Ping\PingAddingViewModel.cs" />
+    <Compile Include="View\Ping\PingAddingViev.xaml.cs">
+      <DependentUpon>PingAddingViev.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
+      <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
+      <Name>BISC.Infrastructure.Global</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BISC.Modules.Connection.Model\BISC.Modules.Connection.Model.csproj">
+      <Project>{91B85760-A120-4F20-9FBD-84DB863C460B}</Project>
+      <Name>BISC.Modules.Connection.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BISC.Modules\BISC.Modules.Connection\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
+      <Project>{84925CA6-959A-4094-9688-622DC28B7452}</Project>
+      <Name>BISC.Modules.Connection.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BISC.Presentation\BISC.Presentation.BaseItems\BISC.Presentation.BaseItems.csproj">
+      <Project>{02377dcb-bf54-4343-a7c2-15b9af8e5605}</Project>
+      <Name>BISC.Presentation.BaseItems</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BISC.Presentation\BISC.Presentation.Infrastructure\BISC.Presentation.Infrastructure.csproj">
+      <Project>{D4FEAC3B-C8F9-4DE7-8953-988C75F0F9AA}</Project>
+      <Name>BISC.Presentation.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="View\Ping\PingAddingViev.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

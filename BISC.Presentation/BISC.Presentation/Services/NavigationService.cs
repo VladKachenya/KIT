@@ -75,8 +75,8 @@ namespace BISC.Presentation.Services
         {
             if (_waitingRegionsdictionary.ContainsKey(regionId))
             {
-                _regionManager.RequestNavigate(regionId, new Uri(_waitingRegionsdictionary[regionId].Item1, UriKind.Relative),
-                    PopulateNavigationParameters(_waitingRegionsdictionary[regionId].Item2));
+                NavigateViewToRegion(_waitingRegionsdictionary[regionId].Item1, regionId,
+                    _waitingRegionsdictionary[regionId].Item2);
                 _waitingRegionsdictionary.Remove(regionId);
             }
         }

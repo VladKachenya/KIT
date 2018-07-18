@@ -11,6 +11,7 @@ namespace BISC.GlobalServices
 {
     public class ConfigurationService : IConfigurationService
     {
+       
 
         public ConfigurationService()
         {
@@ -56,6 +57,16 @@ namespace BISC.GlobalServices
                 var lastConnectedIpAddress = new StringCollection();
                 lastConnectedIpAddress.AddRange(value.ToArray());
                 Settings.Default.LastConnectedIpAddress = lastConnectedIpAddress;
+                Settings.Default.Save();
+            }
+        }
+
+        public string LastProjectPath
+        {
+            get { return Settings.Default.LastProjectPath; }
+            set
+            {
+                Settings.Default.LastProjectPath = value;
                 Settings.Default.Save();
             }
         }

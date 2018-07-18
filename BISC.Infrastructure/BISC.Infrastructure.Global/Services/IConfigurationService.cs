@@ -7,5 +7,6 @@ namespace BISC.Infrastructure.Global.Services
         List<string> LastOpenedFiles { get; set; }
 
         List<string> LastIpAddresses { get; set; }
+        string LastProjectPath { get; set; }
     }
 }

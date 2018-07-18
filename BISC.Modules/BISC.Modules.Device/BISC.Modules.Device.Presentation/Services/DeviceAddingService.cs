@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Services;
+using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
@@ -11,6 +12,7 @@ using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
+using BISC.Presentation.Infrastructure.UiFromModel;
 
 namespace BISC.Modules.Device.Presentation.Services
 {
@@ -49,11 +51,28 @@ namespace BISC.Modules.Device.Presentation.Services
                 }
                 else
                 {
-                    BiscNavigationParameters navigationParameters=new BiscNavigationParameters();
-                    navigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey,device);
-                    _treeManagementService.AddTreeItem(navigationParameters,DeviceKeys.DeviceTreeItemViewKey,null);
+                    AddDeviceToTree(device);
                 }
             }
+        }
+
+        private void AddDeviceToTree(IDevice device)
+        {
+            BiscNavigationParameters navigationParameters = new BiscNavigationParameters();
+            navigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, device);
+            _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null);
+        }
+
+        public void HandleModelElement(IModelElement modelElement)
+        {
+            var sclModel = modelElement as ISclModel;
+           sclModel?.ChildModelElements.ForEach(element =>
+           {
+               if (element.ElementName == DeviceKeys.DeviceModelKey)
+               {
+                   AddDeviceToTree(element as IDevice);
+               }
+           });
         }
     }
 }

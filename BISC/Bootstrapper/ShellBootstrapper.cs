@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using BISC.GlobalServices;
 using BISC.Infrastructure.CompositionRoot.Bootstraper;
+using BISC.Infrastructure.Global.Modularity;
 using BISC.Infrastructure.Global.Services;
 using BISC.Interfaces;
 using BISC.ViewModel;
@@ -31,7 +32,7 @@ namespace BISC.Bootstrapper
 
         protected override void ConfigureContainer()
         {
-            Container.RegisterType<IUserInterfaceComposingService,UserInterfaceComposingService>();
+            Container.RegisterType<IUserInterfaceComposingService,UserInterfaceComposingService>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IShellViewModel, ShellViewModel>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IGlobalCommand, GlobalCommand>();
             Container.RegisterType<IUserNotificationService, UserNotificationService>(new ContainerControlledLifetimeManager());

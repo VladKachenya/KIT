@@ -8,64 +8,143 @@
              xmlns:interfaces="clr-namespace:BISC.Presentation.Interfaces"
              xmlns:regions="http://prismlibrary.com/"
              xmlns:keys="clr-namespace:BISC.Presentation.Infrastructure.Keys;assembly=BISC.Presentation.Infrastructure"
+             xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
+             xmlns:tab="clr-namespace:BISC.Presentation.ViewModels.Tab"
+             xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+             xmlns:converters="clr-namespace:BISC.Presentation.Converters"
+             xmlns:docking="clr-namespace:BISC.Presentation.Docking"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance tab:TabHostViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <!-- primary color -->
-                <ResourceDictionary>
-                    <!-- include your primary palette -->
-                    <ResourceDictionary.MergedDictionaries>
-                        <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.Indigo.xaml" />
-                    </ResourceDictionary.MergedDictionaries>
-                    <!--
-                            include three hues from the primary palette (and the associated forecolours).
-                            Do not rename, keep in sequence; light to dark.
-                        -->
-                    <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="{StaticResource Primary100}"/>
-                    <SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="{StaticResource Primary100Foreground}"/>
-                    <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="{StaticResource Primary500}"/>
-                    <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="{StaticResource Primary500Foreground}"/>
-                    <SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="{StaticResource Primary700}"/>
-                    <SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="{StaticResource Primary700Foreground}"/>
-                </ResourceDictionary>
-
-                <!-- secondary colour -->
-                <ResourceDictionary>
-                    <!-- include your secondary pallette -->
-                    <ResourceDictionary.MergedDictionaries>
-                        <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.Yellow.xaml" />
-                    </ResourceDictionary.MergedDictionaries>
-
-                    <!-- include a single secondary accent color (and the associated forecolour) -->
-                    <SolidColorBrush x:Key="SecondaryAccentBrush" Color="{StaticResource Accent200}"/>
-                    <SolidColorBrush x:Key="SecondaryAccentForegroundBrush" Color="{StaticResource Accent200Foreground}"/>
-                </ResourceDictionary>
-
-                <!-- Include the Dragablz Material Design style -->
-                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml"/>
-
-            </ResourceDictionary.MergedDictionaries>
-
-            <!-- tell Dragablz tab control to use the Material Design theme -->
-            <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
-        </ResourceDictionary>
-
+        <converters:ActiveDocumentConverter x:Key="ActiveDocumentConverter"></converters:ActiveDocumentConverter>
     </UserControl.Resources>
-    <dockablz:Layout>
+    <xcad:DockingManager
+            x:Name="DockingManager"
+            Grid.Row="1"
+            Grid.Column="0"
+            VerticalAlignment="Stretch"
+            ActiveContent="{Binding ActiveTabViewModel, Converter={StaticResource ActiveDocumentConverter}, Mode=TwoWay}"
+            AllowMixedOrientation="True"
+            AnchorableHeaderTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
+            AnchorableTitleTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
+            AnchorablesSource="{Binding AnchorableWindows}"
+        DocumentHeaderTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
+            DocumentTitleTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
+            DocumentsSource="{Binding TabViewModels}">
+        <xcad:DockingManager.DocumentPaneMenuItemHeaderTemplate>
+            <DataTemplate>
+                <Grid>
+                    <TextBlock
+                        Margin="0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Content.TabHeader}" />
+                </Grid>
+            </DataTemplate>
+        </xcad:DockingManager.DocumentPaneMenuItemHeaderTemplate>
+        <xcad:DockingManager.Resources>
+            <DataTemplate x:Key="DockingWindowTitleDataTemplate" DataType="xcad:LayoutContent">
+                <Grid>
+                    <TextBlock
+                            Margin="0"
+                            VerticalAlignment="Center"
+                            Text="{Binding Content.TabHeader}" />
+                </Grid>
+            </DataTemplate>
 
-        <dragablz:TabablzControl ItemsSource="{Binding TabViewModels}" BorderThickness="0"  
-                                 Margin="0,-1,0,1">
-            <dragablz:TabablzControl.ItemTemplate>
-                <DataTemplate>
-                    <ContentControl HorizontalAlignment="Stretch" regions:RegionManager.RegionName="{Binding TabRegionName}" />
-                </DataTemplate>
-            </dragablz:TabablzControl.ItemTemplate>
-            <dragablz:TabablzControl.InterTabController>
-                <dragablz:InterTabController  />
-            </dragablz:TabablzControl.InterTabController>
-         
-        </dragablz:TabablzControl>
-    </dockablz:Layout>
+
+            <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor1" 
+                                 Color="White"/>
+
+            <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor2" 
+                                 Color="Black"/>
+
+            <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor3" 
+                                 Color="{DynamicResource Primary400}"/>
+
+            <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor4" 
+                                 Color="{DynamicResource Primary500}"/>
+
+            <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor5" 
+                                 Color="#333333"/>
+
+            <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor6" 
+                                 Color="#8C8E94"/>
+
+            <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor7" 
+                                 Color="#EEEEEE"/>
+
+
+        </xcad:DockingManager.Resources>
+
+        <xcad:DockingManager.Theme>
+            <xcad:MetroTheme  />
+        </xcad:DockingManager.Theme>
+
+        <xcad:DockingManager.LayoutUpdateStrategy>
+            <docking:LayoutInitializer />
+        </xcad:DockingManager.LayoutUpdateStrategy>
+
+        <xcad:DockingManager.LayoutItemTemplateSelector>
+            <docking:DockingManagerTemplateSelector>
+                <docking:DockingManagerTemplateSelector.TabTemplate>
+                    <DataTemplate DataType="interfaces:ITabViewModel">
+                        <ContentControl behaviors:DynamicRegionBehavior.RegionKey="{Binding TabRegionName}">
+                        </ContentControl>
+                    </DataTemplate>
+                </docking:DockingManagerTemplateSelector.TabTemplate>
+
+            </docking:DockingManagerTemplateSelector>
+
+        </xcad:DockingManager.LayoutItemTemplateSelector>
+
+
+        <xcad:DockingManager.LayoutItemContainerStyleSelector>
+            <docking:PanesStyleSelector>
+                <docking:PanesStyleSelector.BottomWindowStyle>
+                    <Style TargetType="{x:Type xcad:LayoutAnchorableItem}">
+                        <Setter Property="Visibility" Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}" />
+                        <Setter Property="CanClose" Value="False" />
+                        <Setter Property="CanHide" Value="False" />
+                    </Style>
+                </docking:PanesStyleSelector.BottomWindowStyle>
+                <docking:PanesStyleSelector.LeftWindowStyle>
+                    <Style TargetType="{x:Type xcad:LayoutAnchorableItem}">
+                        <Setter Property="Visibility" Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}" />
+                        <Setter Property="CanClose" Value="False" />
+                        <Setter Property="CanHide" Value="False" />
+                    </Style>
+                </docking:PanesStyleSelector.LeftWindowStyle>
+                <docking:PanesStyleSelector.ProjectPaneStyle>
+                    <Style TargetType="{x:Type xcad:LayoutAnchorableItem}" />
+                </docking:PanesStyleSelector.ProjectPaneStyle>
+                <docking:PanesStyleSelector.FragmentsPaneStyle>
+                    <Style TargetType="{x:Type xcad:LayoutItem}">
+                        <Setter Property="Title">
+                            <Setter.Value>
+                                <Binding Path="Model.FragmentTitle" />
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="CloseCommand" Value="{Binding Model.CloseFragmentCommand}" />
+                    </Style>
+                </docking:PanesStyleSelector.FragmentsPaneStyle>
+            </docking:PanesStyleSelector>
+        </xcad:DockingManager.LayoutItemContainerStyleSelector>
+
+        <xcad:LayoutRoot>
+            <xcad:LayoutPanel Orientation="Vertical">
+                <xcad:LayoutPanel DockHeight="2*" Orientation="Horizontal">
+                    <xcad:LayoutAnchorablePane Name="LeftAnchorablePane" DockWidth="250" />
+                    <xcad:LayoutDocumentPane DockWidth="*" />
+                </xcad:LayoutPanel>
+
+                <xcad:LayoutAnchorablePane
+                        Name="BottomAnchorablePane"
+                        DockHeight="200"
+                        DockWidth="*" />
+            </xcad:LayoutPanel>
+
+        </xcad:LayoutRoot>
+    </xcad:DockingManager>
 </UserControl>
+

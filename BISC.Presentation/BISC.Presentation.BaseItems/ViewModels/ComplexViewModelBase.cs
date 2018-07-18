@@ -7,7 +7,7 @@ using BISC.Presentation.Infrastructure.ViewModel;
 
 namespace BISC.Presentation.BaseItems.ViewModels
 {
-    public class ComplexViewModelBase:DisposableViewModelBase,IEditableViewModel,ISelectableViewModel
+    public class ComplexViewModelBase:ViewModelBase,IEditableViewModel,ISelectableViewModel
     {
         private bool _isEditable;
         private bool _isSelected;

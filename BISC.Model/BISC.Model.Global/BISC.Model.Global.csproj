@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Project\BiscProject.cs" />
+    <Compile Include="Serializators\BiscProjectSerializer.cs" />
     <Compile Include="Serializators\DefaultModelElementSerializer.cs" />
     <Compile Include="Model\DefaultModelElement.cs" />
     <Compile Include="Model\SclModel.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="Services\ModelComposingService.cs" />
     <Compile Include="Services\ModelElementsRegistryService.cs" />
     <Compile Include="Services\ModelTypesResolvingService.cs" />
+    <Compile Include="Services\ProjectService.cs" />
     <Compile Include="StaticSerializingDirectives.cs" />
   </ItemGroup>
   <ItemGroup>

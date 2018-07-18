@@ -5,6 +5,7 @@ namespace BISC.Modules.Device.Presentation.Interfaces
 {
     public interface IDeviceTreeItemViewModel
     {
+        ICommand DeleteDeviceCommand { get; }
         ICommand NavigateToDetailsCommand { get;  }
     }
 }

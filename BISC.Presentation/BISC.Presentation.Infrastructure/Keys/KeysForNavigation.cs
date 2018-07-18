@@ -7,6 +7,8 @@
             public static string MainTreeRegionKey = "TreeRegion";
             public static string MainTabHostRegionKey = "TabHostRegion";
             public static string GlobalDialogRegionKey = "GlobalDialogRegion";
+            public static string HamburgerMenuKey = "HamburgerMenuRegion";
+            public static string ToolBarMenuKey = "ToolBarMenuRegion";
 
         }
 
@@ -14,7 +16,8 @@
         {
             public static string MainTreeViewName = "MainTree";
             public static string MainTabHostViewName = "TabHost";
-
+            public static string HamburgerMenuViewName = "HamburgerMenu";
+            public static string ToolBarMenuViewName = "ToolBarMenu";
         }
 
     }

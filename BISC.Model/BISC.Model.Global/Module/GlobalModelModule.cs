@@ -36,11 +36,16 @@ namespace BISC.Model.Global.Module
             _injectionContainer.RegisterType<IModelComposingService, ModelComposingService>(true);
             _injectionContainer.RegisterType<IBiscProject, BiscProject>(true);
             _injectionContainer.RegisterType<ISclModel, SclModel>();
+            _injectionContainer.RegisterType<BiscProjectSerializer>();
+            _injectionContainer.RegisterType<IProjectService, ProjectService>(true);
 
             _injectionContainer.RegisterType<SclModelElementSerializer>();
             _injectionContainer.ResolveType<IModelElementsRegistryService>()
                 .RegisterModelElement(_injectionContainer.ResolveType<SclModelElementSerializer>(),
                     ModelKeys.SclModelKey);
+            _injectionContainer.ResolveType<IModelElementsRegistryService>()
+                .RegisterModelElement(_injectionContainer.ResolveType<BiscProjectSerializer>(),
+                    ModelKeys.BiscProjectKey);
         }
 
         #endregion

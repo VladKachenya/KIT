@@ -13,7 +13,7 @@ using Prism;
 
 namespace BISC.Presentation.BaseItems.ViewModels
 {
-    public abstract class NavigationViewModelBase : ComplexViewModelBase,INavigationAware,IActiveAware
+    public abstract class NavigationViewModelBase : ComplexViewModelBase, INavigationAware,IActiveAware
     {
         private bool _isActive;
 

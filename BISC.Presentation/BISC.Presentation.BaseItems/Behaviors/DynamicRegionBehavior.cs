@@ -50,6 +50,7 @@ namespace BISC.Presentation.BaseItems.Behaviors
             var regionName = RegionManager.GetRegionName(sender as FrameworkElement);
             if (regionManager.Regions.ContainsRegionWithName(regionName))
             {
+                
                 regionManager.Regions.Remove(regionName);
             }
             

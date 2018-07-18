@@ -3,10 +3,28 @@
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
 
     <DataTemplate x:Key="CloseIcon">
-        <materialDesign:PackIcon Kind="Close" />
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Close" />
     </DataTemplate>
     <DataTemplate x:Key="RightArrowIcon">
-        <materialDesign:PackIcon Kind="ArrowRightBold" />
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ArrowRightBold" />
     </DataTemplate>
+    <DataTemplate x:Key="SaveIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ContentSave" />
+    </DataTemplate>
+    <DataTemplate x:Key="OpenIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="FolderOpen" />
+    </DataTemplate>
+    <DataTemplate x:Key="ChevronDoubleDownIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ChevronDoubleDown" />
+    </DataTemplate>
+    <DataTemplate x:Key="ServerPlusIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ServerPlus" />
+    </DataTemplate>
+
+    <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
+        <!--<Style.Resources >
+            <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#44111121" />
+        </Style.Resources>-->
+    </Style>
 
 </ResourceDictionary>

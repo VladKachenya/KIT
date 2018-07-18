@@ -4,6 +4,6 @@ namespace BISC.Interfaces
 {
     public interface IShellViewModel
     {
-       ObservableCollection<IGlobalCommand> GlobalCommands { get; }
+        string ApplicationTitle { get; set; }
     }
 }

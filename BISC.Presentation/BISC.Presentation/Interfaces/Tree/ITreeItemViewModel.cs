@@ -9,4 +9,5 @@ namespace BISC.Presentation.Interfaces.Tree
         ObservableCollection<ITreeItemViewModel> ChildItemViewModels { get; }
         Guid DynamicRegionId { get; set; }
     }
+
 }

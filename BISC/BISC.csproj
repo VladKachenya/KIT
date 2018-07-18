@@ -107,7 +107,6 @@
     </ApplicationDefinition>
     <Compile Include="GlobalServices\ConfigurationService.cs" />
     <Compile Include="GlobalServices\UserInterfaceComposingService.cs" />
-    <Compile Include="Interfaces\IGlobalCommand.cs" />
     <Compile Include="Interfaces\IShellViewModel.cs" />
     <Compile Include="ViewModel\GlobalCommand.cs" />
     <Compile Include="ViewModel\ShellViewModel.cs" />

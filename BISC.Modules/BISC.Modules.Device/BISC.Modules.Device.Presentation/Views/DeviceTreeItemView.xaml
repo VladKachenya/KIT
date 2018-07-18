@@ -4,9 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BISC.Modules.Device.Presentation"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" >
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="MouseDoubleClick" >
+            <i:InvokeCommandAction Command="{Binding NavigateToDetailsCommand}" ></i:InvokeCommandAction>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid>
-            <TextBlock Text="{Binding DeviceName}" Margin="5"></TextBlock>
+
+
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Удалить" Command="{Binding DeleteDeviceCommand}"></MenuItem>
+            </ContextMenu>
+        </Grid.ContextMenu>
+        <TextBlock Text="{Binding DeviceName}" Margin="5"></TextBlock>
     </Grid>
 </UserControl>

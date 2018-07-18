@@ -7,12 +7,13 @@
              xmlns:views="clr-namespace:BISC.Presentation.Views"
              xmlns:tree="clr-namespace:BISC.Presentation.ViewModels.Tree"
              xmlns:tree1="clr-namespace:BISC.Presentation.Interfaces.Tree"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <TreeView ItemsSource="{Binding ChildItemViewModels}">
+    <TreeView x:Name="TreeView" ItemsSource="{Binding ChildItemViewModels}">
         <TreeView.ItemTemplate>
-            <HierarchicalDataTemplate DataType="{x:Type tree1:ITreeItemViewModel}" ItemsSource="{Binding ChildItemViewModels}">
-                <views:DynamicRegionView ></views:DynamicRegionView>
+            <HierarchicalDataTemplate>
+                <views:DynamicRegionView></views:DynamicRegionView>
             </HierarchicalDataTemplate>
         </TreeView.ItemTemplate>
     </TreeView>

@@ -29,19 +29,40 @@ namespace BISC.Modules.Device.Model.Services
 
         public OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device)
         {
+            if (GetIsDeviceExists(sclModel, device))
+            {
+                return new OperationResult($"Устройство с именем {device.Name} уже существует в модели");
+            }
+            sclModel.ChildModelElements.Add(device);
+            return OperationResult.SucceedResult;
+
+        }
+
+        private bool GetIsDeviceExists(ISclModel sclModel, IDevice device)
+        {
+            var isExists = false;
             foreach (var modelChildModelElement in sclModel.ChildModelElements)
             {
                 if (modelChildModelElement.ElementName == DeviceKeys.DeviceModelKey)
                 {
                     if ((modelChildModelElement as IDevice).Name == device.Name)
                     {
-                        return new OperationResult($"Устройство с именем {device.Name} уже существует в модели");
+                        isExists = true;
                     }
                 }
             }
-            sclModel.ChildModelElements.Add(device);
+
+            return isExists;
+        }
+        public OperationResult DeleteDeviceFromModel(ISclModel sclModel, IDevice device)
+        {
+            if (!GetIsDeviceExists(sclModel, device))
+            {
+                return new OperationResult($"Устройство с именем {device.Name} не существует в модели");
+            };
+            sclModel.ChildModelElements.Remove(device);
             return OperationResult.SucceedResult;
-            
+
         }
     }
 }

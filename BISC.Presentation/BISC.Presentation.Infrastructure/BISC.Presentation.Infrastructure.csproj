@@ -59,6 +59,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangeTracker\IChangeTracker.cs" />
+    <Compile Include="ChangeTracker\IObjectWithChangeTracker.cs" />
     <Compile Include="Commands\IPresentationCommand.cs" />
     <Compile Include="Commands\ITrackableCommand.cs" />
     <Compile Include="Factories\ICommandFactory.cs" />
@@ -70,10 +72,18 @@
     <Compile Include="Services\ITabManagementService.cs" />
     <Compile Include="Services\ITreeManagementService.cs" />
     <Compile Include="Services\IUiCommandService.cs" />
+    <Compile Include="UiFromModel\IUiFromModelElementRegistryService.cs" />
+    <Compile Include="UiFromModel\IUiFromModelElementService.cs" />
     <Compile Include="Tab\IDraggableTab.cs" />
     <Compile Include="Tree\TreeCommands\ITreeCommand.cs" />
     <Compile Include="ViewModel\IEditableViewModel.cs" />
     <Compile Include="ViewModel\ISelectableViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
+      <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
+      <Name>BISC.Model.Infrastructure</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

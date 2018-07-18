@@ -17,6 +17,7 @@ namespace BISC.Presentation.ViewModels.Tree
             ChildItemViewModels=new ObservableCollection<ITreeItemViewModel>();
         }
         private Guid _dynamicRegionId;
+        private string _viewName;
 
         public ObservableCollection<ITreeItemViewModel> ChildItemViewModels { get; }
 
@@ -29,5 +30,7 @@ namespace BISC.Presentation.ViewModels.Tree
                 OnPropertyChanged();
             }
         }
+
+    
     }
 }

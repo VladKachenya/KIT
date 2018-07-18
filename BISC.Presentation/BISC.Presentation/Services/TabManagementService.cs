@@ -3,22 +3,63 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Presentation.Docking;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
+using BISC.Presentation.Interfaces;
+using BISC.Presentation.ViewModels.Tab;
 
 namespace BISC.Presentation.Services
 {
     public class TabManagementService: ITabManagementService
     {
-        
-        public void NavigateToTab(string viewName, BiscNavigationParameters navigationParameters, object owner)
+        private readonly ITabHostViewModel _tabHostViewModel;
+        private readonly INavigationService _navigationService;
+        private readonly Func<ITabViewModel> _tabViewModelFactory;
+        private readonly Dictionary<TreeItemIdentifier,ITabViewModel> _tabViewModelsDictionary=new Dictionary<TreeItemIdentifier, ITabViewModel>();
+        public TabManagementService(ITabHostViewModel tabHostViewModel,INavigationService navigationService,Func<ITabViewModel> tabViewModelFactory)
         {
-            throw new NotImplementedException();
+            _tabHostViewModel = tabHostViewModel;
+            _navigationService = navigationService;
+            _tabViewModelFactory = tabViewModelFactory;
+        }
+        public void NavigateToTab(string viewName, BiscNavigationParameters navigationParameters, string header, TreeItemIdentifier owner)
+        {
+            var newTab = _tabViewModelFactory.Invoke();
+            Guid newTabId = Guid.NewGuid();
+            newTab.TabHeader = header;
+            newTab.TabRegionName = newTabId.ToString();
+            if (_tabViewModelsDictionary.ContainsKey(owner))
+            {
+               return;
+            }
+            else
+            {
+                _tabViewModelsDictionary.Add(owner,newTab);
+            }
+
+            navigationParameters.AddParameterByName(TreeItemIdentifier.Key, owner);
+
+            _tabHostViewModel.TabViewModels.Insert(0,newTab);
+            _navigationService.NavigateViewToRegion(viewName,newTabId.ToString(),navigationParameters);
         }
 
-        public void CloseTabs(object owner)
+        public void CloseTab(TreeItemIdentifier owner)
         {
-            throw new NotImplementedException();
+            if (_tabViewModelsDictionary.ContainsKey(owner))
+            {
+                _tabHostViewModel.TabViewModels.Remove(_tabViewModelsDictionary[owner]);
+                _tabViewModelsDictionary.Remove(owner);
+            }
+        }
+        public void CloseTab(string regioId)
+        {
+            var tabVm = _tabViewModelsDictionary.FirstOrDefault((pair => pair.Value.TabRegionName.ToString() == regioId));
+            if (tabVm.Value!=null)
+            {
+                _tabHostViewModel.TabViewModels.Remove(tabVm.Value);
+                _tabViewModelsDictionary.Remove(tabVm.Key);
+            }
         }
     }
 }

@@ -12,6 +12,7 @@
         xmlns:interactivity="http://prismlibrary.com/"
         xmlns:attachedCommandBehavior="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
         xmlns:keys="clr-namespace:BISC.Presentation.Infrastructure.Keys;assembly=BISC.Presentation.Infrastructure"
+        xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -19,7 +20,7 @@
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
-        Title="Bemn Intellectual Substation Control" Height="500" Width="800"
+        Title="{Binding ApplicationTitle}" Height="500" Width="800"
         attachedCommandBehavior:CommandBehavior.Command="{Binding ShellLoadedCommand}"
         attachedCommandBehavior:CommandBehavior.Event="Loaded">
     <materialDesign:DialogHost Identifier="{x:Static constants:Constants.RootDialogKey}" SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
@@ -31,18 +32,7 @@
                                   HorizontalAlignment="Right" Margin="16"
                                   IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
                     <Grid>
-                        <ListBox  ItemsSource="{Binding GlobalCommands}" DisplayMemberPath="CommandName">
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                                    <Setter
-                                        Property="attachedCommandBehavior:CommandBehavior.Event" 
-                                        Value="PreviewMouseLeftButtonDown"/>
-                                    <Setter
-                                        Property="attachedCommandBehavior:CommandBehavior.Command"
-                                        Value="{Binding DataContext.Command,RelativeSource={RelativeSource Self}}"/>
-                                </Style>
-                            </ListBox.ItemContainerStyle>
-                        </ListBox>
+                        <ContentControl HorizontalAlignment="Stretch" behaviors:DynamicRegionBehavior.RegionKey="{x:Static keys:KeysForNavigation+RegionNames.HamburgerMenuKey}" />
                     </Grid>
                 </DockPanel>
             </materialDesign:DrawerHost.LeftDrawerContent>
@@ -50,9 +40,12 @@
                 <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2"
                                           Mode="PrimaryMid" DockPanel.Dock="Top">
                     <DockPanel>
-                        <ToggleButton DockPanel.Dock="Left" Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="False"
+                        <ToggleButton DockPanel.Dock="Left" Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="{Binding IsLeftMenuEnabled}"
                                       x:Name="MenuToggleButton"/>
-                        <Grid></Grid>
+                        <Grid DockPanel.Dock="Right" HorizontalAlignment="Stretch">
+                            <ContentControl HorizontalAlignment="Stretch"  interactivity:RegionManager.RegionName="{x:Static keys:KeysForNavigation+RegionNames.ToolBarMenuKey}" />
+
+                        </Grid>
                     </DockPanel>
                 </materialDesign:ColorZone>
                 <Grid>
