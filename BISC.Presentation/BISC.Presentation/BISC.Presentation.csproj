@@ -177,12 +177,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Libs\Xceed.Wpf.AvalonDock.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <EmbeddedResource Include="Libs\Xceed.Wpf.AvalonDock.Themes.Metro.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <Resource Include="Libs\Xceed.Wpf.AvalonDock.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Libs\Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
