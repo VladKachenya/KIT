@@ -15,11 +15,18 @@
     <Grid>
 
 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Удалить" Command="{Binding DeleteDeviceCommand}"></MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
         <TextBlock Text="{Binding DeviceName}" Margin="5"></TextBlock>
+        <Button Grid.Column="1" Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToDetailsCommand}">
+            <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}"></ContentControl>
+        </Button>
     </Grid>
 </UserControl>

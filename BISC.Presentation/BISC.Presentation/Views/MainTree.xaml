@@ -10,10 +10,27 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <TreeView x:Name="TreeView" ItemsSource="{Binding ChildItemViewModels}">
+    <TreeView x:Name="TreeView" HorizontalAlignment="Stretch" ItemsSource="{Binding ChildItemViewModels}">
+        <TreeView.Resources>
+        </TreeView.Resources>
+        <TreeView.ItemContainerStyle>
+
+            <!--Using style setter to set the TreeViewItem.IsExpanded property to true, this will be applied
+
+      to all TreeViweItems when they are generated-->
+
+            <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+
+                <Setter Property="IsExpanded" Value="True"/>
+
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+
+            </Style>
+
+        </TreeView.ItemContainerStyle>
         <TreeView.ItemTemplate>
             <HierarchicalDataTemplate>
-                <views:DynamicRegionView></views:DynamicRegionView>
+                <views:DynamicRegionView ></views:DynamicRegionView>
             </HierarchicalDataTemplate>
         </TreeView.ItemTemplate>
     </TreeView>

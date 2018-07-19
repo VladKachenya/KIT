@@ -31,11 +31,13 @@ namespace BISC.Presentation.Services
             newTab.TabRegionName = newTabId.ToString();
             if (_tabViewModelsDictionary.ContainsKey(owner))
             {
+                _tabHostViewModel.ActiveTabViewModel = _tabViewModelsDictionary[owner];
                return;
             }
             else
             {
                 _tabViewModelsDictionary.Add(owner,newTab);
+                _tabHostViewModel.ActiveTabViewModel = newTab;
             }
 
             navigationParameters.AddParameterByName(TreeItemIdentifier.Key, owner);
