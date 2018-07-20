@@ -16,5 +16,6 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.Ping
         bool IsPing { get; set; }
         ICommand PingCommand { get; }
         ICommand ClearSelectedIPCommand { get; }
+        ICommand TestCommand { get; }
     }
 }

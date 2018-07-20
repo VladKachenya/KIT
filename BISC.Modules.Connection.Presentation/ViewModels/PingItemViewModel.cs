@@ -28,7 +28,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             _commandFactory = commandFactory;
 
             PingCommand = _commandFactory.CreatePresentationCommand(OnPingCommand);
-            DeleteItemComand = _commandFactory.CreatePresentationCommand(OnDeleteItemComand);
+            DeleteItemCommand = _commandFactory.CreatePresentationCommand(OnDeleteItemCommand);
             ItemClickCommand = _commandFactory.CreatePresentationCommand(OnItemClickCommand);
         }
         #endregion
@@ -51,10 +51,11 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             IsPing = await _pingService.GetPing(IP);
         }
 
-        private void OnDeleteItemComand()
+        private void OnDeleteItemCommand()
         {
+            DeleteItem.Invoke(this);
             // Разберись как работает Dispose по приложению.
-            this.Dispose();
+            //this.Dispose();
         }
 
         #endregion
@@ -81,9 +82,10 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         }
 
         public Action<string> SetAsSelectedIP { get; set; }
+        public Action<IPingItemViewModel> DeleteItem { get; set; }
 
         public ICommand ItemClickCommand { get; }
-        public ICommand DeleteItemComand { get; }
+        public ICommand DeleteItemCommand { get; }
         public ICommand PingCommand { get; }
         #endregion
     }

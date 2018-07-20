@@ -31,7 +31,8 @@
                     <Button Margin="5"
                         Content="Clear" 
                         Command="{Binding ClearSelectedIPCommand}"/>
-                    <TextBlock FontSize="14" Text="{Binding IsPing}"/>
+                    <Button Margin="5" Content="Test"
+                            Command="{Binding TestCommand}"/>
                 </StackPanel>
                 <ScrollViewer Grid.Row="1"
                               VerticalScrollBarVisibility ="Auto">
@@ -43,8 +44,17 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Command="{Binding ItemClickCommand}">
+                                    <Button Margin="5"
+                                            Command="{Binding ItemClickCommand}"
+                                            Background="White"
+                                            Foreground="Black">
                                         <TextBlock FontSize="14" Text="{Binding IP}"/>
+                                    </Button>
+                                    <Button Margin="5" Width="24" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"
+                                                Command="{Binding DeleteItemCommand }">
+                                        <Button.Content>
+                                            <ContentControl ContentTemplate="{DynamicResource CloseIcon}"></ContentControl>
+                                        </Button.Content>
                                     </Button>
                                 </StackPanel>
                             </DataTemplate>

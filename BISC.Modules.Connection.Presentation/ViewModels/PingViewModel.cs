@@ -24,19 +24,24 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         private IPingItemsViewModelFactory _pingItemsViewModelFactory;
         private string _selectedIP;
         private bool isPing;
+        private Action<string> setItem;
+        private Action<IPingItemViewModel> DeleteItem;
         #endregion
 
         #region Citor
-        public PingViewModel( ICommandFactory commandFactory, IConfigurationService configurationService, IPingService pingService,
+        public PingViewModel(ICommandFactory commandFactory, IConfigurationService configurationService, IPingService pingService,
             IPingItemsViewModelFactory pingItemsViewModelFactory)
         {
+            setItem = (x) => SelectedIP = x;
+            DeleteItem = ((x) => LastConnections.Remove(x));
             _pingService = pingService;
             _configurationService = configurationService;
             _pingItemsViewModelFactory = pingItemsViewModelFactory;
-            LastConnections = _pingItemsViewModelFactory.GetPingViewModelCollection(_configurationService.LastIpAddresses, (x) => SelectedIP = x);
+            LastConnections = _pingItemsViewModelFactory.GetPingViewModelCollection(_configurationService.LastIpAddresses, setItem, DeleteItem);
             _commandFactory = commandFactory;
             PingCommand = _commandFactory.CreatePresentationCommand(OnPingCommand);
             ClearSelectedIPCommand = _commandFactory.CreatePresentationCommand(OnClearSelectedIPCommand);
+            TestCommand = _commandFactory.CreatePresentationCommand(OnDeleteCommand);
 
             OnClearSelectedIPCommand();
         }
@@ -45,15 +50,20 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         #region private methods
         private async void OnPingCommand()
         {
-            var newItem = _pingItemsViewModelFactory.GetPingItemViewModel(SelectedIP, (x) => SelectedIP = x);
+            var newItem = _pingItemsViewModelFactory.GetPingItemViewModel(SelectedIP, (x) => SelectedIP = x, DeleteItem);
             IsPing = await _pingService.GetPing(SelectedIP);
             newItem.IsPing = IsPing;
             LastConnections.Add(newItem);
         }
 
-        private void OnClearSelectedIPCommand()
+        private void OnDeleteCommand()
         {
-            SelectedIP = "0.0.0.0";
+            DeleteItem.Invoke(LastConnections[0]);
+        }
+
+    private void OnClearSelectedIPCommand()
+        {
+            SelectedIP = "1.0.0.0";
         }
         #endregion
 
@@ -68,7 +78,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
                 _selectedIP = value;
                 OnPropertyChanged();
             }
-        }  
+        }
 
         public ObservableCollection<IPingItemViewModel> LastConnections { get; }
 
@@ -83,6 +93,8 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         }
 
         public ICommand PingCommand { get; }
+
+        public ICommand TestCommand { get;}
 
         public ICommand ClearSelectedIPCommand { get; }
         #endregion
