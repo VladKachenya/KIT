@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Services;
 using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Navigation;
@@ -18,12 +20,14 @@ namespace BISC.Presentation.Services
     {
         private readonly IRegionManager _regionManager;
         private readonly IUserNotificationService _userNotificationService;
+        private readonly IInjectionContainer _injectionContainer;
         private Dictionary<string, Tuple<string, BiscNavigationParameters>> _waitingRegionsdictionary = new Dictionary<string, Tuple<string, BiscNavigationParameters>>();
 
-        public NavigationService(IRegionManager regionManager, IUserNotificationService userNotificationService)
+        public NavigationService(IRegionManager regionManager, IUserNotificationService userNotificationService, IInjectionContainer injectionContainer)
         {
             _regionManager = regionManager;
             _userNotificationService = userNotificationService;
+            _injectionContainer = injectionContainer;
         }
 
 
@@ -48,27 +52,26 @@ namespace BISC.Presentation.Services
             }
             Application.Current.Dispatcher.Invoke(() =>
             {
-                _regionManager.RequestNavigate(regionName, new Uri(viewName, UriKind.Relative),
-                    PopulateNavigationParameters(navigationParameters));
+                _regionManager.RequestNavigate(regionName, new Uri(viewName, UriKind.Relative), navigationParameters?.ToNavigationParameters());
 
             });
         }
 
-        public async void NavigateViewToGlobalRegion(string viewName, BiscNavigationParameters navigationParameters = null)
+        public async Task NavigateViewToGlobalRegion(string viewName, BiscNavigationParameters navigationParameters = null)
         {
-            GlobalDialogView globalDialogView = new GlobalDialogView();
+            var content = _injectionContainer.ResolveType<object>(viewName);
+            var r = new BiscNavigationContext() {BiscNavigationParameters = navigationParameters}.ToNavigationContext();
+            ((content as FrameworkElement).DataContext as INavigationAware).OnNavigatedTo(new BiscNavigationContext() { BiscNavigationParameters = navigationParameters }.ToNavigationContext());
+            try
+            {
+                await _userNotificationService.ShowContentAsDialog(content);
 
-            await _userNotificationService.ShowContentAsDialog(globalDialogView);
-            var region = _regionManager.Regions[KeysForNavigation.RegionNames.GlobalDialogRegionKey];
-            _regionManager.RequestNavigate(KeysForNavigation.RegionNames.GlobalDialogRegionKey, new Uri(viewName, UriKind.Relative),
-                (callback) =>
-                {
-                    if (callback.Error != null)
-                    {
-                        throw callback.Error;
-                    }
-                }, PopulateNavigationParameters(navigationParameters));
-
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public void TryNavigateToWaitingRegion(string regionId)
@@ -79,18 +82,6 @@ namespace BISC.Presentation.Services
                     _waitingRegionsdictionary[regionId].Item2);
                 _waitingRegionsdictionary.Remove(regionId);
             }
-        }
-
-
-        private NavigationParameters PopulateNavigationParameters(BiscNavigationParameters navigationParameters)
-        {
-            NavigationParameters navigationParametersToRegion = new NavigationParameters();
-
-            navigationParameters?.ForEach((parameter =>
-            {
-                navigationParametersToRegion.Add(parameter.ParameterName, parameter.Parameter);
-            }));
-            return navigationParametersToRegion;
         }
 
 

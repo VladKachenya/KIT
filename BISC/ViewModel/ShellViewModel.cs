@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,16 +23,35 @@ namespace BISC.ViewModel
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
         private readonly IProjectService _projectService;
+        private readonly ISaveCheckingService _saveCheckingService;
         private bool _isLeftMenuEnabled;
         private string _applicationTitle;
 
-        public ShellViewModel(IEventAggregator eventAggregator,INavigationService navigationService,IProjectService projectService)
+        public ShellViewModel(IEventAggregator eventAggregator,INavigationService navigationService,
+            IProjectService projectService, ISaveCheckingService saveCheckingService)
         {
            
                _eventAggregator = eventAggregator;
             _navigationService = navigationService;
             _projectService = projectService;
+            _saveCheckingService = saveCheckingService;
             ShellLoadedCommand = new DelegateCommand(OnShellLoaded);
+            ShellClosingCommand=new DelegateCommand<object>(OnShellClosing);
+        }
+
+        private async void OnShellClosing(object obj)
+        {
+            (obj as CancelEventArgs).Cancel = true;
+            OnClosing();
+        }
+
+        private async Task OnClosing()
+        {
+            var result =await _saveCheckingService.SaveAllUnsavedEntities();
+            if (!result.IsCancelled)
+            {
+               Application.Current.Shutdown();
+            }
         }
 
         private void OnShellLoaded()
@@ -43,6 +63,7 @@ namespace BISC.ViewModel
 
 
         public ICommand ShellLoadedCommand { get; }
+        public ICommand ShellClosingCommand { get; }
 
   
 

@@ -5,6 +5,7 @@ using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.UiFromModel;
+using BISC.Presentation.Interfaces.Tree;
 using Prism.Events;
 
 namespace BISC.Presentation.Module
@@ -18,11 +19,12 @@ namespace BISC.Presentation.Module
         private readonly IBiscProject _biscProject;
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private readonly ICommandFactory _commandFactory;
+        private readonly IMainTreeViewModel _mainTreeViewModel;
 
         public PresentationInitialization(IEventAggregator eventAggregator, 
             INavigationService navigationService,IProjectService projectService
             ,IUiFromModelElementRegistryService uiFromModelElementRegistryService,IBiscProject biscProject
-            ,IUserInterfaceComposingService userInterfaceComposingService,ICommandFactory commandFactory)
+            ,IUserInterfaceComposingService userInterfaceComposingService,ICommandFactory commandFactory,IMainTreeViewModel mainTreeViewModel)
         {
 
             _eventAggregator = eventAggregator;
@@ -32,6 +34,7 @@ namespace BISC.Presentation.Module
             _biscProject = biscProject;
             _userInterfaceComposingService = userInterfaceComposingService;
             _commandFactory = commandFactory;
+            _mainTreeViewModel = mainTreeViewModel;
             _eventAggregator.GetEvent<ShellLoadedEvent>().Subscribe((args =>
             {
                 _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject),"Сохранить проект",IconsKeys.SaveIconKey);
@@ -45,6 +48,7 @@ namespace BISC.Presentation.Module
                     KeysForNavigation.RegionNames.ToolBarMenuKey);
                 _projectService.OpenDefaultProject();
                 _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(_biscProject.MainSclModel);
+                _mainTreeViewModel.ChangeTracker.StartTracking();
             }));
 
         }

@@ -18,7 +18,16 @@ namespace BISC.GlobalServices
 
         public async Task ShowContentAsDialog(object content)
         {
-             DialogHost.Show(content, Constants.RootDialogKey);
+            try
+            {
+                await DialogHost.Show(content, Constants.RootDialogKey);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         

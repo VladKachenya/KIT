@@ -39,11 +39,14 @@ namespace BISC.Presentation.Module
             _injectionContainer.RegisterType<IHamburgerMenuViewModel, HamburgerMenuViewModel>();
             _injectionContainer.RegisterType<IToolBarMenuViewModel, ToolBarMenuViewModel>();
             _injectionContainer.RegisterType<IUiFromModelElementRegistryService, UiFromModelElementRegistryService>(true);
+            _injectionContainer.RegisterType<ISaveCheckingService, SaveCheckingService>(true);
+            _injectionContainer.RegisterType<SaveChangesViewModel>();
 
             _injectionContainer.RegisterType<object,TabHostView>(KeysForNavigation.ViewNames.MainTabHostViewName);
             _injectionContainer.RegisterType<object, MainTreeView>(KeysForNavigation.ViewNames.MainTreeViewName);
             _injectionContainer.RegisterType<object, HamburgerMenuView>(KeysForNavigation.ViewNames.HamburgerMenuViewName);
             _injectionContainer.RegisterType<object, ToolBarMenuView>(KeysForNavigation.ViewNames.ToolBarMenuViewName);
+            _injectionContainer.RegisterType<object, SaveChangesView>(KeysForNavigation.ViewNames.SaveChangesViewName);
 
             _injectionContainer.RegisterType<PresentationInitialization>(true);
 

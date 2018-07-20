@@ -18,6 +18,8 @@
             public static string MainTabHostViewName = "TabHost";
             public static string HamburgerMenuViewName = "HamburgerMenu";
             public static string ToolBarMenuViewName = "ToolBarMenu";
+            public static string SaveChangesViewName = "SaveChangesView";
+
         }
 
     }

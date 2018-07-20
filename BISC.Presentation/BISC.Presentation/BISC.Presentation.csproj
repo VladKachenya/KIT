@@ -37,14 +37,14 @@
     <Reference Include="AttachedCommandBehavior, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\AttachedCommandBehavior.2.0.0.0\lib\net35\AttachedCommandBehavior.dll</HintPath>
     </Reference>
+    <Reference Include="CommonServiceLocator, Version=2.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CommonServiceLocator.2.0.2\lib\net45\CommonServiceLocator.dll</HintPath>
+    </Reference>
     <Reference Include="MaterialDesignColors, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MaterialDesignColors.1.1.2\lib\net45\MaterialDesignColors.dll</HintPath>
     </Reference>
     <Reference Include="MaterialDesignThemes.Wpf, Version=2.4.0.1044, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MaterialDesignThemes.2.4.0.1044\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -56,9 +56,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -86,6 +83,7 @@
     <Compile Include="Docking\PanesStyleSelector.cs" />
     <Compile Include="Docking\PlacementEnum.cs" />
     <Compile Include="Factories\CommandFactory.cs" />
+    <Compile Include="Interfaces\ISaveChangesViewModel.cs" />
     <Compile Include="Interfaces\Menu\IHamburgerMenuViewModel.cs" />
     <Compile Include="Interfaces\Menu\IToolBarMenuViewModel.cs" />
     <Compile Include="Interfaces\Tab\ITabHostViewModel.cs" />
@@ -96,12 +94,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Module\PresentationInitialization.cs" />
+    <Compile Include="Services\SaveCheckingService.cs" />
     <Compile Include="Services\TabManagementService.cs" />
     <Compile Include="Services\TreeManagementService.cs" />
     <Compile Include="Services\UiCommandService.cs" />
     <Compile Include="UiFromModel\UiFromModelElementRegistryService.cs" />
     <Compile Include="ViewModels\DynamicRegionViewModel.cs" />
     <Compile Include="ViewModels\HamburgerMenuViewModel.cs" />
+    <Compile Include="ViewModels\SaveChangesViewModel.cs" />
     <Compile Include="ViewModels\ToolBarMenuViewModel.cs" />
     <Compile Include="ViewModels\Tree\MainTreeViewModel.cs" />
     <Compile Include="ViewModels\Tree\TreeItemViewModel.cs" />
@@ -116,6 +116,9 @@
     </Compile>
     <Compile Include="Views\MainTree.xaml.cs">
       <DependentUpon>MainTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SaveChangesView.xaml.cs">
+      <DependentUpon>SaveChangesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TabHostView.xaml.cs">
       <DependentUpon>TabHostView.xaml</DependentUpon>
@@ -146,6 +149,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainTree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SaveChangesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

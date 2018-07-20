@@ -35,9 +35,9 @@ namespace BISC.Modules.Device.Presentation.Services
             _treeManagementService = treeManagementService;
         }
 
-        public void OpenDeviceAddingView()
+        public async void OpenDeviceAddingView()
         {
-            _navigationService.NavigateViewToGlobalRegion(DeviceKeys.DeviceAddingViewKey);
+           await _navigationService.NavigateViewToGlobalRegion(DeviceKeys.DeviceAddingViewKey);
         }
 
         public void AddDevicesInProject(List<IDevice> devicesToAdd)

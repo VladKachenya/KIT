@@ -13,6 +13,7 @@
         xmlns:attachedCommandBehavior="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
         xmlns:keys="clr-namespace:BISC.Presentation.Infrastructure.Keys;assembly=BISC.Presentation.Infrastructure"
         xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
+        xmlns:command="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -20,10 +21,15 @@
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
-        Title="{Binding ApplicationTitle}" Height="500" Width="800"
-        attachedCommandBehavior:CommandBehavior.Command="{Binding ShellLoadedCommand}"
-        attachedCommandBehavior:CommandBehavior.Event="Loaded">
-    <materialDesign:DialogHost Identifier="{x:Static constants:Constants.RootDialogKey}" SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
+        Title="{Binding ApplicationTitle}" Height="500" Width="800">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing" >
+            <command:EventToCommand  PassEventArgsToCommand="True"   Command="{Binding ShellClosingCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <materialDesign:DialogHost     attachedCommandBehavior:CommandBehavior.Command="{Binding ShellLoadedCommand}"
+                                   attachedCommandBehavior:CommandBehavior.Event="Loaded"  Identifier="{x:Static constants:Constants.RootDialogKey}" SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
+
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <materialDesign:DrawerHost.LeftDrawerContent>
                 <DockPanel MinWidth="212">

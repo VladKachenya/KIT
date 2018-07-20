@@ -29,17 +29,16 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
             }
             else
             {
-                if (_valuesDictionary[key] != value)
-                {
-                    TryUnSubscribeOnCollectionChanged(_valuesDictionary[key]);
-                    _valuesDictionary[key] = value;
-                    TrySubscribeOnCollectionChanged(value);
-                    if (_isTrackingEnabled)
-                    {
-                        ChangeTrackerState = ChangeTrackerState.Modified;
-                    }
-                }
+                if (_valuesDictionary[key] == value) return;
             }
+            TryUnSubscribeOnCollectionChanged(_valuesDictionary[key]);
+            _valuesDictionary[key] = value;
+            TrySubscribeOnCollectionChanged(value);
+            if (_isTrackingEnabled)
+            {
+                ChangeTrackerState = ChangeTrackerState.Modified;
+            }
+
         }
 
         private void TrySubscribeOnCollectionChanged(object collection)
@@ -90,6 +89,8 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
 
         public bool GetIsModifiedRecursive()
         {
+            if (ChangeTrackerState == ChangeTrackerState.Modified) return true;
+
             foreach (var value in _valuesDictionary)
             {
                 if (value.Value is IObjectWithChangeTracker objectWithChangeTracker)

@@ -15,7 +15,12 @@ namespace BISC.Presentation.Infrastructure.Navigation
 
         public NavigationContext ToNavigationContext()
         {
-            return new NavigationContext(ServiceLocator.Current.GetInstance<IRegionNavigationService>(), Uri, BiscNavigationParameters.ToNavigationParameters());
+            var result = new NavigationContext(ServiceLocator.Current.GetInstance<IRegionNavigationService>(), Uri,null);
+            BiscNavigationParameters?.ForEach((parameter =>
+            {
+                result.Parameters.Add(parameter.ParameterName,parameter.Parameter);
+            } ));
+            return result;
         }
 
         public static BiscNavigationContext FromNavigationContext(NavigationContext navigationContext)

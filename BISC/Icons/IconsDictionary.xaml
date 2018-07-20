@@ -17,10 +17,12 @@
     <DataTemplate x:Key="ChevronDoubleDownIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ChevronDoubleDown" />
     </DataTemplate>
-    <DataTemplate x:Key="ServerPlusIcon">
+    <DataTemplate x:Key="AlertIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Alert" />
+    </DataTemplate>
+   <DataTemplate x:Key="ServerPlusIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ServerPlus" />
     </DataTemplate>
-
     <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
         <!--<Style.Resources >
             <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#44111121" />
