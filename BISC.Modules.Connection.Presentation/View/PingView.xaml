@@ -31,20 +31,23 @@
                     <Button Margin="5"
                         Content="Clear" 
                         Command="{Binding ClearSelectedIPCommand}"/>
-                    <Button Margin="5" Content="Test"
-                            Command="{Binding TestCommand}"/>
+                    <TextBlock Margin="5" 
+                               Text="{Binding IsPing}"
+                               MinWidth="30" 
+                               TextAlignment="Center"
+                               VerticalAlignment="Center"/>
                 </StackPanel>
                 <ScrollViewer Grid.Row="1"
                               VerticalScrollBarVisibility ="Auto">
                     <ListBox x:Name="ipListBox" 
                              ItemsSource="{Binding LastConnections}"
                              MinHeight="300"
-                             MaxHeight="300"
                              MinWidth="150" >
                         <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Margin="5"
+                            <DataTemplate >
+                                <StackPanel Orientation="Horizontal" Margin="0">
+                                    <Button MinWidth="100"
+                                            Padding="5"
                                             Command="{Binding ItemClickCommand}"
                                             Background="White"
                                             Foreground="Black">

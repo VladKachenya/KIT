@@ -50,10 +50,13 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         #region private methods
         private async void OnPingCommand()
         {
+            var toBeRemoved = LastConnections.FirstOrDefault((x) => SelectedIP == x.IP);
+            LastConnections.Remove(toBeRemoved);
             var newItem = _pingItemsViewModelFactory.GetPingItemViewModel(SelectedIP, (x) => SelectedIP = x, DeleteItem);
+            LastConnections.Insert(0, newItem);
             IsPing = await _pingService.GetPing(SelectedIP);
             newItem.IsPing = IsPing;
-            LastConnections.Add(newItem);
+            
         }
 
         private void OnDeleteCommand()
