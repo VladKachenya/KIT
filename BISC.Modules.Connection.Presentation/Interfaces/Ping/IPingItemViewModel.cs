@@ -11,9 +11,9 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.Ping
     {
         
         string IP { get; set; }
-        bool IsPing { get; set; }
+        bool? IsPing { get; set; }
 
-        Action<string> SetAsSelectedIP { get; set; }
+        Action<IPingItemViewModel> SetAsSelectedIP { get; set; }
         Action<IPingItemViewModel> DeleteItem { get; set; }
 
         ICommand ItemClickCommand { get; }

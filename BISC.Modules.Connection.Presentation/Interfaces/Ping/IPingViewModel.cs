@@ -12,10 +12,9 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.Ping
     public interface IPingViewModel 
     {            
         ObservableCollection<IPingItemViewModel> LastConnections  { get; }
-        string SelectedIP { get; set; }
-        bool IsPing { get; set; }
         ICommand PingCommand { get; }
         ICommand ClearSelectedIPCommand { get; }
         ICommand TestCommand { get; }
+        IPingItemViewModel SelectedItemm { get; set; }
     }
 }

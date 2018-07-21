@@ -10,7 +10,7 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.Factorys
 {
     public interface IPingItemsViewModelFactory
     {
-        IPingItemViewModel GetPingItemViewModel(string IP, Action<string> ItemClickAction, Action<IPingItemViewModel> RemoveItem);
-        ObservableCollection<IPingItemViewModel> GetPingViewModelCollection(List<string> IPs, Action<string> ItemClickAction, Action<IPingItemViewModel> RemoveItem);
+        IPingItemViewModel GetPingItemViewModel(string IP, Action<IPingItemViewModel> ItemClickAction, Action<IPingItemViewModel> RemoveItem);
+        ObservableCollection<IPingItemViewModel> GetPingViewModelCollection(List<string> IPs, Action<IPingItemViewModel> ItemClickAction, Action<IPingItemViewModel> RemoveItem);
     }
 }

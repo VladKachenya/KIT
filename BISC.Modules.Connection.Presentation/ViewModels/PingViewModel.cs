@@ -22,84 +22,62 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         private IConfigurationService _configurationService;
         private IPingService _pingService;
         private IPingItemsViewModelFactory _pingItemsViewModelFactory;
-        private string _selectedIP;
-        private bool isPing;
-        private Action<string> setItem;
-        private Action<IPingItemViewModel> DeleteItem;
+        private Action<IPingItemViewModel> setItem;
+        private Action<IPingItemViewModel> deleteItem;
         #endregion
 
         #region Citor
         public PingViewModel(ICommandFactory commandFactory, IConfigurationService configurationService, IPingService pingService,
             IPingItemsViewModelFactory pingItemsViewModelFactory)
         {
-            setItem = (x) => SelectedIP = x;
-            DeleteItem = ((x) => LastConnections.Remove(x));
+            setItem = ((x) => SelectedItemm = x);
+            deleteItem = ((x) => LastConnections.Remove(x));
+            _pingItemsViewModelFactory = pingItemsViewModelFactory;
+            SelectedItemm = _pingItemsViewModelFactory.GetPingItemViewModel("1.0.0.0", setItem, deleteItem);
             _pingService = pingService;
             _configurationService = configurationService;
-            _pingItemsViewModelFactory = pingItemsViewModelFactory;
-            LastConnections = _pingItemsViewModelFactory.GetPingViewModelCollection(_configurationService.LastIpAddresses, setItem, DeleteItem);
+            LastConnections = _pingItemsViewModelFactory.GetPingViewModelCollection(_configurationService.LastIpAddresses, setItem, deleteItem);
             _commandFactory = commandFactory;
             PingCommand = _commandFactory.CreatePresentationCommand(OnPingCommand);
             ClearSelectedIPCommand = _commandFactory.CreatePresentationCommand(OnClearSelectedIPCommand);
             TestCommand = _commandFactory.CreatePresentationCommand(OnDeleteCommand);
-
-            OnClearSelectedIPCommand();
         }
         #endregion
 
         #region private methods
         private async void OnPingCommand()
         {
-            var toBeRemoved = LastConnections.FirstOrDefault((x) => SelectedIP == x.IP);
+            SelectedItemm.IsPing = null;
+            var toBeRemoved = LastConnections.FirstOrDefault((x) => SelectedItemm.IP == x.IP);
             LastConnections.Remove(toBeRemoved);
-            var newItem = _pingItemsViewModelFactory.GetPingItemViewModel(SelectedIP, (x) => SelectedIP = x, DeleteItem);
+            var newItem = _pingItemsViewModelFactory.GetPingItemViewModel(SelectedItemm.IP, setItem, deleteItem);
             LastConnections.Insert(0, newItem);
-            IsPing = await _pingService.GetPing(SelectedIP);
-            newItem.IsPing = IsPing;
+            SelectedItemm.IsPing = await _pingService.GetPing(SelectedItemm.IP);
+            newItem.IsPing = SelectedItemm.IsPing;
             
         }
 
         private void OnDeleteCommand()
         {
-            DeleteItem.Invoke(LastConnections[0]);
+            //DeleteItem.Invoke(LastConnections[0]);
         }
 
     private void OnClearSelectedIPCommand()
         {
-            SelectedIP = "1.0.0.0";
+            SelectedItemm.IP = "1.0.0.0";
         }
         #endregion
 
 
 
         #region Implementation of IPingAddingViewModel
-        public string SelectedIP
-        {
-            get { return _selectedIP; }
-            set
-            {
-                _selectedIP = value;
-                OnPropertyChanged();
-            }
-        }
-
         public ObservableCollection<IPingItemViewModel> LastConnections { get; }
-
-        public bool IsPing
-        {
-            get { return isPing; }
-            set
-            {
-                isPing = value;
-                OnPropertyChanged();
-            }
-        }
-
         public ICommand PingCommand { get; }
 
         public ICommand TestCommand { get;}
 
         public ICommand ClearSelectedIPCommand { get; }
+        public IPingItemViewModel SelectedItemm { get; set; }
         #endregion
 
     }

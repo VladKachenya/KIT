@@ -1,4 +1,5 @@
 ﻿using BISC.Modules.Connection.Infrastructure.Services;
+using BISC.Modules.Connection.Presentation.Interfaces.Factorys;
 using BISC.Modules.Connection.Presentation.Interfaces.Ping;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
@@ -11,22 +12,22 @@ using System.Windows.Input;
 
 namespace BISC.Modules.Connection.Presentation.ViewModels
 {
-    public class PingItemViewModel : ViewModelBase, IPingItemViewModel
+    public class PingItemViewModel : ViewModelBase, IPingItemViewModel, ICloneable
     {
         #region private filds
         private string _ip;
         private IPingService _pingService;
-        private bool _isPing;
+        private bool? _isPing;
         private ICommandFactory _commandFactory;
+        IPingItemsViewModelFactory _pingItemsViewModelFactory;
 
         #endregion
 
         #region Citor
-        public PingItemViewModel(IPingService pingService, ICommandFactory commandFactory)
+        public PingItemViewModel(IPingService pingService, ICommandFactory commandFactory, IPingItemsViewModelFactory pingItemsViewModelFactory)
         {
             _pingService = pingService;
             _commandFactory = commandFactory;
-
             PingCommand = _commandFactory.CreatePresentationCommand(OnPingCommand);
             DeleteItemCommand = _commandFactory.CreatePresentationCommand(OnDeleteItemCommand);
             ItemClickCommand = _commandFactory.CreatePresentationCommand(OnItemClickCommand);
@@ -38,7 +39,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         {
             try
             {
-                SetAsSelectedIP.Invoke(IP);
+                SetAsSelectedIP.Invoke(this);
             }
             catch
             {
@@ -48,6 +49,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
         private async void OnPingCommand()
         {
+            IsPing = null;
             IsPing = await _pingService.GetPing(IP);
         }
 
@@ -57,7 +59,6 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             // Разберись как работает Dispose по приложению.
             //this.Dispose();
         }
-
         #endregion
 
         #region Implementation of IPingItemViewModel
@@ -71,7 +72,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             }
         }
 
-        public bool IsPing
+        public bool? IsPing
         {
             get { return _isPing; }
             set
@@ -81,12 +82,21 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             }
         }
 
-        public Action<string> SetAsSelectedIP { get; set; }
+        public Action<IPingItemViewModel> SetAsSelectedIP { get; set; }
         public Action<IPingItemViewModel> DeleteItem { get; set; }
 
         public ICommand ItemClickCommand { get; }
         public ICommand DeleteItemCommand { get; }
         public ICommand PingCommand { get; }
+        #endregion
+
+        #region Implementation of ICloneble
+        public object Clone()
+        {
+            var obj = _pingItemsViewModelFactory.GetPingItemViewModel(IP, SetAsSelectedIP, DeleteItem);
+            obj.IsPing = IsPing;
+            return obj;
+        }
         #endregion
     }
 }

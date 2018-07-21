@@ -25,7 +25,7 @@ namespace BISC.Modules.Connection.Presentation.Factorys
         #endregion
 
         #region Implementation of IPingItemsViewModelFactory
-        public IPingItemViewModel GetPingItemViewModel(string IP, Action<string> ItemClickAction, Action<IPingItemViewModel> RemoveItem)
+        public IPingItemViewModel GetPingItemViewModel(string IP, Action<IPingItemViewModel> ItemClickAction, Action<IPingItemViewModel> RemoveItem)
         {
             IPingItemViewModel newItem = _injectionContainer.ResolveType<IPingItemViewModel>();
             newItem.IP = IP;
@@ -34,7 +34,7 @@ namespace BISC.Modules.Connection.Presentation.Factorys
             return newItem;
         }
 
-        public ObservableCollection<IPingItemViewModel> GetPingViewModelCollection(List<string> IPs, Action<string> ItemClickAction, Action<IPingItemViewModel> RemoveItem)
+        public ObservableCollection<IPingItemViewModel> GetPingViewModelCollection(List<string> IPs, Action<IPingItemViewModel> ItemClickAction, Action<IPingItemViewModel> RemoveItem)
         {
             ObservableCollection<IPingItemViewModel> collection = new ObservableCollection<IPingItemViewModel>();
             foreach (string ip in IPs)
