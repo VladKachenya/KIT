@@ -16,9 +16,9 @@ namespace BISC.Modules.Connection.Presentation.Services
         {
             _navigationService = navigationService;
         }
-        public void OpenPingsView()
+        public async void OpenPingsView()
         {
-            _navigationService.NavigateViewToGlobalRegion(ConnectionKeys.PingViewKey);
+            await _navigationService.NavigateViewToGlobalRegion(ConnectionKeys.PingViewKey);
         }
     }
 }
