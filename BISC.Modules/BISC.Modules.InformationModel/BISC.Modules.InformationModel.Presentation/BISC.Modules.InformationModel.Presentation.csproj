@@ -4,17 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{346395B5-8238-45AE-B002-C22B816AC135}</ProjectGuid>
+    <ProjectGuid>{749492EB-2EFC-4D03-BB60-E26BBAF25DD8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BISC.Modules.InformationModel.Model</RootNamespace>
-    <AssemblyName>BISC.Modules.InformationModel.Model</AssemblyName>
+    <RootNamespace>BISC.Modules.InformationModel.Presentation</RootNamespace>
+    <AssemblyName>BISC.Modules.InformationModel.Presentation</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,30 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTypeTemplates\DataTypeTemplates.cs" />
-    <Compile Include="Elements\InformationModelElementBase.cs" />
-    <Compile Include="Module\InformationModelModule.cs" />
+    <Compile Include="Module\InformationModelPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serializers\DataTypeTemplates\DataTypeTemplatesSerializer.cs" />
-    <Compile Include="Serializers\DataTypeTemplates\DoTypesSerializer.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
       <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
       <Name>BISC.Infrastructure.Global</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Global\BISC.Model.Global.csproj">
-      <Project>{FCA3F7FE-D64B-4C3C-9F8D-85753FC944BE}</Project>
-      <Name>BISC.Model.Global</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
-      <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
-      <Name>BISC.Model.Infrastructure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BISC.Modules.InformationModel.Infrastucture\BISC.Modules.InformationModel.Infrastucture.csproj">
-      <Project>{1642183D-562D-4E50-B8F7-22205D731E45}</Project>
-      <Name>BISC.Modules.InformationModel.Infrastucture</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

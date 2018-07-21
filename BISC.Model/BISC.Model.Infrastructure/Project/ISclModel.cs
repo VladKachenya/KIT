@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Services;
 

@@ -7,10 +7,11 @@ using System.Xml.Linq;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Global.Model;
 using BISC.Model.Infrastructure;
+using BISC.Model.Infrastructure.Project;
 
 namespace BISC.Model.Global.Serializators
 {
-    public class SclModelElementSerializer : IModelElementSerializer
+    public class SclModelElementSerializer : IModelElementSerializer<ISclModel>
     {
         private readonly IModelElementsRegistryService _modelElementsRegistryService;
         private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
@@ -26,7 +27,7 @@ namespace BISC.Model.Global.Serializators
             return _defaultModelElementSerializer.SerializeModelElement(modelElement);
         }
 
-        public IModelElement DeserializeModelElement(XElement xElement)
+        public ISclModel DeserializeModelElement(XElement xElement)
         {
             SclModel sclModel = new SclModel();
             DefaultModelElement defaultModelElement = _defaultModelElementSerializer.DeserializeModelElement(xElement) as DefaultModelElement;

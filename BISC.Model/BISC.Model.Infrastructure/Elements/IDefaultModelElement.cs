@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Linq;
-using BISC.Infrastructure.Global.Modularity;
 
 namespace BISC.Model.Infrastructure.Elements
 {

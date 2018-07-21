@@ -44,8 +44,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypeTemplates\IDataTypeTemplates.cs" />
+    <Compile Include="DataTypeTemplates\DaType\IDaType.cs" />
+    <Compile Include="DataTypeTemplates\DoType\IDoType.cs" />
+    <Compile Include="DataTypeTemplates\EnumType\IEnumType.cs" />
+    <Compile Include="DataTypeTemplates\IDataTypeTemplatesModelService.cs" />
+    <Compile Include="DataTypeTemplates\LNodeType\ILNodeType.cs" />
     <Compile Include="Elements\ILogicalNode.cs" />
+    <Compile Include="InfoModelKeys.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
+      <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
+      <Name>BISC.Model.Infrastructure</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -13,7 +13,7 @@ using BISC.Model.Infrastructure.Project;
 
 namespace BISC.Model.Global.Serializators
 {
-   public class BiscProjectSerializer : IModelElementSerializer
+   public class BiscProjectSerializer : IModelElementSerializer<IBiscProject>
     {
         private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
         public BiscProjectSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
@@ -26,7 +26,7 @@ namespace BISC.Model.Global.Serializators
             return _defaultModelElementSerializer.SerializeModelElement(modelElement);
         }
 
-        public IModelElement DeserializeModelElement(XElement xElement)
+        public IBiscProject DeserializeModelElement(XElement xElement)
         {
           
             DefaultModelElement defaultModelElement = _defaultModelElementSerializer.DeserializeModelElement(xElement) as DefaultModelElement;

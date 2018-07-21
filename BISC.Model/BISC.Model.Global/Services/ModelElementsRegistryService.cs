@@ -11,9 +11,9 @@ namespace BISC.Model.Global.Services
 {
     public class ModelElementsRegistryService : IModelElementsRegistryService
     {
-        private Dictionary<string, IModelElementSerializer> _modelElementSerializatorDictionary = new Dictionary<string, IModelElementSerializer>();
+        private Dictionary<string, IModelElementSerializer<IModelElement>> _modelElementSerializatorDictionary = new Dictionary<string, IModelElementSerializer<IModelElement>>();
 
-        public void RegisterModelElement(IModelElementSerializer modelElementSerializer, string elementName)
+        public void RegisterModelElement(IModelElementSerializer<IModelElement> modelElementSerializer, string elementName)
         {
             if (_modelElementSerializatorDictionary.ContainsKey(elementName))
             {
@@ -27,7 +27,7 @@ namespace BISC.Model.Global.Services
             return _modelElementSerializatorDictionary.ContainsKey(elementName);
         }
 
-        public IModelElementSerializer GetModelElementSerializatorByKey(string elementName, bool isDefaultSerializatorAllowed = true)
+        public IModelElementSerializer<IModelElement> GetModelElementSerializatorByKey(string elementName, bool isDefaultSerializatorAllowed = true)
         {
             if (!_modelElementSerializatorDictionary.ContainsKey(elementName))
             {

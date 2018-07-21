@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using BISC.Model.Infrastructure;
+﻿using System.Xml.Linq;
 
-namespace BISC.Infrastructure.Global.Modularity
+namespace BISC.Model.Infrastructure
 {
-    public interface IModelElementSerializer
+    public interface IModelElementSerializer<out T> where T: IModelElement
     {
         XElement SerializeModelElement(IModelElement modelElement);
-        IModelElement DeserializeModelElement(XElement xElement);
+        T DeserializeModelElement(XElement xElement);
     }
 }

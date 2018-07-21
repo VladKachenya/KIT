@@ -1,12 +1,10 @@
-﻿using BISC.Infrastructure.Global.Modularity;
-
-namespace BISC.Model.Infrastructure
+﻿namespace BISC.Model.Infrastructure
 {
     public interface IModelElementsRegistryService
     {
-        void RegisterModelElement(IModelElementSerializer modelElementSerializer, string elementName);
+        void RegisterModelElement(IModelElementSerializer<IModelElement> modelElementSerializer, string elementName);
         bool GetIsModelElementRegistered(string elementName);
-        IModelElementSerializer GetModelElementSerializatorByKey(string elementName,bool isDefaultSerializatorAllowed=true);
+        IModelElementSerializer<IModelElement> GetModelElementSerializatorByKey(string elementName,bool isDefaultSerializatorAllowed=true);
 
     }
 

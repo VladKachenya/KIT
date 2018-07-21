@@ -6,7 +6,7 @@ using BISC.Model.Infrastructure;
 
 namespace BISC.Model.Global.Serializators
 {
-    public class DefaultModelElementSerializer : IModelElementSerializer
+    public class DefaultModelElementSerializer : IModelElementSerializer<IModelElement>
     {
         private readonly IModelElementsRegistryService _modelElementsRegistryService;
 

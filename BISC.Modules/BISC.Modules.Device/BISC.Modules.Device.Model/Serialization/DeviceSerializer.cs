@@ -12,7 +12,7 @@ using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.Device.Model.Serialization
 {
-   public class DeviceSerializer: IModelElementSerializer
+   public class DeviceSerializer: IModelElementSerializer<IDevice>
     {
         private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
 
@@ -30,7 +30,7 @@ namespace BISC.Modules.Device.Model.Serialization
             return xElement;
         }
 
-        public IModelElement DeserializeModelElement(XElement xElement)
+        public IDevice DeserializeModelElement(XElement xElement)
         {
             Model.Device device = new Model.Device();
             DefaultModelElement defaultModelElement = _defaultModelElementSerializer.DeserializeModelElement(xElement) as DefaultModelElement;
