@@ -61,7 +61,7 @@ namespace BISC.Presentation.Services
         {
             var content = _injectionContainer.ResolveType<object>(viewName);
             var r = new BiscNavigationContext() {BiscNavigationParameters = navigationParameters}.ToNavigationContext();
-            ((content as FrameworkElement).DataContext as INavigationAware).OnNavigatedTo(new BiscNavigationContext() { BiscNavigationParameters = navigationParameters }.ToNavigationContext());
+            ((content as FrameworkElement).DataContext as INavigationAware)?.OnNavigatedTo(new BiscNavigationContext() { BiscNavigationParameters = navigationParameters }.ToNavigationContext());
             try
             {
                 await _userNotificationService.ShowContentAsDialog(content);
