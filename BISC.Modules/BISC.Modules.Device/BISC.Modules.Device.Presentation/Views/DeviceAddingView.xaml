@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:BISC.Modules.Device.Presentation.Views"
              xmlns:commands="clr-namespace:BISC.Presentation.BaseItems.Commands;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" >
     <Grid Margin="5">
         <Grid.ColumnDefinitions></Grid.ColumnDefinitions>
         <Grid.RowDefinitions>

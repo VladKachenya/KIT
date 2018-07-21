@@ -39,17 +39,18 @@
                 </StackPanel>
                 <ScrollViewer Grid.Row="1"
                               VerticalScrollBarVisibility ="Auto">
-                    <ListBox x:Name="ipListBox" 
+                    <ItemsControl x:Name="ipListBox" 
                              ItemsSource="{Binding LastConnections}"
                              MinHeight="300"
                              MinWidth="150" >
-                        <ListBox.ItemTemplate>
+                        <ItemsControl.ItemTemplate>
                             <DataTemplate >
-                                <StackPanel Orientation="Horizontal" Margin="0">
+                                <StackPanel Orientation="Horizontal" Margin="3">
                                     <Button MinWidth="100"
                                             Padding="5"
                                             Command="{Binding ItemClickCommand}"
-                                            Background="White"
+                                            Background="White" 
+                                            Style="{StaticResource MaterialDesignFlatButton}"
                                             Foreground="Black">
                                         <TextBlock FontSize="14" Text="{Binding IP}"/>
                                     </Button>
@@ -61,8 +62,8 @@
                                     </Button>
                                 </StackPanel>
                             </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </ScrollViewer>
                 
             </Grid>

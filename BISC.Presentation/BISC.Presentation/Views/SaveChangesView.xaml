@@ -9,7 +9,6 @@
              mc:Ignorable="d" 
              Height="250" Width="400">
     <UserControl.CommandBindings>
-       <CommandBinding ></CommandBinding>
     </UserControl.CommandBindings>
     <Grid>
         <Grid.RowDefinitions>
@@ -20,7 +19,7 @@
 
         </Grid.RowDefinitions>
        
-            <TextBlock Margin="7" Text="В проекте имеются следующие несохраненные данные."></TextBlock>
+            <TextBlock Margin="7" Text="В проекте имеются следующие несохраненные данные:"></TextBlock>
 
    
         <ItemsControl Margin="20,5,5,5" Grid.Row="1" ItemsSource="{Binding UnsavedEntities}">
@@ -38,7 +37,7 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
-        <TextBlock Margin="7" Grid.Row="2" Text="Сохранить?"></TextBlock>
+        <TextBlock Margin="10" Grid.Row="2" Text="Сохранить?"></TextBlock>
 
         <Grid Margin="10" Grid.Row="3">
             <Grid.ColumnDefinitions>
