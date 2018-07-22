@@ -6,6 +6,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:commands="clr-namespace:BISC.Presentation.BaseItems.Commands;assembly=BISC.Presentation.BaseItems"
              xmlns:local="clr-namespace:BISC.Modules.Connection.Presentation.View"
+             xmlns:controls="clr-namespace:BISC.Presentation.BaseItems.Controls;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              MinWidth="300" MinHeight="400">
@@ -54,13 +55,16 @@
                             <ContentControl ContentTemplate="{DynamicResource BroomIcon}"/>
                         </Button.Content>
                     </Button>
-                    <materialDesign:Badged Badge="{Binding LastConnections.Count}" 
-                                           Margin="5" Padding="0">
-                        <Button Command="{Binding PingAllCommand}"
+                    <controls:BadgedControl BadgeContent="{Binding LastConnections.Count}"
+                                            Margin="5" Padding="0">
+                        <controls:BadgedControl.Content>
+    <Button Command="{Binding PingAllCommand}"
                                 Content="PING ALL"
                                 Margin="0"
                                 Padding="2"/>
-                    </materialDesign:Badged>
+                        </controls:BadgedControl.Content>
+                    
+                    </controls:BadgedControl>
                 </StackPanel>
                 <ScrollViewer Grid.Row="1"
                               VerticalScrollBarVisibility ="Auto">
