@@ -8,7 +8,7 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 
 namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType
 {
-   public class Sdo:DefaultModelElement,ISdo
+   public class Sdo:ModelElement,ISdo
     {
         public string Name { get; set; }
         public string Type { get; set; }

@@ -12,7 +12,7 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.LNodeType;
 
 namespace BISC.Modules.InformationModel.Model.DataTypeTemplates
 {
-   public class DataTypeTemplates:DefaultModelElement,IDataTypeTemplates
+   public class DataTypeTemplates:ModelElement,IDataTypeTemplates
     {
         public DataTypeTemplates()
         {

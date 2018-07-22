@@ -10,7 +10,7 @@ using BISC.Model.Infrastructure.Project;
 
 namespace BISC.Modules.Device.Model.Model
 {
-    public class Device:DefaultModelElement,IDevice
+    public class Device:ModelElement,IDevice
     {
         #region Implementation of IDevice
 

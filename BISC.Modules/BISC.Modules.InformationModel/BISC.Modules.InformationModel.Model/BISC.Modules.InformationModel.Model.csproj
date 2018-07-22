@@ -54,16 +54,19 @@
     <Compile Include="DataTypeTemplates\EnumType\EnumVal.cs" />
     <Compile Include="DataTypeTemplates\LNodeType\Do.cs" />
     <Compile Include="DataTypeTemplates\LNodeType\LNodeType.cs" />
-    <Compile Include="Elements\InformationModelElementBase.cs" />
     <Compile Include="Module\InformationModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers\DataTypeTemplates\DataTypeTemplatesSerializer.cs" />
     <Compile Include="Serializers\DataTypeTemplates\DaTypeSerializer.cs" />
+    <Compile Include="Serializers\DataTypeTemplates\DoSerializer.cs" />
     <Compile Include="Serializers\DataTypeTemplates\DoTypeSerializer.cs" />
     <Compile Include="Serializers\DataTypeTemplates\EnumTypeSerializer.cs" />
+    <Compile Include="Serializers\DataTypeTemplates\EnumValSerializer.cs" />
     <Compile Include="Serializers\DataTypeTemplates\LNodeTypeSerializer.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Elements\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
       <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using BISC.Model.Infrastructure;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DaType;
 
 namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates

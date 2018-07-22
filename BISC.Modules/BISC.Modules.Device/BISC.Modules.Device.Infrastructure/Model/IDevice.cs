@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Infrastructure;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 
 namespace BISC.Modules.Device.Infrastructure.Model

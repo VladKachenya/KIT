@@ -13,34 +13,31 @@ using BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType;
 
 namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
 {
-   public class EnumTypeSerializer:IModelElementSerializer<IEnumType>
+   public class EnumValSerializer:IModelElementSerializer<IEnumVal>
     {
         private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
 
-        public EnumTypeSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
+        public EnumValSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
         {
             _defaultModelElementSerializer = defaultModelElementSerializer;
         }
 
-
         public XElement SerializeModelElement(IModelElement modelElement)
         {
-            IEnumType enumType=modelElement as IEnumType;
+            IEnumVal enumVal = modelElement as IEnumVal;
             XElement enumTypeXElement = _defaultModelElementSerializer.SerializeModelElement(modelElement);
-            enumTypeXElement.SetXAttribute("id", enumType.Id);
-            enumTypeXElement.FillChildXElements("EnumVal", new EnumValSerializer(_defaultModelElementSerializer), enumType.EnumValList);
+            enumTypeXElement.SetXAttribute("ord", enumVal.Ord.ToString());
+            enumTypeXElement.SetValue(enumVal.Value);
             return enumTypeXElement;
-
         }
 
-        public IEnumType DeserializeModelElement(XElement xElement)
+        public IEnumVal DeserializeModelElement(XElement xElement)
         {
-            EnumType enumType =new EnumType();
-            _defaultModelElementSerializer.FillDeserialisedModelElement(enumType,xElement);
-            enumType.Id = xElement.GetXAttribute("id");
-            xElement.FillChildElements("EnumVal", new EnumValSerializer(_defaultModelElementSerializer), enumType.EnumValList);
-            return enumType;
-
+            EnumVal enumVal = new EnumVal();
+            _defaultModelElementSerializer.FillDeserialisedModelElement(enumVal, xElement);
+            enumVal.Ord =int.Parse(xElement.GetXAttribute("ord"));
+            enumVal.Value = xElement.Value;
+            return enumVal;
         }
     }
 }

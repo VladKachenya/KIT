@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Infrastructure;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Presentation.Infrastructure.UiFromModel;
 
 namespace BISC.Presentation.UiFromModel

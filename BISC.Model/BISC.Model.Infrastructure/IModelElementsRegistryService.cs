@@ -1,4 +1,6 @@
-﻿namespace BISC.Model.Infrastructure
+﻿using BISC.Model.Infrastructure.Elements;
+
+namespace BISC.Model.Infrastructure
 {
     public interface IModelElementsRegistryService
     {
@@ -8,10 +10,6 @@
 
     }
 
-    public interface IModelElement
-    {
-        string ElementName { get; }
-    }
-
+   
   
 }

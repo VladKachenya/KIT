@@ -8,7 +8,7 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.EnumType;
 
 namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType
 {
-   public class EnumVal:DefaultModelElement, IEnumVal
+   public class EnumVal:ModelElement, IEnumVal
     {
         public int Ord { get; set; }
         public string Value { get; set; }

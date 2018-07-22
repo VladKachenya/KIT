@@ -4,6 +4,7 @@ using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Global.Model;
 using BISC.Model.Global.Serializators;
 using BISC.Model.Infrastructure;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 
@@ -11,8 +12,11 @@ namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
 {
     public class DataTypeTemplatesSerializer : IModelElementSerializer<IDataTypeTemplates>
     {
-        public DataTypeTemplatesSerializer()
+        private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
+
+        public DataTypeTemplatesSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
         {
+            _defaultModelElementSerializer = defaultModelElementSerializer;
         }
 
 
@@ -25,7 +29,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
             DaTypeSerializer daTypeSerializer = new DaTypeSerializer();
             DoTypeSerializer doTypeSerializer = new DoTypeSerializer();
             EnumTypeSerializer enumTypeSerializer = new EnumTypeSerializer();
-            LNodeTypeSerializer lNodeTypeSerializer = new LNodeTypeSerializer();
+            LNodeTypeSerializer lNodeTypeSerializer = new LNodeTypeSerializer(_defaultModelElementSerializer);
 
             foreach (var lNodeType in dataTypeTemplates.LNodeTypes)
             {
@@ -53,7 +57,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
             DaTypeSerializer daTypeSerializer = new DaTypeSerializer();
             DoTypeSerializer doTypeSerializer = new DoTypeSerializer();
             EnumTypeSerializer enumTypeSerializer = new EnumTypeSerializer();
-            LNodeTypeSerializer lNodeTypeSerializer = new LNodeTypeSerializer();
+            LNodeTypeSerializer lNodeTypeSerializer = new LNodeTypeSerializer(_defaultModelElementSerializer);
             foreach (var xInnerElement in xElement.Elements())
             {
                 switch (xInnerElement.Name.LocalName)

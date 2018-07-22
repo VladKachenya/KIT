@@ -45,10 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Extesions.cs" />
     <Compile Include="Project\BiscProject.cs" />
     <Compile Include="Serializators\BiscProjectSerializer.cs" />
     <Compile Include="Serializators\DefaultModelElementSerializer.cs" />
-    <Compile Include="Model\DefaultModelElement.cs" />
+    <Compile Include="Model\ModelElement.cs" />
     <Compile Include="Model\SclModel.cs" />
     <Compile Include="Module\GlobalModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

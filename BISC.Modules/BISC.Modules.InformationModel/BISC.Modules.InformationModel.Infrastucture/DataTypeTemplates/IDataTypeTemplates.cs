@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BISC.Model.Infrastructure;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DaType;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.EnumType;

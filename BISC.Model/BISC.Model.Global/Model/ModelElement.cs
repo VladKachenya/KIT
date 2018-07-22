@@ -9,9 +9,9 @@ namespace BISC.Model.Global.Model
 {
     [DebuggerDisplay("{ElementName} , Children [{ChildModelElements.Count}] ,Attributes [{ModelElementAttributes.Count}]")]
 
-    public class DefaultModelElement:IDefaultModelElement
+    public class ModelElement:IModelElement
     {
-        public DefaultModelElement()
+        public ModelElement()
         {
             ModelElementAttributes=new List<XAttribute>();
             ChildModelElements=new List<IModelElement>();

@@ -8,7 +8,7 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DaType;
 
 namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DaType
 {
-  public  class Bda:DefaultModelElement,IBda
+  public  class Bda:ModelElement,IBda
     {
         public string Name { get; set; }
         public string BType { get; set; }

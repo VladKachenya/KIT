@@ -9,7 +9,7 @@ using BISC.Model.Infrastructure.Project;
 
 namespace BISC.Model.Global.Model
 {
-   public class SclModel: DefaultModelElement,ISclModel
+   public class SclModel: ModelElement,ISclModel
     {
         public SclModel()
         {

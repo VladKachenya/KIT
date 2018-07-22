@@ -9,6 +9,7 @@ using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Global.Model;
 using BISC.Model.Global.Project;
 using BISC.Model.Infrastructure;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 
 namespace BISC.Model.Global.Serializators
@@ -29,8 +30,8 @@ namespace BISC.Model.Global.Serializators
         public IBiscProject DeserializeModelElement(XElement xElement)
         {
           
-            DefaultModelElement defaultModelElement = _defaultModelElementSerializer.DeserializeModelElement(xElement) as DefaultModelElement;
-            IBiscProject project = new BiscProject(defaultModelElement?.ChildModelElements.First() as ISclModel);
+            ModelElement modelElement = _defaultModelElementSerializer.DeserializeModelElement(xElement) as ModelElement;
+            IBiscProject project = new BiscProject(modelElement?.ChildModelElements.First() as ISclModel);
 
             return project;
         }

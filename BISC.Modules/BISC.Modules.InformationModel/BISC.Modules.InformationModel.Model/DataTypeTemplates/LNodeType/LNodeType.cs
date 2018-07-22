@@ -8,7 +8,7 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.LNodeType;
 
 namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.LNodeType
 {
-   public class LNodeType:DefaultModelElement,ILNodeType
+   public class LNodeType:ModelElement,ILNodeType
     {
         public LNodeType()
         {

@@ -7,18 +7,17 @@ using System.Xml.Linq;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Global.Model;
 using BISC.Model.Infrastructure;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 
 namespace BISC.Model.Global.Serializators
 {
     public class SclModelElementSerializer : IModelElementSerializer<ISclModel>
     {
-        private readonly IModelElementsRegistryService _modelElementsRegistryService;
         private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
 
-        public SclModelElementSerializer(IModelElementsRegistryService modelElementsRegistryService, DefaultModelElementSerializer defaultModelElementSerializer)
+        public SclModelElementSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
         {
-            _modelElementsRegistryService = modelElementsRegistryService;
             _defaultModelElementSerializer = defaultModelElementSerializer;
         }
 
@@ -30,10 +29,10 @@ namespace BISC.Model.Global.Serializators
         public ISclModel DeserializeModelElement(XElement xElement)
         {
             SclModel sclModel = new SclModel();
-            DefaultModelElement defaultModelElement = _defaultModelElementSerializer.DeserializeModelElement(xElement) as DefaultModelElement;
-            sclModel.ModelElementAttributes.AddRange(defaultModelElement.ModelElementAttributes);
-            sclModel.ChildModelElements.AddRange(defaultModelElement.ChildModelElements);
-            sclModel.Namespace = defaultModelElement.Namespace;
+            ModelElement modelElement = _defaultModelElementSerializer.DeserializeModelElement(xElement) as ModelElement;
+            sclModel.ModelElementAttributes.AddRange(modelElement.ModelElementAttributes);
+            sclModel.ChildModelElements.AddRange(modelElement.ChildModelElements);
+            sclModel.Namespace = modelElement.Namespace;
 
             return sclModel;
         }

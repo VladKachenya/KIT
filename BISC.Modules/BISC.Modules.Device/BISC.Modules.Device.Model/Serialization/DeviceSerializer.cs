@@ -8,6 +8,7 @@ using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Global.Model;
 using BISC.Model.Global.Serializators;
 using BISC.Model.Infrastructure;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.Device.Model.Serialization
@@ -33,12 +34,12 @@ namespace BISC.Modules.Device.Model.Serialization
         public IDevice DeserializeModelElement(XElement xElement)
         {
             Model.Device device = new Model.Device();
-            DefaultModelElement defaultModelElement = _defaultModelElementSerializer.DeserializeModelElement(xElement) as DefaultModelElement;
-            device.ModelElementAttributes.AddRange(defaultModelElement.ModelElementAttributes);
-            device.ChildModelElements.AddRange(defaultModelElement.ChildModelElements);
-            device.Namespace = defaultModelElement.Namespace;
-            device.ElementName = defaultModelElement.ElementName;
-            device.Name = defaultModelElement.ModelElementAttributes
+            ModelElement modelElement = _defaultModelElementSerializer.DeserializeModelElement(xElement) as ModelElement;
+            device.ModelElementAttributes.AddRange(modelElement.ModelElementAttributes);
+            device.ChildModelElements.AddRange(modelElement.ChildModelElements);
+            device.Namespace = modelElement.Namespace;
+            device.ElementName = modelElement.ElementName;
+            device.Name = modelElement.ModelElementAttributes
                 .FirstOrDefault((attribute => attribute.Name.LocalName == "name"))?.Value;
 
             return device;
