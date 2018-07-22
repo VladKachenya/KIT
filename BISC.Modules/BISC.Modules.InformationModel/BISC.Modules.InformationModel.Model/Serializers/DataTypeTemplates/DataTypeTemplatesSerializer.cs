@@ -28,7 +28,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
             XElement dataTypeTemplatesElement = new XElement(InfoModelKeys.DataTypeTemplateKeys.DataTypeTemplatesModelItemKey);
             DaTypeSerializer daTypeSerializer = new DaTypeSerializer();
             DoTypeSerializer doTypeSerializer = new DoTypeSerializer();
-            EnumTypeSerializer enumTypeSerializer = new EnumTypeSerializer();
+            EnumTypeSerializer enumTypeSerializer = new EnumTypeSerializer(_defaultModelElementSerializer);
             LNodeTypeSerializer lNodeTypeSerializer = new LNodeTypeSerializer(_defaultModelElementSerializer);
 
             foreach (var lNodeType in dataTypeTemplates.LNodeTypes)
@@ -56,7 +56,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
             IDataTypeTemplates dataTypeTemplates = new Model.DataTypeTemplates.DataTypeTemplates();
             DaTypeSerializer daTypeSerializer = new DaTypeSerializer();
             DoTypeSerializer doTypeSerializer = new DoTypeSerializer();
-            EnumTypeSerializer enumTypeSerializer = new EnumTypeSerializer();
+            EnumTypeSerializer enumTypeSerializer = new EnumTypeSerializer(_defaultModelElementSerializer);
             LNodeTypeSerializer lNodeTypeSerializer = new LNodeTypeSerializer(_defaultModelElementSerializer);
             foreach (var xInnerElement in xElement.Elements())
             {
