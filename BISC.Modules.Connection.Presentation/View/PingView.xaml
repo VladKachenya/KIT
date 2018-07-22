@@ -11,16 +11,17 @@
              MinWidth="300" MinHeight="400">
     <UserControl.Resources>
         <!--Тригер для лампочки пинга-->
+
         <Style x:Key="IsPingStyle" TargetType="Label">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding SelectedItemm.IsPing}" Value="True">
+                <DataTrigger Binding="{Binding IsPing}" Value="True">
                     <Setter Property="Foreground" Value="LightGreen" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding SelectedItemm.IsPing}" Value="False">
-                    <Setter Property="Foreground" Value="Red" />
+                <DataTrigger Binding="{Binding IsPing}" Value="False">
+                    <Setter Property="Foreground" Value="#FFF16565" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding SelectedItemm.IsPing}" Value="{x:Null}">
-                    <Setter Property="Foreground" Value="Yellow" />
+                <DataTrigger Binding="{Binding IsPing}" Value="{x:Null}">
+                    <Setter Property="Foreground" Value="#FFD1D113" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -41,7 +42,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal" Grid.Row="0">
-                    <TextBox FontSize="20" Text="{Binding SelectedItemm.IP}" MinWidth="150"/>
+                    <TextBox FontSize="20" Text="{Binding SelectedItemm}" MinWidth="150"/>
                     <Button Margin="5" Padding="1"
                         Command="{Binding PingCommand}"
                         Style="{DynamicResource MaterialDesignFlatButton}"
@@ -53,13 +54,13 @@
                             <ContentControl ContentTemplate="{DynamicResource BroomIcon}"/>
                         </Button.Content>
                     </Button>
-                    <Label HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Style="{DynamicResource IsPingStyle}">
-                        <Label.Content>
-                            <ContentControl  ContentTemplate="{DynamicResource BlurRadialIcon}"/>
-                        </Label.Content>
-                    </Label>
+                    <materialDesign:Badged Badge="{Binding LastConnections.Count}" 
+                                           Margin="5" Padding="0">
+                        <Button Command="{Binding PingAllCommand}"
+                                Content="PING ALL"
+                                Margin="0"
+                                Padding="2"/>
+                    </materialDesign:Badged>
                 </StackPanel>
                 <ScrollViewer Grid.Row="1"
                               VerticalScrollBarVisibility ="Auto">
@@ -78,8 +79,20 @@
                                             Foreground="Black">
                                         <TextBlock FontSize="14" Text="{Binding IP}"/>
                                     </Button>
+                                    <Button Margin="5" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"
+                                            Command="{Binding PingCommand}"
+                                            Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                            Content="PING"/>
+                                    <Label HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Style="{DynamicResource IsPingStyle}">
+                                        <Label.Content>
+                                            <ContentControl  ContentTemplate="{DynamicResource BlurRadialIcon}"/>
+                                        </Label.Content>
+                                    </Label>
                                     <Button Margin="5" Width="24" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"
-                                                Command="{Binding DeleteItemCommand }">
+                                            Command="{Binding DeleteItemCommand }"
+                                            Style="{DynamicResource MaterialDesignFlatButton}">
                                         <Button.Content>
                                             <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
                                         </Button.Content>

@@ -26,6 +26,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         #region Citor
         public PingItemViewModel(IPingService pingService, ICommandFactory commandFactory, IPingItemsViewModelFactory pingItemsViewModelFactory)
         {
+            _pingItemsViewModelFactory = pingItemsViewModelFactory;
             _pingService = pingService;
             _commandFactory = commandFactory;
             PingCommand = _commandFactory.CreatePresentationCommand(OnPingCommand);
@@ -37,9 +38,10 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         #region private metods
         private void OnItemClickCommand()
         {
+            var clone = (this);
             try
             {
-                SetAsSelectedIP.Invoke(this);
+                SetAsSelectedIP.Invoke(clone);
             }
             catch
             {
@@ -49,8 +51,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
         private async void OnPingCommand()
         {
-            IsPing = null;
-            IsPing = await _pingService.GetPing(IP);
+            await OnPing();
         }
 
         private void OnDeleteItemCommand()
@@ -59,6 +60,16 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             // Разберись как работает Dispose по приложению.
             //this.Dispose();
         }
+        #endregion
+
+        #region Public methods
+
+        public async Task OnPing()
+        {
+            IsPing = null;
+            IsPing = await _pingService.GetPing(IP);
+        }
+
         #endregion
 
         #region Implementation of IPingItemViewModel

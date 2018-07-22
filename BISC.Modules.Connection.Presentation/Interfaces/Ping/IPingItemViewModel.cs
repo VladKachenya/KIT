@@ -16,6 +16,8 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.Ping
         Action<IPingItemViewModel> SetAsSelectedIP { get; set; }
         Action<IPingItemViewModel> DeleteItem { get; set; }
 
+        Task OnPing();
+
         ICommand ItemClickCommand { get; }
         ICommand DeleteItemCommand { get; }
         ICommand PingCommand { get; }

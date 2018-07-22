@@ -14,7 +14,7 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.Ping
         ObservableCollection<IPingItemViewModel> LastConnections  { get; }
         ICommand PingCommand { get; }
         ICommand ClearSelectedIPCommand { get; }
-        ICommand TestCommand { get; }
-        IPingItemViewModel SelectedItemm { get; set; }
+        ICommand PingAllCommand { get; }
+        string SelectedItemm { get; set; }
     }
 }
