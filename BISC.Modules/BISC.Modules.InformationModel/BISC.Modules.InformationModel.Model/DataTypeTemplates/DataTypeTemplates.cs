@@ -13,8 +13,15 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.LNodeType;
 namespace BISC.Modules.InformationModel.Model.DataTypeTemplates
 {
    public class DataTypeTemplates:DefaultModelElement,IDataTypeTemplates
-
     {
+        public DataTypeTemplates()
+        {
+            LNodeTypes=new List<ILNodeType>();
+            DoTypes=new List<IDoType>();
+            DaTypes=new List<IDaType>();
+            EnumTypes=new List<IEnumType>();
+        }
+
         #region Implementation of IDataTypeTemplates
 
         public List<ILNodeType> LNodeTypes { get; }

@@ -44,11 +44,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypeTemplates\DaType\IBda.cs" />
+    <Compile Include="DataTypeTemplates\DoType\IDa.cs" />
+    <Compile Include="DataTypeTemplates\DoType\ISdo.cs" />
+    <Compile Include="DataTypeTemplates\EnumType\IEnumVal.cs" />
     <Compile Include="DataTypeTemplates\IDataTypeTemplates.cs" />
     <Compile Include="DataTypeTemplates\DaType\IDaType.cs" />
     <Compile Include="DataTypeTemplates\DoType\IDoType.cs" />
     <Compile Include="DataTypeTemplates\EnumType\IEnumType.cs" />
     <Compile Include="DataTypeTemplates\IDataTypeTemplatesModelService.cs" />
+    <Compile Include="DataTypeTemplates\LNodeType\IDo.cs" />
     <Compile Include="DataTypeTemplates\LNodeType\ILNodeType.cs" />
     <Compile Include="Elements\ILogicalNode.cs" />
     <Compile Include="InfoModelKeys.cs" />

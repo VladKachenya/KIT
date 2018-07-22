@@ -45,11 +45,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTypeTemplates\DataTypeTemplates.cs" />
+    <Compile Include="DataTypeTemplates\DaType\Bda.cs" />
+    <Compile Include="DataTypeTemplates\DaType\DaType.cs" />
+    <Compile Include="DataTypeTemplates\DoType\Da.cs" />
+    <Compile Include="DataTypeTemplates\DoType\DoType.cs" />
+    <Compile Include="DataTypeTemplates\DoType\Sdo.cs" />
+    <Compile Include="DataTypeTemplates\EnumType\EnumType.cs" />
+    <Compile Include="DataTypeTemplates\EnumType\EnumVal.cs" />
+    <Compile Include="DataTypeTemplates\LNodeType\Do.cs" />
+    <Compile Include="DataTypeTemplates\LNodeType\LNodeType.cs" />
     <Compile Include="Elements\InformationModelElementBase.cs" />
     <Compile Include="Module\InformationModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers\DataTypeTemplates\DataTypeTemplatesSerializer.cs" />
-    <Compile Include="Serializers\DataTypeTemplates\DoTypesSerializer.cs" />
+    <Compile Include="Serializers\DataTypeTemplates\DaTypeSerializer.cs" />
+    <Compile Include="Serializers\DataTypeTemplates\DoTypeSerializer.cs" />
+    <Compile Include="Serializers\DataTypeTemplates\EnumTypeSerializer.cs" />
+    <Compile Include="Serializers\DataTypeTemplates\LNodeTypeSerializer.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

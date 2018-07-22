@@ -9,9 +9,9 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 
 namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
 {
-   public class DoTypesSerializer:IModelElementSerializer<IDoType>
+   public class DoTypeSerializer:IModelElementSerializer<IDoType>
     {
-        public DoTypesSerializer()
+        public DoTypeSerializer()
         {
             
         }

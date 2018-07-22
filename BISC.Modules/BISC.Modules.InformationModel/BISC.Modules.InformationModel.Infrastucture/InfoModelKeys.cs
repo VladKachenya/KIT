@@ -11,7 +11,12 @@ namespace BISC.Modules.InformationModel.Infrastucture
 
         public static class DataTypeTemplateKeys
         {
-            public static string DataTypeTemplatesModelItemKey = "DataTypeTemplates";
+            public  const string DataTypeTemplatesModelItemKey = "DataTypeTemplates";
+            public const string LNodeTypeModelItemKey = "LNodeType";
+            public const string DOTypeModelItemKey = "DOType";
+            public const string DATypeModelItemKey = "DAType";
+            public const string EnumTypeModelItemKey = "EnumType";
+
         }
 
     }
