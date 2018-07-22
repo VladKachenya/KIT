@@ -8,6 +8,7 @@ using BISC.Presentation.Infrastructure.Factories;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,14 +25,21 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         private string _selectedItemm;
         private Action<IPingItemViewModel> setItem;
         private Action<IPingItemViewModel> deleteItem;
+        private int sizeLastConnectionColection;
         #endregion
 
         #region Citor
         public PingViewModel(ICommandFactory commandFactory, IConfigurationService configurationService,
             IPingItemsViewModelFactory pingItemsViewModelFactory)
         {
+            sizeLastConnectionColection = 10;
             setItem = ((x) => SelectedItemm = x.IP);
-            deleteItem = ((x) => LastConnections.Remove(x));
+            deleteItem = (
+                (x) => 
+                {
+                    LastConnections.Remove(x);
+                    SaveChangesInConfig();
+                });
             _pingItemsViewModelFactory = pingItemsViewModelFactory;
             _configurationService = configurationService;
             LastConnections = _pingItemsViewModelFactory.GetPingViewModelCollection(_configurationService.LastIpAddresses, setItem, deleteItem);
@@ -40,6 +48,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             ClearSelectedIPCommand = _commandFactory.CreatePresentationCommand(OnClearSelectedIPCommand);
             PingAllCommand = _commandFactory.CreatePresentationCommand(OnPingAllCommand);
             OnClearSelectedIPCommand();
+            LastConnections.CollectionChanged += ChengCollection;
         }
         #endregion
 
@@ -50,7 +59,20 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             LastConnections.Remove(toBeRemoved);
             var newItem = _pingItemsViewModelFactory.GetPingItemViewModel(SelectedItemm, setItem, deleteItem);
             LastConnections.Insert(0, newItem);
+            SaveChangesInConfig();
             await newItem.OnPing();
+
+        }
+
+        private void SaveChangesInConfig()
+        {
+            var lastOpenedFiles = new List<string>();
+            foreach (var lastOpenedFile in LastConnections)
+            {
+                lastOpenedFiles.Add(lastOpenedFile.IP);
+            }
+
+            _configurationService.LastIpAddresses = lastOpenedFiles;
         }
 
         private async void OnPingAllCommand()
@@ -61,9 +83,19 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             await Task.WhenAll(tasks);
         }
 
-    private void OnClearSelectedIPCommand()
+        private void OnClearSelectedIPCommand()
         {
             SelectedItemm = "1.0.0.0";
+        }
+
+
+        // Работать тут.!!!!!!!!!!!!
+        private void ChengCollection(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (LastConnections.Count <= sizeLastConnectionColection)
+                return;
+            for (int i = sizeLastConnectionColection; i < LastConnections.Count; i++)
+                LastConnections.RemoveAt(i);
         }
         #endregion
 
