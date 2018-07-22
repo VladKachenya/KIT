@@ -55,15 +55,15 @@
                             <ContentControl ContentTemplate="{DynamicResource BroomIcon}"/>
                         </Button.Content>
                     </Button>
-                    <controls:BadgedControl BadgeContent="{Binding LastConnections.Count}"
-                                            Margin="5" Padding="0">
+                    <controls:BadgedControl 
+                        BadgeContent="{Binding LastConnections.Count}"
+                        Margin="5" Padding="0">
                         <controls:BadgedControl.Content>
-    <Button Command="{Binding PingAllCommand}"
-                                Content="PING ALL"
-                                Margin="0"
-                                Padding="2"/>
+                            <Button Command="{Binding PingAllCommand}"
+                                    Content="PING ALL"
+                                    Margin="0"
+                                    Padding="2"/>
                         </controls:BadgedControl.Content>
-                    
                     </controls:BadgedControl>
                 </StackPanel>
                 <ScrollViewer Grid.Row="1"
