@@ -10,6 +10,11 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DaType
 {
   public  class Bda:ModelElement,IBda
     {
+        public Bda()
+        {
+            ElementName = "BDA";
+        }
+
         public string Name { get; set; }
         public string BType { get; set; }
         public string Type { get; set; }

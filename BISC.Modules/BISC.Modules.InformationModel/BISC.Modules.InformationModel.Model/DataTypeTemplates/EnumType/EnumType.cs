@@ -13,6 +13,7 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType
         public EnumType()
         {
             EnumValList=new List<IEnumVal>();
+            ElementName = "EnumType";
         }
         public string Id { get; set; }
         public List<IEnumVal> EnumValList { get; }

@@ -56,6 +56,8 @@
     <Compile Include="DataTypeTemplates\LNodeType\LNodeType.cs" />
     <Compile Include="Module\InformationModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializers\DataTypeTemplates\BdaSerializer.cs" />
+    <Compile Include="Serializers\DataTypeTemplates\DaSerializer.cs" />
     <Compile Include="Serializers\DataTypeTemplates\DataTypeTemplatesSerializer.cs" />
     <Compile Include="Serializers\DataTypeTemplates\DaTypeSerializer.cs" />
     <Compile Include="Serializers\DataTypeTemplates\DoSerializer.cs" />
@@ -63,6 +65,8 @@
     <Compile Include="Serializers\DataTypeTemplates\EnumTypeSerializer.cs" />
     <Compile Include="Serializers\DataTypeTemplates\EnumValSerializer.cs" />
     <Compile Include="Serializers\DataTypeTemplates\LNodeTypeSerializer.cs" />
+    <Compile Include="Serializers\DataTypeTemplates\SdoSerializer.cs" />
+    <Compile Include="Services\DataTypeTemplatesModelService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Elements\" />

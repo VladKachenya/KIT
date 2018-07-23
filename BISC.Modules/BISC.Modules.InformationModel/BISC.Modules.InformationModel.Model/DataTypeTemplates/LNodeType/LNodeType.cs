@@ -13,8 +13,11 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.LNodeType
         public LNodeType()
         {
             DoList=new List<IDo>();
+            ElementName = "LNodeType";
         }
         public string Id { get; set; }
+        public string LnClass { get; set; }
+
         public List<IDo> DoList { get; }
     }
 }

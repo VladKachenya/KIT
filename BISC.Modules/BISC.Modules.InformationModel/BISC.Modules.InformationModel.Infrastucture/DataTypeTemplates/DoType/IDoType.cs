@@ -7,8 +7,8 @@ namespace BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType
     public interface IDoType : IModelElement
     {
         string Id { get; set; }
-        string LnClass { get; set; }
+        string Cdc { get; set; }
         List<IDa> DaList { get; }
-        List<ISdo> SdoList { get; set; }
+        List<ISdo> SdoList { get;  }
     }
 }

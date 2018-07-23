@@ -10,6 +10,10 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.LNodeType
 {
     public class Do:ModelElement,IDo
     {
+        public Do()
+        {
+            ElementName = "DO";
+        }
         public string Name { get; set; }
         public string Type { get; set; }
     }

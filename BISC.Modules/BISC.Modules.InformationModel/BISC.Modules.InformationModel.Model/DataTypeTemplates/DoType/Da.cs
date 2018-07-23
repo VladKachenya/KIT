@@ -10,6 +10,10 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType
 {
    public class Da:ModelElement,IDa
     {
+        public Da()
+        {
+            ElementName = "DA";
+        }
         public string Name { get; set; }
         public string BType { get; set; }
         public string Fc { get; set; }

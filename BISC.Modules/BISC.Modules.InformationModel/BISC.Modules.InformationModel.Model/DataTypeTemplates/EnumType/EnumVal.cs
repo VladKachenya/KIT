@@ -10,6 +10,10 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType
 {
    public class EnumVal:ModelElement, IEnumVal
     {
+        public EnumVal()
+        {
+            ElementName = "EnumVal";
+        }
         public int Ord { get; set; }
         public string Value { get; set; }
     }

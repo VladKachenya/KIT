@@ -13,6 +13,7 @@ namespace BISC.Model.Global.Common
     {
         public static string GetXAttribute(this XElement element, string attributeName)
         {
+            if (!element.Attributes().Any((attribute => attribute.Name.LocalName == attributeName))) return null;
             return element.Attribute(attributeName).Value;
         }
         public static XElement SetXAttribute(this XElement element, string attributeName, string attributeValue)

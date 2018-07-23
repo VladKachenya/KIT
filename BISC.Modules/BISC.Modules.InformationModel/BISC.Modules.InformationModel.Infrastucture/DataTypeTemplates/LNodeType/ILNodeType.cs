@@ -7,6 +7,8 @@ namespace BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.LNodeTyp
     public interface ILNodeType : IModelElement
     {
         string Id { get; set; }
+        string LnClass { get; set; }
+
         List<IDo> DoList { get; }
     }
 }

@@ -10,6 +10,10 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType
 {
    public class Sdo:ModelElement,ISdo
     {
+        public Sdo()
+        {
+            ElementName = "SDO";
+        }
         public string Name { get; set; }
         public string Type { get; set; }
     }

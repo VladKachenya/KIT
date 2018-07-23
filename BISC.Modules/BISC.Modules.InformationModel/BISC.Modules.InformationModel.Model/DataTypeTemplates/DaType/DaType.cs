@@ -13,6 +13,7 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DaType
         public DaType()
         {
             Bdas=new List<IBda>();
+            ElementName = "DAType";
         }
         public string Id { get; set; }
         public List<IBda> Bdas { get; }
