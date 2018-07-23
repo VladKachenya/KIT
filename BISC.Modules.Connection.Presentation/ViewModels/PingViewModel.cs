@@ -4,6 +4,7 @@ using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Connection.Presentation.Interfaces.Factorys;
 using BISC.Modules.Connection.Presentation.Interfaces.Ping;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
 using System;
 using System.Collections.Generic;
@@ -22,29 +23,36 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         private ICommandFactory _commandFactory;
         private IConfigurationService _configurationService;
         private IPingItemsViewModelFactory _pingItemsViewModelFactory;
-        private string _selectedItemm;
+        private IIpValidationService _ipValidationService;
         private Action<IPingItemViewModel> setItem;
         private Action<IPingItemViewModel> deleteItem;
-        private int sizeLastConnectionColection = 10; // Количество отображаемых IP
-        private int[] _iP = new int[4];
+        private int sizeLastConnectionColection = 20; // Количество IP
+        private string[] _iP = new string[4];
         #endregion
 
         #region Citor
         public PingViewModel(ICommandFactory commandFactory, IConfigurationService configurationService,
-            IPingItemsViewModelFactory pingItemsViewModelFactory)
+            IPingItemsViewModelFactory pingItemsViewModelFactory, IIpValidationService ipValidationService)
         {
-            setItem = ((x) => SelectedItemm = x.IP);
+            setItem = (
+                (x) => 
+                {
+                    SetIntIP(x.IP);
+                });
+
             deleteItem = (
                 (x) =>
                 {
                     LastConnections.Remove(x);
                     SaveChangesInConfig();
                 });
+
+            _ipValidationService = ipValidationService;
             _pingItemsViewModelFactory = pingItemsViewModelFactory;
             _configurationService = configurationService;
             LastConnections = _pingItemsViewModelFactory.GetPingViewModelCollection(_configurationService.LastIpAddresses, setItem, deleteItem);
             _commandFactory = commandFactory;
-            PingCommand = _commandFactory.CreatePresentationCommand(OnPingCommand);
+            PingCommand = _commandFactory.CreatePresentationCommand(OnPingCommand, OnPingCanExecute);
             ClearSelectedIPCommand = _commandFactory.CreatePresentationCommand(OnClearSelectedIPCommand);
             PingAllCommand = _commandFactory.CreatePresentationCommand(OnPingAllCommand);
             OnClearSelectedIPCommand();
@@ -55,14 +63,37 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         #region private methods
         private async void OnPingCommand()
         {
-            var toBeRemoved = LastConnections.FirstOrDefault((x) => SelectedItemm == x.IP);
+            var toBeRemoved = LastConnections.FirstOrDefault((x) => FullIp == x.IP);
             LastConnections.Remove(toBeRemoved);
-            var newItem = _pingItemsViewModelFactory.GetPingItemViewModel(SelectedItemm, setItem, deleteItem);
+            var newItem = _pingItemsViewModelFactory.GetPingItemViewModel(FullIp, setItem, deleteItem);
             LastConnections.Insert(0, newItem);
             ChengCollection();
             SaveChangesInConfig();
             await newItem.OnPing();
+            
+        }
 
+        private bool OnPingCanExecute()
+        {
+            //return _ipValidationService.IsSimplifiedIpAddress(FullIp);
+            return true;
+        }
+
+        private async void OnPingAllCommand()
+        {
+            Task[] tasks = new Task[LastConnections.Count];
+            for (int i = 0; i < LastConnections.Count; i++)
+                tasks[i] = LastConnections[i].OnPing();
+            await Task.WhenAll(tasks);
+        }
+
+        /// Ту необходимо обновлять кнопку при доступности.
+        private void OnClearSelectedIPCommand()
+        {
+            IP0 = String.Empty;
+            IP1 = String.Empty;
+            IP2 = String.Empty;
+            IP3 = String.Empty;
         }
 
         private void SaveChangesInConfig()
@@ -76,29 +107,16 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             _configurationService.LastIpAddresses = lastOpenedFiles;
         }
 
-        private async void OnPingAllCommand()
-        {
-            Task[] tasks = new Task[LastConnections.Count];
-            for (int i = 0; i < LastConnections.Count; i++)
-                tasks[i] = LastConnections[i].OnPing();
-            await Task.WhenAll(tasks);
-        }
+       
 
-        private void OnClearSelectedIPCommand()
+        private void SetIntIP(string IP)
         {
-            SelectedItemm = "1.0.0.0";
-        }
+            string [] ips = IP.Split('.');
+            IP0 = ips[0];
+            IP1 = ips[1];
+            IP2 = ips[2];
+            IP3 = ips[3];
 
-        private void SetStringIP( )
-        {
-            SelectedItemm = _iP[0].ToString() + '.' + _iP[1].ToString() + '.' + _iP[2].ToString() + '.' + _iP[3].ToString();
-        }
-
-        private void SetIntIP()
-        {
-            string [] ips =  SelectedItemm.Split('.');
-            for (int i = 0; i < 4; i++)
-                _iP[i] = Convert.ToInt32(ips[i]); 
         }
 
         private void ChengCollection()
@@ -118,18 +136,12 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         public ICommand PingAllCommand { get; }
 
         public ICommand ClearSelectedIPCommand { get; }
-        public string SelectedItemm
+        public string FullIp
         {
-            get { return _selectedItemm; }
-            set
-            {
-                _selectedItemm = value;
-                SetIntIP();
-                OnPropertyChanged();
-            }
+            get { return IP0 + '.' + IP1 + '.' + IP2 + '.' + IP3; }
         }
 
-        public int IP0
+        public string IP0
         {
             get
             {
@@ -137,13 +149,23 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             }
             set
             {
-                _iP[0] = value;
-                SetStringIP();
+                int intVal = 0;
+                if (int.TryParse(value, out intVal))
+                {
+                    if ((intVal <= 255) && (intVal >= 0)) _iP[0] = intVal.ToString();
+                    else if (intVal > 255) _iP[0] = "255";
+                    else if (intVal < 0) _iP[0] = "1";
+                }
+                else if (String.IsNullOrEmpty(value))
+                {
+                    _iP[0] = string.Empty;
+                }
+                (PingCommand as IPresentationCommand).RaiseCanExecute();
                 OnPropertyChanged();
             }
         }
 
-        public int IP1
+        public string IP1
         {
             get
             {
@@ -151,13 +173,23 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             }
             set
             {
-                _iP[1] = value;
-                SetStringIP();
+                int intVal = 0;
+                if (int.TryParse(value, out intVal))
+                {
+                    if ((intVal <= 255) && (intVal >= 0)) _iP[1] = intVal.ToString();
+                    else if (intVal > 255) _iP[1] = "255";
+                    else if (intVal < 0) _iP[1] = "0";
+                }
+                else if (String.IsNullOrEmpty(value))
+                {
+                    _iP[1] = string.Empty;
+                }
+                (PingCommand as IPresentationCommand).RaiseCanExecute();
                 OnPropertyChanged();
             }
         }
 
-        public int IP2
+        public string IP2
         {
             get
             {
@@ -165,13 +197,23 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             }
             set
             {
-                _iP[2] = value;
-                SetStringIP();
+                int intVal = 0;
+                if (int.TryParse(value, out intVal))
+                {
+                    if ((intVal <= 255) && (intVal >= 0)) _iP[2] = intVal.ToString();
+                    else if (intVal > 255) _iP[2] = "255";
+                    else if (intVal < 0) _iP[2] = "0";
+                }
+                else if (String.IsNullOrEmpty(value))
+                {
+                    _iP[2] = string.Empty;
+                }
+                (PingCommand as IPresentationCommand).RaiseCanExecute();
                 OnPropertyChanged();
             }
         }
 
-        public int IP3
+        public string IP3
         {
             get
             {
@@ -179,8 +221,18 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             }
             set
             {
-                _iP[3] = value;
-                SetStringIP();
+                int intVal = 0;
+                if (int.TryParse(value, out intVal))
+                {
+                    if ((intVal <= 255) && (intVal >= 0)) _iP[3] = intVal.ToString();
+                    else if (intVal > 255) _iP[3] = "255";
+                    else if (intVal < 0) _iP[3] = "0";
+                }
+                else if (String.IsNullOrEmpty(value))
+                {
+                    _iP[3] = string.Empty;
+                }
+                (PingCommand as IPresentationCommand).RaiseCanExecute();
                 OnPropertyChanged();
             }
         }

@@ -43,13 +43,13 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal" Grid.Row="0">
-                    <TextBox FontSize="20" Text="{Binding IP0}" Width="35"/>
+                    <TextBox FontSize="20" Text="{Binding IP0, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"/>
                     <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
-                    <TextBox FontSize="20" Text="{Binding IP1}" Width="35"/>
+                    <TextBox FontSize="20" Text="{Binding IP1, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"/>
                     <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
-                    <TextBox FontSize="20" Text="{Binding IP2}" Width="35"/>
+                    <TextBox FontSize="20" Text="{Binding IP2, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"/>
                     <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
-                    <TextBox FontSize="20" Text="{Binding IP3}" Width="35"/>
+                    <TextBox FontSize="20" Text="{Binding IP3, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"/>
                     <Button Margin="5" Padding="1"
                         Command="{Binding PingCommand}"
                         Style="{DynamicResource MaterialDesignFlatButton}"
