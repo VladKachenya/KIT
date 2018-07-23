@@ -25,17 +25,17 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         private string _selectedItemm;
         private Action<IPingItemViewModel> setItem;
         private Action<IPingItemViewModel> deleteItem;
-        private int sizeLastConnectionColection;
+        private int sizeLastConnectionColection = 10; // Количество отображаемых IP
+        private int[] _iP = new int[4];
         #endregion
 
         #region Citor
         public PingViewModel(ICommandFactory commandFactory, IConfigurationService configurationService,
             IPingItemsViewModelFactory pingItemsViewModelFactory)
         {
-            sizeLastConnectionColection = 10;
             setItem = ((x) => SelectedItemm = x.IP);
             deleteItem = (
-                (x) => 
+                (x) =>
                 {
                     LastConnections.Remove(x);
                     SaveChangesInConfig();
@@ -48,7 +48,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             ClearSelectedIPCommand = _commandFactory.CreatePresentationCommand(OnClearSelectedIPCommand);
             PingAllCommand = _commandFactory.CreatePresentationCommand(OnPingAllCommand);
             OnClearSelectedIPCommand();
-            LastConnections.CollectionChanged += ChengCollection;
+            ChengCollection();
         }
         #endregion
 
@@ -59,6 +59,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             LastConnections.Remove(toBeRemoved);
             var newItem = _pingItemsViewModelFactory.GetPingItemViewModel(SelectedItemm, setItem, deleteItem);
             LastConnections.Insert(0, newItem);
+            ChengCollection();
             SaveChangesInConfig();
             await newItem.OnPing();
 
@@ -88,9 +89,19 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             SelectedItemm = "1.0.0.0";
         }
 
+        private void SetStringIP( )
+        {
+            SelectedItemm = _iP[0].ToString() + '.' + _iP[1].ToString() + '.' + _iP[2].ToString() + '.' + _iP[3].ToString();
+        }
 
-        // Работать тут.!!!!!!!!!!!!
-        private void ChengCollection(object sender, NotifyCollectionChangedEventArgs e)
+        private void SetIntIP()
+        {
+            string [] ips =  SelectedItemm.Split('.');
+            for (int i = 0; i < 4; i++)
+                _iP[i] = Convert.ToInt32(ips[i]); 
+        }
+
+        private void ChengCollection()
         {
             if (LastConnections.Count <= sizeLastConnectionColection)
                 return;
@@ -100,22 +111,80 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         #endregion
 
         #region Implementation of IPingViewModel
+        
+        public ObservableCollection<IPingItemViewModel> LastConnections { get; }
+        public ICommand PingCommand { get; }
+
+        public ICommand PingAllCommand { get; }
+
+        public ICommand ClearSelectedIPCommand { get; }
         public string SelectedItemm
         {
             get { return _selectedItemm; }
             set
             {
                 _selectedItemm = value;
+                SetIntIP();
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<IPingItemViewModel> LastConnections { get; }
-        public ICommand PingCommand { get; }
 
-        public ICommand PingAllCommand { get;}
+        public int IP0
+        {
+            get
+            {
+                return _iP[0];
+            }
+            set
+            {
+                _iP[0] = value;
+                SetStringIP();
+                OnPropertyChanged();
+            }
+        }
 
-        public ICommand ClearSelectedIPCommand { get; }
-        
+        public int IP1
+        {
+            get
+            {
+                return _iP[1];
+            }
+            set
+            {
+                _iP[1] = value;
+                SetStringIP();
+                OnPropertyChanged();
+            }
+        }
+
+        public int IP2
+        {
+            get
+            {
+                return _iP[2];
+            }
+            set
+            {
+                _iP[2] = value;
+                SetStringIP();
+                OnPropertyChanged();
+            }
+        }
+
+        public int IP3
+        {
+            get
+            {
+                return _iP[3];
+            }
+            set
+            {
+                _iP[3] = value;
+                SetStringIP();
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
     }

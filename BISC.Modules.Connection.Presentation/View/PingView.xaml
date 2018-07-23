@@ -43,7 +43,13 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal" Grid.Row="0">
-                    <TextBox FontSize="20" Text="{Binding SelectedItemm}" MinWidth="150"/>
+                    <TextBox FontSize="20" Text="{Binding IP0}" Width="35"/>
+                    <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
+                    <TextBox FontSize="20" Text="{Binding IP1}" Width="35"/>
+                    <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
+                    <TextBox FontSize="20" Text="{Binding IP2}" Width="35"/>
+                    <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
+                    <TextBox FontSize="20" Text="{Binding IP3}" Width="35"/>
                     <Button Margin="5" Padding="1"
                         Command="{Binding PingCommand}"
                         Style="{DynamicResource MaterialDesignFlatButton}"

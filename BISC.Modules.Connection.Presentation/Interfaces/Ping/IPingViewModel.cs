@@ -16,5 +16,10 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.Ping
         ICommand ClearSelectedIPCommand { get; }
         ICommand PingAllCommand { get; }
         string SelectedItemm { get; set; }
+        int IP0 { get; set; }
+        int IP1 { get; set; }
+        int IP2 { get; set; }
+        int IP3 { get; set; }
+
     }
 }
