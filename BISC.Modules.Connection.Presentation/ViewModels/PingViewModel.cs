@@ -99,6 +99,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         }
         #endregion
 
+        #region Implementation of IPingViewModel
         public string SelectedItemm
         {
             get { return _selectedItemm; }
@@ -108,8 +109,6 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        #region Implementation of IPingAddingViewModel
         public ObservableCollection<IPingItemViewModel> LastConnections { get; }
         public ICommand PingCommand { get; }
 
