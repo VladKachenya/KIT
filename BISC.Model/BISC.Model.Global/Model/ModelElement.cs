@@ -17,6 +17,7 @@ namespace BISC.Model.Global.Model
             ChildModelElements=new List<IModelElement>();
         }
         public string ElementName { get; set; }
+        public IModelElement ParentModelElement { get; set; }
         public string Namespace { get; set; }
         public virtual List<IModelElement> ChildModelElements { get;}
         public List<XAttribute> ModelElementAttributes { get; }

@@ -69,6 +69,7 @@ namespace BISC.Model.Global.Serializators
                     .GetModelElementSerializatorByKey(element.Name.LocalName).DeserializeModelElement(element));
             }
 
+            modelElement.ChildModelElements.ForEach((element =>element.ParentModelElement=modelElement ));
             return modelElement;
         }
 

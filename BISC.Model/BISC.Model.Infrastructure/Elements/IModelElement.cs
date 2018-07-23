@@ -9,5 +9,6 @@ namespace BISC.Model.Infrastructure.Elements
         List<IModelElement> ChildModelElements { get; }
         List<XAttribute> ModelElementAttributes { get; }
         string ElementName { get; }
+        IModelElement ParentModelElement { get; set; }
     }
 }

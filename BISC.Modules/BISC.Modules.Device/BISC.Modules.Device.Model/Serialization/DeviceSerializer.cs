@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using BISC.Infrastructure.Global.Modularity;
+using BISC.Model.Global.Common;
 using BISC.Model.Global.Model;
 using BISC.Model.Global.Serializators;
 using BISC.Model.Infrastructure;
@@ -27,20 +28,15 @@ namespace BISC.Modules.Device.Model.Serialization
         public XElement SerializeModelElement(IModelElement modelElement)
         {
             XElement xElement= _defaultModelElementSerializer.SerializeModelElement(modelElement);
-            xElement.SetAttributeValue("name",(modelElement as IDevice)?.Name);
+            xElement.SetXAttribute("name",(modelElement as IDevice)?.Name);
             return xElement;
         }
 
         public IDevice DeserializeModelElement(XElement xElement)
         {
             Model.Device device = new Model.Device();
-            ModelElement modelElement = _defaultModelElementSerializer.DeserializeModelElement(xElement) as ModelElement;
-            device.ModelElementAttributes.AddRange(modelElement.ModelElementAttributes);
-            device.ChildModelElements.AddRange(modelElement.ChildModelElements);
-            device.Namespace = modelElement.Namespace;
-            device.ElementName = modelElement.ElementName;
-            device.Name = modelElement.ModelElementAttributes
-                .FirstOrDefault((attribute => attribute.Name.LocalName == "name"))?.Value;
+            _defaultModelElementSerializer.FillDeserialisedModelElement(device, xElement);
+            device.Name = xElement.GetXAttribute("name");
 
             return device;
         }

@@ -18,6 +18,7 @@ namespace BISC.Model.Global.Common
         }
         public static XElement SetXAttribute(this XElement element, string attributeName, string attributeValue)
         {
+            if (attributeValue == null) return element;
             element.SetAttributeValue(attributeName, attributeValue);
             return element;
         }
