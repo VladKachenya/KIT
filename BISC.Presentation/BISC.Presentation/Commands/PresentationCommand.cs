@@ -26,7 +26,8 @@ namespace BISC.Presentation.Commands
 
         public void RaiseCanExecute()
         {
-            _delegateCommand.RaiseCanExecuteChanged();
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            //_delegateCommand.RaiseCanExecuteChanged();
         }
 
         #endregion
@@ -65,7 +66,8 @@ namespace BISC.Presentation.Commands
 
         public void RaiseCanExecute()
         {
-            _delegateCommand.RaiseCanExecuteChanged();
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            //_delegateCommand.RaiseCanExecuteChanged();
         }
 
         #endregion
