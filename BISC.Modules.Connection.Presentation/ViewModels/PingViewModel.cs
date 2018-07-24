@@ -63,11 +63,15 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         #region private methods
         private async void OnPingCommand()
         {
-            var toBeRemoved = LastConnections.FirstOrDefault((x) => FullIp == x.IP);     
+            IPingItemViewModel toBeRemoved = null;
+            do
+            {
+                toBeRemoved = LastConnections.FirstOrDefault((x) => FullIp == x.IP);
+                LastConnections.Remove(toBeRemoved);
+            } while (toBeRemoved != null);
             var newItem = _pingItemsViewModelFactory.GetPingItemViewModel(FullIp, setItem, deleteItem);
-            await newItem.OnPing();
-            LastConnections.Remove(toBeRemoved);
             LastConnections.Insert(0, newItem);
+            await newItem.OnPing(); // Тут возможно как то стоит обробатывать исключения 
             ChengCollection();
             SaveChangesInConfig();
         }

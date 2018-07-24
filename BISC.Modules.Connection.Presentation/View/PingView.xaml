@@ -43,13 +43,17 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal" Grid.Row="0">
-                    <TextBox FontSize="20" Text="{Binding IP0, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"/>
+                    <TextBox FontSize="20" Text="{Binding IP0, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
+                             Name="IP0" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp"  TabIndex="1"/>
                     <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
-                    <TextBox FontSize="20" Text="{Binding IP1, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"/>
+                    <TextBox FontSize="20" Text="{Binding IP1, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
+                             Name="IP1" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp"  TabIndex="2"/>
                     <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
-                    <TextBox FontSize="20" Text="{Binding IP2, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"/>
+                    <TextBox FontSize="20" Text="{Binding IP2, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
+                             Name="IP2" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp"  TabIndex="3"/>
                     <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
-                    <TextBox FontSize="20" Text="{Binding IP3, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"/>
+                    <TextBox FontSize="20" Text="{Binding IP3, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
+                             Name="IP3" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp"  TabIndex="4"/>
                     <Button Margin="5" Padding="1"
                         Command="{Binding PingCommand}"
                         Style="{DynamicResource MaterialDesignFlatButton}"
@@ -97,7 +101,7 @@
                                         VerticalAlignment="Center"
                                         Style="{DynamicResource IsPingStyle}">
                                         <Label.Content>
-                                            <ContentControl  ContentTemplate="{DynamicResource BlurRadialIcon}"/>
+                                            <ContentControl  ContentTemplate="{DynamicResource Bullseye}"/>
                                         </Label.Content>
                                     </Label>
                                     <Button Margin="5" Width="24" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"
