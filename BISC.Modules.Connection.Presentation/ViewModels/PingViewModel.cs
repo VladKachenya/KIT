@@ -63,20 +63,18 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         #region private methods
         private async void OnPingCommand()
         {
-            var toBeRemoved = LastConnections.FirstOrDefault((x) => FullIp == x.IP);
-            LastConnections.Remove(toBeRemoved);
+            var toBeRemoved = LastConnections.FirstOrDefault((x) => FullIp == x.IP);     
             var newItem = _pingItemsViewModelFactory.GetPingItemViewModel(FullIp, setItem, deleteItem);
+            await newItem.OnPing();
+            LastConnections.Remove(toBeRemoved);
             LastConnections.Insert(0, newItem);
             ChengCollection();
             SaveChangesInConfig();
-            await newItem.OnPing();
-            
         }
 
         private bool OnPingCanExecute()
         {
-            //return _ipValidationService.IsSimplifiedIpAddress(FullIp);
-            return true;
+            return _ipValidationService.IsSimplifiedIpAddress(FullIp);
         }
 
         private async void OnPingAllCommand()
@@ -152,9 +150,9 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
                 int intVal = 0;
                 if (int.TryParse(value, out intVal))
                 {
-                    if ((intVal <= 255) && (intVal >= 0)) _iP[0] = intVal.ToString();
+                    if ((intVal <= 255) && (intVal >= 1)) _iP[0] = intVal.ToString();
                     else if (intVal > 255) _iP[0] = "255";
-                    else if (intVal < 0) _iP[0] = "1";
+                    else if (intVal < 1) _iP[0] = "1";
                 }
                 else if (String.IsNullOrEmpty(value))
                 {
