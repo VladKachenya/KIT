@@ -50,15 +50,15 @@ namespace BISC.Modules.Connection.Model.Services
             int timeout = 1000;
             string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
             byte[] buffer = Encoding.ASCII.GetBytes(data);
-            try
-            {
-                pinger.SendAsync(ip, timeout, buffer, pingOptions, waiter);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-
+            //try
+            //{
+            //    pinger.SendAsync(ip, timeout, buffer, pingOptions, waiter);
+            //}
+            //catch (Exception e)
+            //{
+            //    MessageBox.Show(e.Message);
+            //}
+            pinger.SendAsync(ip, timeout, buffer, pingOptions, waiter);
             await semaphoreSlim.WaitAsync();
             return isPing;
         }
