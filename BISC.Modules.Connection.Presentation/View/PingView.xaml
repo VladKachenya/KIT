@@ -93,15 +93,18 @@
                                             Foreground="Black">
                                         <TextBlock FontSize="14" Text="{Binding IP}"/>
                                     </Button>
-                                    <Button Margin="5" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"
+                                    <Button Margin="5" Height="24" Grid.Column="1" Padding="1"  ToolTip="PING устройства"
                                             Command="{Binding PingCommand}"
                                             Style="{StaticResource MaterialDesignRaisedLightButton}"
                                             Content="PING"/>
                                     <Label HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Style="{DynamicResource IsPingStyle}">
+                                        <Label.ToolTip>
+                                            <ToolTip Content="{Binding ForToolTip}"></ToolTip>
+                                        </Label.ToolTip>
                                         <Label.Content>
-                                            <ContentControl  ContentTemplate="{DynamicResource Bullseye}"/>
+                                            <ContentControl  ContentTemplate="{DynamicResource BlurRadialIcon}"/>
                                         </Label.Content>
                                     </Label>
                                     <Button Margin="5" Width="24" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"

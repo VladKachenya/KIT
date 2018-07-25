@@ -16,6 +16,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
     {
         #region private filds
         private string _ip;
+        private string forToolTip;
         private IPingService _pingService;
         private bool? _isPing;
         private ICommandFactory _commandFactory;
@@ -32,16 +33,16 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             PingCommand = _commandFactory.CreatePresentationCommand(OnPingCommand);
             DeleteItemCommand = _commandFactory.CreatePresentationCommand(OnDeleteItemCommand);
             ItemClickCommand = _commandFactory.CreatePresentationCommand(OnItemClickCommand);
+            IsPing = null;
         }
         #endregion
 
         #region private metods
         private void OnItemClickCommand()
         {
-            var clone = (this);
             try
             {
-                SetAsSelectedIP.Invoke(clone);
+                SetAsSelectedIP.Invoke(this);
             }
             catch
             {
@@ -67,7 +68,23 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         public async Task OnPing()
         {
             IsPing = null;
-            IsPing = await _pingService.GetPing(IP);
+            try
+            {
+                IsPing = await _pingService.GetPing(IP);
+                if (IsPing == true)
+                {
+                    ForToolTip = "PING прошёл успешно";
+                }
+                else
+                {
+                    ForToolTip = "PING прошёл неуспешно";
+                }
+            }
+            catch (Exception ex)
+            {
+                IsPing = false;
+                ForToolTip = ex.Message;
+            }
         }
 
         #endregion
@@ -83,11 +100,23 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             }
         }
 
+        public string ForToolTip
+        {
+            get { return forToolTip; }
+            set
+            {
+                forToolTip = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool? IsPing
         {
             get { return _isPing; }
             set
             {
+                if (value == null)
+                    ForToolTip = "Состояние не установленно";
                 _isPing = value;
                 OnPropertyChanged();
             }
