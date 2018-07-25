@@ -83,10 +83,18 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
         private async void OnPingAllCommand()
         {
-            Task[] tasks = new Task[LastConnections.Count];
-            for (int i = 0; i < LastConnections.Count; i++)
-                tasks[i] = LastConnections[i].OnPing();
-            await Task.WhenAll(tasks);
+            foreach (var connection in LastConnections)
+            {
+                connection.IsPing = null;
+            }
+            foreach (var connection in LastConnections)
+            {
+                await connection.OnPing();
+            }
+            //Task[] tasks = new Task[LastConnections.Count];
+            //for (int i = 0; i < LastConnections.Count; i++)
+            //    tasks[i] = LastConnections[i].OnPing();
+            //await Task.WhenAll(tasks);
         }
 
         /// Ту необходимо обновлять кнопку при доступности.
