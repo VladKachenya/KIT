@@ -26,6 +26,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         private IIpValidationService _ipValidationService;
         private Action<IPingItemViewModel> setItem;
         private Action<IPingItemViewModel> deleteItem;
+        private bool PingAllCanExecute = true;
         private int sizeLastConnectionColection = 20; // Количество IP
         private string[] _iP = new string[4];
         #endregion
@@ -54,7 +55,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             _commandFactory = commandFactory;
             PingCommand = _commandFactory.CreatePresentationCommand(OnPingCommand, OnPingCanExecute);
             ClearSelectedIPCommand = _commandFactory.CreatePresentationCommand(OnClearSelectedIPCommand);
-            PingAllCommand = _commandFactory.CreatePresentationCommand(OnPingAllCommand);
+            PingAllCommand = _commandFactory.CreatePresentationCommand(OnPingAllCommand, () => PingAllCanExecute);
             OnClearSelectedIPCommand();
             ChengCollection();
         }
@@ -83,13 +84,23 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
         private async void OnPingAllCommand()
         {
-            foreach (var connection in LastConnections)
+            try
             {
-                connection.IsPing = null;
+                PingAllCanExecute = false;
+                (PingAllCommand as IPresentationCommand).RaiseCanExecute();
+                foreach (var connection in LastConnections)
+                {
+                    connection.IsPing = null;
+                }
+                foreach (var connection in LastConnections)
+                {
+                    await connection.OnPing();
+                }
             }
-            foreach (var connection in LastConnections)
+            finally
             {
-                await connection.OnPing();
+                PingAllCanExecute = true;
+                (PingAllCommand as IPresentationCommand).RaiseCanExecute();
             }
             //Task[] tasks = new Task[LastConnections.Count];
             //for (int i = 0; i < LastConnections.Count; i++)

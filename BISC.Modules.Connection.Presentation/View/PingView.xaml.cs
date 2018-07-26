@@ -40,32 +40,36 @@ namespace BISC.Modules.Connection.Presentation.View
                 TextBox box = sender as TextBox;
                 if (box == null) return;
                 int index = this._textBoxes.IndexOf(box);
-
-                if (box.Text.Length >= 3)
-                {
-                    if (e.Key > Key.D0 || e.Key < Key.D9 && e.Key > Key.NumPad0 || e.Key < Key.NumPad0)
-                    {
-                        if (index == 3) this.PingButton.Focus();
-                        this._textBoxes[index + 1].Focus();
-                        return;
-                    }
-                }
+                //if (e.Key > Key.D0 && e.Key < Key.D9 || e.Key > Key.NumPad0 && e.Key < Key.NumPad0)
+                //{
+                //    string ch = (new KeyConverter().ConvertToString(e.Key));
+                //    if (int.Parse(box.Text.ToString() + ch) > 255)
+                //    { 
+                //        if (index == 3)
+                //        {
+                //            this.PingButton.Focus();
+                //            return;
+                //        }
+                //        this.SetFocusAndSelectAll(index + 1);
+                //        return;
+                //    }
+                //}
 
                 if (e.Key == Key.Right && box.CaretIndex == box.Text.Length)
                 {
                     if (index == 3) return;
-                    this._textBoxes[index + 1].Focus();
+                    this.SetFocusAndSelectAll(index + 1, true);
                 }
                 else if (e.Key == Key.Left && box.CaretIndex == 0)
                 {
                     if (index == 0) return;
-                    this._selectedBoxIndex = index - 1;
+                    this.SetFocusAndSelectAll(index - 1, false);
                 }
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //MessageBox.Show(ex.Message, "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -73,27 +77,52 @@ namespace BISC.Modules.Connection.Presentation.View
         {
             try
             {
-                if (this._selectedBoxIndex != -1)
+                TextBox box = sender as TextBox;
+                if (box == null) return;
+                int index = this._textBoxes.IndexOf(box);
+                if (box.Text.Length == 3 && box.CaretIndex == box.Text.Length)
                 {
-                    this._textBoxes[this._selectedBoxIndex].SelectAll();
-                    this._textBoxes[this._selectedBoxIndex].Focus();
+                    if (index == 3) return;
+                    
+                    this.SetFocusAndSelectAll(index + 1, true);
                 }
-                else
-                {
-                    TextBox box = (TextBox)sender;
-                    if (box == null) return;
-                    int index = this._textBoxes.IndexOf(box);
-                    if (box.Text.Length == box.MaxLength && box.CaretIndex == box.Text.Length
-                        && !(e.Key == Key.Left || e.Key == Key.Right))
-                    {
-                        this._textBoxes[index + 1].Focus();
-                    }
-                }
+
+                //    if (this._selectedBoxIndex != -1)
+                //{
+                //    this._textBoxes[this._selectedBoxIndex].SelectAll();
+                //    this._textBoxes[this._selectedBoxIndex].Focus();
+                //}
+                //else
+                //{
+                //    TextBox box = (TextBox)sender;
+                //    if (box == null) return;
+                //    int index = this._textBoxes.IndexOf(box);
+                //    if (box.Text.Length == box.MaxLength && box.CaretIndex == box.Text.Length
+                //        && !(e.Key == Key.Left || e.Key == Key.Right))
+                //    {
+                //        this._textBoxes[index + 1].Focus();
+                //    }
+                //}
             }
             catch (Exception)
             {
                 // ignored
             }
+        }
+
+        private void SetFocusAndSelectAll( int indexOfTextBoz, bool isSelectAll)
+        {
+            this._textBoxes[indexOfTextBoz].Focus();
+            if (isSelectAll)
+            {
+                this._textBoxes[indexOfTextBoz].CaretIndex = this._textBoxes[indexOfTextBoz].Text.Length;
+                this._textBoxes[indexOfTextBoz].SelectAll();
+            }
+        }
+
+        private void OnClearPreviewClick(object sender, RoutedEventArgs e)
+        {
+            SetFocusAndSelectAll(0, true);
         }
     }
 }

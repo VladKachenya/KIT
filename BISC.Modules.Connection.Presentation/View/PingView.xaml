@@ -45,16 +45,16 @@
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal" Grid.Row="0">
                     <TextBox FontSize="20" Text="{Binding IP0, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
-                             Name="IP0" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp"  TabIndex="1"/>
+                             Name="IP0" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp"  TabIndex="0"/>
                     <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
                     <TextBox FontSize="20" Text="{Binding IP1, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
-                             Name="IP1" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp"  TabIndex="2"/>
+                             Name="IP1" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp"  TabIndex="1"/>
                     <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
                     <TextBox FontSize="20" Text="{Binding IP2, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
-                             Name="IP2" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp"  TabIndex="3"/>
+                             Name="IP2" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp"  TabIndex="2"/>
                     <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
                     <TextBox FontSize="20" Text="{Binding IP3, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
-                             Name="IP3" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp"  TabIndex="4"/>
+                             Name="IP3" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp"  TabIndex="3"/>
                     <Button Margin="5" Padding="1"
                             Name="PingButton"
                         Command="{Binding PingCommand}"
@@ -62,7 +62,8 @@
                         Content="PING"/>
                     <Button Margin="5" Padding="1"
                         Command="{Binding ClearSelectedIPCommand}"
-                        Style="{DynamicResource MaterialDesignFlatButton}">
+                        Style="{DynamicResource MaterialDesignFlatButton}"
+                        Click="OnClearPreviewClick" >
                         <Button.Content>
                             <ContentControl ContentTemplate="{DynamicResource BroomIcon}"/>
                         </Button.Content>
