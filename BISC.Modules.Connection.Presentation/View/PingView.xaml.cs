@@ -40,6 +40,17 @@ namespace BISC.Modules.Connection.Presentation.View
                 TextBox box = sender as TextBox;
                 if (box == null) return;
                 int index = this._textBoxes.IndexOf(box);
+
+                if (box.Text.Length >= 3)
+                {
+                    if (e.Key > Key.D0 || e.Key < Key.D9 && e.Key > Key.NumPad0 || e.Key < Key.NumPad0)
+                    {
+                        if (index == 3) this.PingButton.Focus();
+                        this._textBoxes[index + 1].Focus();
+                        return;
+                    }
+                }
+
                 if (e.Key == Key.Right && box.CaretIndex == box.Text.Length)
                 {
                     if (index == 3) return;

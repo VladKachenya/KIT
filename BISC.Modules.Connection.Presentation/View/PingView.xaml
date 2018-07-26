@@ -56,6 +56,7 @@
                     <TextBox FontSize="20" Text="{Binding IP3, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
                              Name="IP3" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp"  TabIndex="4"/>
                     <Button Margin="5" Padding="1"
+                            Name="PingButton"
                         Command="{Binding PingCommand}"
                         Style="{DynamicResource MaterialDesignFlatButton}"
                         Content="PING"/>
