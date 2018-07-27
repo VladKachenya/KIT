@@ -171,6 +171,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             set
             {
                 int intVal = 0;
+                if (value.Length > 3) return;
                 if (int.TryParse(value, out intVal))
                 {
                     if ((intVal <= 255) && (intVal >= 1)) _iP[0] = intVal.ToString();
@@ -195,6 +196,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             set
             {
                 int intVal = 0;
+                if (value.Length > 3) return;
                 if (int.TryParse(value, out intVal))
                 {
                     if ((intVal <= 255) && (intVal >= 0)) _iP[1] = intVal.ToString();
@@ -219,6 +221,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             set
             {
                 int intVal = 0;
+                if (value.Length > 3) return;
                 if (int.TryParse(value, out intVal))
                 {
                     if ((intVal <= 255) && (intVal >= 0)) _iP[2] = intVal.ToString();
@@ -243,6 +246,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             set
             {
                 int intVal = 0;
+                if (value.Length > 3) return;
                 if (int.TryParse(value, out intVal))
                 {
                     if ((intVal <= 255) && (intVal >= 0)) _iP[3] = intVal.ToString();
