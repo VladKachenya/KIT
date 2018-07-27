@@ -39,33 +39,37 @@ namespace BISC.Modules.Connection.Presentation.View
             {
                 TextBox box = sender as TextBox;
                 if (box == null) return;
-                int index = this._textBoxes.IndexOf(box);
-                //if (e.Key > Key.D0 && e.Key < Key.D9 || e.Key > Key.NumPad0 && e.Key < Key.NumPad0)
-                //{
-                //    string ch = (new KeyConverter().ConvertToString(e.Key));
-                //    if (int.Parse(box.Text.ToString() + ch) > 255)
-                //    { 
-                //        if (index == 3)
-                //        {
-                //            this.PingButton.Focus();
-                //            return;
-                //        }
-                //        this.SetFocusAndSelectAll(index + 1);
-                //        return;
-                //    }
-                //}
+                _selectedBoxIndex = this._textBoxes.IndexOf(box);
 
                 if (e.Key == Key.Right && box.CaretIndex == box.Text.Length)
                 {
-                    if (index == 3) return;
-                    this.SetFocusAndSelectAll(index + 1, true);
+                    this._textBoxes[_selectedBoxIndex + 1].Focus();
                 }
                 else if (e.Key == Key.Left && box.CaretIndex == 0)
                 {
-                    if (index == 0) return;
-                    this.SetFocusAndSelectAll(index - 1, false);
+                    if (box.SelectedText == "")
+                        this._textBoxes[_selectedBoxIndex - 1].Focus();
                 }
-
+                else if (_selectedBoxIndex < 3 && box.Text.Length == 3 && _textBoxes[_selectedBoxIndex + 1].Text == "")
+                {
+                    if (e.Key >= Key.D0 && e.Key <= Key.D9 || e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9)
+                    {
+                        this._textBoxes[_selectedBoxIndex + 1].Focus();
+                    }
+                }
+                else if (e.Key == Key.Enter)
+                {
+                    if (_selectedBoxIndex == 3)
+                    {
+                        var PingCommand = this.PingButton.Command;
+                        if (PingCommand.CanExecute(null))
+                            PingCommand.Execute(null);
+                    }
+                    else
+                    {
+                        this._textBoxes[_selectedBoxIndex + 1].Focus();
+                    } 
+                }
             }
             catch (Exception ex)
             {
@@ -79,30 +83,20 @@ namespace BISC.Modules.Connection.Presentation.View
             {
                 TextBox box = sender as TextBox;
                 if (box == null) return;
-                int index = this._textBoxes.IndexOf(box);
-                if (box.Text.Length == 3 && box.CaretIndex == box.Text.Length)
+                if (e.Key == Key.Right && _textBoxes[_selectedBoxIndex].CaretIndex == _textBoxes[_selectedBoxIndex ].Text.Length)
                 {
-                    if (index == 3) return;
-                    
-                    this.SetFocusAndSelectAll(index + 1, true);
+                    if (_selectedBoxIndex == 3) return;
+                    this._textBoxes[_selectedBoxIndex + 1].SelectAll();
                 }
-
-                //    if (this._selectedBoxIndex != -1)
-                //{
-                //    this._textBoxes[this._selectedBoxIndex].SelectAll();
-                //    this._textBoxes[this._selectedBoxIndex].Focus();
-                //}
-                //else
-                //{
-                //    TextBox box = (TextBox)sender;
-                //    if (box == null) return;
-                //    int index = this._textBoxes.IndexOf(box);
-                //    if (box.Text.Length == box.MaxLength && box.CaretIndex == box.Text.Length
-                //        && !(e.Key == Key.Left || e.Key == Key.Right))
-                //    {
-                //        this._textBoxes[index + 1].Focus();
-                //    }
-                //}
+                else if (e.Key == Key.Left && _textBoxes[_selectedBoxIndex ].CaretIndex == 0)
+                {
+                    if (_selectedBoxIndex == 0) return;
+                    this._textBoxes[_selectedBoxIndex - 1].SelectAll();
+                }
+                else if (e.Key == Key.Enter && _selectedBoxIndex != 3)
+                {
+                    this._textBoxes[_selectedBoxIndex + 1].SelectAll();
+                }
             }
             catch (Exception)
             {
@@ -110,19 +104,10 @@ namespace BISC.Modules.Connection.Presentation.View
             }
         }
 
-        private void SetFocusAndSelectAll( int indexOfTextBoz, bool isSelectAll)
-        {
-            this._textBoxes[indexOfTextBoz].Focus();
-            if (isSelectAll)
-            {
-                this._textBoxes[indexOfTextBoz].CaretIndex = this._textBoxes[indexOfTextBoz].Text.Length;
-                this._textBoxes[indexOfTextBoz].SelectAll();
-            }
-        }
-
         private void OnClearPreviewClick(object sender, RoutedEventArgs e)
         {
-            SetFocusAndSelectAll(0, true);
+            this._selectedBoxIndex = 0;
+            this._textBoxes[_selectedBoxIndex].Focus();
         }
     }
 }
