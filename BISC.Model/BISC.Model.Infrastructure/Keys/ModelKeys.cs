@@ -8,7 +8,8 @@ namespace BISC.Model.Infrastructure.Keys
 {
    public static class ModelKeys
    {
-       public const string BiscProjectKey = "BiscProject";
+        public const string BiscProjectKey = "BiscProject";
         public const string SclModelKey = "SCL";
-   }
+        //public const string PINGModelKey = "PING";
+    }
 }

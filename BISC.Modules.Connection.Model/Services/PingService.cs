@@ -13,7 +13,6 @@ namespace BISC.Modules.Connection.Model.Services
     public class PingService : IPingService
     {
         #region private filds
-        private AutoResetEvent waiter = new AutoResetEvent(false);
         #endregion
 
         #region Citor
@@ -32,17 +31,7 @@ namespace BISC.Modules.Connection.Model.Services
             Ping pinger = new Ping();
             pinger.PingCompleted += (o, e) =>
             {
-                if (e.Cancelled)
-                {
-                    ((AutoResetEvent)e.UserState).Set();
-                }
-                if (e.Error != null)
-                {
-                    ((AutoResetEvent)e.UserState).Set();
-                }
-
                 PingReply reply = e.Reply;
-                ((AutoResetEvent)e.UserState).Set();
                 isPing = reply.Status == IPStatus.Success;
                 semaphoreSlim.Release();
             };
@@ -50,15 +39,14 @@ namespace BISC.Modules.Connection.Model.Services
             int timeout = 1000;
             string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
             byte[] buffer = Encoding.ASCII.GetBytes(data);
-            //try
-            //{
-            //    pinger.SendAsync(ip, timeout, buffer, pingOptions, waiter);
-            //}
-            //catch (Exception e)
-            //{
-            //    MessageBox.Show(e.Message);
-            //}
-            pinger.SendAsync(ip, timeout, buffer, pingOptions, waiter);
+            try
+            {
+                pinger.SendAsync(ip, timeout, buffer, pingOptions, null);
+            }
+            catch {
+                isPing = false;
+                semaphoreSlim.Release();
+            }
             await semaphoreSlim.WaitAsync();
             return isPing;
         }
