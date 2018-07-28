@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BISC.Modules.FTP
+namespace BISC.Modules.FTP.Infrastructure.Serviсes
 {
-    public class Class1
+    public interface IFTPAddingServise
     {
+        void OpenFTPServiceView();
+
     }
 }

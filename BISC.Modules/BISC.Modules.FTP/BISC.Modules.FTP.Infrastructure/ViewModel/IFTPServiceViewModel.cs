@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BISC.Modules.FTP.Infrastructure
+namespace BISC.Modules.FTP.Infrastructure.ViewModel
 {
-    public class Class1
+    public interface IFTPServiceViewModel
     {
     }
 }
