@@ -60,9 +60,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BISC.Modules.InformationModel.Presentation", "BISC.Modules\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Presentation\BISC.Modules.InformationModel.Presentation.csproj", "{749492EB-2EFC-4D03-BB60-E26BBAF25DD8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BISC.Modules.FTP", "BISC.Modules.FTP", "{9F6FCCC2-750C-455C-B8E1-7A979AB8B597}"
-	ProjectSection(SolutionItems) = preProject
-		BISC.Modules\BISC.Modules.FTP\FluentFTP\FluentFTP.csproj = BISC.Modules\BISC.Modules.FTP\FluentFTP\FluentFTP.csproj
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BISC.Modules.FTP", "BISC.Modules\BISC.Modules.FTP\BISC.Modules.FTP\BISC.Modules.FTP.csproj", "{B373CEF3-3E86-4700-A91B-BA85FCA309CC}"
 EndProject
