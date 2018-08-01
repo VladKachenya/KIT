@@ -88,19 +88,21 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             {
                 PingAllCanExecute = false;
                 (PingAllCommand as IPresentationCommand).RaiseCanExecute();
-                foreach (var connection in LastConnections)
+                List<IPingItemViewModel> items = new List<IPingItemViewModel>(LastConnections);
+                foreach (var connection in items)
                 {
                     connection.IsPing = null;
                 }
-                foreach (var connection in LastConnections)
+                foreach (var connection in items)
                 {
                     await connection.OnPing();
                 }
+                items.Clear();
             }
             finally
             {
                 PingAllCanExecute = true;
-                (PingAllCommand as IPresentationCommand).RaiseCanExecute();
+                (PingAllCommand as IPresentationCommand).RaiseCanExecute();  
             }
             //Task[] tasks = new Task[LastConnections.Count];
             //for (int i = 0; i < LastConnections.Count; i++)
