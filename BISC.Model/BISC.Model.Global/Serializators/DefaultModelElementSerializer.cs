@@ -1,13 +1,18 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Xml.Linq;
+using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Global.Model;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Elements;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace BISC.Model.Global.Serializators
 {
-    public class DefaultModelElementSerializer : IModelElementSerializer<IModelElement>
+    public class DefaultModelElementSerializer<T> : IModelSerializer<T> where T : IModelElement
     {
         private readonly IModelElementsRegistryService _modelElementsRegistryService;
 
@@ -16,43 +21,132 @@ namespace BISC.Model.Global.Serializators
             _modelElementsRegistryService = modelElementsRegistryService;
         }
 
+        private List<Tuple<Type, string>> _collectionTypes = new List<Tuple<Type, String>>();
+        protected void RegisterModelElementCollection(Type collectionType, string name = null)
+        {
+            _collectionTypes.Add(new Tuple<Type, string>(collectionType, name));
+        }
+        private List<Tuple<string, string>> _properties = new List<Tuple<string, string>>();
 
-        public XElement SerializeModelElement(IModelElement modelElement)
+        protected void RegisterProperty(string propertyName, string name)
+        {
+            _properties.Add(new Tuple<string, string>(propertyName, name));
+        }
+        private string _valuePropertyName = null;
+        protected void RegisterValueToProperty(string propertyName)
+        {
+            _valuePropertyName = propertyName;
+        }
+
+        protected DefaultModelElementSerializer()
+        {
+            _modelElementsRegistryService = StaticContainer.CurrentContainer.ResolveType<IModelElementsRegistryService>();
+        }
+
+
+        public virtual XElement SerializeModelElement(T modelElement)
+
         {
             if (!(modelElement is ModelElement))
             {
                 throw new Exception("Элемент должен быть зарегистрирован");
             }
-            
+
             XElement xElement;
+           
             if (!string.IsNullOrEmpty((modelElement as ModelElement).Namespace))
             {
-                xElement = new XElement("{"+(modelElement as ModelElement).Namespace+"}"+modelElement.ElementName);
-             
+                xElement = new XElement("{" + (modelElement as ModelElement).Namespace + "}" + modelElement.ElementName);
             }
             else
             {
                 xElement = new XElement(modelElement.ElementName);
             }
-            foreach (var modelElementChildElement in (modelElement as ModelElement).ChildModelElements)
+            FillXElementCustomProperties(xElement, modelElement);
+            foreach (var modelElementChildElement in modelElement.ChildModelElements)
             {
-                xElement.Add(_modelElementsRegistryService
-                    .GetModelElementSerializatorByKey(modelElementChildElement.ElementName)
-                    .SerializeModelElement(modelElementChildElement));
+                var childElement = _modelElementsRegistryService.SerializeModelElement(modelElementChildElement);
+               
+                xElement.Add(childElement);
             }
 
             foreach (var attribute in (modelElement as ModelElement).ModelElementAttributes)
             {
-                xElement.SetAttributeValue(attribute.Name,attribute.Value);
+                xElement.SetAttributeValue(attribute.Name, attribute.Value);
             }
 
+            
             return xElement;
         }
 
-        public IModelElement DeserializeModelElement(XElement xElement)
+        private void FillXElementCustomProperties(XElement xElement, T modelElement)
         {
-            ModelElement modelElement = new ModelElement();
-            modelElement.ElementName = xElement.Name.LocalName;
+            var modelElementProperties = modelElement.GetType().GetProperties();
+
+            if (_collectionTypes.Count > 0)
+            {
+                foreach (var collectionType in _collectionTypes)
+                {
+                    foreach (var propertyInfo in modelElementProperties)
+                    {
+                        if ((collectionType.Item2 != null) && (propertyInfo.Name != collectionType.Item2)) continue;
+                        Type type = propertyInfo.PropertyType;
+                        if (type.IsGenericType && type.GetGenericTypeDefinition()
+                            == typeof(List<>))
+                        {
+                            Type itemType = type.GetGenericArguments()[0];
+                            if (itemType == collectionType.Item1 || collectionType.Item1.GetInterface(itemType.ToString()) != null)
+                            {
+                                var elementsOfType =
+                                    modelElement.ChildModelElements.Where((element => element.GetType() == collectionType.Item1)).ToList();
+                                foreach (var element in elementsOfType)
+                                {
+                                    type.GetMethod("Add").Invoke(propertyInfo.GetValue(modelElement), new[] { element });
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+            if (_properties.Count > 0)
+            {
+                foreach (var property in _properties)
+                {
+                    foreach (var propertyInfo in modelElementProperties)
+                    {
+                        if (property.Item1 == propertyInfo.Name)
+                        {
+                            object value = modelElement.ModelElementAttributes.FirstOrDefault((attribute =>
+                                attribute.Name == property.Item2))?.Value;
+                            if (value == null)
+                            {
+                                value = modelElement.ChildModelElements.FirstOrDefault((me =>
+                                    me.ElementName == property.Item2));
+                            }
+                            
+                            SetProperty(propertyInfo, modelElement, value);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (_valuePropertyName != null)
+            {
+                var property = modelElement.GetType().GetProperty(_valuePropertyName);
+                SetProperty(property, modelElement, xElement.Value);
+            }
+        }
+
+        public virtual IModelElement GetConcreteObject()
+        {
+            return new ModelElement();
+        }
+
+        public T DeserializeModelElement(XElement xElement)
+        {
+            IModelElement modelElement = GetConcreteObject();
+            (modelElement as ModelElement).ElementName = xElement.Name.LocalName;
             if (!string.IsNullOrEmpty(xElement.Name.NamespaceName))
             {
                 modelElement.Namespace = xElement.Name.NamespaceName;
@@ -60,26 +154,98 @@ namespace BISC.Model.Global.Serializators
             }
             foreach (var attribute in xElement.Attributes())
             {
-               modelElement.ModelElementAttributes.Add(attribute);
+
+                modelElement.ModelElementAttributes.Add(attribute);
             }
 
             foreach (var element in xElement.Elements())
             {
-                modelElement.ChildModelElements.Add(_modelElementsRegistryService
-                    .GetModelElementSerializatorByKey(element.Name.LocalName).DeserializeModelElement(element));
+                modelElement.ChildModelElements.Add(_modelElementsRegistryService.DeserializeModelElement<IModelElement>(element));
             }
 
-            modelElement.ChildModelElements.ForEach((element =>element.ParentModelElement=modelElement ));
-            return modelElement;
+            FillModelElementCustomProperties(modelElement, xElement);
+
+            modelElement.ChildModelElements.ForEach((element => element.ParentModelElement = modelElement));
+            return (T)modelElement;
         }
 
-        public void FillDeserialisedModelElement(ModelElement existingModelElementodelElement,XElement xElement)
+
+        private void FillModelElementCustomProperties(IModelElement modelElement, XElement xElement)
         {
-            ModelElement newModelElement = DeserializeModelElement(xElement) as ModelElement;
-            existingModelElementodelElement.ChildModelElements.AddRange(newModelElement.ChildModelElements);
-            existingModelElementodelElement.ModelElementAttributes.AddRange(newModelElement.ModelElementAttributes);
-            existingModelElementodelElement.Namespace = newModelElement.Namespace;
-            existingModelElementodelElement.ElementName = newModelElement.ElementName;
+            var modelElementProperties = modelElement.GetType().GetProperties();
+
+            if (_collectionTypes.Count > 0)
+            {
+                foreach (var collectionType in _collectionTypes)
+                {
+                    foreach (var propertyInfo in modelElementProperties)
+                    {
+                        if ((collectionType.Item2 != null) && (propertyInfo.Name != collectionType.Item2)) continue;
+                        Type type = propertyInfo.PropertyType;
+                        if (type.IsGenericType && type.GetGenericTypeDefinition()
+                            == typeof(List<>))
+                        {
+                            Type itemType = type.GetGenericArguments()[0];
+                            if (itemType == collectionType.Item1 || collectionType.Item1.GetInterface(itemType.ToString()) != null)
+                            {
+                                var elementsOfType =
+                                    modelElement.ChildModelElements.Where((element => element.GetType() == collectionType.Item1)).ToList();
+                                foreach (var element in elementsOfType)
+                                {
+                                    type.GetMethod("Add").Invoke(propertyInfo.GetValue(modelElement), new[] { element });
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+            if (_properties.Count > 0)
+            {
+                foreach (var property in _properties)
+                {
+                    foreach (var propertyInfo in modelElementProperties)
+                    {
+                        if (property.Item1 == propertyInfo.Name)
+                        {
+                            object value = modelElement.ModelElementAttributes.FirstOrDefault((attribute =>
+                                attribute.Name == property.Item2))?.Value;
+                            if (value == null)
+                            {
+                                value = modelElement.ChildModelElements.FirstOrDefault((me =>
+                                    me.ElementName == property.Item2));
+                            }
+                            SetProperty(propertyInfo, modelElement, value);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (_valuePropertyName != null)
+            {
+                var property = modelElement.GetType().GetProperty(_valuePropertyName);
+                SetProperty(property, modelElement, xElement.Value);
+            }
+
         }
+
+
+
+        private void SetProperty(PropertyInfo propertyInfo, object objectToSetProp, object value)
+        {
+            if (propertyInfo != null)
+            {
+                if (propertyInfo.PropertyType == typeof(int))
+                {
+                    propertyInfo?.SetValue(objectToSetProp, Convert.ToInt32(value));
+                }
+                else
+                {
+                    propertyInfo?.SetValue(objectToSetProp, value);
+
+                }
+            }
+        }
+
     }
 }

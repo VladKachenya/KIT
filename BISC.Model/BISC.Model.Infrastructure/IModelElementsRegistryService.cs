@@ -1,15 +1,19 @@
-﻿using BISC.Model.Infrastructure.Elements;
+﻿using System.Xml.Linq;
+using BISC.Model.Infrastructure.Elements;
 
 namespace BISC.Model.Infrastructure
 {
     public interface IModelElementsRegistryService
     {
-        void RegisterModelElement(IModelElementSerializer<IModelElement> modelElementSerializer, string elementName);
+        void RegisterModelElement<T>(IModelSerializer<T> modelElementSerializer, string elementName) where T : IModelElement;
         bool GetIsModelElementRegistered(string elementName);
-        IModelElementSerializer<IModelElement> GetModelElementSerializatorByKey(string elementName,bool isDefaultSerializatorAllowed=true);
+
+        T DeserializeModelElement<T>(XElement xElement, bool isDefaultSerializatorAllowed = true) where T : IModelElement;
+        XElement SerializeModelElement(IModelElement modelElement, bool isDefaultSerializatorAllowed = true);
+
 
     }
 
-   
-  
+
+
 }

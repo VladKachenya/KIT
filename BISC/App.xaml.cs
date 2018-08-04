@@ -17,7 +17,7 @@ namespace BISC
         protected override void OnStartup(StartupEventArgs e)
         {
             ShellBootstrapper shellBootstrapper=new ShellBootstrapper();
-            shellBootstrapper.Run();
+            shellBootstrapper.Run(true);
             base.OnStartup(e);
         }
     }

@@ -55,7 +55,9 @@
     <Compile Include="IModelElementSerializer.cs" />
     <Compile Include="IModelElementsRegistryService.cs" />
     <Compile Include="Keys\ModelKeys.cs" />
+    <Compile Include="Project\Communication\IAddressProperty.cs" />
     <Compile Include="Project\Communication\IConnectedAccessPoint.cs" />
+    <Compile Include="Project\Communication\IDurationInMilliSec.cs" />
     <Compile Include="Project\Communication\IGse.cs" />
     <Compile Include="Project\Communication\ISclAddress.cs" />
     <Compile Include="Project\Communication\ISubNetwork.cs" />

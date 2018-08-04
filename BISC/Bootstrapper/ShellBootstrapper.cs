@@ -18,7 +18,20 @@ using ContainerControlledLifetimeManager = Microsoft.Practices.Unity.ContainerCo
 namespace BISC.Bootstrapper
 {
    public class ShellBootstrapper: ApplicationBootstrapper
-    {
+   {
+       private bool _isRunWithDefaultConfiguration;
+
+
+        #region Overrides of UnityBootstrapper
+
+        public override void Run(bool runWithDefaultConfiguration)
+        {
+            _isRunWithDefaultConfiguration = runWithDefaultConfiguration;
+            base.Run(runWithDefaultConfiguration);
+        }
+
+        #endregion
+
         protected override DependencyObject CreateShell()
         {
             return Container.Resolve<Shell>();
@@ -27,7 +40,10 @@ namespace BISC.Bootstrapper
         protected override void InitializeShell()
         {
             Application.Current.MainWindow = (Window)Shell;
-            Application.Current.MainWindow.Show();
+            if (_isRunWithDefaultConfiguration)
+            {
+                Application.Current.MainWindow.Show();
+            }
         }
 
         protected override void ConfigureContainer()

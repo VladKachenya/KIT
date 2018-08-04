@@ -9,6 +9,7 @@ using BISC.Infrastructure.Global.Services;
 using BISC.Model.Global.Model;
 using BISC.Model.Global.Project;
 using BISC.Model.Global.Serializators;
+using BISC.Model.Global.Serializators.Communication;
 using BISC.Model.Global.Services;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Keys;
@@ -36,16 +37,54 @@ namespace BISC.Model.Global.Module
             _injectionContainer.RegisterType<IModelComposingService, ModelComposingService>(true);
             _injectionContainer.RegisterType<IBiscProject, BiscProject>(true);
             _injectionContainer.RegisterType<ISclModel, SclModel>();
-            _injectionContainer.RegisterType<BiscProjectSerializer>();
+           
             _injectionContainer.RegisterType<IProjectService, ProjectService>(true);
+            RegisterSerializers(_injectionContainer.ResolveType<IModelElementsRegistryService>());
+          
+        }
 
+        private void RegisterSerializers(IModelElementsRegistryService modelElementsRegistryService)
+        {
+            _injectionContainer.RegisterType<BiscProjectSerializer>();
             _injectionContainer.RegisterType<SclModelElementSerializer>();
-            _injectionContainer.ResolveType<IModelElementsRegistryService>()
-                .RegisterModelElement(_injectionContainer.ResolveType<SclModelElementSerializer>(),
+            _injectionContainer.RegisterType<ConnectedAccessPointSerializer>();
+            _injectionContainer.RegisterType<AddressPropertySerializer>();
+            _injectionContainer.RegisterType<DurationInMillisecondsSerializer>();
+            _injectionContainer.RegisterType<GseSerializer>();
+            _injectionContainer.RegisterType<SclAddressSerializer>();
+            _injectionContainer.RegisterType<SubNetworkSerializer>();
+            _injectionContainer.RegisterType<CommunicationSerializer>();
+
+
+
+
+
+
+            modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<SclModelElementSerializer>(),
                     ModelKeys.SclModelKey);
-            _injectionContainer.ResolveType<IModelElementsRegistryService>()
-                .RegisterModelElement(_injectionContainer.ResolveType<BiscProjectSerializer>(),
+            modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<BiscProjectSerializer>(),
                     ModelKeys.BiscProjectKey);
+
+            modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<ConnectedAccessPointSerializer>(),
+                ModelKeys.ConnectedAccessPointKey);
+            modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<AddressPropertySerializer>(),
+                ModelKeys.AddressPropertyKey);
+
+            modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<DurationInMillisecondsSerializer>(),
+                ModelKeys.DurationInMillisecMaxTimeKey);
+            modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<DurationInMillisecondsSerializer>(),
+                ModelKeys.DurationInMillisecMinTimeKey);
+            modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<GseSerializer>(),
+                ModelKeys.GseKey);
+
+            modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<SclAddressSerializer>(),
+                ModelKeys.SclAddressKey);
+            modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<SubNetworkSerializer>(),
+                ModelKeys.SubNetworkKey);
+
+            modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<CommunicationSerializer>(),
+                ModelKeys.CommunicationModelKey);
+
         }
 
         #endregion

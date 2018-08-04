@@ -13,34 +13,17 @@ using BISC.Modules.InformationModel.Model.DataTypeTemplates.DaType;
 
 namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
 {
-    public class DaTypeSerializer:IModelElementSerializer<IDaType>
+    public class DaTypeSerializer: DefaultModelElementSerializer<IDaType>
     {
-        private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
-
-        public DaTypeSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
+        public DaTypeSerializer()
         {
-            _defaultModelElementSerializer = defaultModelElementSerializer;
+            RegisterModelElementCollection(typeof(Bda));
+            RegisterProperty(nameof(IDaType.Id),"id");
+        }
+        public override IModelElement GetConcreteObject()
+        {
+            return new DaType();
         }
 
-
-        public XElement SerializeModelElement(IModelElement modelElement)
-        {
-            IDaType daType = modelElement as IDaType;
-            XElement daTypeXElement = _defaultModelElementSerializer.SerializeModelElement(modelElement);
-            daTypeXElement.SetXAttribute("id", daType.Id);
-            daTypeXElement.FillChildXElements("BDA", new BdaSerializer(_defaultModelElementSerializer),
-                daType.Bdas);
-
-            return daTypeXElement;
-        }
-
-        public IDaType DeserializeModelElement(XElement xElement)
-        {
-            DaType daType = new DaType();
-            _defaultModelElementSerializer.FillDeserialisedModelElement(daType, xElement);
-            daType.Id = xElement.GetXAttribute("id");
-            xElement.FillChildElements("BDA",new BdaSerializer(_defaultModelElementSerializer),daType.Bdas );
-            return daType;
-        }
     }
 }

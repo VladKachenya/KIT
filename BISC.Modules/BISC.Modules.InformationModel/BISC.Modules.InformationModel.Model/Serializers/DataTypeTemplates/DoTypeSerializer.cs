@@ -13,39 +13,19 @@ using BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType;
 
 namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
 {
-   public class DoTypeSerializer:IModelElementSerializer<IDoType>
+   public class DoTypeSerializer: DefaultModelElementSerializer<IDoType>
     {
-        private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
-
-        public DoTypeSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
+        public DoTypeSerializer()
         {
-            _defaultModelElementSerializer = defaultModelElementSerializer;
+            RegisterProperty(nameof(IDoType.Cdc),"cdc");
+            RegisterProperty(nameof(IDoType.Id),"id");
+            RegisterModelElementCollection(typeof(Da));
+            RegisterModelElementCollection(typeof(Sdo));
         }
-        
-        #region Implementation of IModelElementSerializer<out IDoType>
-
-        public XElement SerializeModelElement(IModelElement modelElement)
+        public override IModelElement GetConcreteObject()
         {
-            IDoType doType = modelElement as IDoType;
-            XElement doTypeXElement = _defaultModelElementSerializer.SerializeModelElement(modelElement);
-            doTypeXElement.SetXAttribute("cdc", doType.Cdc);
-            doTypeXElement.SetXAttribute("id", doType.Id);
-            doTypeXElement.FillChildXElements("DA", new DaSerializer(_defaultModelElementSerializer), doType.DaList);
-            doTypeXElement.FillChildXElements("SDO", new SdoSerializer(_defaultModelElementSerializer), doType.SdoList);
-            return doTypeXElement;
+            return new DoType();
         }
 
-        public IDoType DeserializeModelElement(XElement xElement)
-        {
-            DoType doType = new DoType();
-            _defaultModelElementSerializer.FillDeserialisedModelElement(doType, xElement);
-            doType.Id = xElement.GetXAttribute("id");
-            doType.Cdc = xElement.GetXAttribute("cdc");
-            xElement.FillChildElements("DA", new DaSerializer(_defaultModelElementSerializer), doType.DaList);
-            xElement.FillChildElements("SDO", new SdoSerializer(_defaultModelElementSerializer), doType.SdoList);
-            return doType;
-        }
-
-        #endregion
     }
 }

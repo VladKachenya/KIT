@@ -13,36 +13,20 @@ using BISC.Modules.InformationModel.Model.DataTypeTemplates.DaType;
 
 namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
 {
-   public class BdaSerializer:IModelElementSerializer<IBda>
+   public class BdaSerializer:DefaultModelElementSerializer<IBda>
     {
-        private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
 
-        public BdaSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
+        public BdaSerializer()
         {
-            _defaultModelElementSerializer = defaultModelElementSerializer;
+            RegisterProperty(nameof(IBda.Name),"name");
+            RegisterProperty(nameof(IBda.BType), "bType");
+            RegisterProperty(nameof(IBda.Type), "type");
+
+        }
+        public override IModelElement GetConcreteObject()
+        {
+            return new Bda();
         }
 
-        public XElement SerializeModelElement(IModelElement modelElement)
-        {
-            IBda bda = modelElement as IBda;
-            XElement bdaXElement = _defaultModelElementSerializer.SerializeModelElement(modelElement);
-            bdaXElement.SetXAttribute("bType", bda.BType);
-            bdaXElement.SetXAttribute("name", bda.Name);
-            bdaXElement.SetXAttribute("type", bda.Type);
-            return bdaXElement;
-        }
-
-        public IBda DeserializeModelElement(XElement xElement)
-        {
-            Bda bda = new Bda();
-            _defaultModelElementSerializer.FillDeserialisedModelElement(bda, xElement);
-
-            bda.BType = xElement.GetXAttribute("bType");
-            bda.Name = xElement.GetXAttribute("name");
-            bda.Type = xElement.GetXAttribute("type");
-
-
-            return bda;
-        }
     }
 }

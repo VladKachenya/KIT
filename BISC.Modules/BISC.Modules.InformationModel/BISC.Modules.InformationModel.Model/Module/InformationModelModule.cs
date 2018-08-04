@@ -22,11 +22,19 @@ namespace BISC.Modules.InformationModel.Model.Module
 
         public void Initialize()
         {
+            var modelElementsRegistryService =_injectionContainer.ResolveType<IModelElementsRegistryService>();
+            modelElementsRegistryService.RegisterModelElement(new DataTypeTemplatesSerializer(), InfoModelKeys.DataTypeTemplateKeys.DataTypeTemplatesModelItemKey);
+            modelElementsRegistryService.RegisterModelElement(new LNodeTypeSerializer(), InfoModelKeys.DataTypeTemplateKeys.LNodeTypeModelItemKey);
+            modelElementsRegistryService.RegisterModelElement(new BdaSerializer(), InfoModelKeys.DataTypeTemplateKeys.BDAItemKey);
+            modelElementsRegistryService.RegisterModelElement(new DaSerializer(), InfoModelKeys.DataTypeTemplateKeys.DaItemKey);
+            modelElementsRegistryService.RegisterModelElement(new DaTypeSerializer(), InfoModelKeys.DataTypeTemplateKeys.DaTypeItemKey);
+            modelElementsRegistryService.RegisterModelElement(new DoTypeSerializer(), InfoModelKeys.DataTypeTemplateKeys.DOTypeModelItemKey);
+            modelElementsRegistryService.RegisterModelElement(new DoSerializer(), InfoModelKeys.DataTypeTemplateKeys.DoItemKey);
+            modelElementsRegistryService.RegisterModelElement(new EnumTypeSerializer(),  InfoModelKeys.DataTypeTemplateKeys.EnumTypeModelItemKey);
+            modelElementsRegistryService.RegisterModelElement(new EnumValSerializer(), InfoModelKeys.DataTypeTemplateKeys.EnumValItemKey);
+            modelElementsRegistryService.RegisterModelElement(new SdoSerializer(), InfoModelKeys.DataTypeTemplateKeys.SdoItemKey);
 
-            _injectionContainer.RegisterType<DataTypeTemplatesSerializer>();
 
-            _injectionContainer.ResolveType<IModelElementsRegistryService>()
-                .RegisterModelElement(_injectionContainer.ResolveType<DataTypeTemplatesSerializer>(),InfoModelKeys.DataTypeTemplateKeys.DataTypeTemplatesModelItemKey);
         }
     }
 }

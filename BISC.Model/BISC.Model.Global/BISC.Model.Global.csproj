@@ -46,8 +46,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Extesions.cs" />
+    <Compile Include="Model\Communication\AddressProperty.cs" />
+    <Compile Include="Model\Communication\ConnectedAccessPoint.cs" />
+    <Compile Include="Model\Communication\DurationInMilliSec.cs" />
+    <Compile Include="Model\Communication\Gse.cs" />
+    <Compile Include="Model\Communication\SclAddress.cs" />
+    <Compile Include="Model\Communication\SclCommunicationModel.cs" />
+    <Compile Include="Model\Communication\SubNetwork.cs" />
     <Compile Include="Project\BiscProject.cs" />
     <Compile Include="Serializators\BiscProjectSerializer.cs" />
+    <Compile Include="Serializators\Communication\AddressPropertySerializer.cs" />
+    <Compile Include="Serializators\Communication\CommunicationSerializer.cs" />
+    <Compile Include="Serializators\Communication\ConnectedAccessPointSerializer.cs" />
+    <Compile Include="Serializators\Communication\DurationInMillisecondsSerializer.cs" />
+    <Compile Include="Serializators\Communication\GseSerializer.cs" />
+    <Compile Include="Serializators\Communication\SclAddressSerializer.cs" />
+    <Compile Include="Serializators\Communication\SubNetworkSerializer.cs" />
     <Compile Include="Serializators\DefaultModelElementSerializer.cs" />
     <Compile Include="Model\ModelElement.cs" />
     <Compile Include="Model\SclModel.cs" />

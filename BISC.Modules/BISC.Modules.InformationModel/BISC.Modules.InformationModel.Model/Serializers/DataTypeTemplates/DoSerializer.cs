@@ -13,34 +13,18 @@ using BISC.Modules.InformationModel.Model.DataTypeTemplates.LNodeType;
 
 namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
 {
-    public class DoSerializer : IModelElementSerializer<IDo>
+    public class DoSerializer : DefaultModelElementSerializer<IDo>
     {
-        private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
-
-        public DoSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
+        public DoSerializer()
         {
-            _defaultModelElementSerializer = defaultModelElementSerializer;
-        }
-        public IDo DeserializeModelElement(XElement xElement)
-        {
-            Do doElement = new Do();
-            _defaultModelElementSerializer.FillDeserialisedModelElement(doElement,xElement);
-            doElement.Name = xElement.GetXAttribute("name");
-            doElement.Type = xElement.GetXAttribute("type");
-            return doElement;
-        }
-
-        public XElement SerializeModelElement(IModelElement modelElement)
-        {
-            IDo doElement=modelElement as IDo;
-            XElement doXElement = _defaultModelElementSerializer.SerializeModelElement(modelElement);
-            doXElement.SetXAttribute("name", doElement.Name);
-            doXElement.SetXAttribute("type", doElement.Type);
-
-            return doXElement;
-
-
+            RegisterProperty(nameof(IDo.Name),"name");
+            RegisterProperty(nameof(IDo.Type), "type");
 
         }
+        public override IModelElement GetConcreteObject()
+        {
+            return new Do();
+        }
+
     }
 }

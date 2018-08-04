@@ -14,26 +14,16 @@ using BISC.Model.Infrastructure.Project;
 
 namespace BISC.Model.Global.Serializators
 {
-   public class BiscProjectSerializer : IModelElementSerializer<IBiscProject>
+   public class BiscProjectSerializer : DefaultModelElementSerializer<IBiscProject>
     {
-        private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
-        public BiscProjectSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
+        public BiscProjectSerializer()
         {
-            _defaultModelElementSerializer = defaultModelElementSerializer;
+            RegisterProperty(nameof(IBiscProject.MainSclModel), "MainSclModel");
+        }
+        public override IModelElement GetConcreteObject()
+        {
+            return new BiscProject(null);
         }
 
-        public XElement SerializeModelElement(IModelElement modelElement)
-        {
-            return _defaultModelElementSerializer.SerializeModelElement(modelElement);
-        }
-
-        public IBiscProject DeserializeModelElement(XElement xElement)
-        {
-          
-            ModelElement modelElement = _defaultModelElementSerializer.DeserializeModelElement(xElement) as ModelElement;
-            IBiscProject project = new BiscProject(modelElement?.ChildModelElements.First() as ISclModel);
-
-            return project;
-        }
     }
 }

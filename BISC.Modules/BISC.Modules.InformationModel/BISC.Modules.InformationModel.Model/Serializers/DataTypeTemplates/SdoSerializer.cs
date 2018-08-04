@@ -13,30 +13,18 @@ using BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType;
 
 namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
 {
-   public class SdoSerializer:IModelElementSerializer<ISdo>
+   public class SdoSerializer: DefaultModelElementSerializer<ISdo>
     {
-        private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
+        public SdoSerializer()
+        {
+            RegisterProperty(nameof(ISdo.Name),"name");
+            RegisterProperty(nameof(ISdo.Type), "type");
 
-        public SdoSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
-        {
-            _defaultModelElementSerializer = defaultModelElementSerializer;
         }
-        public XElement SerializeModelElement(IModelElement modelElement)
+        public override IModelElement GetConcreteObject()
         {
-            ISdo sdo = modelElement as ISdo;
-            XElement sdoXElement = _defaultModelElementSerializer.SerializeModelElement(modelElement);
-            sdoXElement.SetXAttribute("name", sdo.Name);
-            sdoXElement.SetXAttribute("type", sdo.Type);
-            return sdoXElement;
+            return new Sdo();
         }
 
-        public ISdo DeserializeModelElement(XElement xElement)
-        {
-            Sdo sdo = new Sdo();
-            _defaultModelElementSerializer.FillDeserialisedModelElement(sdo, xElement);
-            sdo.Name = xElement.GetXAttribute("name");
-            sdo.Type = xElement.GetXAttribute("type");
-            return sdo; 
-        }
     }
 }

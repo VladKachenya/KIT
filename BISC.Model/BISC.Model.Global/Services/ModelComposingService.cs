@@ -25,16 +25,14 @@ namespace BISC.Model.Global.Services
 
         public ISclModel DeserializeModelFromFile(XElement mainElement)
         {
-            IModelElement modelElement = _modelElementsRegistryService
-                .GetModelElementSerializatorByKey(mainElement.Name.LocalName).DeserializeModelElement(mainElement);
+            IModelElement modelElement = _modelElementsRegistryService.DeserializeModelElement<IModelElement>(mainElement);
 
             return modelElement as ISclModel;
         }
 
         public void SerializeModelInFile(string filePath, IModelElement modelElement)
         {
-           XElement xElement= _modelElementsRegistryService.GetModelElementSerializatorByKey(modelElement.ElementName)
-                .SerializeModelElement(modelElement);
+           XElement xElement= _modelElementsRegistryService.SerializeModelElement(modelElement);
             xElement.Save(filePath);
         }
     }

@@ -13,34 +13,22 @@ using BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType;
 
 namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
 {
-   public class EnumTypeSerializer:IModelElementSerializer<IEnumType>
+   public class EnumTypeSerializer: DefaultModelElementSerializer<IEnumType>
     {
-        private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
 
-        public EnumTypeSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
+        public EnumTypeSerializer()
         {
-            _defaultModelElementSerializer = defaultModelElementSerializer;
+            RegisterModelElementCollection(typeof(EnumVal));
+            RegisterProperty(nameof(IEnumType.Id),"id");
         }
 
+        #region Overrides of DefaultModelElementSerializer<IEnumType>
 
-        public XElement SerializeModelElement(IModelElement modelElement)
+        public override IModelElement GetConcreteObject()
         {
-            IEnumType enumType=modelElement as IEnumType;
-            XElement enumTypeXElement = _defaultModelElementSerializer.SerializeModelElement(modelElement);
-            enumTypeXElement.SetXAttribute("id", enumType.Id);
-            enumTypeXElement.FillChildXElements("EnumVal", new EnumValSerializer(_defaultModelElementSerializer), enumType.EnumValList);
-            return enumTypeXElement;
-
+            return new EnumType();
         }
 
-        public IEnumType DeserializeModelElement(XElement xElement)
-        {
-            EnumType enumType =new EnumType();
-            _defaultModelElementSerializer.FillDeserialisedModelElement(enumType,xElement);
-            enumType.Id = xElement.GetXAttribute("id");
-            xElement.FillChildElements("EnumVal", new EnumValSerializer(_defaultModelElementSerializer), enumType.EnumValList);
-            return enumType;
-
-        }
+        #endregion
     }
 }

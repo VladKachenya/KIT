@@ -12,29 +12,15 @@ using BISC.Model.Infrastructure.Project;
 
 namespace BISC.Model.Global.Serializators
 {
-    public class SclModelElementSerializer : IModelElementSerializer<ISclModel>
+    public class SclModelElementSerializer : DefaultModelElementSerializer<ISclModel>
     {
-        private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
+        #region Overrides of DefaultModelElementSerializer<ISclModel>
 
-        public SclModelElementSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
+        public override IModelElement GetConcreteObject()
         {
-            _defaultModelElementSerializer = defaultModelElementSerializer;
+            return new SclModel();
         }
 
-        public XElement SerializeModelElement(IModelElement modelElement)
-        {
-            return _defaultModelElementSerializer.SerializeModelElement(modelElement);
-        }
-
-        public ISclModel DeserializeModelElement(XElement xElement)
-        {
-            SclModel sclModel = new SclModel();
-            ModelElement modelElement = _defaultModelElementSerializer.DeserializeModelElement(xElement) as ModelElement;
-            sclModel.ModelElementAttributes.AddRange(modelElement.ModelElementAttributes);
-            sclModel.ChildModelElements.AddRange(modelElement.ChildModelElements);
-            sclModel.Namespace = modelElement.Namespace;
-
-            return sclModel;
-        }
+        #endregion
     }
 }

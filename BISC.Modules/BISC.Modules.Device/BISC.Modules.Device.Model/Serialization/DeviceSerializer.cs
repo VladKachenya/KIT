@@ -14,33 +14,17 @@ using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.Device.Model.Serialization
 {
-   public class DeviceSerializer: IModelElementSerializer<IDevice>
+   public class DeviceSerializer: DefaultModelElementSerializer<IDevice>
     {
-        private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
-
-        public DeviceSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
+        public DeviceSerializer()
         {
-            _defaultModelElementSerializer = defaultModelElementSerializer;
+            RegisterProperty(nameof(IDevice.Name),"name");
+        }
+        public override IModelElement GetConcreteObject()
+        {
+            return new Model.Device();
+
         }
 
-        #region Implementation of IModelElementSerializer
-
-        public XElement SerializeModelElement(IModelElement modelElement)
-        {
-            XElement xElement= _defaultModelElementSerializer.SerializeModelElement(modelElement);
-            xElement.SetXAttribute("name",(modelElement as IDevice)?.Name);
-            return xElement;
-        }
-
-        public IDevice DeserializeModelElement(XElement xElement)
-        {
-            Model.Device device = new Model.Device();
-            _defaultModelElementSerializer.FillDeserialisedModelElement(device, xElement);
-            device.Name = xElement.GetXAttribute("name");
-
-            return device;
-        }
-
-        #endregion
     }
 }

@@ -13,36 +13,18 @@ using BISC.Modules.InformationModel.Model.DataTypeTemplates.LNodeType;
 
 namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
 {
-    public class LNodeTypeSerializer : IModelElementSerializer<ILNodeType>
+    public class LNodeTypeSerializer : DefaultModelElementSerializer<ILNodeType>
     {
-        private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
-
-        public LNodeTypeSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
+        public LNodeTypeSerializer()
         {
-            _defaultModelElementSerializer = defaultModelElementSerializer;
+            RegisterModelElementCollection(typeof(Do));
+            RegisterProperty(nameof(ILNodeType.Id),"id");
+            RegisterProperty(nameof(ILNodeType.LnClass), "lnClass");
+
         }
-
-
-
-        public XElement SerializeModelElement(IModelElement modelElement)
+        public override IModelElement GetConcreteObject()
         {
-            ILNodeType nodeType = modelElement as ILNodeType;
-            XElement lnodeTypeXElement = _defaultModelElementSerializer.SerializeModelElement(modelElement);
-            lnodeTypeXElement.SetXAttribute("id", nodeType.Id);
-            lnodeTypeXElement.FillChildXElements("DO", new DoSerializer(_defaultModelElementSerializer),nodeType.DoList);
-           
-            return lnodeTypeXElement;
-        }
-
-        public ILNodeType DeserializeModelElement(XElement xElement)
-        {
-            LNodeType nodeType = new LNodeType();
-            _defaultModelElementSerializer.FillDeserialisedModelElement(nodeType, xElement);
-            nodeType.Id = xElement.GetXAttribute("id");
-            xElement.FillChildElements("DO", new DoSerializer(_defaultModelElementSerializer), nodeType.DoList);
-
-
-            return nodeType;
+            return new LNodeType();
         }
     }
 }

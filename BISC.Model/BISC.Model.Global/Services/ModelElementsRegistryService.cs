@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Global.Serializators;
 using BISC.Model.Infrastructure;
@@ -12,9 +13,18 @@ namespace BISC.Model.Global.Services
 {
     public class ModelElementsRegistryService : IModelElementsRegistryService
     {
-        private Dictionary<string, IModelElementSerializer<IModelElement>> _modelElementSerializatorDictionary = new Dictionary<string, IModelElementSerializer<IModelElement>>();
+        private Dictionary<string, object> _modelElementSerializatorDictionary = new Dictionary<string, object>();
 
-        public void RegisterModelElement(IModelElementSerializer<IModelElement> modelElementSerializer, string elementName)
+        public void RegisterModelElement(IModelSerializer<IModelElement> modelElementSerializer, string elementName)
+        {
+            if (_modelElementSerializatorDictionary.ContainsKey(elementName))
+            {
+                throw new ArgumentException($"Serializator with key {elementName} already exists");
+            }
+            _modelElementSerializatorDictionary.Add(elementName, modelElementSerializer);
+        }
+
+        public void RegisterModelElement<T>(IModelSerializer< T> modelElementSerializer, string elementName)  where T:IModelElement
         {
             if (_modelElementSerializatorDictionary.ContainsKey(elementName))
             {
@@ -28,21 +38,41 @@ namespace BISC.Model.Global.Services
             return _modelElementSerializatorDictionary.ContainsKey(elementName);
         }
 
-        public IModelElementSerializer<IModelElement> GetModelElementSerializatorByKey(string elementName, bool isDefaultSerializatorAllowed = true)
+        public T DeserializeModelElement<T>(XElement xElement, bool isDefaultSerializatorAllowed = true) where T : IModelElement
         {
-            if (!_modelElementSerializatorDictionary.ContainsKey(elementName))
+            if (!_modelElementSerializatorDictionary.ContainsKey(xElement.Name.LocalName))
             {
                 if (isDefaultSerializatorAllowed)
                 {
-                    return new DefaultModelElementSerializer(this);
+                    return (new DefaultModelElementSerializer<T>(this)).DeserializeModelElement(xElement);
                 }
                 else
                 {
-                    throw new ArgumentException($"Serializator with key {elementName} is not added");
+                    throw new ArgumentException($"Serializator with key {xElement.Name.LocalName} is not added");
                 }
             }
-            return _modelElementSerializatorDictionary[elementName];
+
+          return  (T)(_modelElementSerializatorDictionary[xElement.Name.LocalName] as IModelElementDeSerializer<T>).DeserializeModelElement(xElement);
         }
+
+        public XElement SerializeModelElement(IModelElement modelElement, bool isDefaultSerializatorAllowed = true)
+        {
+            if (!_modelElementSerializatorDictionary.ContainsKey(modelElement.ElementName))
+            {
+                if (isDefaultSerializatorAllowed)
+                {
+                    return (new DefaultModelElementSerializer<IModelElement>(this)).SerializeModelElement(modelElement);
+                }
+                else
+                {
+                    throw new ArgumentException($"Serializator with key {modelElement.ElementName} is not added");
+                }
+            }
+
+            return (_modelElementSerializatorDictionary[modelElement.ElementName] as IModelElementSerializer<IModelElement>).SerializeModelElement(modelElement);
+        }
+
+     
 
      
 

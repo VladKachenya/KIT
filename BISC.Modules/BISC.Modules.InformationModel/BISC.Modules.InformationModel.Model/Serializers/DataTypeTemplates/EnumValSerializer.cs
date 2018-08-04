@@ -13,31 +13,16 @@ using BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType;
 
 namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
 {
-   public class EnumValSerializer:IModelElementSerializer<IEnumVal>
+    public class EnumValSerializer : DefaultModelElementSerializer<IEnumVal>
     {
-        private readonly DefaultModelElementSerializer _defaultModelElementSerializer;
-
-        public EnumValSerializer(DefaultModelElementSerializer defaultModelElementSerializer)
+        public EnumValSerializer()
         {
-            _defaultModelElementSerializer = defaultModelElementSerializer;
+            RegisterProperty(nameof(IEnumVal.Ord), "ord");
+            RegisterValueToProperty(nameof(IEnumVal.Value));
         }
-
-        public XElement SerializeModelElement(IModelElement modelElement)
+        public override IModelElement GetConcreteObject()
         {
-            IEnumVal enumVal = modelElement as IEnumVal;
-            XElement enumTypeXElement = _defaultModelElementSerializer.SerializeModelElement(modelElement);
-            enumTypeXElement.SetXAttribute("ord", enumVal.Ord.ToString());
-            enumTypeXElement.SetValue(enumVal.Value);
-            return enumTypeXElement;
-        }
-
-        public IEnumVal DeserializeModelElement(XElement xElement)
-        {
-            EnumVal enumVal = new EnumVal();
-            _defaultModelElementSerializer.FillDeserialisedModelElement(enumVal, xElement);
-            enumVal.Ord =int.Parse(xElement.GetXAttribute("ord"));
-            enumVal.Value = xElement.Value;
-            return enumVal;
+            return new EnumVal();
         }
     }
 }

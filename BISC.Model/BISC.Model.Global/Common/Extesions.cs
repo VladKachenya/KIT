@@ -29,7 +29,6 @@ namespace BISC.Model.Global.Common
             {
                 xElement.Remove();
             }
-
             return element;
         }
 
@@ -40,24 +39,41 @@ namespace BISC.Model.Global.Common
             element.CleanChildXElements(elementName);
             foreach (var modelElement in modelElements)
             {
-
                 element.Add(serializer.SerializeModelElement(modelElement));
             }
             return element;
         }
 
-
-        public static XElement FillChildElements<T>(this XElement element, string elementName, IModelElementSerializer<IModelElement> serializer, List<T> modelElements) where T : IModelElement
+        public static IModelElement FillChildModelElements<T>(this IModelElement modelElement, List<T> childElementsList)
         {
-            element.CleanChildXElements(elementName);
-            foreach (var innerXElement in element.Elements())
+            childElementsList.Clear();
+            foreach (var childModelElement in modelElement.ChildModelElements)
             {
-                if (innerXElement.Name.LocalName != elementName) continue;
-
-                modelElements.Add((T)serializer.DeserializeModelElement(innerXElement));
+                if (childModelElement is T childModelElementToAdd)
+                {
+                    childElementsList.Add(childModelElementToAdd);
+                }
             }
-            return element;
+            return modelElement;
         }
+        public static IModelElement ReplaceChildElements<T>(this IModelElement modelElement, List<T> childElementsList)
+        {
+           var elementsToRemove= modelElement.ChildModelElements.Where((element => element is T)).ToList();
+           elementsToRemove.ForEach((elementToRemove) =>modelElement.ChildModelElements.Remove(elementToRemove));
+            foreach (var childModelElement in modelElement.ChildModelElements)
+            {
+                if (childModelElement is T childModelElementToAdd)
+                {
+                    childElementsList.Add(childModelElementToAdd);
+                }
+            }
+            return modelElement;
+        }
+
+
+
+
+     
 
     }
 }
