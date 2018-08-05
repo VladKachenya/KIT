@@ -9,7 +9,7 @@ namespace BISC.Model.Infrastructure
         bool GetIsModelElementRegistered(string elementName);
 
         T DeserializeModelElement<T>(XElement xElement, bool isDefaultSerializatorAllowed = true) where T : IModelElement;
-        XElement SerializeModelElement(IModelElement modelElement, bool isDefaultSerializatorAllowed = true);
+        XElement SerializeModelElement<T>(T modelElement, bool isDefaultSerializatorAllowed = true) where T : IModelElement;
 
 
     }

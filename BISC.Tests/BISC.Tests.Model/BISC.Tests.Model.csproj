@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="InitializeModules\TestBaseClass.cs" />
     <Compile Include="InitializeModules\TestBootstrapper.cs" />
+    <Compile Include="Model.Global\Serializers\CommunicationSerializerTest.cs" />
     <Compile Include="Model.Global\Serializers\DataTypeTemplatesSerializerTest.cs" />
     <Compile Include="Model.Global\Serializers\SclModelSerializerTest.cs" />
     <Compile Include="Model.InfoModel\Serializers\DataTypeTemplatesSerializerTest.cs" />

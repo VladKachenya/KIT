@@ -55,7 +55,7 @@ namespace BISC.Model.Global.Services
           return  (T)(_modelElementSerializatorDictionary[xElement.Name.LocalName] as IModelElementDeSerializer<T>).DeserializeModelElement(xElement);
         }
 
-        public XElement SerializeModelElement(IModelElement modelElement, bool isDefaultSerializatorAllowed = true)
+        public XElement SerializeModelElement<T>(T modelElement, bool isDefaultSerializatorAllowed = true) where T : IModelElement
         {
             if (!_modelElementSerializatorDictionary.ContainsKey(modelElement.ElementName))
             {
@@ -69,10 +69,9 @@ namespace BISC.Model.Global.Services
                 }
             }
 
-            return (_modelElementSerializatorDictionary[modelElement.ElementName] as IModelElementSerializer<IModelElement>).SerializeModelElement(modelElement);
+            return (_modelElementSerializatorDictionary[modelElement.ElementName] as IModelElementSerializer).SerializeSimpleModelElement(modelElement);
         }
 
-     
 
      
 

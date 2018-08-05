@@ -23,6 +23,15 @@ namespace BISC.Tests.Model.Model.Global.Serializers
             var r = sclModelElementSerializer.DeserializeModelElement(XElement.Parse(Properties.Resources.rel670_gooseUROV));
         }
 
+        [TestMethod]
+        public void SerializingMustBeSucceed()
+        {
+
+            SclModelElementSerializer sclModelElementSerializer=new SclModelElementSerializer();
+            var deserializedElement = sclModelElementSerializer.DeserializeModelElement(XElement.Parse(Properties.Resources.rel670_gooseUROV));
+
+            var serializedFile = sclModelElementSerializer.SerializeModelElement(deserializedElement);
+        }
    
 
 
