@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Connection.Infrastructure.Services;
+using BISC.Modules.Connection.Presentation.Events;
 using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Commands;
@@ -13,10 +15,11 @@ using BISC.Presentation.Infrastructure.Factories;
 
 namespace BISC.Modules.Connection.Presentation.ViewModels
 {
-   public class IpAddressViewModel:ComplexViewModelBase, IIpAddressViewModel
+    public class IpAddressViewModel : ComplexViewModelBase, IIpAddressViewModel
     {
         private readonly IPingService _pingService;
         private readonly IIpValidationService _ipValidationService;
+        private readonly IGlobalEventsService _globalEventsService;
         private string _ipPart1;
         private string _ipPart2;
         private string _ipPart3;
@@ -27,27 +30,44 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         private bool _isIpPart4Focused;
         private bool _isPingSuccess;
 
-        public IpAddressViewModel(IPingService pingService,IIpValidationService ipValidationService,ICommandFactory commandFactory)
+        public IpAddressViewModel(IPingService pingService, IIpValidationService ipValidationService, ICommandFactory commandFactory, IGlobalEventsService globalEventsService)
         {
             _pingService = pingService;
             _ipValidationService = ipValidationService;
-            PingCommand = commandFactory.CreatePresentationCommand(OnPingExecute,CanPingExecute);
+            _globalEventsService = globalEventsService;
+            PingCommand = commandFactory.CreatePresentationCommand(OnPingExecute, CanPingExecute);
+
         }
+        
 
         private async void OnPingExecute()
         {
             _isPingSuccess = await _pingService.GetPing(FullIp);
             Application.Current.Dispatcher.Invoke(() => OnPropertyChanged(nameof(IsPingSuccess)));
+            _globalEventsService.SendMessage(new IpPingedEvent(FullIp, _isPingSuccess));
         }
 
-        private  bool CanPingExecute()
+        private bool CanPingExecute()
         {
             return _ipValidationService.IsExactFormIpAddress(FullIp);
         }
 
         #region Implementation of IIpAddressViewModel
 
-        public string FullIp { get; set; }
+        public string FullIp
+        {
+            get => $"{IpPart1}.{IpPart2}.{IpPart3}.{IpPart4}";
+            set
+            {
+                var values = value.Split('.');
+                if (values.Length != 4) return;
+                IpPart1 = values[0];
+                IpPart2 = values[1];
+                IpPart3 = values[2];
+                IpPart4 = values[3];
+            }
+        }
+
         public ICommand PingCommand { get; }
 
         public bool IsPingSuccess => _isPingSuccess;
@@ -58,7 +78,9 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         {
             if (valiatingIpPart.Length > 3)
             {
-                valiatingIpPart = String.Empty;return;
+                valiatingIpPart = valiatingIpPart.Substring(0,3);
+                valiatingIpPart = "255";
+                return;
             }
             if (int.TryParse(valiatingIpPart, out var intVal))
             {
@@ -74,24 +96,16 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             OnPropertyChanged();
         }
 
-        private bool GetIsIpPartOverflow(string ipPart)
-        {
-            return (ipPart.Length > 3);
-        }
+   
 
         public string IpPart1
         {
             get => _ipPart1;
             set
-            {
-                if (GetIsIpPartOverflow(value))
-                {
-                    IsIpPart2Focused = true;
-                    return;
-                }
+           {
+              
                 ValidateIpPart(ref value);
                 SetProperty(ref _ipPart1, value);
-
             }
         }
 
@@ -100,13 +114,9 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             get => _ipPart2;
             set
             {
-                if (GetIsIpPartOverflow(value))
-                {
-                    IsIpPart3Focused = true;
-                    return;
-                }
+               
                 ValidateIpPart(ref value);
-                SetProperty(ref _ipPart1, value);
+                SetProperty(ref _ipPart2, value);
             }
         }
 
@@ -115,13 +125,9 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             get => _ipPart3;
             set
             {
-                if (GetIsIpPartOverflow(value))
-                {
-                    IsIpPart4Focused = true;
-                    return;
-                }
+                
                 ValidateIpPart(ref value);
-                SetProperty(ref _ipPart1, value);
+                SetProperty(ref _ipPart3, value);
             }
         }
 
@@ -130,41 +136,11 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             get => _ipPart4;
             set
             {
-                if (GetIsIpPartOverflow(value))
-                {
-                    return;
-                }
                 ValidateIpPart(ref value);
-                SetProperty(ref _ipPart1, value);
+                SetProperty(ref _ipPart4, value);
             }
         }
 
-        public bool IsIpPart1Focused
-        {
-            get => _isIpPart1Focused;
-            set { SetProperty(ref _isIpPart1Focused, value); }
-        }
-
-        public bool IsIpPart2Focused
-        {
-            get => _isIpPart2Focused;
-            set { SetProperty(ref _isIpPart2Focused, value); }
-
-        }
-
-        public bool IsIpPart3Focused
-        {
-            get => _isIpPart3Focused;
-            set { SetProperty(ref _isIpPart3Focused, value); }
-
-        }
-
-        public bool IsIpPart4Focused
-        {
-            get => _isIpPart4Focused;
-            set { SetProperty(ref _isIpPart4Focused, value); }
-
-        }
 
     }
 }

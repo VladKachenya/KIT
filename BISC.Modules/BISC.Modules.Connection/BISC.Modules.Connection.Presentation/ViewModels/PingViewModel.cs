@@ -27,12 +27,11 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         private IIpAddressViewModelFactory _ipAddressViewModelFactory;
         private IIpValidationService _ipValidationService;
         private readonly IGlobalEventsService _globalEventsService;
-        private bool PingAllCanExecute = true;
-        private int sizeLastConnectionColection = 20; // Количество IP
-        private string[] _iP = new string[4];
+        private bool _pingAllCanExecute = true;
+        private int _sizeLastConnectionCollection = 20; 
         #endregion
 
-        #region Citor
+        #region C-tor
         public PingViewModel(ICommandFactory commandFactory, IConfigurationService configurationService,
             IIpAddressViewModelFactory ipAddressViewModelFactory, IIpValidationService ipValidationService, IGlobalEventsService globalEventsService)
         {
@@ -41,9 +40,11 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             _globalEventsService = globalEventsService;
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
             _configurationService = configurationService;
-            LastIpAddresses = _ipAddressViewModelFactory.GetPingViewModelCollection(_configurationService.LastIpAddresses);
+            LastIpAddresses = _ipAddressViewModelFactory.GetPingViewModelReadonlyCollection(_configurationService.LastIpAddresses);
+            CurrentAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("");
+           
             _commandFactory = commandFactory;
-            PingAllCommand = _commandFactory.CreatePresentationCommand(OnPingAllCommand, () => PingAllCanExecute);
+            PingAllCommand = _commandFactory.CreatePresentationCommand(OnPingAllCommand, () => _pingAllCanExecute);
             _globalEventsService.Subscribe<IpPingedEvent>((ipPinged => OnIpPinged(ipPinged.Ip)));
         }
         #endregion
@@ -52,14 +53,46 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
         private void OnIpPinged(string ip)
         {
+            if (_configurationService.LastIpAddresses.Contains(ip))
+            {
+                _configurationService.LastIpAddresses.Remove(ip);
+                _configurationService.LastIpAddresses.Insert(0, ip);
+            }
+            else
+            {
+                if (_configurationService.LastIpAddresses.Count >= _sizeLastConnectionCollection)
+                {
+                    _configurationService.LastIpAddresses.Remove(_configurationService.LastIpAddresses.Last());
+                }
+                _configurationService.LastIpAddresses.Add(ip);
 
+            }
+            _configurationService.LastIpAddresses = _configurationService.LastIpAddresses;
+
+            var existing = LastIpAddresses.FirstOrDefault((model => model.FullIp == ip));
+            if (existing != null) 
+            {
+                LastIpAddresses.Remove(existing);
+                LastIpAddresses.Insert(0, existing);
+            }
+            else
+            {
+                if (LastIpAddresses.Count >= _sizeLastConnectionCollection)
+                {
+                    LastIpAddresses.Remove(LastIpAddresses.Last());
+                }
+                LastIpAddresses.Add(existing);
+            }
+            _configurationService.LastIpAddresses = _configurationService.LastIpAddresses;
         }
+
+
 
         private async void OnPingAllCommand()
         {
             try
             {
-                PingAllCanExecute = false;
+                _pingAllCanExecute = false;
                 (PingAllCommand as IPresentationCommand).RaiseCanExecute();
                 List<IIpAddressViewModel> items = new List<IIpAddressViewModel>(LastIpAddresses);
 
@@ -71,7 +104,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             }
             finally
             {
-                PingAllCanExecute = true;
+                _pingAllCanExecute = true;
                 (PingAllCommand as IPresentationCommand).RaiseCanExecute();
             }
             //Task[] tasks = new Task[LastConnections.Count];
@@ -81,18 +114,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         }
 
 
-        private void SaveChangesInConfig()
-        {
-            var lastOpenedFiles = new List<string>();
-            foreach (var lastOpenedFile in LastIpAddresses)
-            {
-                lastOpenedFiles.Add(lastOpenedFile.FullIp);
-            }
-
-            _configurationService.LastIpAddresses = lastOpenedFiles;
-        }
-
-
+      
 
         #endregion
 

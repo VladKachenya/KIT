@@ -74,6 +74,8 @@
     <Compile Include="Controls\BadgedControl.xaml.cs">
       <DependentUpon>BadgedControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BoolToVisConverter.cs" />
+    <Compile Include="Converters\InverseConverter.cs" />
     <Compile Include="Events\GlobalEvent.cs" />
     <Compile Include="Events\ShellLoadedEvent.cs" />
     <Compile Include="Module\PresentationBaseItemsModule.cs" />

@@ -1,6 +1,8 @@
 ﻿using BISC.Infrastructure.CompositionRoot.Ioc;
+using BISC.Infrastructure.CompositionRoot.Services;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Global.Module;
 using BISC.Modules.Connection.Model.Module;
 using BISC.Modules.Connection.Presentation.Module;
@@ -23,6 +25,8 @@ namespace BISC.Infrastructure.CompositionRoot.Bootstraper
         {
             base.ConfigureContainer();
             Container.RegisterType<IInjectionContainer, InjectionContainer>(new ContainerControlledLifetimeManager());
+            Container.RegisterType<IGlobalEventsService, GlobalEventsService>(new ContainerControlledLifetimeManager());
+
             StaticContainer.SetContainer(Container.Resolve<IInjectionContainer>());
             RegisterModules();
             ResolveModules();

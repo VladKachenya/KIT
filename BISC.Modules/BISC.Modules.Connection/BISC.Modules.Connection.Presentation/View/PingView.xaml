@@ -34,9 +34,9 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        
+
         <TextBlock Grid.Row="0" Margin="5" Text="PING"/>
-        
+
         <GroupBox Grid.Row="1" >
             <Grid >
                 <Grid.RowDefinitions>
@@ -44,7 +44,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal">
-                    <local:IpAddressView></local:IpAddressView>
+                    <local:IpAddressView DataContext="{Binding CurrentAddressViewModel}"> </local:IpAddressView>
                     <controls:BadgedControl 
                         BadgeContent="{Binding LastConnections.Count}"
                         Margin="5" Padding="0">
@@ -57,40 +57,19 @@
                     </controls:BadgedControl>
                 </StackPanel>
 
-            
+
                 <ScrollViewer Grid.Row="1"
                               VerticalScrollBarVisibility ="Auto">
                     <ItemsControl x:Name="ipListBox" 
-                             ItemsSource="{Binding LastConnections}"
+                             ItemsSource="{Binding LastIpAddresses}"
                              MinHeight="300"
                              MinWidth="100" >
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate >
+                            <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button MinWidth="110"
-                                            Padding="0"
-                                            Style="{DynamicResource MaterialDesignFlatButton}"
-                                            Command="{Binding ItemClickCommand}"
-                                            Background="White"
-                                            Foreground="Black">
-                                        <TextBlock FontSize="14" Text="{Binding IP}"/>
-                                    </Button>
-                                    <Button Margin="5" Height="24" Grid.Column="1" Padding="1"  ToolTip="PING устройства"
-                                            Command="{Binding PingCommand}"
-                                            Style="{StaticResource MaterialDesignRaisedLightButton}"
-                                            Content="PING"/>
-                                    <Label HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Style="{DynamicResource IsPingStyle}">
-                                        <Label.ToolTip>
-                                            <ToolTip Content="{Binding ForToolTip}"></ToolTip>
-                                        </Label.ToolTip>
-                                        <Label.Content>
-                                            <ContentControl  ContentTemplate="{DynamicResource BlurRadialIcon}"/>
-                                        </Label.Content>
-                                    </Label>
+                                <local:IpAddressView></local:IpAddressView>
                                     <Button Margin="5" Width="24" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"
-                                            Command="{Binding DeleteItemCommand }"
+                                            Command="{Binding ElementName=ipListBox,Path=DeleteItemCommand }"  CommandParameter="{Binding .}"
                                             Style="{DynamicResource MaterialDesignFlatButton}">
                                         <Button.Content>
                                             <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
@@ -101,10 +80,10 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
-                
+
             </Grid>
         </GroupBox>
-        
+
         <Button Grid.Row="2" 
                 Grid.ColumnSpan="2"
                 Content="Закрыть окно"

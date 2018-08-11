@@ -9,7 +9,12 @@ namespace BISC.Modules.Connection.Presentation.Events
 {
     public class IpPingedEvent
     {
-        public string Ip { get; set; }
-        public bool PingResult { get; set; }
+        public IpPingedEvent(string ip, bool pingResult)
+        {
+            Ip = ip;
+            PingResult = pingResult;
+        }
+        public string Ip { get;}
+        public bool PingResult { get; }
     }
 }

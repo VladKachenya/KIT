@@ -6,37 +6,80 @@
              xmlns:local="clr-namespace:BISC.Modules.Connection.Presentation.View"
              xmlns:controls="clr-namespace:BISC.Presentation.BaseItems.Controls;assembly=BISC.Presentation.BaseItems"
              xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
+             xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
+        <converters:InverseConverter x:Key="inverseConverter"></converters:InverseConverter>
+        <converters:BoolToVisConverter Invert="True" x:Key="boolToInVisConverter"></converters:BoolToVisConverter>
+        <converters:BoolToVisConverter Invert="False" x:Key="boolToVisConverter"></converters:BoolToVisConverter>
+
     </UserControl.Resources>
     <Grid>
         <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <TextBox FontSize="20" Text="{Binding IpPart1, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
-                             Name="IP0" behaviors:FocusBehavior.IsFocused="{Binding IsIpPart1Focused}" TabIndex="0"/>
-            <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
-            <TextBox FontSize="20" Text="{Binding IpPart2, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
-                             Name="IP1" behaviors:FocusBehavior.IsFocused="{Binding IsIpPart2Focused}"  TabIndex="1"/>
-            <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
-            <TextBox FontSize="20" Text="{Binding IpPart3, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
-                             Name="IP2" behaviors:FocusBehavior.IsFocused="{Binding IsIpPart3Focused}"  TabIndex="2"/>
-            <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
-            <TextBox FontSize="20" Text="{Binding IpPart4, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
-                             Name="IP3" behaviors:FocusBehavior.IsFocused="{Binding IsIpPart4Focused}" TabIndex="3"/>
+
+            <Grid Visibility="{Binding IsEditable,Converter={StaticResource boolToInVisConverter}}">
+                <StackPanel Orientation="Horizontal">
+                    <Button MinWidth="110"
+                                            Padding="0"
+                                            Style="{DynamicResource MaterialDesignFlatButton}"
+                                            Command="{Binding ItemClickCommand}"
+                                            Background="White"
+                                            Foreground="Black">
+                        <TextBlock FontSize="14" Text="{Binding FullIp}"/>
+                    </Button>
+
+
+                  
+                </StackPanel>
+            </Grid>
+
+            <Grid Visibility="{Binding IsEditable,Converter={StaticResource boolToVisConverter}}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBox PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp" IsEnabled="{Binding IsEditable}" FontSize="20" Text="{Binding IpPart1, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="35" TextAlignment="Center"
+                             Name="IP0" behaviors:FocusBehavior.IsFocused="{Binding IsIpPart1Focused}" TabIndex="0">
+                        <TextBox.InputBindings>
+
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
+                    <TextBox PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp" IsEnabled="{Binding IsEditable}" FontSize="20" Text="{Binding IpPart2, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="35" TextAlignment="Center"
+                             Name="IP1"   TabIndex="1"/>
+                <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
+                    <TextBox PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp" IsEnabled="{Binding IsEditable}" FontSize="20" Text="{Binding IpPart3, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="35" TextAlignment="Center"
+                             Name="IP2"   TabIndex="2"/>
+                <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
+                    <TextBox PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp" IsEnabled="{Binding IsEditable}" FontSize="20" Text="{Binding IpPart4, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="35" TextAlignment="Center"
+                             Name="IP3"  TabIndex="3"/>
+                <Button Margin="5" Padding="1" Visibility="{Binding IsEditable,Converter={StaticResource booleanToVisibilityConverter}}"
+                        Command="{Binding ClearSelectedIPCommand}"
+                        Style="{DynamicResource MaterialDesignFlatButton}">
+                    <Button.Content>
+                        <ContentControl ContentTemplate="{DynamicResource BroomIcon}"/>
+                    </Button.Content>
+                </Button>
+        </StackPanel>
+    </Grid>
+
+            <Label HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Style="{DynamicResource IsPingStyle}">
+                <Label.ToolTip>
+                    <ToolTip Content="{Binding ForToolTip}"></ToolTip>
+                </Label.ToolTip>
+                <Label.Content>
+                    <ContentControl  ContentTemplate="{DynamicResource BlurRadialIcon}"/>
+                </Label.Content>
+            </Label>
+
             <Button Margin="5" Padding="1"
                             Name="PingButton"
                         Command="{Binding PingCommand}"
                         Style="{DynamicResource MaterialDesignFlatButton}"
                         Content="PING"/>
-            <Button Margin="5" Padding="1" Visibility="{Binding IsEditable,Converter={StaticResource booleanToVisibilityConverter}}"
-                        Command="{Binding ClearSelectedIPCommand}"
-                        Style="{DynamicResource MaterialDesignFlatButton}">
-                <Button.Content>
-                    <ContentControl ContentTemplate="{DynamicResource BroomIcon}"/>
-                </Button.Content>
-            </Button>
        
+
         </StackPanel>
     </Grid>
 </UserControl>
