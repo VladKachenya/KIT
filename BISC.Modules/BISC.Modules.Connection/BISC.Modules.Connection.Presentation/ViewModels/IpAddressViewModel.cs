@@ -24,11 +24,8 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         private string _ipPart2;
         private string _ipPart3;
         private string _ipPart4;
-        private bool _isIpPart1Focused;
-        private bool _isIpPart2Focused;
-        private bool _isIpPart3Focused;
-        private bool _isIpPart4Focused;
-        private bool _isPingSuccess;
+        private string _forToolTip;
+        private bool? _isPingSuccess;
 
         public IpAddressViewModel(IPingService pingService, IIpValidationService ipValidationService, ICommandFactory commandFactory, IGlobalEventsService globalEventsService)
         {
@@ -36,20 +33,30 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             _ipValidationService = ipValidationService;
             _globalEventsService = globalEventsService;
             PingCommand = commandFactory.CreatePresentationCommand(OnPingExecute, CanPingExecute);
-
+            IpSelectedCommand = commandFactory.CreatePresentationCommand(OnIpSelectedCommand);
+            ClearIpCommand = commandFactory.CreatePresentationCommand(OnClearIpExecute);
         }
-        
+
+        private void OnClearIpExecute()
+        {
+            FullIp = "...";
+        }
+
+        private void OnIpSelectedCommand()
+        {
+            _globalEventsService.SendMessage(new IpSelectedEvent(FullIp));
+        }
+
 
         private async void OnPingExecute()
         {
-            _isPingSuccess = await _pingService.GetPing(FullIp);
-            Application.Current.Dispatcher.Invoke(() => OnPropertyChanged(nameof(IsPingSuccess)));
-            _globalEventsService.SendMessage(new IpPingedEvent(FullIp, _isPingSuccess));
+            await PingAsync();
+            _globalEventsService.SendMessage(new IpPingedEvent(FullIp, IsPingSuccess != null && IsPingSuccess.Value));
         }
 
         private bool CanPingExecute()
         {
-            return _ipValidationService.IsExactFormIpAddress(FullIp);
+            return _ipValidationService.IsSimplifiedIpAddress(FullIp);
         }
 
         #region Implementation of IIpAddressViewModel
@@ -69,8 +76,31 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         }
 
         public ICommand PingCommand { get; }
+        public ICommand IpSelectedCommand { get; }
+        public ICommand ClearIpCommand { get; }
 
-        public bool IsPingSuccess => _isPingSuccess;
+        public bool? IsPingSuccess
+        {
+            get => _isPingSuccess;
+            set
+            {
+                SetProperty(ref _isPingSuccess, value);
+                ForToolTip = IsPingSuccess != null && IsPingSuccess.Value ? "Проверка связи завершена успешно" : "Устройство не на связи";
+
+            }
+        }
+
+        public string ForToolTip
+        {
+            get => _forToolTip;
+            set => SetProperty(ref _forToolTip, value);
+        }
+
+        public async Task PingAsync()
+        {
+            IsPingSuccess = await _pingService.GetPing(FullIp);
+            Application.Current.Dispatcher.Invoke(() => OnPropertyChanged(nameof(IsPingSuccess)));
+        }
 
         #endregion
 
@@ -92,12 +122,9 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             {
                 valiatingIpPart = string.Empty;
             }
-            (PingCommand as IPresentationCommand)?.RaiseCanExecute();
             OnPropertyChanged();
         }
-
-   
-
+        
         public string IpPart1
         {
             get => _ipPart1;
@@ -106,6 +133,8 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
               
                 ValidateIpPart(ref value);
                 SetProperty(ref _ipPart1, value);
+               (PingCommand as IPresentationCommand)?.RaiseCanExecute();
+
             }
         }
 
@@ -117,6 +146,8 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
                
                 ValidateIpPart(ref value);
                 SetProperty(ref _ipPart2, value);
+                (PingCommand as IPresentationCommand)?.RaiseCanExecute();
+
             }
         }
 
@@ -128,6 +159,8 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
                 
                 ValidateIpPart(ref value);
                 SetProperty(ref _ipPart3, value);
+                (PingCommand as IPresentationCommand)?.RaiseCanExecute();
+
             }
         }
 
@@ -138,6 +171,8 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             {
                 ValidateIpPart(ref value);
                 SetProperty(ref _ipPart4, value);
+                (PingCommand as IPresentationCommand)?.RaiseCanExecute();
+
             }
         }
 

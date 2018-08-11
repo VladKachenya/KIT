@@ -12,6 +12,11 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.ViewModel
     {
         string FullIp { get; set; }
         ICommand PingCommand { get; }
-        bool IsPingSuccess { get; }
+        ICommand IpSelectedCommand { get; }
+        ICommand ClearIpCommand { get; }
+
+        bool? IsPingSuccess { get; set; }
+        string ForToolTip { get; set; }
+        Task PingAsync();
     }
 }

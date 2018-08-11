@@ -12,9 +12,7 @@ namespace BISC.Modules.Connection.Model.Services
 {
     public class PingService : IPingService
     {
-        #region private filds
-        #endregion
-
+      
         #region Citor
         public PingService()
         {

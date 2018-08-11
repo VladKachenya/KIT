@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Events\IpPingedEvent.cs" />
+    <Compile Include="Events\IpSelectedEvent.cs" />
     <Compile Include="Factorys\IpAddressViewModelFactory.cs" />
     <Compile Include="Interfaces\Factorys\IIpAddressViewModelFactory.cs" />
     <Compile Include="Interfaces\ViewModel\IIpAddressViewModel.cs" />

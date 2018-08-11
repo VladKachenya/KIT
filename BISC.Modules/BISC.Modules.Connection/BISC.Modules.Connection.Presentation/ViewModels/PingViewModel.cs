@@ -16,10 +16,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Modules.Connection.Presentation.Events;
 using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
+using BISC.Presentation.Infrastructure.Navigation;
 
 namespace BISC.Modules.Connection.Presentation.ViewModels
 {
-    public class PingViewModel : ViewModelBase, IPingViewModel
+    public class PingViewModel : ComplexViewModelBase, IPingViewModel
     {
         #region private filds
         private ICommandFactory _commandFactory;
@@ -28,7 +29,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         private IIpValidationService _ipValidationService;
         private readonly IGlobalEventsService _globalEventsService;
         private bool _pingAllCanExecute = true;
-        private int _sizeLastConnectionCollection = 20; 
+        private int _sizeLastConnectionCollection = 20;
         #endregion
 
         #region C-tor
@@ -41,36 +42,59 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
             _configurationService = configurationService;
             LastIpAddresses = _ipAddressViewModelFactory.GetPingViewModelReadonlyCollection(_configurationService.LastIpAddresses);
-            CurrentAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("");
-           
+            CurrentAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("", false);
+
             _commandFactory = commandFactory;
             PingAllCommand = _commandFactory.CreatePresentationCommand(OnPingAllCommand, () => _pingAllCanExecute);
-            _globalEventsService.Subscribe<IpPingedEvent>((ipPinged => OnIpPinged(ipPinged.Ip)));
+            DeleteItemCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteIpExecute);
+            _globalEventsService.Subscribe<IpPingedEvent>((ipPinged => OnIpPinged(ipPinged.Ip,ipPinged.PingResult)));
+            _globalEventsService.Subscribe<IpSelectedEvent>(OnIpSelected);
         }
+
+        private void OnIpSelected(IpSelectedEvent ipSelectedEvent)
+        {
+            CurrentAddressViewModel.FullIp = ipSelectedEvent.Ip;
+            CurrentAddressViewModel.IsPingSuccess = null;
+            
+        }
+
+        private void OnDeleteIpExecute(object obj)
+        {
+            if (obj is IIpAddressViewModel ipAddressViewModel)
+            {
+                LastIpAddresses.Remove(ipAddressViewModel);
+                _configurationService.LastIpAddresses = LastIpAddresses.Select((model => model.FullIp)).ToList();
+            }
+        }
+
         #endregion
 
         #region private methods
 
-        private void OnIpPinged(string ip)
+        private void OnIpPinged(string ip,bool result)
         {
-            if (_configurationService.LastIpAddresses.Contains(ip))
+            if (CurrentAddressViewModel.FullIp != ip) return;
+            var lastIps = _configurationService.LastIpAddresses.ToList();
+            if (lastIps.Contains(ip))
             {
-                _configurationService.LastIpAddresses.Remove(ip);
-                _configurationService.LastIpAddresses.Insert(0, ip);
+                lastIps.Remove(ip);
+                lastIps.Insert(0, ip);
             }
             else
             {
-                if (_configurationService.LastIpAddresses.Count >= _sizeLastConnectionCollection)
+                if (lastIps.Count >= _sizeLastConnectionCollection)
                 {
-                    _configurationService.LastIpAddresses.Remove(_configurationService.LastIpAddresses.Last());
+                    lastIps.Remove(lastIps.Last());
                 }
-                _configurationService.LastIpAddresses.Add(ip);
+
+                lastIps.Add(ip);
 
             }
-            _configurationService.LastIpAddresses = _configurationService.LastIpAddresses;
 
+            _configurationService.LastIpAddresses = lastIps;
+            
             var existing = LastIpAddresses.FirstOrDefault((model => model.FullIp == ip));
-            if (existing != null) 
+            if (existing != null)
             {
                 LastIpAddresses.Remove(existing);
                 LastIpAddresses.Insert(0, existing);
@@ -81,9 +105,10 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
                 {
                     LastIpAddresses.Remove(LastIpAddresses.Last());
                 }
-                LastIpAddresses.Add(existing);
+                LastIpAddresses.Insert(0,_ipAddressViewModelFactory.GetPingItemViewModel(ip, true,result));
             }
-            _configurationService.LastIpAddresses = _configurationService.LastIpAddresses;
+
+
         }
 
 
@@ -98,7 +123,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
                 foreach (var connection in items)
                 {
-                    connection.PingCommand.Execute(null);
+                    await connection.PingAsync();
                 }
                 items.Clear();
             }
@@ -114,7 +139,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         }
 
 
-      
+
 
         #endregion
 
@@ -124,8 +149,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         public IIpAddressViewModel CurrentAddressViewModel { get; }
         public ObservableCollection<IIpAddressViewModel> LastIpAddresses { get; }
         public ICommand PingAllCommand { get; }
-
-
+        public ICommand DeleteItemCommand { get; }
 
         #endregion
 
@@ -133,7 +157,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
         protected override void OnDisposing()
         {
-            _globalEventsService.Unsubscribe<IpPingedEvent>((ipPinged => OnIpPinged(ipPinged.Ip)));
+            _globalEventsService.Unsubscribe<IpPingedEvent>((ipPinged => OnIpPinged(ipPinged.Ip,ipPinged.PingResult)));
             base.OnDisposing();
         }
 

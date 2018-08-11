@@ -14,7 +14,19 @@
         <converters:InverseConverter x:Key="inverseConverter"></converters:InverseConverter>
         <converters:BoolToVisConverter Invert="True" x:Key="boolToInVisConverter"></converters:BoolToVisConverter>
         <converters:BoolToVisConverter Invert="False" x:Key="boolToVisConverter"></converters:BoolToVisConverter>
-
+        <Style x:Key="IsPingStyle" TargetType="Label">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPingSuccess}" Value="True">
+                    <Setter Property="Foreground" Value="LightGreen" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsPingSuccess}" Value="False">
+                    <Setter Property="Foreground" Value="#FFF16565" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsPingSuccess}" Value="{x:Null}">
+                    <Setter Property="Foreground" Value="#FFD1D113" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <StackPanel Orientation="Horizontal" Grid.Row="0">
@@ -24,7 +36,7 @@
                     <Button MinWidth="110"
                                             Padding="0"
                                             Style="{DynamicResource MaterialDesignFlatButton}"
-                                            Command="{Binding ItemClickCommand}"
+                                            Command="{Binding IpSelectedCommand}"
                                             Background="White"
                                             Foreground="Black">
                         <TextBlock FontSize="14" Text="{Binding FullIp}"/>
@@ -53,7 +65,7 @@
                     <TextBox PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp" IsEnabled="{Binding IsEditable}" FontSize="20" Text="{Binding IpPart4, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="35" TextAlignment="Center"
                              Name="IP3"  TabIndex="3"/>
                 <Button Margin="5" Padding="1" Visibility="{Binding IsEditable,Converter={StaticResource booleanToVisibilityConverter}}"
-                        Command="{Binding ClearSelectedIPCommand}"
+                        Command="{Binding ClearIpCommand}"
                         Style="{DynamicResource MaterialDesignFlatButton}">
                     <Button.Content>
                         <ContentControl ContentTemplate="{DynamicResource BroomIcon}"/>

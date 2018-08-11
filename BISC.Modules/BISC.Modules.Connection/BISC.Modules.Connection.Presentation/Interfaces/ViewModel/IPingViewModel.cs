@@ -15,6 +15,7 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.Ping
         IIpAddressViewModel CurrentAddressViewModel { get; }
         ObservableCollection<IIpAddressViewModel> LastIpAddresses  { get; }
         ICommand PingAllCommand { get; }
+        ICommand DeleteItemCommand { get; }
 
     }
 }

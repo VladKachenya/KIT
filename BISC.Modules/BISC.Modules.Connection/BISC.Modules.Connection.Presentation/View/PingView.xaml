@@ -14,19 +14,7 @@
     <UserControl.Resources>
         <!--Тригер для лампочки пинга-->
 
-        <Style x:Key="IsPingStyle" TargetType="Label">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsPing}" Value="True">
-                    <Setter Property="Foreground" Value="LightGreen" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsPing}" Value="False">
-                    <Setter Property="Foreground" Value="#FFF16565" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsPing}" Value="{x:Null}">
-                    <Setter Property="Foreground" Value="#FFD1D113" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
+        
     </UserControl.Resources>
     <Grid Margin="5" >
         <Grid.RowDefinitions>
@@ -69,7 +57,7 @@
                                 <StackPanel Orientation="Horizontal">
                                 <local:IpAddressView></local:IpAddressView>
                                     <Button Margin="5" Width="24" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"
-                                            Command="{Binding ElementName=ipListBox,Path=DeleteItemCommand }"  CommandParameter="{Binding .}"
+                                            Command="{Binding ElementName=ipListBox,Path=DataContext.DeleteItemCommand }"  CommandParameter="{Binding .}"
                                             Style="{DynamicResource MaterialDesignFlatButton}">
                                         <Button.Content>
                                             <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>

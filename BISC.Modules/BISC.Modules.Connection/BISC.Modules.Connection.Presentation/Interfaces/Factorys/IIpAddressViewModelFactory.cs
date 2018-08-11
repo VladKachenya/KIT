@@ -11,7 +11,7 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.Factorys
 {
     public interface IIpAddressViewModelFactory
     {
-        IIpAddressViewModel GetPingItemViewModel(string ip);
+        IIpAddressViewModel GetPingItemViewModel(string ip,bool isReadonly,bool? initialState=null);
         ObservableCollection<IIpAddressViewModel> GetPingViewModelReadonlyCollection(List<string> ips);
     }
 }

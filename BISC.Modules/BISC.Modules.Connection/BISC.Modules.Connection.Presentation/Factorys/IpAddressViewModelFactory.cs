@@ -27,21 +27,21 @@ namespace BISC.Modules.Connection.Presentation.Factorys
 
         #region Implementation of IPingItemsViewModelFactory
 
-        public IIpAddressViewModel GetPingItemViewModel(string ip)
+        public IIpAddressViewModel GetPingItemViewModel(string ip, bool isReadonly, bool? initialState = null)
         {
             IIpAddressViewModel ipAddressViewModel = _ipAddressViewModelFactory();
-            (ipAddressViewModel as ComplexViewModelBase)?.SetIsEditable(true);
+            (ipAddressViewModel as ComplexViewModelBase)?.SetIsEditable(!isReadonly);
             ipAddressViewModel.FullIp = ip;
+            if (initialState != null) { ipAddressViewModel.IsPingSuccess = initialState; }
             return ipAddressViewModel;
         }
 
         public ObservableCollection<IIpAddressViewModel> GetPingViewModelReadonlyCollection(List<string> ips)
         {
-            ObservableCollection<IIpAddressViewModel> ipAddressViewModels=new ObservableCollection<IIpAddressViewModel>();
+            ObservableCollection<IIpAddressViewModel> ipAddressViewModels = new ObservableCollection<IIpAddressViewModel>();
             foreach (var ip in ips)
             {
-                var newIpAddressViewModel = GetPingItemViewModel(ip);
-                (newIpAddressViewModel as ComplexViewModelBase)?.SetIsEditable(false);
+                var newIpAddressViewModel = GetPingItemViewModel(ip, true);
                 ipAddressViewModels.Add(newIpAddressViewModel);
             }
             return ipAddressViewModels;
