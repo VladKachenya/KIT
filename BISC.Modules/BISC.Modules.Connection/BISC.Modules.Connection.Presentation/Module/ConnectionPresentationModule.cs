@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
 
 namespace BISC.Modules.Connection.Presentation.Module
 {
@@ -29,8 +30,8 @@ namespace BISC.Modules.Connection.Presentation.Module
             _injectionContainer.RegisterType<object, PingView>(ConnectionKeys.PingViewKey);
             _injectionContainer.RegisterType<IPingViewModel, PingViewModel>(true);
             //Рекомендуется создавать экземпляры этого класса через Фабрику.
-            _injectionContainer.RegisterType<IPingItemViewModel, PingItemViewModel>();
-            _injectionContainer.RegisterType<IPingItemsViewModelFactory, PingItemsViewModelFactory>(true);
+            _injectionContainer.RegisterType<IIpAddressViewModel, IpAddressViewModel>();
+            _injectionContainer.RegisterType<IIpAddressViewModelFactory, IpAddressViewModelFactory>(true);
             var presentationInitialization = _injectionContainer.ResolveType(typeof(ConnectionPresentationInitialization)) as ConnectionPresentationInitialization;
 
         }

@@ -74,6 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\AsyncCommand.cs" />
     <Compile Include="Commands\PresentationCommand.cs" />
     <Compile Include="Commands\TrackableCommand.cs" />
     <Compile Include="Converters\ActiveDocumentConverter.cs" />

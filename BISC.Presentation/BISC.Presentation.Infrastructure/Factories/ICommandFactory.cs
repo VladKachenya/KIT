@@ -10,6 +10,10 @@ namespace BISC.Presentation.Infrastructure.Factories
         IPresentationCommand CreatePresentationCommand(Action execute, Func<bool> canExecute = null);
         ITrackableCommand<T> CreateTrackableCommand<T>(Action<T> execute,Action<T> undo, Func<T, bool> canExecute = null);
         ITrackableCommand CreateTrackableCommand(Action execute,Action undo, Func<bool> canExecute = null);
+
+
+        //IAsyncCommand<T> CreateAsyncCommand<T>(Action<T> execute, Func<T, bool> canExecute = null);
+        //IAsyncCommand CreateAsyncCommand(Action execute, Func<bool> canExecute = null);
     }
 
 }

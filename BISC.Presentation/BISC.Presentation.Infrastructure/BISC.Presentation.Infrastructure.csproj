@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="ChangeTracker\IChangeTracker.cs" />
     <Compile Include="ChangeTracker\IObjectWithChangeTracker.cs" />
+    <Compile Include="Commands\IAsyncCommand.cs" />
     <Compile Include="Commands\IPresentationCommand.cs" />
     <Compile Include="Commands\ITrackableCommand.cs" />
     <Compile Include="Factories\ICommandFactory.cs" />

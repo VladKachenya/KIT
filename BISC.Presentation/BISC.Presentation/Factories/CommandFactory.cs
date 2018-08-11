@@ -47,6 +47,16 @@ namespace BISC.Presentation.Factories
             return new TrackableCommand(CreateDelegateCommand(execute, canExecute), undo);
         }
 
+        //public IAsyncCommand<T> CreateAsyncCommand<T>(Action<T> execute, Func<T, bool> canExecute = null)
+        //{
+        //    return CreateDelegateCommand(execute, canExecute).GetAsyncCommand();
+        //}
+
+        //public IAsyncCommand CreateAsyncCommand(Action execute, Func<bool> canExecute = null)
+        //{
+        //    return CreateDelegateCommand(execute, canExecute).GetAsyncCommand();
+        //}
+
         private DelegateCommand CreateDelegateCommand(Action execute, Func<bool> canExecute = null)
         {
             if (canExecute == null)
@@ -84,6 +94,14 @@ namespace BISC.Presentation.Factories
         {
             return new PresentationCommand(delegateCommand);
         }
+        //public static IAsyncCommand GetAsyncCommand(this DelegateCommand delegateCommand)
+        //{
+        //    return new AsyncCommand(delegateCommand);
+        //}
+        //public static IAsyncCommand<T> GetAsyncCommand<T>(this DelegateCommand<T> delegateCommand)
+        //{
+        //    return new AsyncCommand<T>(delegateCommand);
+        //}
     }
 
    

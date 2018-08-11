@@ -1,5 +1,4 @@
-﻿using BISC.Modules.Connection.Presentation.Interfaces.Ping;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,14 +16,13 @@ using System.Windows.Shapes;
 namespace BISC.Modules.Connection.Presentation.View
 {
     /// <summary>
-    /// Логика взаимодействия для PingsViev.xaml
+    /// Логика взаимодействия для IpAddressView.xaml
     /// </summary>
-    public partial class PingView : UserControl
+    public partial class IpAddressView : UserControl
     {
-        public PingView(IPingViewModel pingAddingViewModel)
+        public IpAddressView()
         {
             InitializeComponent();
-            DataContext = pingAddingViewModel;
         }
     }
 }

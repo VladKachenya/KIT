@@ -6,20 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
 
 namespace BISC.Modules.Connection.Presentation.Interfaces.Ping
 {
     public interface IPingViewModel 
     {            
-        ObservableCollection<IPingItemViewModel> LastConnections  { get; }
-        ICommand PingCommand { get; }
-        ICommand ClearSelectedIPCommand { get; }
+        IIpAddressViewModel CurrentAddressViewModel { get; }
+        ObservableCollection<IIpAddressViewModel> LastIpAddresses  { get; }
         ICommand PingAllCommand { get; }
-        string FullIp { get;}
-        string IP0 { get; set; }
-        string IP1 { get; set; }
-        string IP2 { get; set; }
-        string IP3 { get; set; }
 
     }
 }

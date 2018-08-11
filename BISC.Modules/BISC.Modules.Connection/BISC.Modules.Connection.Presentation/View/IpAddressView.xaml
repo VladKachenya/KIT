@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="BISC.Modules.Connection.Presentation.View.IpAddressView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BISC.Modules.Connection.Presentation.View"
+             xmlns:controls="clr-namespace:BISC.Presentation.BaseItems.Controls;assembly=BISC.Presentation.BaseItems"
+             xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
+             mc:Ignorable="d" 
+             d:DesignHeight="40" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <TextBox FontSize="20" Text="{Binding IpPart1, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
+                             Name="IP0" behaviors:FocusBehavior.IsFocused="{Binding IsIpPart1Focused}" TabIndex="0"/>
+            <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
+            <TextBox FontSize="20" Text="{Binding IpPart2, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
+                             Name="IP1" behaviors:FocusBehavior.IsFocused="{Binding IsIpPart2Focused}"  TabIndex="1"/>
+            <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
+            <TextBox FontSize="20" Text="{Binding IpPart3, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
+                             Name="IP2" behaviors:FocusBehavior.IsFocused="{Binding IsIpPart3Focused}"  TabIndex="2"/>
+            <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
+            <TextBox FontSize="20" Text="{Binding IpPart4, UpdateSourceTrigger=PropertyChanged}" Width="35" TextAlignment="Center"
+                             Name="IP3" behaviors:FocusBehavior.IsFocused="{Binding IsIpPart4Focused}" TabIndex="3"/>
+            <Button Margin="5" Padding="1"
+                            Name="PingButton"
+                        Command="{Binding PingCommand}"
+                        Style="{DynamicResource MaterialDesignFlatButton}"
+                        Content="PING"/>
+            <Button Margin="5" Padding="1" Visibility="{Binding IsEditable,Converter={StaticResource booleanToVisibilityConverter}}"
+                        Command="{Binding ClearSelectedIPCommand}"
+                        Style="{DynamicResource MaterialDesignFlatButton}">
+                <Button.Content>
+                    <ContentControl ContentTemplate="{DynamicResource BroomIcon}"/>
+                </Button.Content>
+            </Button>
+       
+        </StackPanel>
+    </Grid>
+</UserControl>

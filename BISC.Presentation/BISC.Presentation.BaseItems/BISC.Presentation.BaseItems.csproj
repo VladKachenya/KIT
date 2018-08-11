@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\DynamicRegionBehavior.cs" />
+    <Compile Include="Behaviors\FocusBehavior.cs" />
     <Compile Include="ChangeTracker\ChangeTracker.cs" />
     <Compile Include="Commands\DialogCommands.cs" />
     <Compile Include="Common\FileHelper.cs" />
