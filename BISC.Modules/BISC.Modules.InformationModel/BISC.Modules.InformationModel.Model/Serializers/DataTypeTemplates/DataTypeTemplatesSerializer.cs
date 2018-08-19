@@ -28,7 +28,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
         }
         public override IModelElement GetConcreteObject()
         {
-            return new Model.DataTypeTemplates.DataTypeTemplates();
+            return new InformationModel.Model.DataTypeTemplates.DataTypeTemplates();
         }
 
 

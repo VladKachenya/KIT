@@ -65,6 +65,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
                 LastIpAddresses.Remove(ipAddressViewModel);
                 _configurationService.LastIpAddresses = LastIpAddresses.Select((model => model.FullIp)).ToList();
             }
+            
         }
 
         #endregion

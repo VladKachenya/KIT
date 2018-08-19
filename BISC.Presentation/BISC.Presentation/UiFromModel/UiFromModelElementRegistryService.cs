@@ -5,40 +5,33 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.UiFromModel;
 
 namespace BISC.Presentation.UiFromModel
 {
     public class UiFromModelElementRegistryService : IUiFromModelElementRegistryService
     {
-        private Dictionary<string, IUiFromModelElementService> _fromModelElementServicesDictionary = new Dictionary<string, IUiFromModelElementService>();
-
-        public void RegisterModelElement(IUiFromModelElementService modelElementUiService, string elementName)
+        private List<Tuple<string,IUiFromModelElementService>> _servicesKeysList = new List<Tuple<string, IUiFromModelElementService>>();
+        
+        public void RegisterModelElement(IUiFromModelElementService modelElementUiService, string uiKey)
         {
-            if (_fromModelElementServicesDictionary.ContainsKey(elementName))
-            {
-                throw new ArgumentException($"UiService with key {elementName} already exists");
-            }
-            _fromModelElementServicesDictionary.Add(elementName, modelElementUiService);
+            _servicesKeysList.Add(new Tuple<string, IUiFromModelElementService>(uiKey,modelElementUiService));
+
         }
 
-        public bool GetIsModelElementRegistered(string elementName)
+        public bool TryHandleModelElementInUiByKey(IModelElement modelElement, TreeItemIdentifier parentTreeItemIdentifier,
+            string uiKey)
         {
-            return _fromModelElementServicesDictionary.ContainsKey(elementName);
-        }
-
-        public bool TryHandleModelElementInUiByKey(IModelElement modelElement)
-        {
-            if (!_fromModelElementServicesDictionary.ContainsKey(modelElement.ElementName))
+            foreach (var serviceKeyTuple in _servicesKeysList)
             {
-
-                return false;
+                if (serviceKeyTuple.Item1 == uiKey)
+                {
+                    serviceKeyTuple.Item2.HandleModelElement(modelElement,parentTreeItemIdentifier,uiKey);
+                }
             }
-            var uiFromModelElementService = _fromModelElementServicesDictionary[modelElement.ElementName];
-            uiFromModelElementService.HandleModelElement(modelElement);
+
             return true;
         }
-
-
     }
 }

@@ -52,7 +52,13 @@ namespace BISC.Presentation.Services
             }
             Application.Current.Dispatcher.Invoke(() =>
             {
-                _regionManager.RequestNavigate(regionName, new Uri(viewName, UriKind.Relative), navigationParameters?.ToNavigationParameters());
+                _regionManager.RequestNavigate(regionName, new Uri(viewName, UriKind.Relative),(result =>
+                {
+                    if (result.Error != null)
+                    {
+
+                    }
+                }), navigationParameters?.ToNavigationParameters());
 
             });
         }

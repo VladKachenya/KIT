@@ -46,7 +46,9 @@
   <ItemGroup>
     <Compile Include="Keys\DeviceKeys.cs" />
     <Compile Include="Model\IDevice.cs" />
+    <Compile Include="Model\IDeviceConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IDeviceConnectionService.cs" />
     <Compile Include="Services\IDeviceModelService.cs" />
   </ItemGroup>
   <ItemGroup>

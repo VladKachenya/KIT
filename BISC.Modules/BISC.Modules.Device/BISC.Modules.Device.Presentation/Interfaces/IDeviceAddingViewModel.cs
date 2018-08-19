@@ -9,13 +9,12 @@ namespace BISC.Modules.Device.Presentation.Interfaces
 {
     public interface IDeviceAddingViewModel
     {
-        ICommand OpenFileWithDevices { get; }
-         ICommand DeleteFileFromView { get; }
-        ICommand AddSelectedDevices { get; }
-        ICommand LoadDevicesFromFile { get; }
+      
+        bool IsOpeningFromFile { get; set; }
+     
+        ICommand SelectOpenFromFileCommand { get; }
+        ICommand SelectConnectCommand { get; }
 
-        ObservableCollection<IFileViewModel> LastOpenedFiles { get; }
-        ObservableCollection<IDeviceViewModel> CurrentDevicesToAdd { get; }
     }
 
 

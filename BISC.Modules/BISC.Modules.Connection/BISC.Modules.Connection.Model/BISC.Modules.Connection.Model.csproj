@@ -51,7 +51,6 @@
     <Compile Include="Services\PingService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Factorys\" />
     <Folder Include="Model\" />
   </ItemGroup>
   <ItemGroup>

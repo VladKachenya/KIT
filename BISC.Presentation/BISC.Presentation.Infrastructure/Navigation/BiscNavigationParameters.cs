@@ -44,6 +44,7 @@ namespace BISC.Presentation.Infrastructure.Navigation
 
         public BiscNavigationParameters AddParameterByName(string key, object parameter)
         {
+            if (this.Any((navigationParameter => navigationParameter.ParameterName == key))) return this;
             Add(new BiscNavigationParameter(key, parameter));
             return this;
         }

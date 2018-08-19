@@ -55,9 +55,16 @@
     <Compile Include="DataTypeTemplates\IDataTypeTemplatesModelService.cs" />
     <Compile Include="DataTypeTemplates\LNodeType\IDo.cs" />
     <Compile Include="DataTypeTemplates\LNodeType\ILNodeType.cs" />
+    <Compile Include="Elements\IDai.cs" />
+    <Compile Include="Elements\IDoi.cs" />
+    <Compile Include="Elements\ILDevice.cs" />
     <Compile Include="Elements\ILogicalNode.cs" />
+    <Compile Include="Elements\ILogicalNodeZero.cs" />
+    <Compile Include="Elements\ISdi.cs" />
+    <Compile Include="Elements\IVal.cs" />
     <Compile Include="InfoModelKeys.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IInfoModelService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">

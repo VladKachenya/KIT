@@ -1,0 +1,172 @@
+﻿<UserControl x:Class="BISC.Modules.InformationModel.Presentation.Views.InformationModelDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BISC.Modules.InformationModel.Presentation.Views"
+             xmlns:behaviors="clr-namespace:BISC.Modules.InformationModel.Presentation.Behaviors"
+             xmlns:converters="clr-namespace:BISC.Modules.InformationModel.Presentation.Converters"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:infoModelDetails="clr-namespace:BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelDetails"
+             mc:Ignorable="d" >
+
+    <UserControl.Resources>
+        <converters:LevelToMarginConverter x:Key="LevelToMarginConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <converters:IsGroupedToMarginConverter x:Key="GroupedToMarginConverter"></converters:IsGroupedToMarginConverter>
+
+    </UserControl.Resources>
+    <Grid HorizontalAlignment="Stretch" Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid
+            Name="dummygrid"
+            Width="{Binding ElementName=MainGrid, Path=ActualWidth}"
+            Visibility="Hidden">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.8*" />
+                    <ColumnDefinition Width="0.2*" />
+                    <ColumnDefinition Width="0.2*" />
+
+                </Grid.ColumnDefinitions>
+                <Border Name="dummywidth1" Grid.Column="0" />
+                <Border Name="dummywidth2" Grid.Column="1" />
+                <Border Name="dummywidth3" Grid.Column="2" />
+
+            </Grid>
+            <ListView
+            Name="SclListView"
+            Width="auto"
+            HorizontalAlignment="Stretch"
+            ItemsSource="{Binding Path=AllIecTreeItems}"
+            SelectedItem="{Binding SelectedTreeItem}">
+                <i:Interaction.Behaviors>
+                    <behaviors:TreeGridBehavior />
+                </i:Interaction.Behaviors>
+                <ListView.View>
+                    <GridView >
+                        <GridView.Columns>
+                            <GridViewColumn  Width="{Binding ElementName=dummywidth1, Path=ActualWidth}" Header="Элемент">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+
+                                            </Grid.ColumnDefinitions>
+
+                                            <ToggleButton
+                                                Name="LevelTreeToggleButton"
+                                                Grid.Column="0"
+                                                Width="15"   Padding="2"                                           
+                                                Height="15"
+                                                Style="{DynamicResource MaterialDesignFlatPrimaryToggleButton}"
+                                                Margin="{Binding Level, Converter={StaticResource LevelToMarginConverter}}"
+                                                Tag="{Binding ElementName=SclListView, Path=ItemsSource}">
+                                                <i:Interaction.Behaviors>
+                                                    <behaviors:TreeViewToggleButtonBehavior />
+                                                </i:Interaction.Behaviors>
+                                                <ContentControl ContentTemplate="{DynamicResource ArrowBottomRight}"></ContentControl>
+                                            </ToggleButton>
+                                            <Border Margin="2" Grid.Column="1" Background="{Binding TypeColorBrush}" >
+                                                <TextBlock Margin="2"  Text="{Binding TypeName}"></TextBlock>
+                                            </Border>
+                                            <TextBlock Margin="4" Grid.Column="2" Text="{Binding Header}"></TextBlock>
+
+
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn  Width="{Binding ElementName=dummywidth2, Path=ActualWidth}">
+                                <GridViewColumnHeader Width="{Binding ElementName=dummywidth2}"
+                                Visibility="{Binding IsDeviceConnected, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                behaviors:CollapseableColumnBehavior.CollapseableColumn="True" >Данные (устройство)</GridViewColumnHeader>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ContentControl Content="{Binding Value}"></ContentControl>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn  Width="{Binding ElementName=dummywidth3, Path=ActualWidth}">
+                                <GridViewColumnHeader 
+                                                  Visibility="{Binding IsLocalValuesShowing, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                                  behaviors:CollapseableColumnBehavior.CollapseableColumn="True" >Данные (файл)</GridViewColumnHeader>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ContentControl Content="{Binding ValueLocal}">
+                                        </ContentControl>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+        <Grid HorizontalAlignment="Stretch" Grid.Row="1" DataContext="{Binding SelectedTreeItem}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Style="{StaticResource MaterialDesignTitleTextBlock}">Выбранный элемент</TextBlock>
+            <ListView Grid.Row="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" AlternationCount="2"  Margin="0" ItemsSource="{Binding TreeItemDetails}">
+                <ItemsControl.Resources>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                        <Style.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                                <Setter Property="Background" Value="{DynamicResource Primary500}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                    <DataTemplate DataType="{x:Type infoModelDetails:BoolInfoModelDetail}">
+                        <Grid Margin="{Binding IsGrouped,Converter={StaticResource GroupedToMarginConverter}}" ToolTip="{Binding ToolTip}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock  Grid.Column="0" Text="{Binding DetailDescription}"></TextBlock>
+                            <CheckBox Grid.Column="1"  IsEnabled="False" IsChecked="{Binding BoolValue,Mode=OneWay}"></CheckBox>
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type infoModelDetails:DefaultInfoModelDetail}">
+                        <Grid Margin="{Binding IsGrouped,Converter={StaticResource GroupedToMarginConverter}}" ToolTip="{Binding ToolTip}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding DetailDescription}"></TextBlock>
+                            <TextBlock Grid.Column="1"  IsEnabled="False" Text="{Binding DetailValue}"></TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type infoModelDetails:GroupInfoModelDetail}">
+                        <Grid Margin="{Binding IsGrouped,Converter={StaticResource GroupedToMarginConverter}}" ToolTip="{Binding ToolTip}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding DetailDescription}"></TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.Resources>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"></StackPanel>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+
+            </ListView>
+        </Grid>
+    </Grid>
+</UserControl>
+
+
+

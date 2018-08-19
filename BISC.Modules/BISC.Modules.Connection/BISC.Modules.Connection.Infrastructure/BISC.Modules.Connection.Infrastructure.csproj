@@ -45,14 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeviceConnection\IDeviceConnection.cs" />
     <Compile Include="Keys\ConnectionKeys.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IIpValidationService.cs" />
     <Compile Include="Services\IPingService.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Factorys\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

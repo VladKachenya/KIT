@@ -5,89 +5,55 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BISC.Modules.Device.Presentation.Views"
              xmlns:commands="clr-namespace:BISC.Presentation.BaseItems.Commands;assembly=BISC.Presentation.BaseItems"
+             xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
+             xmlns:keys="clr-namespace:BISC.Presentation.Infrastructure.Keys;assembly=BISC.Presentation.Infrastructure"
+             xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
+             xmlns:keys1="clr-namespace:BISC.Modules.Device.Infrastructure.Keys;assembly=BISC.Modules.Device.Infrastructure"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" >
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style  x:Key="ToggleLikeButtonStyleForFile" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsOpeningFromFile}" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource MaterialDesignFlatButtonClick}"></Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style  x:Key="ToggleLikeButtonStyleForConnection" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsOpeningFromFile}" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource MaterialDesignFlatButtonClick}"></Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid Margin="5">
         <Grid.ColumnDefinitions></Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition  Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Margin="5" Text="Добавление устройства из файла"></TextBlock>
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <GroupBox MinHeight="300" MinWidth="200" Header="Посление открытые">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <ListBox Name="lastOpenedFilesListBox" ItemsSource="{Binding LastOpenedFiles}" HorizontalContentAlignment="Stretch">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid HorizontalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Margin="5" Text="{Binding ShortPath}"></TextBlock>
-                                        <Button Margin="1" Width="24" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"
-                                                Command="{Binding DataContext.DeleteFileFromView,Source={x:Reference lastOpenedFilesListBox}}" CommandParameter="{Binding .}">
-                                            <Button.Content>
-                                                <ContentControl ContentTemplate="{DynamicResource CloseIcon}"></ContentControl>
-                                            </Button.Content>
-                                        </Button>
-                                        <Button Width="24" Margin="1" Height="24" Grid.Column="2" Padding="1" ToolTip="Загрузить устройства"
-                                                Command="{Binding DataContext.LoadDevicesFromFile,Source={x:Reference lastOpenedFilesListBox}}" CommandParameter="{Binding .}">
-                                            <Button.Content>
-                                                <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}"></ContentControl>
-                                            </Button.Content>
-                                        </Button>
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel></StackPanel>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ListBox>
-                        <Button Grid.Row="1" HorizontalAlignment="Left" Content="..." ToolTip="Открыть" Command="{Binding OpenFileWithDevices}"></Button>
-                    </Grid>
-                </GroupBox>
-                <GroupBox Grid.Column="1" Header="Текущий файл">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <ListBox x:Name="devicesListBox" Grid.Row="0" ItemsSource="{Binding CurrentDevicesToAdd}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding IsSelected}" ></CheckBox>
-                                        <TextBlock Margin="5" Text="{Binding DeviceName}"></TextBlock>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <Button Grid.Row="1" Content="Добавить" ToolTip="Добавить выделенные устройства в проект" Command="{Binding DataContext.AddSelectedDevices,ElementName=devicesListBox}"></Button>
-                    </Grid>
-                    
-                </GroupBox>
-            </Grid>
+
+   
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Style="{StaticResource ToggleLikeButtonStyleForFile}" Command="{Binding SelectOpenFromFileCommand}" Width="200" Content="Добавить из файла">
+
+            </Button>
+            <Button Style="{StaticResource ToggleLikeButtonStyleForConnection}" Command="{Binding SelectConnectCommand}" Grid.Column="1" Width="200" Content="Подключить">
+
+            </Button>
+
         </Grid>
-        <TextBlock Grid.Row="1" Margin="5" Text="Подключить устройство"></TextBlock>
+        <Grid Margin="8" Grid.Row="1">
+            <ContentControl HorizontalAlignment="Stretch" Margin ="2" behaviors:DynamicRegionBehavior.RegionKey="{x:Static keys1:DeviceKeys.DeviceAddingRegionKey}" />
+
+        </Grid>
         <Button Grid.Row="2" Content="Отмена"  Command="{x:Static commands:DialogCommands.CloseDialogCommand}"></Button>
     </Grid>
 </UserControl>

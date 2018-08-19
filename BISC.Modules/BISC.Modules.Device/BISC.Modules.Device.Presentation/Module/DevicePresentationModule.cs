@@ -38,6 +38,8 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<object, DeviceAddingView>(DeviceKeys.DeviceAddingViewKey);
             _injectionContainer.RegisterType<object, DeviceTreeItemView>(DeviceKeys.DeviceTreeItemViewKey);
             _injectionContainer.RegisterType<object, DeviceDetailsView>(DeviceKeys.DeviceDetailsViewKey);
+            _injectionContainer.RegisterType<object, DeviceConnectingView>(DeviceKeys.DeviceConnectingViewKey);
+            _injectionContainer.RegisterType<object, DeviceFromFileAddingView>(DeviceKeys.DeviceFromFileAddingViewKey);
 
             _injectionContainer.RegisterType<DeviceAddingViewModel>();
             _injectionContainer.RegisterType<IFileViewModel, FileViewModel>();
@@ -47,6 +49,9 @@ namespace BISC.Modules.Device.Presentation.Module
 
             _injectionContainer.RegisterType<DeviceTreeItemViewModel>();
             _injectionContainer.RegisterType<DeviceDetailsViewModel>();
+
+            _injectionContainer.RegisterType<DeviceFromFileAddingViewModel>();
+            _injectionContainer.RegisterType<DeviceConnectingViewModel>();
 
             var presentationInitialization = _injectionContainer.ResolveType(typeof(DevicePresentationInitialization)) as DevicePresentationInitialization;
 

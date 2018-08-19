@@ -8,6 +8,7 @@ using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Infrastructure;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates;
+using BISC.Modules.InformationModel.Model.Serializers.Model;
 
 namespace BISC.Modules.InformationModel.Model.Module
 {
@@ -34,6 +35,13 @@ namespace BISC.Modules.InformationModel.Model.Module
             modelElementsRegistryService.RegisterModelElement(new EnumValSerializer(), InfoModelKeys.DataTypeTemplateKeys.EnumValItemKey);
             modelElementsRegistryService.RegisterModelElement(new SdoSerializer(), InfoModelKeys.DataTypeTemplateKeys.SdoItemKey);
 
+            modelElementsRegistryService.RegisterModelElement(new LDeviceSerializer(), InfoModelKeys.ModelKeys.LDeviceKey);
+            modelElementsRegistryService.RegisterModelElement(new LogicalNodeSerializer(), InfoModelKeys.ModelKeys.LogicalNodeKey);
+            modelElementsRegistryService.RegisterModelElement(new LogicalNodeZeroSerializer(), InfoModelKeys.ModelKeys.LogicalNodeZeroKey);
+            modelElementsRegistryService.RegisterModelElement(new SdiSerializer(), InfoModelKeys.ModelKeys.SdiKey);
+            modelElementsRegistryService.RegisterModelElement(new DaiSerializer(), InfoModelKeys.ModelKeys.DaiKey);
+            modelElementsRegistryService.RegisterModelElement(new DoiSerializer(), InfoModelKeys.ModelKeys.DoiKey);
+            modelElementsRegistryService.RegisterModelElement(new ValSerializer(), InfoModelKeys.ModelKeys.ValKey);
 
         }
     }

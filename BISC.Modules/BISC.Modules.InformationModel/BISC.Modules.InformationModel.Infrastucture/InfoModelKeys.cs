@@ -25,8 +25,26 @@ namespace BISC.Modules.InformationModel.Infrastucture
 
             public const string EnumTypeModelItemKey = "EnumType";
             public const string EnumValItemKey = "EnumVal";
-
         }
+
+        public static class ModelKeys
+        {
+            public const string LDeviceKey = "LDevice";
+            public const string LogicalNodeKey = "LN";
+            public const string LogicalNodeZeroKey = "LN0";
+            public const string DoiKey = "DOI";
+            public const string SdiKey = "SDI";
+            public const string DaiKey = "DAI";
+            public const string ValKey = "Val";
+        }
+
+
+
+
+        public static string InfoModelTreeItemViewKey = "InfoModelTreeItemView";
+        public static string InfoModelTreeItemDetailsViewKey = "InfoModelTreeItemDetailsView";
+
+        public static string LdeviceTreeItemViewKey = "LDeviceTreeItemView";
 
     }
 }

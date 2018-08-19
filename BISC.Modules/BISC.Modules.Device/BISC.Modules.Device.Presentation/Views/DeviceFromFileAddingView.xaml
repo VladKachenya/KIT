@@ -1,0 +1,75 @@
+﻿<UserControl x:Class="BISC.Modules.Device.Presentation.Views.DeviceFromFileAddingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BISC.Modules.Device.Presentation.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Width="400" Height="400">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <GroupBox MinHeight="300" MinWidth="200" Header="Посление открытые">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <ListBox Name="lastOpenedFilesListBox" ItemsSource="{Binding LastOpenedFiles}" HorizontalContentAlignment="Stretch">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Margin="5" Text="{Binding ShortPath}"></TextBlock>
+                                <Button Margin="1" Width="24" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"
+                                                Command="{Binding DataContext.DeleteFileFromView,Source={x:Reference lastOpenedFilesListBox}}" CommandParameter="{Binding .}">
+                                    <Button.Content>
+                                        <ContentControl ContentTemplate="{DynamicResource CloseIcon}"></ContentControl>
+                                    </Button.Content>
+                                </Button>
+                                <Button Width="24" Margin="1" Height="24" Grid.Column="2" Padding="1" ToolTip="Загрузить устройства"
+                                                Command="{Binding DataContext.LoadDevicesFromFile,Source={x:Reference lastOpenedFilesListBox}}" CommandParameter="{Binding .}">
+                                    <Button.Content>
+                                        <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}"></ContentControl>
+                                    </Button.Content>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ListBox>
+                <Button Grid.Row="1" HorizontalAlignment="Left" Content="..." ToolTip="Открыть" Command="{Binding OpenFileWithDevices}"></Button>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="Текущий файл">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <ListBox x:Name="devicesListBox" Grid.Row="0" ItemsSource="{Binding CurrentDevicesToAdd}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox IsChecked="{Binding IsSelected}" ></CheckBox>
+                                <TextBlock Margin="5" Text="{Binding DeviceName}"></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Button Grid.Row="1" Content="Добавить" ToolTip="Добавить выделенные устройства в проект" Command="{Binding DataContext.AddSelectedDevices,ElementName=devicesListBox}"></Button>
+            </Grid>
+
+        </GroupBox>
+    </Grid>
+</UserControl>

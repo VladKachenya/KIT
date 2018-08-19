@@ -11,7 +11,8 @@ namespace BISC.GlobalServices
 {
     public class ConfigurationService : IConfigurationService
     {
-       
+        private List<string> _lastConnectedIpAddresses;
+
 
         public ConfigurationService()
         {
@@ -42,6 +43,26 @@ namespace BISC.GlobalServices
         }
 
         public List<string> LastIpAddresses
+        {
+            get
+            {
+                if (Settings.Default.LastIpAddresses == null)
+                {
+                    Settings.Default.LastIpAddresses = new StringCollection();
+                    Settings.Default.Save();
+                }
+                return Settings.Default.LastIpAddresses.Cast<string>().ToList();
+            }
+            set
+            {
+                var lastIpAddress = new StringCollection();
+                lastIpAddress.AddRange(value.ToArray());
+                Settings.Default.LastIpAddresses = lastIpAddress;
+                Settings.Default.Save();
+            }
+        }
+
+        public List<string> LastConnectedIpAddresses
         {
             get
             {

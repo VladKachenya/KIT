@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\INameableItem.cs" />
     <Compile Include="Common\IParentable.cs" />
     <Compile Include="Controls\IDataSet.cs" />

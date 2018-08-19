@@ -32,6 +32,12 @@
     <DataTemplate x:Key="Bullseye">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"  Kind="Bullseye"/>
     </DataTemplate>
+    <DataTemplate x:Key="ArrowDown">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ArrowDown" />
+     </DataTemplate>
+    <DataTemplate x:Key="ArrowBottomRight">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ArrowBottomRight" />
+     </DataTemplate>
     <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
         <!--<Style.Resources >
             <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#44111121" />

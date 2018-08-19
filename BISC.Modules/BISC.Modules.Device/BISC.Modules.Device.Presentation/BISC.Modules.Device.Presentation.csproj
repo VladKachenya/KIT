@@ -54,7 +54,9 @@
   <ItemGroup>
     <Compile Include="Interfaces\Factories\IDeviceViewModelFactory.cs" />
     <Compile Include="Interfaces\IDeviceAddingViewModel.cs" />
+    <Compile Include="Interfaces\IDeviceConnectingViewModel.cs" />
     <Compile Include="Interfaces\IDeviceDetailsViewModel.cs" />
+    <Compile Include="Interfaces\IDeviceFromFileAddingViewModel.cs" />
     <Compile Include="Interfaces\IDeviceTreeItemViewModel.cs" />
     <Compile Include="Interfaces\IDeviceViewModel.cs" />
     <Compile Include="Interfaces\IFileViewModel.cs" />
@@ -65,14 +67,22 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DeviceAddingService.cs" />
     <Compile Include="ViewModels\DeviceAddingViewModel.cs" />
+    <Compile Include="ViewModels\DeviceConnectingViewModel.cs" />
     <Compile Include="ViewModels\DeviceDetailsViewModel.cs" />
+    <Compile Include="ViewModels\DeviceFromFileAddingViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\Factories\DeviceViewModelFactory.cs" />
     <Compile Include="ViewModels\Factories\FileViewModelFactory.cs" />
     <Compile Include="ViewModels\FileViewModel.cs" />
     <Compile Include="ViewModels\Tree\DeviceTreeItemViewModel.cs" />
+    <Compile Include="Views\DeviceConnectingView.xaml.cs">
+      <DependentUpon>DeviceConnectingView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DeviceDetailsView.xaml.cs">
       <DependentUpon>DeviceDetailsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DeviceFromFileAddingView.xaml.cs">
+      <DependentUpon>DeviceFromFileAddingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DeviceTreeItemView.xaml.cs">
       <DependentUpon>DeviceTreeItemView.xaml</DependentUpon>
@@ -82,7 +92,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\DeviceConnectingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DeviceDetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DeviceFromFileAddingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -111,6 +129,10 @@
     <ProjectReference Include="..\..\..\BISC.Presentation\BISC.Presentation.Infrastructure\BISC.Presentation.Infrastructure.csproj">
       <Project>{D4FEAC3B-C8F9-4DE7-8953-988C75F0F9AA}</Project>
       <Name>BISC.Presentation.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.Connection\BISC.Modules.Connection.Presentation\BISC.Modules.Connection.Presentation.csproj">
+      <Project>{48F6571C-ED09-4ED9-B76A-AC78EF9E9890}</Project>
+      <Name>BISC.Modules.Connection.Presentation</Name>
     </ProjectReference>
     <ProjectReference Include="..\BISC.Modules.Device.Infrastructure\BISC.Modules.Device.Infrastructure.csproj">
       <Project>{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}</Project>

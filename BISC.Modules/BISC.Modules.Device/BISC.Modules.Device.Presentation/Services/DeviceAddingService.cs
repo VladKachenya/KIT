@@ -17,35 +17,37 @@ using BISC.Presentation.Infrastructure.UiFromModel;
 
 namespace BISC.Modules.Device.Presentation.Services
 {
-   public class DeviceAddingService: IDeviceAddingService
+    public class DeviceAddingService : IDeviceAddingService
     {
         private readonly INavigationService _navigationService;
         private readonly IDeviceModelService _deviceModelService;
         private readonly IUserNotificationService _userNotificationService;
         private readonly IBiscProject _biscProject;
         private readonly ITreeManagementService _treeManagementService;
+        private readonly IUiFromModelElementRegistryService _uiFromModelElementRegistryService;
 
-        public DeviceAddingService(INavigationService navigationService ,IDeviceModelService deviceModelService,
-            IUserNotificationService userNotificationService,IBiscProject biscProject,ITreeManagementService
-                treeManagementService)
+        public DeviceAddingService(INavigationService navigationService, IDeviceModelService deviceModelService,
+            IUserNotificationService userNotificationService, IBiscProject biscProject, ITreeManagementService
+                treeManagementService, IUiFromModelElementRegistryService uiFromModelElementRegistryService)
         {
             _navigationService = navigationService;
             _deviceModelService = deviceModelService;
             _userNotificationService = userNotificationService;
             _biscProject = biscProject;
             _treeManagementService = treeManagementService;
+            _uiFromModelElementRegistryService = uiFromModelElementRegistryService;
         }
 
         public async void OpenDeviceAddingView()
         {
-           await _navigationService.NavigateViewToGlobalRegion(DeviceKeys.DeviceAddingViewKey);
+            await _navigationService.NavigateViewToGlobalRegion(DeviceKeys.DeviceAddingViewKey);
         }
 
         public void AddDevicesInProject(List<IDevice> devicesToAdd)
         {
             foreach (var device in devicesToAdd)
             {
-               var res= _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel, device);
+                var res = _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel, device);
                 if (!res.IsSucceed)
                 {
                     _userNotificationService.NotifyUserGlobal(res.GetFirstError());
@@ -61,19 +63,24 @@ namespace BISC.Modules.Device.Presentation.Services
         {
             BiscNavigationParameters navigationParameters = new BiscNavigationParameters();
             navigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, device);
-            _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null);
+            var resultTreeItem =
+                _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null);
+            _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(device, resultTreeItem,"IED");
+
         }
 
-        public void HandleModelElement(IModelElement modelElement)
+        public void HandleModelElement(IModelElement modelElement, TreeItemIdentifier parentTreeId,string uiKey)
         {
+            if(parentTreeId!=null)return;
             var sclModel = modelElement as ISclModel;
-           sclModel?.ChildModelElements.ForEach(element =>
-           {
-               if (element.ElementName == DeviceKeys.DeviceModelKey)
-               {
-                   AddDeviceToTree(element as IDevice);
-               }
-           });
+            sclModel?.ChildModelElements.ForEach(element =>
+            {
+                if (element.ElementName == DeviceKeys.DeviceModelKey)
+                {
+                    AddDeviceToTree(element as IDevice);
+                }
+            });
+            _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(modelElement, parentTreeId, uiKey);
         }
     }
 }

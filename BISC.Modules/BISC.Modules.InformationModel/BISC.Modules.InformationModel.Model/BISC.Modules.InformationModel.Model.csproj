@@ -54,6 +54,13 @@
     <Compile Include="DataTypeTemplates\EnumType\EnumVal.cs" />
     <Compile Include="DataTypeTemplates\LNodeType\Do.cs" />
     <Compile Include="DataTypeTemplates\LNodeType\LNodeType.cs" />
+    <Compile Include="Elements\Dai.cs" />
+    <Compile Include="Elements\Doi.cs" />
+    <Compile Include="Elements\LDevice.cs" />
+    <Compile Include="Elements\LogicalNode.cs" />
+    <Compile Include="Elements\LogicalNodeZero.cs" />
+    <Compile Include="Elements\Sdi.cs" />
+    <Compile Include="Elements\Val.cs" />
     <Compile Include="Module\InformationModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers\DataTypeTemplates\BdaSerializer.cs" />
@@ -66,11 +73,16 @@
     <Compile Include="Serializers\DataTypeTemplates\EnumValSerializer.cs" />
     <Compile Include="Serializers\DataTypeTemplates\LNodeTypeSerializer.cs" />
     <Compile Include="Serializers\DataTypeTemplates\SdoSerializer.cs" />
+    <Compile Include="Serializers\Model\DaiSerializer.cs" />
+    <Compile Include="Serializers\Model\DoiSerializer.cs" />
+    <Compile Include="Serializers\Model\LDeviceSerializer.cs" />
+    <Compile Include="Serializers\Model\LogicalNodeSerializer.cs" />
+    <Compile Include="Serializers\Model\LogicalNodeZeroSerializer.cs" />
+    <Compile Include="Serializers\Model\SdiSerializer.cs" />
+    <Compile Include="Serializers\Model\ValSerializer.cs" />
     <Compile Include="Services\DataTypeTemplatesModelService.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Elements\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
       <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>

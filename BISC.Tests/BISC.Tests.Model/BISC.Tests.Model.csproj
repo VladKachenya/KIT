@@ -83,7 +83,7 @@
     <Compile Include="Model.Global\Serializers\CommunicationSerializerTest.cs" />
     <Compile Include="Model.Global\Serializers\DataTypeTemplatesSerializerTest.cs" />
     <Compile Include="Model.Global\Serializers\SclModelSerializerTest.cs" />
-    <Compile Include="Model.InfoModel\Serializers\DataTypeTemplatesSerializerTest.cs" />
+    <Compile Include="Model.InfoModel\Serializers\LDeviceSerializerTest.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -93,6 +93,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
