@@ -1,6 +1,5 @@
 ﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
-using BISC.Modules.Connection.Infrastructure.DeviceConnection;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Connection.Model.Services;
 using System;

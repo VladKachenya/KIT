@@ -81,12 +81,14 @@
     <Compile Include="Interfaces\IStronglyNamed.cs" />
     <Compile Include="Module\InformationModelPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\InfoModelLoadingService.cs" />
     <Compile Include="Services\InfoModelUiHandlingService.cs" />
     <Compile Include="Services\LDeviceUiHandlingService.cs" />
     <Compile Include="ViewModels\Base\InfoModelItemViewModelBase.cs" />
     <Compile Include="ViewModels\InfoModelDetails\BoolInfoModelDetail.cs" />
     <Compile Include="ViewModels\InfoModelDetails\DefaultInfoModelDetail.cs" />
     <Compile Include="ViewModels\InfoModelDetails\GroupInfoModelDetail.cs" />
+    <Compile Include="ViewModels\InfoModelLoadingTreeItemViewModel.cs" />
     <Compile Include="ViewModels\InfoModelTreeItemDetailsViewModel.cs" />
     <Compile Include="ViewModels\InfoModelTreeItemViewModel.cs" />
     <Compile Include="ViewModels\InfoModelTree\DaiInfoModelItemViewModel.cs" />
@@ -96,6 +98,9 @@
     <Compile Include="ViewModels\InfoModelTree\LogicalNodeZeroInfoModelItemViewModel.cs" />
     <Compile Include="ViewModels\InfoModelTree\SdiInfoModelItemViewModel.cs" />
     <Compile Include="ViewModels\LDeviceTreeItemViewModel.cs" />
+    <Compile Include="Views\InfoModelLoadingTreeItemView.xaml.cs">
+      <DependentUpon>InfoModelLoadingTreeItemView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\InfoModelTreeItemView.xaml.cs">
       <DependentUpon>InfoModelTreeItemView.xaml</DependentUpon>
     </Compile>
@@ -136,6 +141,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\InfoModelLoadingTreeItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\InfoModelTreeItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

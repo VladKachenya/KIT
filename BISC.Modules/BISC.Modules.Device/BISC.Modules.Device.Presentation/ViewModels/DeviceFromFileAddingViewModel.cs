@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Linq;
 using BISC.Infrastructure.Global.Services;
+using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces;
@@ -28,6 +29,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IDeviceModelService _deviceModelService;
         private readonly IDeviceViewModelFactory _deviceViewModelFactory;
         private readonly IDeviceAddingService _deviceAddingService;
+        private ISclModel _currentAddingSclModel;
         public DeviceFromFileAddingViewModel(ICommandFactory commandFactory, IConfigurationService configurationService,
             IFileViewModelFactory fileViewModelFactory, IModelComposingService modelComposingService, IDeviceModelService deviceModelService,
             IDeviceViewModelFactory deviceViewModelFactory, IDeviceAddingService deviceAddingService)
@@ -52,12 +54,13 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         private void OnAddSelectedDevicesExecute()
         {
-            _deviceAddingService.AddDevicesInProject(CurrentDevicesToAdd.Where((model => model.IsSelected)).Select((model => model.Device)).ToList());
+            _deviceAddingService.AddDevicesInProject(CurrentDevicesToAdd.Where((model => model.IsSelected)).Select((model => model.Device)).ToList(),_currentAddingSclModel);
         }
 
         private void OnLoadDevicesFromFileExecute(IFileViewModel fileViewModel)
         {
             var model = _modelComposingService.DeserializeModelFromFile(XElement.Load(fileViewModel.FullPath));
+            _currentAddingSclModel = model;
             var devices = _deviceModelService.GetDevicesFromModel(model);
             CurrentDevicesToAdd.Clear();
             foreach (var device in devices)

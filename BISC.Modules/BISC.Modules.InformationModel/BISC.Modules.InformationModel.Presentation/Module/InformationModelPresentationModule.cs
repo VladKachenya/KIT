@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
+using BISC.Modules.Device.Infrastructure.Loading;
+using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Presentation.Factories;
 using BISC.Modules.InformationModel.Presentation.Helpers;
@@ -46,6 +48,8 @@ namespace BISC.Modules.InformationModel.Presentation.Module
             _injectionContainer.RegisterType<DoiInfoModelItemViewModel>();
             _injectionContainer.RegisterType<DaiInfoModelItemViewModel>();
             _injectionContainer.RegisterType<SdiInfoModelItemViewModel>();
+            _injectionContainer.RegisterType<IDeviceElementLoadingService, InfoModelLoadingService>(Guid.NewGuid().ToString());
+            _injectionContainer.RegisterType<InfoModelLoadingTreeItemViewModel>();
 
             _injectionContainer.RegisterType<object, InfoModelTreeItemView>(InfoModelKeys.InfoModelTreeItemViewKey);
             _injectionContainer.RegisterType<object, InformationModelDetailsView>(InfoModelKeys.InfoModelTreeItemDetailsViewKey);

@@ -1,5 +1,4 @@
 ﻿using BISC.Infrastructure.Global.Services;
-using BISC.Modules.Connection.Infrastructure.DeviceConnection;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Connection.Presentation.Interfaces.Factorys;
 using BISC.Modules.Connection.Presentation.Interfaces.Ping;

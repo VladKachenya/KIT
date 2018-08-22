@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 
 namespace BISC.Infrastructure.Global.IoC
@@ -7,6 +8,7 @@ namespace BISC.Infrastructure.Global.IoC
     {
         T ResolveType<T>();
         T ResolveType<T>(string key);
+        List<object> ResolveAll(Type type);
         object ResolveType(Type t, string key);
         object ResolveType(Type t);
         void RegisterType(Type t);
@@ -15,6 +17,6 @@ namespace BISC.Infrastructure.Global.IoC
 
         void RegisterType<TFrom, TTo>(string key, bool isSingleton=false) where TTo : TFrom;
 
-
+        
     }
 }

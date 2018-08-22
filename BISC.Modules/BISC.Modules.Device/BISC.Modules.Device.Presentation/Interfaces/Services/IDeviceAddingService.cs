@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Presentation.Infrastructure.UiFromModel;
 
@@ -8,6 +9,6 @@ namespace BISC.Modules.Device.Presentation.Interfaces.Services
     {
 
         void OpenDeviceAddingView();
-        void AddDevicesInProject(List<IDevice> devicesToAdd);
+        void AddDevicesInProject(List<IDevice> devicesToAdd,ISclModel modelFrom);
     }
 }

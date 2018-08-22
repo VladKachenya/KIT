@@ -28,6 +28,11 @@ namespace BISC.Infrastructure.CompositionRoot.Ioc
             return _container.Resolve<T>(key);
         }
 
+        public List<object> ResolveAll(Type type)
+        {
+            return _container.ResolveAll(type).ToList() ;
+        }
+
         public object ResolveType(Type t,string key)
         {
             return _container.Resolve(t,key);

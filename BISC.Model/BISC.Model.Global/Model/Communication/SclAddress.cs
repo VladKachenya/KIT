@@ -23,6 +23,14 @@ namespace BISC.Model.Global.Model.Communication
             {
                 property.Value = value;
             }
+            else
+            {
+                AddressProperties.Add(new AddressProperty()
+                {
+                    Type = addressPropertyName,
+                    Value = value
+                });
+            }
         }
 
         public string GetProperty(string addressPropertyName)

@@ -66,10 +66,12 @@
     <Compile Include="Module\DevicePresentationInitialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DeviceAddingService.cs" />
+    <Compile Include="Services\DeviceLoadingService.cs" />
     <Compile Include="ViewModels\DeviceAddingViewModel.cs" />
     <Compile Include="ViewModels\DeviceConnectingViewModel.cs" />
     <Compile Include="ViewModels\DeviceDetailsViewModel.cs" />
     <Compile Include="ViewModels\DeviceFromFileAddingViewModel.cs" />
+    <Compile Include="ViewModels\DeviceLoadingTreeItemViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\Factories\DeviceViewModelFactory.cs" />
     <Compile Include="ViewModels\Factories\FileViewModelFactory.cs" />
@@ -83,6 +85,9 @@
     </Compile>
     <Compile Include="Views\DeviceFromFileAddingView.xaml.cs">
       <DependentUpon>DeviceFromFileAddingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DeviceLoadingTreeItemView.xaml.cs">
+      <DependentUpon>DeviceLoadingTreeItemView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DeviceTreeItemView.xaml.cs">
       <DependentUpon>DeviceTreeItemView.xaml</DependentUpon>
@@ -101,6 +106,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DeviceFromFileAddingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DeviceLoadingTreeItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

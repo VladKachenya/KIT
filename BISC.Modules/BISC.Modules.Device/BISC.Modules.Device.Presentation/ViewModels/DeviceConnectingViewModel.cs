@@ -6,14 +6,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Services;
+using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Presentation.Events;
 using BISC.Modules.Connection.Presentation.Interfaces.Factorys;
 using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
+using BISC.Modules.Device.Infrastructure.Keys;
+using BISC.Modules.Device.Infrastructure.Loading;
+using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces;
+using BISC.Presentation.BaseItems.Commands;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.ViewModels
 {
@@ -24,31 +30,46 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IConfigurationService _configurationService;
         private readonly IGlobalEventsService _globalEventsService;
         private readonly IIpAddressViewModelFactory _ipAddressViewModelFactory;
+        private readonly ITreeManagementService _treeManagementService;
+        private readonly IDeviceModelService _deviceModelService;
+        private readonly IBiscProject _biscProject;
         private IIpAddressViewModel _selectedIpAddressViewModel;
 
-        public DeviceConnectingViewModel(ICommandFactory commandFactory, IDeviceConnectionService deviceConnectionService,
-            IConfigurationService configurationService,IGlobalEventsService globalEventsService,IIpAddressViewModelFactory ipAddressViewModelFactory)
+        public DeviceConnectingViewModel(ICommandFactory commandFactory,
+            IDeviceConnectionService deviceConnectionService,
+            IConfigurationService configurationService, IGlobalEventsService globalEventsService,
+            IIpAddressViewModelFactory ipAddressViewModelFactory,
+            ITreeManagementService treeManagementService,IDeviceModelService deviceModelService,IBiscProject biscProject)
         {
             _commandFactory = commandFactory;
             _deviceConnectionService = deviceConnectionService;
             _configurationService = configurationService;
             _globalEventsService = globalEventsService;
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
-            LastConnectedIps=new ObservableCollection<IIpAddressViewModel>();
+            _treeManagementService = treeManagementService;
+            _deviceModelService = deviceModelService;
+            _biscProject = biscProject;
+            LastConnectedIps = new ObservableCollection<IIpAddressViewModel>();
             ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDeviceExecute);
             var lastConnectedIp = _configurationService.LastConnectedIpAddresses.Count > 0
                 ? _configurationService.LastConnectedIpAddresses[0]
                 : "...";
-           SelectedIpAddressViewModel= _ipAddressViewModelFactory.GetPingItemViewModel(lastConnectedIp, false);
+            SelectedIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel(lastConnectedIp, false);
 
             LastConnectedIps =
-                _ipAddressViewModelFactory.GetPingViewModelReadonlyCollection(_configurationService.LastConnectedIpAddresses);
+                _ipAddressViewModelFactory.GetPingViewModelReadonlyCollection(_configurationService
+                    .LastConnectedIpAddresses);
 
         }
 
-        private void OnConnectDeviceExecute()
-        {
-            _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
+        private async void OnConnectDeviceExecute()
+        { 
+            IDevice newDevice=await _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
+            _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel, newDevice);
+            BiscNavigationParameters biscNavigationParameters=new BiscNavigationParameters();
+            biscNavigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, newDevice);
+            _treeManagementService.AddTreeItem(biscNavigationParameters,DeviceKeys.DeviceLoadingTreeItemViewKey,null);
+            DialogCommands.CloseDialogCommand.Execute(null, null);
         }
 
         public IIpAddressViewModel SelectedIpAddressViewModel

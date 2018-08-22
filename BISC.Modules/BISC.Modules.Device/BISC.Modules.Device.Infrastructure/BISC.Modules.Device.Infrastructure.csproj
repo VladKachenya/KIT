@@ -45,10 +45,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Keys\DeviceKeys.cs" />
+    <Compile Include="Loading\DeviceLoadingEvent.cs" />
     <Compile Include="Model\IDevice.cs" />
     <Compile Include="Model\IDeviceConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Loading\IDeviceElementLoadingService.cs" />
     <Compile Include="Services\IDeviceConnectionService.cs" />
+    <Compile Include="Loading\IDeviceLoadingService.cs" />
     <Compile Include="Services\IDeviceModelService.cs" />
   </ItemGroup>
   <ItemGroup>

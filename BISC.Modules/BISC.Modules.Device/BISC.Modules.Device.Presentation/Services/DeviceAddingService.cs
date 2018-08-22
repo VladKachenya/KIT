@@ -43,11 +43,11 @@ namespace BISC.Modules.Device.Presentation.Services
             await _navigationService.NavigateViewToGlobalRegion(DeviceKeys.DeviceAddingViewKey);
         }
 
-        public void AddDevicesInProject(List<IDevice> devicesToAdd)
+        public void AddDevicesInProject(List<IDevice> devicesToAdd,ISclModel modelFrom)
         {
             foreach (var device in devicesToAdd)
             {
-                var res = _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel, device);
+                var res = _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel, device,modelFrom);
                 if (!res.IsSucceed)
                 {
                     _userNotificationService.NotifyUserGlobal(res.GetFirstError());

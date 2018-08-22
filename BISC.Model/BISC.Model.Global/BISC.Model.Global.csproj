@@ -68,6 +68,7 @@
     <Compile Include="Module\GlobalModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializators\SclModelElementSerializer.cs" />
+    <Compile Include="Services\CommunicationModel\SclCommunicationModelService.cs" />
     <Compile Include="Services\ModelComposingService.cs" />
     <Compile Include="Services\ModelElementsRegistryService.cs" />
     <Compile Include="Services\ModelTypesResolvingService.cs" />
