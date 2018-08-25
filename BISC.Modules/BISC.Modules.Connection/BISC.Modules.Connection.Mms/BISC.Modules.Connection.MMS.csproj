@@ -126,27 +126,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="iec61850dotnet">
-      <HintPath>Embed\iec61850dotnet.dll</HintPath>
-    </Reference>
-    <Reference Include="PcapDotNet.Base, Version=1.0.3.21015, Culture=neutral, PublicKeyToken=4b6f3e583145a652, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Embed\PcapDotNet.Base.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PcapDotNet.Core">
-      <HintPath>Embed\PcapDotNet.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="PcapDotNet.Core.Extensions, Version=1.0.3.21028, Culture=neutral, PublicKeyToken=4b6f3e583145a652, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Embed\PcapDotNet.Core.Extensions.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PcapDotNet.Packets, Version=1.0.3.21016, Culture=neutral, PublicKeyToken=4b6f3e583145a652, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Embed\PcapDotNet.Packets.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -686,14 +665,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Embed\iec61850.dll" />
-    <EmbeddedResource Include="Embed\iec61850dotnet.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Embed\PcapDotNet.Base.dll" />
-    <EmbeddedResource Include="Embed\PcapDotNet.Core.dll" />
-    <EmbeddedResource Include="Embed\PcapDotNet.Core.Extensions.dll" />
-    <EmbeddedResource Include="Embed\PcapDotNet.Packets.dll" />
     <Content Include="README.txt" />
   </ItemGroup>
   <ItemGroup>
