@@ -45,8 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Connection\DeviceConnection.cs" />
     <Compile Include="Module\ConnectionModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ConnectionPoolService.cs" />
     <Compile Include="Services\IpValidationServic.cs" />
     <Compile Include="Services\PingService.cs" />
   </ItemGroup>

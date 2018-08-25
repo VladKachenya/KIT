@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BISC.Modules.Device.Presentation.ViewModels;
 
 namespace BISC.Modules.Device.Presentation.Views
 {
@@ -20,9 +21,10 @@ namespace BISC.Modules.Device.Presentation.Views
     /// </summary>
     public partial class DeviceLoadingTreeItemView : UserControl
     {
-        public DeviceLoadingTreeItemView()
+        public DeviceLoadingTreeItemView(DeviceLoadingTreeItemViewModel viewModel)
         {
             InitializeComponent();
+            DataContext = viewModel;
         }
     }
 }

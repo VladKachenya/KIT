@@ -4,6 +4,7 @@ using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Global.Module;
+using BISC.Modules.Connection.MMS.Module;
 using BISC.Modules.Connection.Model.Module;
 using BISC.Modules.Connection.Presentation.Module;
 using BISC.Modules.Device.Model.Module;
@@ -53,9 +54,11 @@ namespace BISC.Infrastructure.CompositionRoot.Bootstraper
 
             Container.RegisterType(typeof(IAppModule), typeof(DeviceModelModule), nameof(DeviceModelModule));
             Container.RegisterType(typeof(IAppModule), typeof(DevicePresentationModule), nameof(DevicePresentationModule));
-            Container.RegisterType(typeof(IAppModule), typeof(ConnectionPresentationModule), nameof(ConnectionPresentationModule));
             Container.RegisterType(typeof(IAppModule), typeof(ConnectionModelModule), nameof(ConnectionModelModule));
+
+            Container.RegisterType(typeof(IAppModule), typeof(ConnectionPresentationModule), nameof(ConnectionPresentationModule));
       //      Container.RegisterType(typeof(IAppModule), typeof(FTPModule), nameof(FTPModule));
+            Container.RegisterType(typeof(IAppModule), typeof(ConnectionMmsModule), nameof(ConnectionMmsModule));
 
         }
     }

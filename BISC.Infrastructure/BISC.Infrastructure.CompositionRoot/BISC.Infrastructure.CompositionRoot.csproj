@@ -88,6 +88,10 @@
       <Project>{FCA3F7FE-D64B-4C3C-9F8D-85753FC944BE}</Project>
       <Name>BISC.Model.Global</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Connection\BISC.Modules.Connection.Mms\BISC.Modules.Connection.MMS.csproj">
+      <Project>{A9833FBF-9183-4D5E-8D5B-A4CBCD65D811}</Project>
+      <Name>BISC.Modules.Connection.MMS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Connection\BISC.Modules.Connection.Model\BISC.Modules.Connection.Model.csproj">
       <Project>{91b85760-a120-4f20-9fbd-84db863c460b}</Project>
       <Name>BISC.Modules.Connection.Model</Name>

@@ -23,7 +23,7 @@ namespace BISC.Modules.Connection.Model.Module
 
             _injectionContainer.RegisterType<IPingService, PingService>(true);
             _injectionContainer.RegisterType<IIpValidationService, IpValidationServic>(true);
-
+            _injectionContainer.RegisterType<IConnectionPoolService,ConnectionPoolService>(true);
             //_injectionContainer.RegisterType<IDeviceConnectionFactory, DeviceConnactionFactory>(true);
             //_injectionContainer.RegisterType<IIpModel, IpModel>();
         }

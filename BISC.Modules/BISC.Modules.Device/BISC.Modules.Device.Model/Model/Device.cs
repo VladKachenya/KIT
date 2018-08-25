@@ -7,6 +7,7 @@ using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Model.Global.Model;
 using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Connection.Infrastructure.Connection;
 
 namespace BISC.Modules.Device.Model.Model
 {

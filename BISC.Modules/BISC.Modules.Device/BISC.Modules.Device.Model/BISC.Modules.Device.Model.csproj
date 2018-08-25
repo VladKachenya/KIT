@@ -92,6 +92,10 @@
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
       <Name>BISC.Model.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.Connection\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
+      <Project>{84925CA6-959A-4094-9688-622DC28B7452}</Project>
+      <Name>BISC.Modules.Connection.Infrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BISC.Modules.Device.Infrastructure\BISC.Modules.Device.Infrastructure.csproj">
       <Project>{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}</Project>
       <Name>BISC.Modules.Device.Infrastructure</Name>
