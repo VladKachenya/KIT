@@ -108,6 +108,10 @@
       <Project>{736992ee-8449-49aa-8a40-b2462ad51ecd}</Project>
       <Name>BISC.Modules.Device.Presentation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.FTP\BISC.Modules.FTP.FTPConnection\BISC.Modules.FTP.FTPConnection.csproj">
+      <Project>{6aea781c-90e4-458f-9e48-e2ecc893c178}</Project>
+      <Name>BISC.Modules.FTP.FTPConnection</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Model\BISC.Modules.InformationModel.Model.csproj">
       <Project>{346395B5-8238-45AE-B002-C22B816AC135}</Project>
       <Name>BISC.Modules.InformationModel.Model</Name>
@@ -128,6 +132,9 @@
       <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
       <Name>BISC.Infrastructure.Global</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

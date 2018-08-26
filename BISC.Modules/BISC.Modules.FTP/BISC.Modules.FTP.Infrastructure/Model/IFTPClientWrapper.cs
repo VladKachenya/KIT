@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BISC.Modules.FTP.Infrastructure.Model
 {
-    public interface IFtpClientWrapper
+    public interface IFTPClientWrapper
     {
         Task<FtpClient> Connect(string host, string login = null, string password = null);
         Task Disconnect();

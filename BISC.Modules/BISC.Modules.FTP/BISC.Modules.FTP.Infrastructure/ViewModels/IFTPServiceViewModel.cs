@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace BISC.Modules.FTP.Infrastructure.ViewModel
+namespace BISC.Modules.FTP.Infrastructure.ViewModels
 {
     public interface IFTPServiceViewModel
     {
