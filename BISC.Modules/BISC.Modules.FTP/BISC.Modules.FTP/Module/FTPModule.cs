@@ -1,8 +1,10 @@
 ﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Modules.FTP.Infrastructure.Keys;
+using BISC.Modules.FTP.Infrastructure.Model;
 using BISC.Modules.FTP.Infrastructure.Serviсes;
 using BISC.Modules.FTP.Infrastructure.ViewModel;
+using BISC.Modules.FTP.Model;
 using BISC.Modules.FTP.Services;
 using BISC.Modules.FTP.View;
 using BISC.Modules.FTP.ViewModel;
@@ -28,6 +30,7 @@ namespace BISC.Modules.FTP.Module
             // Работать сдесь.!!!
             _injectionContainer.RegisterType<IFTPAddingServise, FTPAddingService>(true);
             _injectionContainer.RegisterType<IFTPServiceViewModel, FTPServiceViewModel>();
+            _injectionContainer.RegisterType<IFtpClientWrapper, FtpClientWrapper>();
             _injectionContainer.RegisterType<object, FTPServiceView>(FTPKeys.FTPServiceViewKey);
 
             var presentationInitialization = _injectionContainer.ResolveType(typeof(FTPInitialization)) as FTPInitialization;
