@@ -9,6 +9,7 @@ using BISC.Modules.Connection.Model.Module;
 using BISC.Modules.Connection.Presentation.Module;
 using BISC.Modules.Device.Model.Module;
 using BISC.Modules.Device.Presentation.Module;
+using BISC.Modules.FTP.Module;
 using BISC.Modules.InformationModel.Model.Module;
 using BISC.Modules.InformationModel.Presentation.Module;
 using BISC.Presentation.BaseItems.Module;
@@ -57,7 +58,7 @@ namespace BISC.Infrastructure.CompositionRoot.Bootstraper
             Container.RegisterType(typeof(IAppModule), typeof(ConnectionModelModule), nameof(ConnectionModelModule));
 
             Container.RegisterType(typeof(IAppModule), typeof(ConnectionPresentationModule), nameof(ConnectionPresentationModule));
-      //      Container.RegisterType(typeof(IAppModule), typeof(FTPModule), nameof(FTPModule));
+            Container.RegisterType(typeof(IAppModule), typeof(FTPModule), nameof(FTPModule));
             Container.RegisterType(typeof(IAppModule), typeof(ConnectionMmsModule), nameof(ConnectionMmsModule));
 
         }
