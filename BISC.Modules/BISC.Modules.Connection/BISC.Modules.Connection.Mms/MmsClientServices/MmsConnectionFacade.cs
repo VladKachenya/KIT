@@ -70,25 +70,25 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 .Select((identifier => identifier.Value.ToString())).ToList());
         }
 
-        public async Task<OperationResult<List<string>>> GetListValiablesAsync(string deviceName,string ldInst)
+        public async Task<OperationResult<List<string>>> GetListValiablesAsync(string ldInst)
         {
             MMSpdu receivedPdu;
             List<string> ldIdentifiersList = new List<string>();
             do
             {
-                receivedPdu = await new InfoModelClientService(_state).SendGetNameListVariablesAsync(deviceName +ldInst,
+                receivedPdu = await new InfoModelClientService(_state).SendGetNameListVariablesAsync(ldInst,
                     ldIdentifiersList.LastOrDefault());
                 if (receivedPdu == null)
                 {
                     await Task.Delay(2000);
-                    receivedPdu = await new InfoModelClientService(_state).SendGetNameListVariablesAsync(deviceName +ldInst,
+                    receivedPdu = await new InfoModelClientService(_state).SendGetNameListVariablesAsync(ldInst,
                         ldIdentifiersList.LastOrDefault());
                     if (receivedPdu == null)
                     {
 
                     }
                 }
-                if (receivedPdu.Confirmed_ResponsePDU.Service.GetNameList != null)
+                if (receivedPdu?.Confirmed_ResponsePDU?.Service?.GetNameList != null)
                 {
                     ldIdentifiersList.AddRange(
                         receivedPdu.Confirmed_ResponsePDU.Service.GetNameList.ListOfIdentifier.Select((identifier =>

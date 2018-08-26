@@ -77,7 +77,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private void OnDeviceLoadingEvent(DeviceLoadingEvent deviceLoadingEvent)
         {
             IsIntermetiateProgress = false;
-            TotalProgress = deviceLoadingEvent.FullItemsCount;
+           if(deviceLoadingEvent.FullItemsCount!=null){ TotalProgress = deviceLoadingEvent.FullItemsCount.Value;}
             CurrentProgress = deviceLoadingEvent.CurrentItemsCount;
             if (deviceLoadingEvent.DeviceNameFinded != null)
             {

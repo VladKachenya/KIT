@@ -11,7 +11,7 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
         void StopConnection();
         Task<OperationResult<List<string>>> IdentifyAsync();
         Task<OperationResult<List<string>>> GetLdListAsync();
-        Task<OperationResult<List<string>>> GetListValiablesAsync(string deviceName, string ldInst);
+        Task<OperationResult<List<string>>> GetListValiablesAsync(string ldInst);
 
     }
 }

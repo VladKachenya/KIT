@@ -27,7 +27,7 @@ namespace BISC.Modules.InformationModel.Presentation.Services
             device.Name = FindSubstring(ldList.Item);
             foreach (var ld in ldList.Item)
             {
-                ldDictionary.Add(ld,(await connection.MmsConnection.GetListValiablesAsync(device.Name,ld)).Item);
+                ldDictionary.Add(ld,(await connection.MmsConnection.GetListValiablesAsync(ld)).Item);
             }
             int lnsTotal = 0;
             foreach (var ldName in ldDictionary.Keys)
@@ -40,7 +40,11 @@ namespace BISC.Modules.InformationModel.Presentation.Services
 
         public async Task Load(IDevice device, IProgress<DeviceLoadingEvent> deviceLoadingProgress)
         {
-          
+            for (int i = 0; i <62; i++)
+            {
+                await Task.Delay(1000);
+                deviceLoadingProgress.Report(new DeviceLoadingEvent(null,i));
+            }
         }
         public int Priority => 10;
         public void Dispose()

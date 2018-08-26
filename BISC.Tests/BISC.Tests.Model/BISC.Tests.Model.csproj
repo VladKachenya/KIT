@@ -78,6 +78,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Connection\ConnectionTests.cs" />
+    <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="InitializeModules\TestBaseClass.cs" />
     <Compile Include="InitializeModules\TestBootstrapper.cs" />
     <Compile Include="Model.Global\Serializers\CommunicationSerializerTest.cs" />
@@ -118,6 +120,18 @@
     <ProjectReference Include="..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
       <Name>BISC.Model.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Connection\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
+      <Project>{84925CA6-959A-4094-9688-622DC28B7452}</Project>
+      <Name>BISC.Modules.Connection.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Connection\BISC.Modules.Connection.Mms\BISC.Modules.Connection.MMS.csproj">
+      <Project>{A9833FBF-9183-4D5E-8D5B-A4CBCD65D811}</Project>
+      <Name>BISC.Modules.Connection.MMS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Connection\BISC.Modules.Connection.Model\BISC.Modules.Connection.Model.csproj">
+      <Project>{91B85760-A120-4F20-9FBD-84DB863C460B}</Project>
+      <Name>BISC.Modules.Connection.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Infrastucture\BISC.Modules.InformationModel.Infrastucture.csproj">
       <Project>{1642183D-562D-4E50-B8F7-22205D731E45}</Project>

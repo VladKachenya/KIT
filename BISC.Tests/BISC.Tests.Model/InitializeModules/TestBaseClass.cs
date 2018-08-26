@@ -32,5 +32,6 @@ namespace BISC.Tests.Model.InitializeModules
             testBootstrapper.Run();
             StaticContainer.SetContainer(new InjectionContainer(ServiceLocator.Current.GetInstance<IUnityContainer>()));
         }
+     
     }
 }
