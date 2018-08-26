@@ -98,6 +98,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
         public async Task PingAsync()
         {
+            IsPingSuccess = null;
             IsPingSuccess = await _pingService.GetPing(FullIp);
             Application.Current.Dispatcher.Invoke(() => OnPropertyChanged(nameof(IsPingSuccess)));
         }

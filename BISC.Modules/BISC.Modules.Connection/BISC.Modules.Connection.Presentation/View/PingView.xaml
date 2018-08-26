@@ -34,7 +34,7 @@
                 <StackPanel Orientation="Horizontal">
                     <local:IpAddressView DataContext="{Binding CurrentAddressViewModel}"> </local:IpAddressView>
                     <controls:BadgedControl 
-                        BadgeContent="{Binding LastConnections.Count}"
+                        BadgeContent="{Binding LastIpAddresses.Count}"
                         Margin="5" Padding="0">
                         <controls:BadgedControl.Content>
                             <Button Command="{Binding PingAllCommand}"
