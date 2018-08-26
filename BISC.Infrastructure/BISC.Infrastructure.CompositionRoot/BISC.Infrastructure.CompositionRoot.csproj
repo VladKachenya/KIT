@@ -108,10 +108,6 @@
       <Project>{736992ee-8449-49aa-8a40-b2462ad51ecd}</Project>
       <Name>BISC.Modules.Device.Presentation</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.FTP\BISC.Modules.FTP\BISC.Modules.FTP.csproj">
-      <Project>{BF084AC5-4D99-4D0F-823D-39E112F31EFC}</Project>
-      <Name>BISC.Modules.FTP</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Model\BISC.Modules.InformationModel.Model.csproj">
       <Project>{346395B5-8238-45AE-B002-C22B816AC135}</Project>
       <Name>BISC.Modules.InformationModel.Model</Name>
