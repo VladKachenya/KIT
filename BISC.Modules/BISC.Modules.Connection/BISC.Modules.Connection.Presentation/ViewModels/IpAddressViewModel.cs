@@ -123,6 +123,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             {
                 valiatingIpPart = string.Empty;
             }
+            IsPingSuccess = null;
             OnPropertyChanged();
         }
         
