@@ -11,10 +11,12 @@ namespace BISC.Modules.Connection.Model.Services
 {
     public class ConnectionPoolService : IConnectionPoolService
     {
+        private readonly Func<IDeviceConnection> _deviceConnectionCreator;
         private List<IDeviceConnection> _deviceConnections;
 
-        public ConnectionPoolService()
+        public ConnectionPoolService(Func<IDeviceConnection> deviceConnectionCreator)
         {
+            _deviceConnectionCreator = deviceConnectionCreator;
             _deviceConnections = new List<IDeviceConnection>();
         }
 
@@ -23,7 +25,7 @@ namespace BISC.Modules.Connection.Model.Services
             IDeviceConnection deviceConnection;
             deviceConnection = _deviceConnections.FirstOrDefault((connection => connection.Ip == ip));
             if (deviceConnection != null) return deviceConnection;
-            deviceConnection=new DeviceConnection();
+            deviceConnection=_deviceConnectionCreator();
             deviceConnection.Ip = ip;
             _deviceConnections.Add(deviceConnection);
             return deviceConnection;

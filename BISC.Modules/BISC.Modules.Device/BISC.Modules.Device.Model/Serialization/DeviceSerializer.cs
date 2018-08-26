@@ -19,6 +19,11 @@ namespace BISC.Modules.Device.Model.Serialization
         public DeviceSerializer()
         {
             RegisterProperty(nameof(IDevice.Name),"name");
+            RegisterProperty(nameof(IDevice.Type), "type");
+            RegisterProperty(nameof(IDevice.Description), "desc");
+            RegisterProperty(nameof(IDevice.Manufacturer), "manufacturer");
+            RegisterProperty(nameof(IDevice.Revision), "configVersion");
+
         }
         public override IModelElement GetConcreteObject()
         {

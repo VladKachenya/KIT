@@ -9,12 +9,12 @@
     <Grid>
 
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
         
         <TextBlock Text="{Binding DeviceName}" Margin="5"></TextBlock>
-      
+        <ProgressBar Grid.Row="1" Value="{Binding CurrentProgress}" Maximum="{Binding TotalProgress}" IsIndeterminate="{Binding IsIntermetiateProgress}"></ProgressBar>
     </Grid>
 </UserControl>

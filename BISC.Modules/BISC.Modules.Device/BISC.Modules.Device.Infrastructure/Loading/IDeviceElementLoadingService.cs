@@ -6,7 +6,7 @@ namespace BISC.Modules.Device.Infrastructure.Loading
 {
     public interface IDeviceElementLoadingService:IDisposable
     {
-        Task<int> EstimateProgress();
+        Task<int> EstimateProgress(IDevice device);
         Task Load(IDevice device, IProgress<DeviceLoadingEvent> deviceLoadingProgress);
         int Priority { get; }
     }

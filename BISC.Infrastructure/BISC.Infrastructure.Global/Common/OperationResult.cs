@@ -16,7 +16,7 @@ namespace BISC.Infrastructure.Global.Common
             }
         }
 
-        private OperationResult()
+        public OperationResult()
         {
             IsSucceed = true;
         }
@@ -32,6 +32,22 @@ namespace BISC.Infrastructure.Global.Common
         {
             return ErrorList.FirstOrDefault();
         }
-        public bool IsSucceed { get; }
+        public bool IsSucceed { get; protected set; }
+    }
+
+
+
+    public class OperationResult<T>:OperationResult
+    {
+        public T Item { get; }
+        public OperationResult(T resultItem, bool isSucceed = true,string error=null)
+        {
+            IsSucceed = isSucceed;
+            Item = resultItem;
+            ErrorList.Add(error);
+        }
+        public OperationResult(string error) : base(error)
+        {
+        }
     }
 }

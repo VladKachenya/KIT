@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Services;
@@ -32,18 +33,16 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IGlobalEventsService _globalEventsService;
         private readonly IIpAddressViewModelFactory _ipAddressViewModelFactory;
         private readonly ITreeManagementService _treeManagementService;
-        private readonly IDeviceModelService _deviceModelService;
         private readonly IBiscProject _biscProject;
-        private readonly IConnectionPoolService _connectionPoolService;
         private IIpAddressViewModel _selectedIpAddressViewModel;
-        private bool _isDeviceConnectionSucceed;
-
+        private bool _isDeviceConnectionFailed;
+        private Timer _failedSatatusHidingTimer;
         public DeviceConnectingViewModel(ICommandFactory commandFactory,
             IDeviceConnectionService deviceConnectionService,
             IConfigurationService configurationService, IGlobalEventsService globalEventsService,
             IIpAddressViewModelFactory ipAddressViewModelFactory,
-            ITreeManagementService treeManagementService, IDeviceModelService deviceModelService,
-            IBiscProject biscProject, IConnectionPoolService connectionPoolService)
+            ITreeManagementService treeManagementService ,
+            IBiscProject biscProject)
         {
             _commandFactory = commandFactory;
             _deviceConnectionService = deviceConnectionService;
@@ -51,16 +50,14 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _globalEventsService = globalEventsService;
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
             _treeManagementService = treeManagementService;
-            _deviceModelService = deviceModelService;
             _biscProject = biscProject;
-            _connectionPoolService = connectionPoolService;
             LastConnectedIps = new ObservableCollection<IIpAddressViewModel>();
             ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDeviceExecute);
             var lastConnectedIp = _configurationService.LastConnectedIpAddresses.Count > 0
                 ? _configurationService.LastConnectedIpAddresses[0]
                 : "...";
             SelectedIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel(lastConnectedIp, false);
-
+            _failedSatatusHidingTimer=new Timer(FailStatusHide,null,Timeout.Infinite,Timeout.Infinite);
             LastConnectedIps =
                 _ipAddressViewModelFactory.GetPingViewModelReadonlyCollection(_configurationService
                     .LastConnectedIpAddresses);
@@ -69,23 +66,29 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         private async void OnConnectDeviceExecute()
         {
-            IsDeviceConnectionSucceed = true;
-            var connection = _connectionPoolService.GetConnection(SelectedIpAddressViewModel.FullIp);
-            await connection.OpenConnection();
-            if (connection.IsConnected)
-            {
-                IDevice newDevice = await _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
-                _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel, newDevice);
+            IsDeviceConnectionFailed = false;
+            var connectResult = await _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
+
+            if (connectResult.IsSucceed)
+            {               
                 BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
-                biscNavigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, newDevice);
+                biscNavigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, connectResult.Item);
+                DialogCommands.CloseDialogCommand.Execute(null, null);
                 _treeManagementService.AddTreeItem(biscNavigationParameters, DeviceKeys.DeviceLoadingTreeItemViewKey,
                     null);
-                DialogCommands.CloseDialogCommand.Execute(null, null);
+               
             }
             else
             {
-                IsDeviceConnectionSucceed = false;
+                IsDeviceConnectionFailed = true;
+                _failedSatatusHidingTimer.Change(2000, Timeout.Infinite);
             }
+        }
+
+        private void FailStatusHide(object o)
+        {
+
+            IsDeviceConnectionFailed = false;
         }
 
         public IIpAddressViewModel SelectedIpAddressViewModel
@@ -114,10 +117,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         public ObservableCollection<IIpAddressViewModel> LastConnectedIps { get; }
         public ICommand ConnectDeviceCommand { get; }
 
-        public bool IsDeviceConnectionSucceed
+        public bool IsDeviceConnectionFailed
         {
-            get => _isDeviceConnectionSucceed;
-            set { SetProperty(ref _isDeviceConnectionSucceed, value); }
+            get => _isDeviceConnectionFailed;
+            set { SetProperty(ref _isDeviceConnectionFailed, value); }
         }
     }
 }

@@ -53,6 +53,11 @@
     <Compile Include="Services\IIpValidationService.cs" />
     <Compile Include="Services\IPingService.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
+      <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
+      <Name>BISC.Infrastructure.Global</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

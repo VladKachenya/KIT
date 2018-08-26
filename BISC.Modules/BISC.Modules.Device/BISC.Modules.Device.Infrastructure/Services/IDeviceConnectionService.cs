@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Model;
 
@@ -6,7 +7,7 @@ namespace BISC.Modules.Device.Infrastructure.Services
 {
     public interface IDeviceConnectionService
     {
-        Task<IDevice> ConnectDevice(string ip);
+        Task<OperationResult<IDevice>> ConnectDevice(string ip);
         Task ConnectExistingDevice();
     }
 }

@@ -7,6 +7,7 @@ using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Device.Infrastructure.Keys;
+using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Presentation.Interfaces;
 using BISC.Modules.Device.Presentation.Interfaces.Factories;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
@@ -54,6 +55,7 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<DeviceFromFileAddingViewModel>();
             _injectionContainer.RegisterType<DeviceConnectingViewModel>();
             _injectionContainer.RegisterType<DeviceLoadingTreeItemViewModel>();
+            _injectionContainer.RegisterType<IDeviceLoadingService, DeviceLoadingService>();
 
             var presentationInitialization = _injectionContainer.ResolveType(typeof(DevicePresentationInitialization)) as DevicePresentationInitialization;
 

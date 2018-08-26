@@ -12,9 +12,9 @@ namespace BISC.Modules.Connection.Model.Connection
     {
         private Timer _connectionCheckingTimer;
 
-        public DeviceConnection()
+        public DeviceConnection(IMmsConnectionFacade mmsConnectionFacade)
         {
-
+            MmsConnection = mmsConnectionFacade;
         }
 
         public string Ip { get; set; }

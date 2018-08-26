@@ -10,6 +10,6 @@ namespace BISC.Modules.Device.Presentation.Interfaces
         IIpAddressViewModel SelectedIpAddressViewModel { get; set; }
         ObservableCollection<IIpAddressViewModel> LastConnectedIps { get; }
         ICommand ConnectDeviceCommand { get; }
-        bool IsDeviceConnectionSucceed { get; }
+        bool IsDeviceConnectionFailed { get; }
     }
 }

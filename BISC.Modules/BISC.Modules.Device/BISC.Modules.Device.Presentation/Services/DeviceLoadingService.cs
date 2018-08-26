@@ -30,9 +30,10 @@ namespace BISC.Modules.Device.Presentation.Services
             var itemsCount = 0;
             foreach (var sortedElement in sortedElements)
             {
-                itemsCount += await sortedElement.EstimateProgress();
+                itemsCount += await sortedElement.EstimateProgress(device);
             }
-            deviceLoadingProgress.Report(new DeviceLoadingEvent(itemsCount, 0));
+            
+            deviceLoadingProgress.Report(new DeviceLoadingEvent(itemsCount, 0,device.Name));
             foreach (var sortedElement in sortedElements)
             {
                 await sortedElement.Load(device, deviceLoadingProgress);

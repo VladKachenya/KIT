@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Modules.Connection.Infrastructure.Connection;
+using BISC.Modules.Connection.Model.Connection;
 
 namespace BISC.Modules.Connection.Model.Module
 {
@@ -24,7 +26,7 @@ namespace BISC.Modules.Connection.Model.Module
             _injectionContainer.RegisterType<IPingService, PingService>(true);
             _injectionContainer.RegisterType<IIpValidationService, IpValidationServic>(true);
             _injectionContainer.RegisterType<IConnectionPoolService,ConnectionPoolService>(true);
-            //_injectionContainer.RegisterType<IDeviceConnectionFactory, DeviceConnactionFactory>(true);
+            _injectionContainer.RegisterType<IDeviceConnection, DeviceConnection>();
             //_injectionContainer.RegisterType<IIpModel, IpModel>();
         }
     }

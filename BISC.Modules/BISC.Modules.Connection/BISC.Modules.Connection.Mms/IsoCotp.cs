@@ -42,7 +42,7 @@ namespace BISC.Modules.Connection.MMS
             public TSelector(byte sz, int val) { size = sz; value = val; }
             public byte[] GetBytes()
             {
-                byte[] b = BitConverter.GetBytes((short) IPAddress.HostToNetworkOrder(value));
+                byte[] b = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(value));
                 byte[] ret = new byte[size];
                 for (int i = 0; i < size; i++) ret[i] = b[i + 4 - size];
                 return ret;

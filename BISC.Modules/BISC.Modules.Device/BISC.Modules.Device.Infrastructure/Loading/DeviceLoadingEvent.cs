@@ -8,12 +8,14 @@ namespace BISC.Modules.Device.Infrastructure.Loading
 {
     public class DeviceLoadingEvent
     {
-        public DeviceLoadingEvent(int fullItemsCount, int currentItemsCount)
+        public DeviceLoadingEvent(int fullItemsCount, int currentItemsCount,string deviceNameFinded=null)
         {
             FullItemsCount = fullItemsCount;
             CurrentItemsCount = currentItemsCount;
+            DeviceNameFinded = deviceNameFinded;
         }
         public int FullItemsCount { get;  }
         public int CurrentItemsCount { get;}
+        public string DeviceNameFinded { get; }
     }
 }

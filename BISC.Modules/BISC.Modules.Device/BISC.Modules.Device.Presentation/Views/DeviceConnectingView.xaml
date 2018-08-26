@@ -25,7 +25,7 @@
             <view:IpAddressView DataContext="{Binding SelectedIpAddressViewModel}"></view:IpAddressView>
             <Button Grid.Column="1" Command="{Binding ConnectDeviceCommand}" Content="Подключить"></Button>
         </Grid>
-      <TextBlock Grid.Row="1" Foreground="DarkRed" Margin="5" Visibility="{Binding IsDeviceConnectionSucceed,Converter={StaticResource BooleanToVisibilityConverter}}" Text="Не удалось подключить устройство"></TextBlock>
+        <TextBlock Grid.Row="1" Foreground="DarkRed" Margin="5" Visibility="{Binding IsDeviceConnectionFailed,Converter={StaticResource BooleanToVisibilityConverter}}" Text="Не удалось подключить устройство"></TextBlock>
         <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility ="Auto">
             <ItemsControl x:Name="ipListBox" 

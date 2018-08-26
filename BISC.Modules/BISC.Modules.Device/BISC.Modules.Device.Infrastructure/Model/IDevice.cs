@@ -6,5 +6,9 @@ namespace BISC.Modules.Device.Infrastructure.Model
     {
         string Name { get; set; }
         string Ip { get; set; }
+        string Description { get; set; }
+        string Manufacturer { get; set; }
+        string Type { get; set; }
+        string Revision { get; set; }
     }
 }
