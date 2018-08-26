@@ -9,7 +9,7 @@ using BISC.Modules.Connection.Model.Module;
 using BISC.Modules.Connection.Presentation.Module;
 using BISC.Modules.Device.Model.Module;
 using BISC.Modules.Device.Presentation.Module;
-using BISC.Modules.FTP.Module;
+//using BISC.Modules.FTP.Module;
 using BISC.Modules.InformationModel.Model.Module;
 using BISC.Modules.InformationModel.Presentation.Module;
 using BISC.Presentation.BaseItems.Module;
