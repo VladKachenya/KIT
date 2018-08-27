@@ -16,24 +16,24 @@ using System.Threading.Tasks;
 
 namespace BISC.Modules.FTP.FTPConnection.Module
 {
-    public class FTPModule : IAppModule
+    public class FTPConnectionModule : IAppModule
     {
         private readonly IInjectionContainer _injectionContainer;
 
-        public FTPModule(IInjectionContainer injectionContainer)
+        public FTPConnectionModule(IInjectionContainer injectionContainer)
         {
             _injectionContainer = injectionContainer;
         }
 
         public void Initialize()
         {
-            // Работать сдесь.!!!
+            // Работать сдесь!!!
             _injectionContainer.RegisterType<IFTPAddingServise, FTPAddingService>(true);
             _injectionContainer.RegisterType<IFTPServiceViewModel, FTPServiceViewModel>();
             _injectionContainer.RegisterType<IFTPClientWrapper, FTPClientWrapper>();
             _injectionContainer.RegisterType<object, FTPServiceView>(FTPKeys.FTPServiceViewKey);
 
-            var presentationInitialization = _injectionContainer.ResolveType(typeof(FTPInitialization)) as FTPInitialization;
+            var presentationInitialization = _injectionContainer.ResolveType(typeof(FTPConnectionInitialization)) as FTPConnectionInitialization;
         }
     }
 }

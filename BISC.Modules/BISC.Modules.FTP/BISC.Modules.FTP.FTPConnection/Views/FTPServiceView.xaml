@@ -28,17 +28,21 @@
                 <ColumnDefinition Width="2*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Grid.Row="0" Text="Адрес"/>
-            <TextBox Grid.Column="1" Grid.Row="0"/>
+            <TextBox Grid.Column="1" Grid.Row="0"
+                     Text="{Binding FtpIpAddress}"/>
 
             <TextBlock Grid.Column="0" Grid.Row="1" Text="Логин"/>
-            <TextBox Grid.Column="1" Grid.Row="1"/>
+            <TextBox Grid.Column="1" Grid.Row="1"
+                     Text="{Binding FtpPassword}"/>
 
             <TextBlock Grid.Column="0" Grid.Row="2" Text="Пароль"/>
-            <TextBox Grid.Column="1" Grid.Row="2"/>
+            <TextBox Grid.Column="1" Grid.Row="2"
+                     Text ="{Binding FtpLogin}"/>
 
             <Button Content="Подключится" Grid.Row="3"
                     Margin="10"
                     Style="{StaticResource MaterialDesignRaisedLightButton}"
+                    Command="{Binding ConnectToDeviceCommand}"
                     Grid.ColumnSpan="2"/>
         </Grid>
         <Grid Grid.Row="1">
@@ -48,7 +52,8 @@
             </Grid.RowDefinitions>
             <Button Grid.Row="1" Content="Перезагрузить устройтсво"
                     Margin="10"
-                    Style="{StaticResource MaterialDesignRaisedLightButton}"/>
+                    Style="{StaticResource MaterialDesignRaisedLightButton}"
+                    Command="{Binding ResetDeviceCommand}"/>
         </Grid>
         <Button Grid.Row="3" 
                 Grid.ColumnSpan="2"

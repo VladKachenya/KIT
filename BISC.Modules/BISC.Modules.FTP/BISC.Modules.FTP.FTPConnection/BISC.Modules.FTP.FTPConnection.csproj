@@ -49,8 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\FTPClientWrapper.cs" />
-    <Compile Include="Module\FTPInitialization.cs" />
-    <Compile Include="Module\FTPModule.cs" />
+    <Compile Include="Module\FTPConnectionInitialization.cs" />
+    <Compile Include="Module\FTPConnectionModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CommonZipStringCompressio.cs" />
     <Compile Include="Services\FTPAddingService.cs" />

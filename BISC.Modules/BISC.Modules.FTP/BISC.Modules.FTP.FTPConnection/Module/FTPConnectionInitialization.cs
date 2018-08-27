@@ -10,11 +10,11 @@ using BISC.Presentation.Infrastructure.Factories;
 
 namespace BISC.Modules.FTP.FTPConnection.Module
 {
-    public class FTPInitialization
+    public class FTPConnectionInitialization
     {
         private readonly IInjectionContainer _injectionContainer;
 
-        public FTPInitialization(IUserInterfaceComposingService userInterfaceComposingService,
+        public FTPConnectionInitialization(IUserInterfaceComposingService userInterfaceComposingService,
             ICommandFactory commandFactory, IInjectionContainer injectionContainer)
         {
             _injectionContainer = injectionContainer;
