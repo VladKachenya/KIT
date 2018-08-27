@@ -58,7 +58,7 @@ namespace BISC.Infrastructure.CompositionRoot.Bootstraper
             Container.RegisterType(typeof(IAppModule), typeof(ConnectionModelModule), nameof(ConnectionModelModule));
 
             Container.RegisterType(typeof(IAppModule), typeof(ConnectionPresentationModule), nameof(ConnectionPresentationModule));
-           // Container.RegisterType(typeof(IAppModule), typeof(FTPModule), nameof(FTPModule));
+            Container.RegisterType(typeof(IAppModule), typeof(FTPModule), nameof(FTPModule));
             Container.RegisterType(typeof(IAppModule), typeof(ConnectionMmsModule), nameof(ConnectionMmsModule));
 
         }
