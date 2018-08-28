@@ -25,6 +25,10 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         private IGlobalEventsService _globalEventsService;
         private IIpAddressViewModelFactory _ipAddressViewModelFactory;
         private bool _isConnectingInProcess;
+        private string _ftpPassword;
+        private string _ftpLogin;
+        private bool? _isFtpConnectid;
+        private string _toolTipForConnection;
 
         #endregion
 
@@ -36,10 +40,11 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             _commandFactory = commandFactory;
             _globalEventsService = globalEventsService;
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
-            ConnectToDeviceCommand = _commandFactory.CreatePresentationCommand(OnConnectToDeviceCommand, CanExecuteConnectToDeviceCommand);
+            ConnectToDeviceCommand = _commandFactory.CreatePresentationCommand(OnConnectToDeviceCommand, () => !_isConnectingInProcess);
             ResetDeviceCommand = _commandFactory.CreatePresentationCommand(OnResetDeviceCommand, CanExecuteResetDeviceCommand);
             this.FtpIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("....", false);
-
+            IsFtpConnected = null;
+            ToolTipForConnection = "Ожидается подключение";
         }
         #endregion
 
@@ -54,6 +59,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
                 await TryCloseConnection();
                 var ftpClient = await _ftpClientWrapper.Connect(FtpIpAddressViewModel.FullIp, FtpLogin, FtpPassword);
                 IsFtpConnected = _ftpClientWrapper.IsConnected;
+                ToolTipForConnection = "Подключение произведено";
                 //IBrowserElementFactory browserElementFactory = new FtpBrowserElementFactory(_container);
                 //browserElementFactory.SetConnectionProvider(ftpClient);
                 //IFileBrowser fileBrowser = new FileBrowser(browserElementFactory);
@@ -64,17 +70,18 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             {
                 Trace.WriteLine(e.Message);
                 await TryCloseConnection();
-                MessageBox.Show(e.Message); // В дальнейшем необходимо выводить это сообщение в ToolTip
+                IsFtpConnected = _ftpClientWrapper.IsConnected;
+                ToolTipForConnection = e.Message;
             }
             _isConnectingInProcess = false;
             (ConnectToDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
 
         }
 
-        private bool CanExecuteConnectToDeviceCommand()
-        {
-            return true; //_isConnectingInProcess;
-        }
+        //private bool CanExecuteConnectToDeviceCommand()
+        //{
+        //    return !_isConnectingInProcess;
+        //}
 
         private async void OnResetDeviceCommand()
         {
@@ -110,9 +117,27 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         #region Implementation of IFTPSreviceViewModel
 
         public IIpAddressViewModel FtpIpAddressViewModel { get; set; }
-        public string FtpPassword { get; set; }
-        public string FtpLogin { get; set; }
-        public bool IsFtpConnected { get; set; }
+        public string FtpLogin
+        {
+            get => _ftpLogin;
+            set => SetProperty(ref _ftpLogin, value); 
+        }
+        public string FtpPassword
+        {
+            get => _ftpPassword;
+            set => SetProperty(ref _ftpPassword, value);
+        }
+
+        public bool? IsFtpConnected
+        {
+            get => _isFtpConnectid;
+            set => SetProperty(ref _isFtpConnectid, value);
+        }
+        public string ToolTipForConnection
+        {
+            get => _toolTipForConnection;
+            set => SetProperty(ref _toolTipForConnection, value);
+        }
 
         public ICommand ConnectToDeviceCommand { get; }
 

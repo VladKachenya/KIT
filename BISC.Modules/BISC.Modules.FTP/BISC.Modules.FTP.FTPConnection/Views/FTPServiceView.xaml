@@ -9,17 +9,17 @@
              xmlns:view="clr-namespace:BISC.Modules.Connection.Presentation.View;assembly=BISC.Modules.Connection.Presentation"
              xmlns:controls="clr-namespace:BISC.Presentation.BaseItems.Controls;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="400">
+             d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
         <Style x:Key="IsConnectStyle" TargetType="Label">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding }" Value="True">
+                <DataTrigger Binding="{Binding IsFtpConnected}" Value="True">
                     <Setter Property="Foreground" Value="LightGreen" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding }" Value="False">
+                <DataTrigger Binding="{Binding IsFtpConnected}" Value="False">
                     <Setter Property="Foreground" Value="#FFF16565" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding }" Value="{x:Null}">
+                <DataTrigger Binding="{Binding IsFtpConnected}" Value="{x:Null}">
                     <Setter Property="Foreground" Value="#FFD1D113" />
                 </DataTrigger>
             </Style.Triggers>
@@ -39,42 +39,45 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
                 <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Row="0" Grid.ColumnSpan="2">
                 <view:IpAddressView DataContext="{Binding FtpIpAddressViewModel}"
                                     Margin="10"/>
             </StackPanel>
 
-            <TextBlock Grid.Column="0" Grid.Row="1" Text="Логин"
+            <TextBlock Grid.Column="1" Grid.Row="1" Text="Логин"
                        FontSize="18" Margin="5"
                        TextAlignment="Center"/>
-            <TextBox Grid.Column="1" Grid.Row="1"
-                     Text="{Binding FtpPassword}" 
-                     Width="200"
-                     FontSize="18"
-                     Margin="5"
-                     TextAlignment="Center"/>
-
-            <TextBlock Grid.Column="0" Grid.Row="2" Text="Пароль"
-                       FontSize="18"
-                       Margin="5"
-                       TextAlignment="Center"/>
-            <TextBox Grid.Column="1" Grid.Row="2"
-                     Text ="{Binding FtpLogin}"
+            <TextBox Grid.Column="0" Grid.Row="1"
+                     Text="{Binding FtpLogin}" 
                      Width="200"
                      FontSize="18"
                      Margin="5"
                      TextAlignment="Center"/>
             
+            <TextBlock  Text="Пароль"
+                       Grid.Column="1" Grid.Row="2"
+                       FontSize="18"
+                       Margin="5"
+                       TextAlignment="Center"/>   
+            <StackPanel Grid.Column="0" Grid.Row="2">
+                <TextBox 
+                    Text="{Binding FtpPassword}"
+                    Name="PasswordBox"
+                    Width="200"
+                    FontSize="18"
+                    Margin="5" />
+            </StackPanel>
+            
             <Label HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Grid.Column="0"
-                   Grid.Row="3"
-                   Style="{DynamicResource IsConnectStyle}">
+                       VerticalAlignment="Center"
+                       Grid.Column="1"
+                       Grid.Row="3"
+                       Style="{DynamicResource IsConnectStyle}">
                     <Label.ToolTip>
-                        <ToolTip Content="{Binding ToolTipForConnection}"></ToolTip>
+                        <ToolTip Content="{Binding ToolTipForConnection}"/>
                     </Label.ToolTip>
                     <Label.Content>
                         <ContentControl  ContentTemplate="{DynamicResource LightbulbOn}"/>
@@ -82,7 +85,7 @@
                 </Label>
             <Button Content="Подключится" 
                     Margin="10"
-                    Grid.Column="1"
+                    Grid.Column="0"
                     Grid.Row="3"
                     Style="{StaticResource MaterialDesignRaisedLightButton}"
                     Command="{Binding ConnectToDeviceCommand}"/>
@@ -92,6 +95,10 @@
                 <RowDefinition ></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
+            <Button Grid.Row="1" Content="Перезагрузить устройтсво"
+                    Margin="10"
+                    Style="{StaticResource MaterialDesignRaisedLightButton}"
+                    Command="{Binding ResetDeviceCommand}"/>
         </Grid>
         <Button Grid.Row="3" 
                 Grid.ColumnSpan="2"
