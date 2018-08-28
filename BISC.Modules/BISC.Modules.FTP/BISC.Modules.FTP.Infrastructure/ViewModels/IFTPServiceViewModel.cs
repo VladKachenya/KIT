@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace BISC.Modules.FTP.Infrastructure.ViewModels
 {
     public interface IFTPServiceViewModel
     {
-        string FtpIpAddress { get; set; }
+        IIpAddressViewModel FtpIpAddressViewModel { get; set; }
         string FtpPassword { get; set; }
         string FtpLogin { get; set; }
         bool IsFtpConnected { get; set; }
