@@ -68,6 +68,7 @@
                     Name="PasswordBox"
                     Width="200"
                     FontSize="18"
+                    TextAlignment="Center"
                     Margin="5" />
             </StackPanel>
             
