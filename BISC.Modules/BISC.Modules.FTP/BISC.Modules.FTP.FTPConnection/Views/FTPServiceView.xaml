@@ -72,11 +72,9 @@
                    VerticalAlignment="Center"
                    Grid.Column="0"
                    Grid.Row="3"
-                   Height="10"
-                   FontSize="18"
                    Style="{DynamicResource IsConnectStyle}">
                     <Label.ToolTip>
-                        <ToolTip Content="{Binding ForToolTip}"></ToolTip>
+                        <ToolTip Content="{Binding ToolTipForConnection}"></ToolTip>
                     </Label.ToolTip>
                     <Label.Content>
                         <ContentControl  ContentTemplate="{DynamicResource LightbulbOn}"/>
