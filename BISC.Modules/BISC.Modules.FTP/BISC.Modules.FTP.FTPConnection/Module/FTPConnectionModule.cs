@@ -29,7 +29,7 @@ namespace BISC.Modules.FTP.FTPConnection.Module
         {
             // Работать сдесь!!!
             _injectionContainer.RegisterType<IFTPAddingServise, FTPAddingService>(true);
-            _injectionContainer.RegisterType<IFTPServiceViewModel, FTPServiceViewModel>();
+            _injectionContainer.RegisterType<IFTPServiceViewModel, FTPServiceViewModel>(true);
             _injectionContainer.RegisterType<IFTPClientWrapper, FTPClientWrapper>();
             _injectionContainer.RegisterType<object, FTPServiceView>(FTPKeys.FTPServiceViewKey);
 
