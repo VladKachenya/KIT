@@ -6,10 +6,25 @@
              xmlns:local="clr-namespace:BISC.Modules.FTP.FTPConnection.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:commands="clr-namespace:BISC.Presentation.BaseItems.Commands;assembly=BISC.Presentation.BaseItems"
+             xmlns:view="clr-namespace:BISC.Modules.Connection.Presentation.View;assembly=BISC.Modules.Connection.Presentation"
              xmlns:controls="clr-namespace:BISC.Presentation.BaseItems.Controls;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="200"
-             Width="300" Height="400">
+             d:DesignHeight="200" d:DesignWidth="400">
+    <UserControl.Resources>
+        <Style x:Key="IsConnectStyle" TargetType="Label">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding }" Value="True">
+                    <Setter Property="Foreground" Value="LightGreen" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding }" Value="False">
+                    <Setter Property="Foreground" Value="#FFF16565" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding }" Value="{x:Null}">
+                    <Setter Property="Foreground" Value="#FFD1D113" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -27,33 +42,58 @@
                 <ColumnDefinition Width="1*"></ColumnDefinition>
                 <ColumnDefinition Width="2*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Grid.Row="0" Text="Адрес"/>
-            <TextBox Grid.Column="1" Grid.Row="0"
-                     Text="{Binding FtpIpAddress}"/>
+            <StackPanel Grid.Row="0" Grid.ColumnSpan="2">
+                <view:IpAddressView DataContext="{Binding FtpIpAddressViewModel}"
+                                    Margin="10"/>
+            </StackPanel>
 
-            <TextBlock Grid.Column="0" Grid.Row="1" Text="Логин"/>
+            <TextBlock Grid.Column="0" Grid.Row="1" Text="Логин"
+                       FontSize="18" Margin="5"
+                       TextAlignment="Center"/>
             <TextBox Grid.Column="1" Grid.Row="1"
-                     Text="{Binding FtpPassword}"/>
+                     Text="{Binding FtpPassword}" 
+                     Width="200"
+                     FontSize="18"
+                     Margin="5"
+                     TextAlignment="Center"/>
 
-            <TextBlock Grid.Column="0" Grid.Row="2" Text="Пароль"/>
+            <TextBlock Grid.Column="0" Grid.Row="2" Text="Пароль"
+                       FontSize="18"
+                       Margin="5"
+                       TextAlignment="Center"/>
             <TextBox Grid.Column="1" Grid.Row="2"
-                     Text ="{Binding FtpLogin}"/>
-
-            <Button Content="Подключится" Grid.Row="3"
+                     Text ="{Binding FtpLogin}"
+                     Width="200"
+                     FontSize="18"
+                     Margin="5"
+                     TextAlignment="Center"/>
+            
+            <Label HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Grid.Column="0"
+                   Grid.Row="3"
+                   Height="10"
+                   FontSize="18"
+                   Style="{DynamicResource IsConnectStyle}">
+                    <Label.ToolTip>
+                        <ToolTip Content="{Binding ForToolTip}"></ToolTip>
+                    </Label.ToolTip>
+                    <Label.Content>
+                        <ContentControl  ContentTemplate="{DynamicResource LightbulbOn}"/>
+                    </Label.Content>
+                </Label>
+            <Button Content="Подключится" 
                     Margin="10"
+                    Grid.Column="1"
+                    Grid.Row="3"
                     Style="{StaticResource MaterialDesignRaisedLightButton}"
-                    Command="{Binding ConnectToDeviceCommand}"
-                    Grid.ColumnSpan="2"/>
+                    Command="{Binding ConnectToDeviceCommand}"/>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition ></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
-            <Button Grid.Row="1" Content="Перезагрузить устройтсво"
-                    Margin="10"
-                    Style="{StaticResource MaterialDesignRaisedLightButton}"
-                    Command="{Binding ResetDeviceCommand}"/>
         </Grid>
         <Button Grid.Row="3" 
                 Grid.ColumnSpan="2"

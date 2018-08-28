@@ -1,4 +1,6 @@
 ﻿using BISC.Infrastructure.Global.Services;
+using BISC.Modules.Connection.Presentation.Interfaces.Factorys;
+using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
 using BISC.Modules.FTP.Infrastructure.Model;
 using BISC.Modules.FTP.Infrastructure.ViewModels;
 using BISC.Presentation.BaseItems.ViewModels;
@@ -21,18 +23,22 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         private IFTPClientWrapper _ftpClientWrapper;
         private ICommandFactory _commandFactory;
         private IGlobalEventsService _globalEventsService;
+        private IIpAddressViewModelFactory _ipAddressViewModelFactory;
         private bool _isConnectingInProcess;
 
         #endregion
 
         #region C-tor
-        public FTPServiceViewModel(IFTPClientWrapper ftpClientWrapper, ICommandFactory commandFactory, IGlobalEventsService globalEventsService)
+        public FTPServiceViewModel(IFTPClientWrapper ftpClientWrapper, ICommandFactory commandFactory, IGlobalEventsService globalEventsService,
+            IIpAddressViewModelFactory ipAddressViewModelFactory)
         {
             _ftpClientWrapper = ftpClientWrapper;
             _commandFactory = commandFactory;
             _globalEventsService = globalEventsService;
+            _ipAddressViewModelFactory = ipAddressViewModelFactory;
             ConnectToDeviceCommand = _commandFactory.CreatePresentationCommand(OnConnectToDeviceCommand, CanExecuteConnectToDeviceCommand);
             ResetDeviceCommand = _commandFactory.CreatePresentationCommand(OnResetDeviceCommand, CanExecuteResetDeviceCommand);
+            this.FtpIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("....", false);
 
         }
         #endregion
@@ -46,7 +52,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             try
             {
                 await TryCloseConnection();
-                var ftpClient = await _ftpClientWrapper.Connect(FtpIpAddress, FtpLogin, FtpPassword);
+                var ftpClient = await _ftpClientWrapper.Connect(FtpIpAddressViewModel.FullIp, FtpLogin, FtpPassword);
                 IsFtpConnected = _ftpClientWrapper.IsConnected;
                 //IBrowserElementFactory browserElementFactory = new FtpBrowserElementFactory(_container);
                 //browserElementFactory.SetConnectionProvider(ftpClient);
@@ -103,7 +109,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         #region Implementation of IFTPSreviceViewModel
 
-        public string FtpIpAddress { get; set; }
+        public IIpAddressViewModel FtpIpAddressViewModel { get; set; }
         public string FtpPassword { get; set; }
         public string FtpLogin { get; set; }
         public bool IsFtpConnected { get; set; }

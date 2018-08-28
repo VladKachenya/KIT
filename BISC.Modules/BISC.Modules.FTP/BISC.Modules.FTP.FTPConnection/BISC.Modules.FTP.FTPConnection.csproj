@@ -72,6 +72,14 @@
       <Project>{d4feac3b-c8f9-4de7-8953-988c75f0f9aa}</Project>
       <Name>BISC.Presentation.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.Connection\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
+      <Project>{84925ca6-959a-4094-9688-622dc28b7452}</Project>
+      <Name>BISC.Modules.Connection.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.Connection\BISC.Modules.Connection.Presentation\BISC.Modules.Connection.Presentation.csproj">
+      <Project>{48f6571c-ed09-4ed9-b76a-ac78ef9e9890}</Project>
+      <Name>BISC.Modules.Connection.Presentation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BISC.Modules.FTP.Infrastructure\BISC.Modules.FTP.Infrastructure.csproj">
       <Project>{60a162a1-2a6a-4a39-b349-4b718ba1fa1f}</Project>
       <Name>BISC.Modules.FTP.Infrastructure</Name>
