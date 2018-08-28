@@ -38,6 +38,10 @@
     <DataTemplate x:Key="ArrowBottomRight">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ArrowBottomRight" />
      </DataTemplate>
+    <DataTemplate x:Key="LightbulbOn">
+        <!--Лампочка-->
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="LightbulbOn" />
+    </DataTemplate>
     <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
         <!--<Style.Resources >
             <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#44111121" />
