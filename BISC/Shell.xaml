@@ -21,6 +21,7 @@
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
+        WindowState="Maximized"
         Title="{Binding ApplicationTitle}" Height="500" Width="800">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing" >
