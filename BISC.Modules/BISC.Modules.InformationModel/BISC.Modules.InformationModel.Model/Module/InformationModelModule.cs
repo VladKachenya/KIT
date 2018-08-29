@@ -7,8 +7,11 @@ using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Infrastructure;
 using BISC.Modules.InformationModel.Infrastucture;
+using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
+using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates;
 using BISC.Modules.InformationModel.Model.Serializers.Model;
+using BISC.Modules.InformationModel.Model.Services;
 
 namespace BISC.Modules.InformationModel.Model.Module
 {
@@ -23,6 +26,10 @@ namespace BISC.Modules.InformationModel.Model.Module
 
         public void Initialize()
         {
+            _injectionContainer.RegisterType<ILogicalDeviceLoadingService, LogicalDeviceLoadingService>();
+            _injectionContainer.RegisterType<IInfoModelService, InfoModelService>();
+            _injectionContainer.RegisterType<IDataTypeTemplatesModelService, DataTypeTemplatesModelService>();
+
             var modelElementsRegistryService =_injectionContainer.ResolveType<IModelElementsRegistryService>();
             modelElementsRegistryService.RegisterModelElement(new DataTypeTemplatesSerializer(), InfoModelKeys.DataTypeTemplateKeys.DataTypeTemplatesModelItemKey);
             modelElementsRegistryService.RegisterModelElement(new LNodeTypeSerializer(), InfoModelKeys.DataTypeTemplateKeys.LNodeTypeModelItemKey);
@@ -42,6 +49,7 @@ namespace BISC.Modules.InformationModel.Model.Module
             modelElementsRegistryService.RegisterModelElement(new DaiSerializer(), InfoModelKeys.ModelKeys.DaiKey);
             modelElementsRegistryService.RegisterModelElement(new DoiSerializer(), InfoModelKeys.ModelKeys.DoiKey);
             modelElementsRegistryService.RegisterModelElement(new ValSerializer(), InfoModelKeys.ModelKeys.ValKey);
+            modelElementsRegistryService.RegisterModelElement(new DeviceServerSerializer(), InfoModelKeys.ModelKeys.ServerKey);
 
         }
     }

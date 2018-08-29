@@ -32,11 +32,13 @@ namespace BISC.Modules.Device.Presentation.Services
             {
                 itemsCount += await sortedElement.EstimateProgress(device);
             }
-            
-            deviceLoadingProgress.Report(new DeviceLoadingEvent(itemsCount, 0,device.Name));
+
+            int currentElementsCount = 0;
+            deviceLoadingProgress.Report(new DeviceLoadingEvent(itemsCount, 0, device.Name));
             foreach (var sortedElement in sortedElements)
             {
-                await sortedElement.Load(device, deviceLoadingProgress);
+                await sortedElement.Load(device, new Progress<DeviceLoadingEvent>((deviceLoadingEvent =>
+                    deviceLoadingProgress.Report(new DeviceLoadingEvent(itemsCount, ++currentElementsCount)))));
             }
         }
 

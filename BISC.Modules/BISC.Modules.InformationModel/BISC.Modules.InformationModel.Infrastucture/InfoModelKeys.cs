@@ -36,6 +36,8 @@ namespace BISC.Modules.InformationModel.Infrastucture
             public const string SdiKey = "SDI";
             public const string DaiKey = "DAI";
             public const string ValKey = "Val";
+            public const string ServerKey = "Server";
+
         }
 
 

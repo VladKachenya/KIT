@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Iec61850Ed2.DataTypeTemplates;
 using BISC.Model.Infrastructure.Services;
@@ -11,11 +12,12 @@ namespace BISC.Model.Iec61850Ed2.Module
 {
    public class Iec61850Ed2Module:IAppModule
     {
-        private readonly IModelTypesResolvingService _modelTypesResolvingService;
+        private readonly IInjectionContainer _injectionContainer;
+        private IModelTypesResolvingService _modelTypesResolvingService;
 
-        public Iec61850Ed2Module(IModelTypesResolvingService modelTypesResolvingService)
+        public Iec61850Ed2Module(IInjectionContainer injectionContainer)
         {
-            _modelTypesResolvingService = modelTypesResolvingService;
+            _injectionContainer = injectionContainer;
         }
 
 
@@ -23,6 +25,7 @@ namespace BISC.Model.Iec61850Ed2.Module
 
         public void Initialize()
         {
+            _modelTypesResolvingService = _injectionContainer.ResolveType<IModelTypesResolvingService>();
             _modelTypesResolvingService.RegisterType(typeof(CommonLogicalNode), typeof(LNTypesEd2.LLN0), "LLN0",2);
             _modelTypesResolvingService.RegisterType(typeof(CommonLogicalNode), typeof(LNTypesEd2.RDRE), "RDRE", 2);
             _modelTypesResolvingService.RegisterType(typeof(CommonLogicalNode), typeof(LNTypesEd2.LPHD), "LPHD", 2);

@@ -103,5 +103,32 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             } while (receivedPdu.Confirmed_ResponsePDU.Service.GetNameList.MoreFollows);
             return new OperationResult<List<string>>(ldIdentifiersList);
         }
+
+        public async Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescription(string ldName, string lnName)
+        {
+            var typeDescription=await new InfoModelClientService(_state).SendGetVariableAccessAttributesAsync(ldName,lnName);
+            
+            var response = typeDescription.Confirmed_ResponsePDU.Service.GetVariableAccessAttributes;
+            MmsTypeDescription mmsTypeDescription = GetMmsTypeDescription(response.TypeDescription);
+            return new OperationResult<MmsTypeDescription>(mmsTypeDescription);
+
+        }
+
+        private MmsTypeDescription GetMmsTypeDescription(TypeDescription responseTypeDescription)
+        {
+            MmsTypeDescription mmsTypeDescription=new MmsTypeDescription();
+          //  mmsTypeDescription.Name=responseTypeDescription.
+            mmsTypeDescription.IsArray = responseTypeDescription.isArraySelected();
+            mmsTypeDescription.IsStructure = responseTypeDescription.isStructureSelected();
+            if (mmsTypeDescription.IsStructure)
+            {
+                foreach (var component in responseTypeDescription.Structure.Components)
+                {
+                   mmsTypeDescription.Components.Add(GetMmsTypeDescription(component.ComponentType.TypeDescription));
+                }
+            }
+
+            return mmsTypeDescription;
+        }
     }
 }

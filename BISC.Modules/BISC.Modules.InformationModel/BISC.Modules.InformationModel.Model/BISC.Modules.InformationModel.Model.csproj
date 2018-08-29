@@ -55,12 +55,14 @@
     <Compile Include="DataTypeTemplates\LNodeType\Do.cs" />
     <Compile Include="DataTypeTemplates\LNodeType\LNodeType.cs" />
     <Compile Include="Elements\Dai.cs" />
+    <Compile Include="Elements\DeviceServer.cs" />
     <Compile Include="Elements\Doi.cs" />
     <Compile Include="Elements\LDevice.cs" />
     <Compile Include="Elements\LogicalNode.cs" />
     <Compile Include="Elements\LogicalNodeZero.cs" />
     <Compile Include="Elements\Sdi.cs" />
     <Compile Include="Elements\Val.cs" />
+    <Compile Include="LoadingFromConnection\LogicalNodeDTO.cs" />
     <Compile Include="Module\InformationModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers\DataTypeTemplates\BdaSerializer.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="Serializers\DataTypeTemplates\LNodeTypeSerializer.cs" />
     <Compile Include="Serializers\DataTypeTemplates\SdoSerializer.cs" />
     <Compile Include="Serializers\Model\DaiSerializer.cs" />
+    <Compile Include="Serializers\Model\DeviceServerSerializer.cs" />
     <Compile Include="Serializers\Model\DoiSerializer.cs" />
     <Compile Include="Serializers\Model\LDeviceSerializer.cs" />
     <Compile Include="Serializers\Model\LogicalNodeSerializer.cs" />
@@ -81,6 +84,8 @@
     <Compile Include="Serializers\Model\SdiSerializer.cs" />
     <Compile Include="Serializers\Model\ValSerializer.cs" />
     <Compile Include="Services\DataTypeTemplatesModelService.cs" />
+    <Compile Include="Services\InfoModelService.cs" />
+    <Compile Include="Services\LogicalDeviceLoadingService.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -92,9 +97,17 @@
       <Project>{FCA3F7FE-D64B-4C3C-9F8D-85753FC944BE}</Project>
       <Name>BISC.Model.Global</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Iec61850Ed2\BISC.Model.Iec61850Ed2.csproj">
+      <Project>{39501F05-C2AA-48B3-BDE8-6009E16980CD}</Project>
+      <Name>BISC.Model.Iec61850Ed2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
       <Name>BISC.Model.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.Connection\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
+      <Project>{84925CA6-959A-4094-9688-622DC28B7452}</Project>
+      <Name>BISC.Modules.Connection.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\BISC.Modules.InformationModel.Infrastucture\BISC.Modules.InformationModel.Infrastucture.csproj">
       <Project>{1642183D-562D-4E50-B8F7-22205D731E45}</Project>

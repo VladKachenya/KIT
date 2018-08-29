@@ -175,75 +175,7 @@ namespace BISC.Modules.Connection.MMS
 
 
 
-        public async Task<MMSpdu> SendGetVariableAccessAttributesAsync(string ldName, string lnName, CancellationToken cancellationToken)
-        {
-            MMSpdu mymmspdu = new MMSpdu();
-            _state.msMMSout = new MemoryStream();
-
-            Confirmed_RequestPDU crreq = new Confirmed_RequestPDU();
-            ConfirmedServiceRequest csrreq = new ConfirmedServiceRequest();
-            GetVariableAccessAttributes_Request vareq = new GetVariableAccessAttributes_Request();
-            ObjectName on = new ObjectName();
-            ObjectName.Domain_specificSequenceType dst = new ObjectName.Domain_specificSequenceType();
-
-            dst.DomainID = new Identifier(ldName);
-            dst.ItemID = new Identifier(lnName);         // LN name e.g. MMXU0
-
-            _state.logger.LogDebug("SendGetVariableAccessAttributes: Get Attr for: " + dst.ItemID.Value);
-            on.selectDomain_specific(dst);
-
-            vareq.selectName(on);
-
-            csrreq.selectGetVariableAccessAttributes(vareq);
-
-            crreq.InvokeID = new Unsigned32(InvokeID++);
-
-            crreq.Service = csrreq;
-
-            mymmspdu.selectConfirmed_RequestPDU(crreq);
-
-            encoder.encode<MMSpdu>(mymmspdu, _state.msMMSout);
-
-            MMSpdu mmSpdu = await this.SendAsync(_state, mymmspdu);
-            if (mmSpdu == null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Task.Delay(100);
-                mmSpdu = await this.SendAsync(_state, mymmspdu);
-            }
-            if (mmSpdu == null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Task.Delay(100);
-                mmSpdu = await this.SendAsync(_state, mymmspdu);
-            }
-            if (mmSpdu == null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Task.Delay(100);
-                mmSpdu = await this.SendAsync(_state, mymmspdu);
-            }
-            if (mmSpdu == null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Task.Delay(1000);
-                mmSpdu = await this.SendAsync(_state, mymmspdu);
-            }
-            if (mmSpdu == null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Task.Delay(1000);
-                mmSpdu = await this.SendAsync(_state, mymmspdu);
-            }
-            if (mmSpdu == null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Task.Delay(2000);
-                mmSpdu = await this.SendAsync(_state, mymmspdu);
-            }
-            return mmSpdu;
-
-        }
+   
 
         public async Task<MMSpdu> GetDatasetInformationAsync(string ldFullPath, string lnName, string datsetName)
         {
