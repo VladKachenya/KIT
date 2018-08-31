@@ -48,6 +48,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\BoolToCollorConverter.cs" />
     <Compile Include="Model\FTPClientWrapper.cs" />
     <Compile Include="Module\FTPConnectionInitialization.cs" />
     <Compile Include="Module\FTPConnectionModule.cs" />
@@ -96,5 +97,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
