@@ -675,17 +675,25 @@ Global
 		SccProjectTopLevelParentUniqueName17 = BISC.sln
 		SccProjectName17 = BISC.Modules/BISC.Modules.FTP/BISC.Modules.FTP.Infrastructure
 		SccLocalPath17 = BISC.Modules\\BISC.Modules.FTP\\BISC.Modules.FTP.Infrastructure
-		SccProjectUniqueName18 = BISC.Modules\\BISC.Modules.FTP\\BISC.Modules.FTP.Infrastructure\\BISC.Modules.FTP.Infrastructure.csproj
+		SccProjectUniqueName18 = BISC.Modules\\BISC.Modules.FTP\\BISC.Modules.FTP\\BISC.Modules.FTP.csproj
 		SccProjectTopLevelParentUniqueName18 = BISC.sln
-		SccProjectName18 = BISC.Modules/BISC.Modules.FTP/BISC.Modules.FTP.Infrastructure
-		SccLocalPath18 = BISC.Modules\\BISC.Modules.FTP\\BISC.Modules.FTP.Infrastructure
-		SccProjectUniqueName19 = BISC.Modules\\BISC.Modules.InformationModel\\BISC.Modules.InformationModel.Presentation\\BISC.Modules.InformationModel.Presentation.csproj
+		SccProjectName18 = BISC.Modules.Connection.Presentation
+		SccLocalPath18 = BISC.Modules.Connection.Presentation
+		SccProjectUniqueName19 = BISC.Modules\\BISC.Modules.FTP\\BISC.Modules.FTP.Infrastructure\\BISC.Modules.FTP.Infrastructure.csproj
 		SccProjectTopLevelParentUniqueName19 = BISC.sln
-		SccProjectName19 = BISC.Modules/BISC.Modules.InformationModel/BISC.Modules.InformationModel.Presentation
-		SccLocalPath19 = BISC.Modules\\BISC.Modules.InformationModel\\BISC.Modules.InformationModel.Presentation
-		SccProjectUniqueName20 = BISC.Modules\\BISC.Modules.FTP\\FluentFTP\\FluentFTP.csproj
+		SccProjectName19 = BISC.Modules/BISC.Modules.FTP/BISC.Modules.FTP.Infrastructure
+		SccLocalPath19 = BISC.Modules\\BISC.Modules.FTP\\BISC.Modules.FTP.Infrastructure
+		SccProjectUniqueName20 = BISC.Modules\\BISC.Modules.FTP\\BISC.Modules.FTP\\BISC.Modules.FTP.csproj
 		SccProjectTopLevelParentUniqueName20 = BISC.sln
-		SccProjectName20 = BISC.Modules/BISC.Modules.FTP/FluentFTP
-		SccLocalPath20 = BISC.Modules\\BISC.Modules.FTP\\FluentFTP
+		SccProjectName20 = BISC.Modules/BISC.Modules.FTP/BISC.Modules.FTP
+		SccLocalPath20 = BISC.Modules\\BISC.Modules.FTP\\BISC.Modules.FTP
+		SccProjectUniqueName21 = BISC.Modules\\BISC.Modules.InformationModel\\BISC.Modules.InformationModel.Presentation\\BISC.Modules.InformationModel.Presentation.csproj
+		SccProjectTopLevelParentUniqueName21 = BISC.sln
+		SccProjectName21 = BISC.Modules/BISC.Modules.InformationModel/BISC.Modules.InformationModel.Presentation
+		SccLocalPath21 = BISC.Modules\\BISC.Modules.InformationModel\\BISC.Modules.InformationModel.Presentation
+		SccProjectUniqueName22 = BISC.Modules\\BISC.Modules.FTP\\FluentFTP\\FluentFTP.csproj
+		SccProjectTopLevelParentUniqueName22 = BISC.sln
+		SccProjectName22 = BISC.Modules/BISC.Modules.FTP/FluentFTP
+		SccLocalPath22 = BISC.Modules\\BISC.Modules.FTP\\FluentFTP
 	EndGlobalSection
 EndGlobal
