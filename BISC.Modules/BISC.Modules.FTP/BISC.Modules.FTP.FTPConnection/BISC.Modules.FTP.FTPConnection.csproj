@@ -54,6 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CommonZipStringCompressio.cs" />
     <Compile Include="Services\FTPAddingService.cs" />
+    <Compile Include="ViewModels\FTPActionMassage.cs" />
     <Compile Include="ViewModels\FTPServiceViewModel.cs" />
     <Compile Include="Views\FTPServiceView.xaml.cs">
       <DependentUpon>FTPServiceView.xaml</DependentUpon>

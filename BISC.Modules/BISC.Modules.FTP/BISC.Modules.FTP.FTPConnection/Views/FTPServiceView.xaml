@@ -48,63 +48,91 @@
             </StackPanel>
 
             <TextBlock Grid.Column="1" Grid.Row="1" Text="Логин"
-                       FontSize="18" Margin="5"
+                       FontSize="16" Margin="5"
                        TextAlignment="Center"/>
             <TextBox Grid.Column="0" Grid.Row="1"
                      Text="{Binding FtpLogin}" 
-                     Width="200"
-                     FontSize="18"
+                     FontSize="16"
                      Margin="5"
+                     MaxWidth="200"
                      TextAlignment="Center"/>
             
             <TextBlock  Text="Пароль"
                        Grid.Column="1" Grid.Row="2"
-                       FontSize="18"
+                       FontSize="16"
                        Margin="5"
                        TextAlignment="Center"/>   
             <StackPanel Grid.Column="0" Grid.Row="2">
                 <TextBox 
                     Text="{Binding FtpPassword}"
                     Name="PasswordBox"
-                    Width="200"
-                    FontSize="18"
+                    MaxWidth="200"
+                    FontSize="16"
                     TextAlignment="Center"
                     Margin="5" />
             </StackPanel>
             
-            <Label HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Grid.Column="1"
-                       Grid.Row="3"
-                       Style="{DynamicResource IsConnectStyle}">
-                    <Label.ToolTip>
-                        <ToolTip Content="{Binding ToolTipForConnection}"/>
-                    </Label.ToolTip>
-                    <Label.Content>
-                        <ContentControl  ContentTemplate="{DynamicResource LightbulbOn}"/>
-                    </Label.Content>
-                </Label>
+            <!---->
             <Button Content="Подключится" 
                     Margin="10"
                     Grid.Column="0"
                     Grid.Row="3"
                     Style="{StaticResource MaterialDesignRaisedLightButton}"
                     Command="{Binding ConnectToDeviceCommand}"/>
-        </Grid>
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition ></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Button Grid.Row="1" Content="Перезагрузить устройтсво"
+            <Button Content="Перезагрузить"
                     Margin="10"
+                    Grid.Column="1"
+                    Grid.Row="3"
                     Style="{StaticResource MaterialDesignRaisedLightButton}"
                     Command="{Binding ResetDeviceCommand}"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Border 
+              Height="300"
+              MaxWidth="400"
+              Background="{DynamicResource MaterialDesignBackground}">
+                <GroupBox
+                    Header="Список действий"
+                    Style="{DynamicResource MaterialDesignGroupBox}"
+                    Margin="5"
+                    UseLayoutRounding="True"
+                    SnapsToDevicePixels="True">
+                    <ScrollViewer VerticalScrollBarVisibility ="Auto"
+                                  HorizontalScrollBarVisibility="Auto">
+                        <ItemsControl x:Name="noteList" 
+                             ItemsSource="{Binding FTPActionMessageList}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label HorizontalAlignment="Center"
+                                           VerticalAlignment="Center">
+                                        <Label.Content>
+                                            <ContentControl  ContentTemplate="{DynamicResource LightbulbOn}"/>
+                                        </Label.Content>
+                                    </Label>        
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding CreationDateTime}"
+                                            Height="Auto"/>
+                                        <TextBlock 
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Message}"
+                                            Height="Auto"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </GroupBox>
+            </Border>
+
         </Grid>
         <Button Grid.Row="3" 
                 Grid.ColumnSpan="2"
                 Content="Закрыть окно"
-                Margin="0, 5, 0, 0"
+                Margin="5"
                 Command="{x:Static commands:DialogCommands.CloseDialogCommand}">
         </Button>
     </Grid>

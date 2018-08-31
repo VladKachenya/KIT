@@ -48,6 +48,7 @@
     <Compile Include="Model\IFTPClientWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serviсes\IFTPAddingServise.cs" />
+    <Compile Include="ViewModels\IFTPActionMessage.cs" />
     <Compile Include="ViewModels\IFTPServiceViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

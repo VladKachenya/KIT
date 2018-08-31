@@ -1,6 +1,7 @@
 ﻿using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +14,9 @@ namespace BISC.Modules.FTP.Infrastructure.ViewModels
         IIpAddressViewModel FtpIpAddressViewModel { get; set; }
         string FtpPassword { get; set; }
         string FtpLogin { get; set; }
-        bool? IsFtpConnected { get; set; }
-        string ToolTipForConnection { get; set;}
+        string ToolTipForConnection { get; set; }
         ICommand ConnectToDeviceCommand { get; }
         ICommand ResetDeviceCommand { get; }
+        ObservableCollection<IFTPActionMessage> FTPActionMessageList  { get; }
     }
 }

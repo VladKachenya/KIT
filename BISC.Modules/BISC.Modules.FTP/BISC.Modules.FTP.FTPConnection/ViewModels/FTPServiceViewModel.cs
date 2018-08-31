@@ -8,6 +8,7 @@ using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -27,8 +28,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         private bool _isConnectingInProcess;
         private string _ftpPassword;
         private string _ftpLogin;
-        private bool? _isFtpConnectid;
-        private string _toolTipForConnection;
+        private int _maxSizeOfList = 100; // Максимальный размер листа логирования 100
 
         #endregion
 
@@ -43,23 +43,33 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             ConnectToDeviceCommand = _commandFactory.CreatePresentationCommand(OnConnectToDeviceCommand, () => !_isConnectingInProcess);
             ResetDeviceCommand = _commandFactory.CreatePresentationCommand(OnResetDeviceCommand, CanExecuteResetDeviceCommand);
             this.FtpIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("....", false);
-            IsFtpConnected = null;
-            ToolTipForConnection = "Ожидается подключение";
+            FTPActionMessageList = new ObservableCollection<IFTPActionMessage>();
         }
         #endregion
 
         #region private methods
+        private void AddNoteToActionMassageList( bool? status, string massage)
+        {
+            var note = new FTPActionMassage();
+            note.Status = status;
+            note.Message = massage;
+            FTPActionMessageList.Add(note);
+            while (FTPActionMessageList.Count > _maxSizeOfList)
+                FTPActionMessageList.RemoveAt(0);
+            
+        }
 
         private async void OnConnectToDeviceCommand()
         {
+            AddNoteToActionMassageList(null, "Подключение к устройству");
             _isConnectingInProcess = true;
             (ConnectToDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
             try
             {
                 await TryCloseConnection();
                 var ftpClient = await _ftpClientWrapper.Connect(FtpIpAddressViewModel.FullIp, FtpLogin, FtpPassword);
-                IsFtpConnected = _ftpClientWrapper.IsConnected;
-                ToolTipForConnection = "Подключение произведено";
+                if (_ftpClientWrapper.IsConnected) AddNoteToActionMassageList(true, "Подключение произведено");
+                else AddNoteToActionMassageList(false, "Подключение не произведено");
                 //IBrowserElementFactory browserElementFactory = new FtpBrowserElementFactory(_container);
                 //browserElementFactory.SetConnectionProvider(ftpClient);
                 //IFileBrowser fileBrowser = new FileBrowser(browserElementFactory);
@@ -70,10 +80,10 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             {
                 Trace.WriteLine(e.Message);
                 await TryCloseConnection();
-                IsFtpConnected = _ftpClientWrapper.IsConnected;
-                ToolTipForConnection = e.Message;
+                AddNoteToActionMassageList(_ftpClientWrapper.IsConnected, e.Message);
             }
             _isConnectingInProcess = false;
+            AddNoteToActionMassageList(null, "Процесс подключения завершон");
             (ConnectToDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
 
         }
@@ -85,19 +95,16 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         private async void OnResetDeviceCommand()
         {
+            AddNoteToActionMassageList(null, "Попытка перезапустить устройство");
             try
             {
                 await _ftpClientWrapper.ResetDeviceAsync();
                 //(_globalIecModel.DeviceConnection as IecConnection).Stop();
-                MessageBox.Show("Устройство перезапускается");
-                //if (window is Window)
-                //{
-                //    (window as Window)?.Close();
-                //}
+                AddNoteToActionMassageList(null, "Устройство перезапускается");
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                AddNoteToActionMassageList(false, e.Message);
             }
         }
 
@@ -108,8 +115,8 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         private async Task TryCloseConnection()
         {
+            AddNoteToActionMassageList(null, "Закрытие соединения");
             await _ftpClientWrapper.Disconnect();
-            IsFtpConnected = _ftpClientWrapper.IsConnected;
         }
 
         #endregion
@@ -128,20 +135,12 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             set => SetProperty(ref _ftpPassword, value);
         }
 
-        public bool? IsFtpConnected
-        {
-            get => _isFtpConnectid;
-            set => SetProperty(ref _isFtpConnectid, value);
-        }
-        public string ToolTipForConnection
-        {
-            get => _toolTipForConnection;
-            set => SetProperty(ref _toolTipForConnection, value);
-        }
-
         public ICommand ConnectToDeviceCommand { get; }
 
         public ICommand ResetDeviceCommand { get; }
+        public string ToolTipForConnection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ObservableCollection<IFTPActionMessage> FTPActionMessageList { get; }
         #endregion
     }
 }
