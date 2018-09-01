@@ -92,7 +92,7 @@ namespace BISC.Model.Global.Serializators
                     {
                         if (property.Item1 != propertyInfo.Name) continue;
                         if (TrySetAttributeValue(modelElement, property.Item2,
-                            propertyInfo.GetValue(modelElement).ToString()))
+                            propertyInfo.GetValue(modelElement)?.ToString()))
                             break;
                     }
                 }
@@ -197,7 +197,7 @@ namespace BISC.Model.Global.Serializators
                             if (value == null)
                             {
                                 value = modelElement.ChildModelElements.FirstOrDefault((me =>
-                                    me.ElementName == property.Item2));
+                                me.ElementName == property.Item2));
                             }
                             SetProperty(propertyInfo, modelElement, value);
                             break;
@@ -222,6 +222,10 @@ namespace BISC.Model.Global.Serializators
                 if (propertyInfo.PropertyType == typeof(int))
                 {
                     propertyInfo?.SetValue(objectToSetProp, Convert.ToInt32(value));
+                }
+                else if (propertyInfo.PropertyType == typeof(bool?))
+                {
+                    propertyInfo?.SetValue(objectToSetProp, Convert.ToBoolean(value));
                 }
                 else
                 {

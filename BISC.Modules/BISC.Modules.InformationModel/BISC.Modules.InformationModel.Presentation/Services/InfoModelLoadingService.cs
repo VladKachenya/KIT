@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 
 namespace BISC.Modules.InformationModel.Presentation.Services
@@ -40,9 +42,12 @@ namespace BISC.Modules.InformationModel.Presentation.Services
             var devices = await _logicalDeviceLoadingService.GetLDeviceFromConnection(
                  new Progress<LogicalNodeLoadingEvent>(loadingEvent =>
                      deviceLoadingProgress.Report(new DeviceLoadingEvent(null, ++loadedLns))));
+            _infoModelService.InitializeInfoModel(device,device.Name);
             foreach (var ldevice in devices)
             {
-                _infoModelService.AddOrReplaceLDevice(device, ldevice);
+                IDeviceAccessPoint accessPoint;
+                device.TryGetFirstChildOfType(out accessPoint);
+                _infoModelService.AddOrReplaceLDevice(accessPoint, ldevice);
             }
         }
 

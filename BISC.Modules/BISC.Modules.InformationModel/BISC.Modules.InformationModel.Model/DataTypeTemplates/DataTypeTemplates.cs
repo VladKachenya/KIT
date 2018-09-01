@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DaType;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
@@ -20,6 +21,7 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates
             DoTypes=new List<IDoType>();
             DaTypes=new List<IDaType>();
             EnumTypes=new List<IEnumType>();
+            ElementName = InfoModelKeys.DataTypeTemplateKeys.DataTypeTemplatesModelItemKey;
         }
 
         #region Implementation of IDataTypeTemplates

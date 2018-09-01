@@ -5,6 +5,7 @@ namespace BISC.Modules.InformationModel.Infrastucture.Services
 {
     public interface IInfoModelService
     {
-        void AddOrReplaceLDevice(IModelElement device,ILDevice lDevice);
+        void AddOrReplaceLDevice(IDeviceAccessPoint deviceAccessPoint,ILDevice lDevice);
+        void InitializeInfoModel(IModelElement device, string deviceName);
     }
 }

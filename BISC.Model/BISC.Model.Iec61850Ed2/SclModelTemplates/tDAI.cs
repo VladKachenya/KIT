@@ -8,6 +8,7 @@ using BISC.Model.Iec61850Ed2.Common;
 using BISC.Model.Iec61850Ed2.DataTypeTemplates;
 using BISC.Model.Iec61850Ed2.DataTypeTemplates.Base;
 using BISC.Model.Iec61850Ed2.TreeHelpers;
+using BISC.Modules.Connection.Infrastructure.Connection;
 
 namespace BISC.Model.Iec61850Ed2.SclModelTemplates
 {

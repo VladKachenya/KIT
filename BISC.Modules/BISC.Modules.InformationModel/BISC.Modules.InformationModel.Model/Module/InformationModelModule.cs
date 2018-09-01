@@ -50,6 +50,7 @@ namespace BISC.Modules.InformationModel.Model.Module
             modelElementsRegistryService.RegisterModelElement(new DoiSerializer(), InfoModelKeys.ModelKeys.DoiKey);
             modelElementsRegistryService.RegisterModelElement(new ValSerializer(), InfoModelKeys.ModelKeys.ValKey);
             modelElementsRegistryService.RegisterModelElement(new DeviceServerSerializer(), InfoModelKeys.ModelKeys.ServerKey);
+            modelElementsRegistryService.RegisterModelElement(new DeviceAccessPointSerializer(), InfoModelKeys.ModelKeys.AccessPointKey);
 
         }
     }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Iec61850Ed2;
 using BISC.Model.Iec61850Ed2.DataTypeTemplates;
+using BISC.Model.Iec61850Ed2.DataTypeTemplates.Base;
 using BISC.Model.Iec61850Ed2.SclModelTemplates;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services;
@@ -14,6 +15,7 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.InformationModel.Model.Elements;
+using BISC.Modules.InformationModel.Model.Extensions;
 using BISC.Modules.InformationModel.Model.LoadingFromConnection;
 
 namespace BISC.Modules.InformationModel.Model.Services
@@ -207,35 +209,35 @@ namespace BISC.Modules.InformationModel.Model.Services
            List<DoiDto> doiDtos = CreateDoiDtos(logicalNodeDto.LnDefinitions, logicalNodeDto.DoiTypeDescription);
 
 
-            //foreach (var doiDto in doiDtos)
-            //{
-            //    string doName = doiDto.Name;
-            //    string path = commonLogicalNode.id + "." + doName;
-            //    DOData dataObj = (DOData)SclObjectFactory.CreateDoType(commonLogicalNode, doName,
-            //        doiDto.MembersList.Select((data => data.Name)).ToList());
-            //    tDOI doi = new tDOI { name = doName };
-            //    tDO tdo = new tDO(); //tdo нужен для того, чтобы добавить его в шаблон LN как объект
-            //    //смысл всех этих операций в том, чтобы определить тип DO по его имени
-            //    //для этого используется сборка IEC61850SCL с определениями этих типов
-            //    tdo.name = doName;
-            //    tdo.type = path;
-            //    doiDto.FullPath = path;
-            //    if (dataObj == null) continue;
-            //    dataObj.id = path;
-            //    AddDataObjectBySpec(dataObj, doi, doiDto);
+            foreach (var doiDto in doiDtos)
+            {
+                string doName = doiDto.Name;
+                string path = commonLogicalNode.id + "." + doName;
+                DOData dataObj = (DOData)SclObjectFactory.CreateDoType(commonLogicalNode, doName,
+                    doiDto.MembersList.Select((data => data.Name)).ToList());
+                tDOI doi = new tDOI { name = doName };
+                tDO tdo = new tDO(); //tdo нужен для того, чтобы добавить его в шаблон LN как объект
+                //смысл всех этих операций в том, чтобы определить тип DO по его имени
+                //для этого используется сборка IEC61850SCL с определениями этих типов
+                tdo.name = doName;
+                tdo.type = path;
+                doiDto.FullPath = path;
+                if (dataObj == null) continue;
+                dataObj.id = path;
+                AddDataObjectBySpec(dataObj, doi, doiDto,logicalNodeDto);
 
 
-            //    string id = scl.DataTypeTemplates.AddDOType(dataObj).id;
+                string id =_dataTypeTemplatesModelService.AddDoType(dataObj.MapDoType(),_biscProject.MainSclModel);
 
-            //    tdo.type = id;
-            //    commonLogicalNode.AddDO(tdo);
-            //    //полученный объект добавляется в набор объектов шаблона LN                                    
-            //    commonLogicalNode.SetAttributeByName(doName, dataObj);
-            //    //полученный шаблон добавляется в набор шаблонов шаблона LN   
-            //    resAnyLn.AddDOI(doi); //полученный объект (инстанс) добавляется в набор объектов объекта LN
+                tdo.type = id;
+                commonLogicalNode.AddDO(tdo);
+                //полученный объект добавляется в набор объектов шаблона LN                                    
+                commonLogicalNode.SetAttributeByName(doName, dataObj);
+                //полученный шаблон добавляется в набор шаблонов шаблона LN   
+                resAnyLn.AddDOI(doi); //полученный объект (инстанс) добавляется в набор объектов объекта LN
 
-            //}
-            //resAnyLn.lnType = scl.DataTypeTemplates.AddLNodeType(commonLogicalNode).id;
+            }
+            resAnyLn.lnType =_dataTypeTemplatesModelService.AddLnodeType(commonLogicalNode.MapLNodeType(),_biscProject.MainSclModel);
 
 
 
@@ -298,10 +300,6 @@ namespace BISC.Modules.InformationModel.Model.Services
         public List<InnerDoData> AddInnerDoDataToDoiDto(List<string> doiDefinitions, string parentName, int level,
             MmsTypeDescription parentTypeDescription, string fc)
         {
-            //if (parentName == "phsA")
-            //{
-
-            //}
             List<InnerDoData> innerDoDatas = new List<InnerDoData>();
             if (parentTypeDescription.IsStructure)
             {
@@ -309,10 +307,6 @@ namespace BISC.Modules.InformationModel.Model.Services
                 {
                     foreach (var doiDefinition in doiDefinitions)
                     {
-                        if (doiDefinition == "IDPDIF1$MX$RstA$q")
-                        {
-
-                        }
 
                         var parts = doiDefinition.Split('$');
                         if ((parts.Length == 4 + level) && (parts[2 + level] == parentName))
@@ -342,468 +336,401 @@ namespace BISC.Modules.InformationModel.Model.Services
                             }
                         }
 
-
                     }
                 }
             }
-
-
-
-
             return innerDoDatas;
         }
 
 
 
-        //    private void AddDataObjectBySpec(DOData dataObj, tDOI doi, DoiDto doiDto)
-        //    {
-        //        foreach (var innerDoItem in doiDto.MembersList)
-        //        {
-        //            //  try
-        //            //  {
-        //            GetDataObjectContentBySpec(dataObj, doi, null, innerDoItem, true);
-        //            //}
-        //            //catch (Exception ex)
-        //            //{
-        //            //    throw;
-        //            //}
-        //        }
-        //    }
-
-
-        //    private void GetDataObjectContentBySpec(DOData dataObj, tDOI doi, tSDI sdi, InnerDoData innerDoData, bool isdoi)
-        //    {
-
-        //        string path = dataObj.id + "." + innerDoData.Name;
-        //        tFCEnum fc = StringOperations.GetFunctionalConstraintByString(innerDoData.Fc);
-        //        // спецификация может быть структурой с набором объектов или одним простым объектом
-        //        if ((innerDoData != null) && (innerDoData.IsStructure))
-        //        //в случае объекта типа структуры следует создать SDI и шаблон к нему
-        //        {
-
-
-        //            tSDI newsdi = new tSDI { name = innerDoData.Name }; //тут создается SDI, а дальше создается шаблон
-        //            if (dataObj != null)
-        //            {
-        //                object structObject = SclObjectFactory.CreateStructureSclObject(dataObj, innerDoData.Name,
-        //                    innerDoData.MembersList.Select((data => data.Name)).ToList());
-
-        //                if (structObject != null)
-        //                {
-        //                    object buff = null;
-        //                    buff = dataObj.GetAttributeValByName(innerDoData.Name);
-        //                    if (buff != null)
-        //                    {
-        //                        structObject = buff;
-
-        //                    }
-        //                    //объект может быть типом SDIDADataTypeBDA (наследником)
-        //                    if (structObject.GetType().IsSubclassOf(typeof(SDIDADataTypeBDA)))
-        //                    {
-        //                        AddSDIDADataType(newsdi, innerDoData, path, fc, dataObj, (SDIDADataTypeBDA)structObject,
-        //                            null);
-
-        //                    }
-        //                    //или DOData
-        //                    if (structObject.GetType().IsSubclassOf(typeof(DOData)))
-        //                    {
-        //                        AddSDO(doi, newsdi, fc, (DOData)structObject, innerDoData, dataObj);
-        //                    }
-        //                }
-        //            }
-
-
-        //            if (isdoi) doi.AddSDI(newsdi); //добавление инст к SDI, т.к. структура
-        //            else sdi.SDI.Add(newsdi);
-        //        }
-        //        else
-        //        {
-
-        //            var tBasicType = GetBasicTypeByPath(path.Split('.').ToArray(), innerDoData.Fc);
-
-        //            AddSimpleDataTemplate(dataObj, innerDoData.Name, fc, tBasicType);
-        //            tDAI dai = new tDAI { name = innerDoData.Name };
-        //            //   path =StringOperations.PathToDeviceFormat(path); //приведение строки к виду, читаемому устройством
-        //            //   dai.Val.Add(new tVal { Value = Connection.ReadValue(path, fc).ToString() });
-        //            dai.FC = fc.ToString();
-        //            if (isdoi) doi.DAI.Add(dai); //добавление инст к DAI, т.к. структура
-        //            else sdi.DAI.Add(dai);
-        //        }
-        //    }
-        //    private void AddSimpleDataTemplate(DOData dataObj, string dataObjectName, tFCEnum fc, tBasicTypeEnum tBasicType)
-        //    //создание шаблона под простой (неструктурный) тип
-        //    {
-
-
-        //        Type type = null;
-        //        tDA dataAtrobj = null;
-        //        if (dataObj != null)
-        //            type = dataObj.GetAttributeByName(dataObjectName);
-
-        //        if (type != null)
-        //        {
-        //            try
-        //            {
-
-
-        //                dataAtrobj = (tDA)Activator.CreateInstance(type);
-        //            }
-        //            catch (Exception e)
-        //            {
-        //                Console.WriteLine(e);
-
-        //            }
-        //            object o = (tDA)dataObj.GetAttributeValByName(dataObjectName);
-        //            if (o != null)
-        //                dataAtrobj = (tDA)o;
-        //            dataAtrobj.name = dataObjectName;
-        //            dataAtrobj.fc = (tFCEnum)fc;
-        //            tBasicTypeEnum btype;
-        //            if (Enum.TryParse(type.Name, out btype))
-        //                dataAtrobj.bType = btype;
-        //        }
-
-        //        if ((dataObj == null) || (type == null)) return;
-        //        if (dataAtrobj.bType == tBasicTypeEnum.Enum) //неструктурный тип может быть перечислением
-        //        {
-        //            if (dataObjectName == "stVal")
-        //                dataObjectName = dataObj.name;
-        //            if (dataAtrobj.type == null)
-        //                dataAtrobj.type = dataObjectName;
-
-        //            AddEnums(dataObjectName, dataAtrobj);
-        //        }
-        //        if (dataAtrobj.bType == tBasicTypeEnum.Dbpos)
-        //        {
-
-        //        }
-        //        if ((tBasicType != tBasicTypeEnum.Unset) && (dataAtrobj.bType != tBasicTypeEnum.Enum) && (dataAtrobj.bType != tBasicTypeEnum.Dbpos))
-        //        {
-        //            dataAtrobj.bType = tBasicType;
-        //        }
-        //        dataObj.AddDA(dataAtrobj);
-        //    }
-
-
-
-        //    private void AddSimpleBDA(tDAType datype, string shortstr, tDA da, DOData dataObj)
-        //    {
-        //        tAbstractDataAttribute bdaAbs = new tAbstractDataAttribute();
-
-        //        Type type = null;
-        //        if (da != null)
-        //            type = da.GetAttributeByName(shortstr);
-        //        if (type != null)
-        //            bdaAbs = (tAbstractDataAttribute)Activator.CreateInstance(type);
-        //        object o = new object();
-        //        try
-        //        {
-        //            o = da.GetAttributeValByName(shortstr);
-        //            if (o != null)
-        //                bdaAbs = (tAbstractDataAttribute)o;
-        //        }
-        //        catch (Exception f)
-        //        {
-
-        //            throw;
-        //        }
-
-
-        //        if ((da == null) || (type == null)) return;
-        //        bdaAbs.name = shortstr;
-
-        //        if (bdaAbs.bType == tBasicTypeEnum.Enum)
-        //        {
-        //            if (shortstr == "ctlVal")
-        //            {
-        //                if (dataObj != null)
-        //                    shortstr = dataObj.name;
-        //            }
-        //            bdaAbs.type = shortstr;
-        //            AddEnums(shortstr, (tDA)bdaAbs);
-        //        }
-        //        datype.AddAbstrAtrAsBDA(bdaAbs);
-        //        da.SetAttributeByName(shortstr, bdaAbs);
-        //    }
-
-
-
-
-
-
-
-
-
-        //    private void AddSDO(tDOI doi, tSDI newsdi, tFCEnum fc, DOData dotype,
-        //        InnerDoData innerDoData, DOData dataObj)
-        //    {
-        //        string attrname = innerDoData.Name;
-        //        tSDO sdo = new tSDO();
-        //        sdo.name = attrname;
-        //        dotype.id = dataObj.id + "." + attrname;
-        //        if (dotype != null)
-        //        {
-        //            foreach (InnerDoData item in innerDoData.MembersList)
-        //            {
-        //                GetDataObjectContentBySpec(dotype, doi, newsdi, item, false);
-        //            }
-        //        }
-
-        //        sdo.type = _scl.DataTypeTemplates.AddDOType(dotype).id;
-        //        dataObj.AddSDOtoDOType(sdo);
-        //        dataObj.SetAttributeByName(attrname, dotype);
-        //    }
-        //    private SDIDADataTypeBDA AddSDIDADataType(tSDI newsdi, InnerDoData innerDoData, string str, tFCEnum fc,
-        //        DOData dataObj, SDIDADataTypeBDA sdiDAData, tDA da)
-        //    {
-        //        string attrname = str.Substring(str.LastIndexOf('.') + 1);
-        //        if (dataObj != null)
-        //            sdiDAData = CreateSDIDADataTypeBDA(sdiDAData, attrname, dataObj);
-        //        if (dataObj == null)
-        //            sdiDAData = CreateSDIDADataTypeBDA(sdiDAData, attrname, da);
-        //        sdiDAData.name = attrname;
-        //        sdiDAData.fc = (tFCEnum)fc;
-
-        //        tDAType datype = new tDAType { id = str };
-        //        foreach (InnerDoData item in innerDoData.MembersList)
-        //        {
-        //            string shortstr = item.Name;
-        //            if (item.IsStructure)
-        //            {
-        //                AddDataAtr(newsdi, item, datype, (tDA)sdiDAData, str, fc);
-        //            }
-        //            else
-        //            {
-        //                AddSimpleBDA(datype, shortstr, sdiDAData, dataObj);
-
-        //                tDAI dai = new tDAI { name = shortstr };
-        //                //   str =StringOperations.PathToDeviceFormat(str + "." + shortstr); //приведение строки к виду, читаемому устройством
-        //                dai.FC = fc.ToString();
-        //                //   dai.Val.Add(new tVal { Value = Connection.ReadValue(str, fc).ToString() });
-        //                newsdi.DAI.Add(dai);
-        //            }
-        //        }
-        //        sdiDAData.type = _scl.DataTypeTemplates.AddDAType(datype).id;
-        //        tBasicTypeEnum basicType = GetBasicTypeByPath(str.Split('.').ToArray(), innerDoData.Fc);
-        //        if (basicType != tBasicTypeEnum.Unset)
-        //        {
-        //            sdiDAData.bType = basicType;
-        //        }
-        //        dataObj?.AddDA((tDA)sdiDAData);
-        //        da?.SetAttributeByName(attrname, sdiDAData);
-        //        return sdiDAData;
-        //    }
-
-
-
-
-        //    private void AddDataAtr(tSDI sdi, InnerDoData innerDoData, tDAType datype, tDA sdiDAData, string str,
-        //        tFCEnum fc)
-        //    {
-        //        tSDI newsdi = new tSDI();
-        //        string attrname = innerDoData.Name;
-        //        newsdi.name = attrname;
-        //        Type type = null;
-
-        //        if (sdiDAData.name == StringOperations.RANGEC_STR)
-        //        {
-        //            type = ((rangeC)sdiDAData).RangeConfig.GetAttributeByName(attrname);
-        //        }
-        //        else
-        //            type = sdiDAData.GetAttributeByName(attrname);
-
-        //        object o = null;
-        //        if (type != null)
-        //            o = Activator.CreateInstance(type);
-        //        if (o != null)
-        //            if (o.GetType().IsSubclassOf(typeof(SDIDADataTypeBDA)))
-        //            {
-        //                SDIDADataTypeBDA sdidaDataTypeBda = (SDIDADataTypeBDA)o;
-        //                sdidaDataTypeBda = AddSDIDADataType(newsdi, innerDoData, str + "." + attrname, fc, null, sdidaDataTypeBda, sdiDAData);
-        //                sdidaDataTypeBda.name = attrname;
-        //                AddStructBDA(datype, attrname, (tDA)sdidaDataTypeBda);
-        //            }
-
-        //        sdi.SDI.Add(newsdi);
-        //    }
-
-        //    private void AddStructBDA(tDAType dataAtr, string attrname, tDA o)
-        //    {
-        //        dataAtr.AddAbstrAtrAsBDA((tAbstractDataAttribute)o);
-        //    }
-
-        //    private SDIDADataTypeBDA CreateSDIDADataTypeBDA(SDIDADataTypeBDA sdiDAData, string attrname,
-        //        tBaseElement dataObj)
-        //    {
-        //        Type type = null;
-        //        if (sdiDAData != null)
-        //            type = dataObj.GetAttributeByName(attrname);
-        //        if (type == null)
-        //        {
-
-        //        }
-
-        //        if (type != null)
-        //            sdiDAData = (SDIDADataTypeBDA)Activator.CreateInstance(type);
-        //        object o = new object();
-        //        o = dataObj.GetAttributeValByName(attrname);
-        //        if (o != null)
-        //            sdiDAData = (SDIDADataTypeBDA)o;
-        //        return sdiDAData;
-        //    }
-
-
-        //    private void AddEnums(string shortstr, tDA da)
-        //    {
-        //        tEnumType enumtype = new tEnumType { id = da.type };
-        //        if (da is ENUMERATED)
-        //        {
-        //            switch (shortstr)
-        //            {
-        //                case "Mod":
-        //                    (da as ENUMERATED).FullEnumList(typeof(modEnum));
-        //                    break;
-        //                case "Beh":
-        //                    (da as ENUMERATED).FullEnumList(typeof(behEnum));
-        //                    break;
-        //                case "Health":
-        //                    (da as ENUMERATED).FullEnumList(typeof(healthEnum));
-        //                    break;
-        //                case "PhyHealth":
-        //                    (da as ENUMERATED).FullEnumList(typeof(healthEnum));
-        //                    break;
-        //                case "AutoRecSt":
-        //                    (da as ENUMERATED).FullEnumList(typeof(autoRecStEnum));
-        //                    break;
-        //                case "CBOpCap":
-        //                    (da as ENUMERATED).FullEnumList(typeof(CBOpCapEnum));
-        //                    break;
-        //                default:
-
-        //                    break;
-
-        //            }
-        //        }
-        //        else
-        //        {
-
-        //        }
-
-        //        if (da.GetType().IsSubclassOf(typeof(SDIDADataTypeBDA)))
-        //            enumtype.EnumVal = ((SDIDADataTypeBDA)da).EnumVal;
-
-        //        if (da.GetType().IsSubclassOf(typeof(DADataType)))
-        //            enumtype.EnumVal = ((DADataType)da).EnumVal;
-        //        if (enumtype.EnumVal.Count == 0)
-        //        {
-
-        //        }
-        //        da.type = _scl.DataTypeTemplates.AddEnumType(enumtype).id;
-        //    }
-
-        //    private tBasicTypeEnum GetBasicTypeByPath(string[] pathStrings, string fc)
-        //    {
-        //        TypeDescription typeDescription = _logicalNodeDto.AccessAttributes.TypeDescription.Structure.Components
-        //            .FirstOrDefault((type => type.ComponentName.Value == fc))?.ComponentType
-        //            .TypeDescription; ;
-
-        //        foreach (var pathString in pathStrings)
-        //        {
-        //            if (_logicalNodeDto.IedName + _logicalNodeDto.LDName == pathString) continue;
-        //            if (_logicalNodeDto.ShortName == pathString) continue;
-        //            if (typeDescription.Structure != null)
-        //            {
-        //                typeDescription = typeDescription.Structure.Components
-        //                    .FirstOrDefault((type => type.ComponentName.Value == pathString))?.ComponentType
-        //                    .TypeDescription;
-        //            }
-        //            else
-        //            {
-
-        //            }
-        //        }
-
-        //        if (typeDescription?.Structure == null)
-        //        {
-        //            if (typeDescription.isBit_stringSelected())
-        //            {
-        //                if (pathStrings.Last() == "q")
-        //                {
-        //                    return tBasicTypeEnum.Quality;
-        //                }
-        //            }
-        //            else if (typeDescription.isArraySelected())
-        //            {
-        //                return tBasicTypeEnum.Struct;
-        //            }
-        //            else if (typeDescription.Integer != null)
-        //            {
-        //                switch (typeDescription.Integer.Value)
-        //                {
-        //                    case 8:
-        //                        return tBasicTypeEnum.INT8;
-        //                    case 16:
-        //                        return tBasicTypeEnum.INT16;
-        //                    case 24:
-        //                        return tBasicTypeEnum.INT24;
-        //                    case 32:
-        //                        return tBasicTypeEnum.INT32;
-        //                }
-        //            }
-        //            else if (typeDescription.isBcdSelected())
-        //            {
-        //            }
-        //            else if (typeDescription.isBooleanSelected())
-        //            {
-        //                return tBasicTypeEnum.BOOLEAN;
-        //            }
-        //            else if (typeDescription.isFloating_pointSelected())
-        //            {
-        //                switch (typeDescription.Floating_point.Format_width.Value)
-        //                {
-        //                    case 32:
-        //                        return tBasicTypeEnum.FLOAT32;
-        //                    case 64:
-        //                        return tBasicTypeEnum.FLOAT64;
-        //                }
-        //            }
-        //            else if (typeDescription.isGeneralized_timeSelected() || typeDescription.isUtc_timeSelected() || typeDescription.isBinary_timeSelected())
-        //            {
-        //                return tBasicTypeEnum.Timestamp;
-        //            }
-        //            else if (typeDescription.isOctet_stringSelected())
-        //            {
-        //                return tBasicTypeEnum.Octet64;
-        //            }
-        //            else if (typeDescription.isVisible_stringSelected())
-        //            {
-        //                switch (typeDescription.Visible_string.Value)
-        //                {
-        //                    case 255:
-        //                    case -255:
-        //                        return tBasicTypeEnum.VisString255;
-        //                    case 129:
-        //                    case -129:
-        //                        return tBasicTypeEnum.VisString129;
-        //                    case 64:
-        //                    case -64:
-        //                        return tBasicTypeEnum.VisString64;
-        //                        break;
-        //                    case 32:
-        //                    case -32:
-        //                        return tBasicTypeEnum.VisString32;
-        //                        break;
-        //                    case 65:
-        //                    case -65:
-        //                        return tBasicTypeEnum.VisString65;
-        //                        break;
-        //                }
-        //            }
-
-        //        }
-
-        //        return tBasicTypeEnum.Unset;
-        //    }
+        private void AddDataObjectBySpec(DOData dataObj, tDOI doi, DoiDto doiDto,LogicalNodeDTO logicalNodeDto)
+        {
+            foreach (var innerDoItem in doiDto.MembersList)
+            {
+                //  try
+                //  {
+                GetDataObjectContentBySpec(dataObj, doi, null, innerDoItem, true, logicalNodeDto);
+                //}
+                //catch (Exception ex)
+                //{
+                //    throw;
+                //}
+            }
+        }
+        public tFCEnum GetFunctionalConstraintByString(string fc)
+        {
+            tFCEnum functionalConstraint;
+            tFCEnum.TryParse(fc, out functionalConstraint);
+            return functionalConstraint;
+        }
+
+        private void GetDataObjectContentBySpec(DOData dataObj, tDOI doi, tSDI sdi, InnerDoData innerDoData, bool isdoi,LogicalNodeDTO logicalNodeDto)
+        {
+
+            string path = dataObj.id + "." + innerDoData.Name;
+            tFCEnum fc = GetFunctionalConstraintByString(innerDoData.Fc);
+            // спецификация может быть структурой с набором объектов или одним простым объектом
+            if ((innerDoData != null) && (innerDoData.IsStructure))
+            //в случае объекта типа структуры следует создать SDI и шаблон к нему
+            {
+                tSDI newsdi = new tSDI { name = innerDoData.Name }; //тут создается SDI, а дальше создается шаблон
+                if (dataObj != null)
+                {
+                    object structObject = SclObjectFactory.CreateStructureSclObject(dataObj, innerDoData.Name,
+                        innerDoData.MembersList.Select((data => data.Name)).ToList());
+
+                    if (structObject != null)
+                    {
+                        object buff = null;
+                        buff = dataObj.GetAttributeValByName(innerDoData.Name);
+                        if (buff != null)
+                        {
+                            structObject = buff;
+
+                        }
+                        //объект может быть типом SDIDADataTypeBDA (наследником)
+                        if (structObject.GetType().IsSubclassOf(typeof(SDIDADataTypeBDA)))
+                        {
+                            AddSDIDADataType(newsdi, innerDoData, path, fc, dataObj, (SDIDADataTypeBDA)structObject,
+                                null,logicalNodeDto);
+
+                        }
+                        //или DOData
+                        if (structObject.GetType().IsSubclassOf(typeof(DOData)))
+                        {
+                            AddSDO(doi, newsdi, fc, (DOData)structObject, innerDoData, dataObj,logicalNodeDto);
+                        }
+                    }
+                }
+
+                if (isdoi) doi.AddSDI(newsdi); //добавление инст к SDI, т.к. структура
+                else sdi.SDI.Add(newsdi);
+            }
+            else
+            {
+
+                var tBasicType = GetBasicTypeByPath(path.Split('.').ToArray(), innerDoData.Fc,logicalNodeDto);
+                AddSimpleDataTemplate(dataObj, innerDoData.Name, fc, tBasicType);
+                tDAI dai = new tDAI { name = innerDoData.Name };
+                //   path =StringOperations.PathToDeviceFormat(path); //приведение строки к виду, читаемому устройством
+                //   dai.Val.Add(new tVal { Value = Connection.ReadValue(path, fc).ToString() });
+                dai.FC = fc.ToString();
+                if (isdoi) doi.DAI.Add(dai); //добавление инст к DAI, т.к. структура
+                else sdi.DAI.Add(dai);
+            }
+        }
+        private void AddSimpleDataTemplate(DOData dataObj, string dataObjectName, tFCEnum fc, tBasicTypeEnum tBasicType)
+        //создание шаблона под простой (неструктурный) тип
+        {
+
+
+            Type type = null;
+            tDA dataAtrobj = null;
+            if (dataObj != null)
+                type = dataObj.GetAttributeByName(dataObjectName);
+
+            if (type != null)
+            {
+                try
+                {
+
+
+                    dataAtrobj = (tDA)Activator.CreateInstance(type);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+
+                }
+                object o = (tDA)dataObj.GetAttributeValByName(dataObjectName);
+                if (o != null)
+                    dataAtrobj = (tDA)o;
+                dataAtrobj.name = dataObjectName;
+                dataAtrobj.fc = (tFCEnum)fc;
+                tBasicTypeEnum btype;
+                if (Enum.TryParse(type.Name, out btype))
+                    dataAtrobj.bType = btype;
+            }
+
+            if ((dataObj == null) || (type == null)) return;
+            if (dataAtrobj.bType == tBasicTypeEnum.Enum) //неструктурный тип может быть перечислением
+            {
+                if (dataObjectName == "stVal")
+                    dataObjectName = dataObj.name;
+                if (dataAtrobj.type == null)
+                    dataAtrobj.type = dataObjectName;
+
+                AddEnums(dataObjectName, dataAtrobj);
+            }
+            if (dataAtrobj.bType == tBasicTypeEnum.Dbpos)
+            {
+
+            }
+            if ((tBasicType != tBasicTypeEnum.Unset) && (dataAtrobj.bType != tBasicTypeEnum.Enum) && (dataAtrobj.bType != tBasicTypeEnum.Dbpos))
+            {
+                dataAtrobj.bType = tBasicType;
+            }
+            dataObj.AddDA(dataAtrobj);
+        }
+
+
+
+        private void AddSimpleBDA(tDAType datype, string shortstr, tDA da, DOData dataObj)
+        {
+            tAbstractDataAttribute bdaAbs = new tAbstractDataAttribute();
+
+            Type type = null;
+            if (da != null)
+                type = da.GetAttributeByName(shortstr);
+            if (type != null)
+                bdaAbs = (tAbstractDataAttribute)Activator.CreateInstance(type);
+            object o = new object();
+            try
+            {
+                o = da.GetAttributeValByName(shortstr);
+                if (o != null)
+                    bdaAbs = (tAbstractDataAttribute)o;
+            }
+            catch (Exception f)
+            {
+
+                throw;
+            }
+
+
+            if ((da == null) || (type == null)) return;
+            bdaAbs.name = shortstr;
+
+            if (bdaAbs.bType == tBasicTypeEnum.Enum)
+            {
+                if (shortstr == "ctlVal")
+                {
+                    if (dataObj != null)
+                        shortstr = dataObj.name;
+                }
+                bdaAbs.type = shortstr;
+                AddEnums(shortstr, (tDA)bdaAbs);
+            }
+            datype.AddAbstrAtrAsBDA(bdaAbs);
+            da.SetAttributeByName(shortstr, bdaAbs);
+        }
+
+
+
+
+
+
+
+
+
+        private void AddSDO(tDOI doi, tSDI newsdi, tFCEnum fc, DOData dotype,
+            InnerDoData innerDoData, DOData dataObj,LogicalNodeDTO logicalNodeDto)
+        {
+            string attrname = innerDoData.Name;
+            tSDO sdo = new tSDO();
+            sdo.name = attrname;
+            dotype.id = dataObj.id + "." + attrname;
+            if (dotype != null)
+            {
+                foreach (InnerDoData item in innerDoData.MembersList)
+                {
+                    GetDataObjectContentBySpec(dotype, doi, newsdi, item, false,logicalNodeDto);
+                }
+            }
+
+            sdo.type = _dataTypeTemplatesModelService.AddDoType(dotype.MapDoType(), _biscProject.MainSclModel);
+            dataObj.AddSDOtoDOType(sdo);
+            dataObj.SetAttributeByName(attrname, dotype);
+        }
+        private SDIDADataTypeBDA AddSDIDADataType(tSDI newsdi, InnerDoData innerDoData, string str, tFCEnum fc,
+            DOData dataObj, SDIDADataTypeBDA sdiDAData, tDA da,LogicalNodeDTO logicalNodeDto)
+        {
+            string attrname = str.Substring(str.LastIndexOf('.') + 1);
+            if (dataObj != null)
+                sdiDAData = CreateSDIDADataTypeBDA(sdiDAData, attrname, dataObj);
+            if (dataObj == null)
+                sdiDAData = CreateSDIDADataTypeBDA(sdiDAData, attrname, da);
+            sdiDAData.name = attrname;
+            sdiDAData.fc = (tFCEnum)fc;
+
+            tDAType datype = new tDAType { id = str };
+            foreach (InnerDoData item in innerDoData.MembersList)
+            {
+                string shortstr = item.Name;
+                if (item.IsStructure)
+                {
+                    AddDataAtr(newsdi, item, datype, (tDA)sdiDAData, str, fc,logicalNodeDto);
+                }
+                else
+                {
+                    AddSimpleBDA(datype, shortstr, sdiDAData, dataObj);
+
+                    tDAI dai = new tDAI { name = shortstr };
+                    //   str =StringOperations.PathToDeviceFormat(str + "." + shortstr); //приведение строки к виду, читаемому устройством
+                    dai.FC = fc.ToString();
+                    //   dai.Val.Add(new tVal { Value = Connection.ReadValue(str, fc).ToString() });
+                    newsdi.DAI.Add(dai);
+                }
+            }
+
+            sdiDAData.type = _dataTypeTemplatesModelService.AddDaType(datype.MapDaType(), _biscProject.MainSclModel);
+            tBasicTypeEnum basicType = GetBasicTypeByPath(str.Split('.').ToArray(), innerDoData.Fc,logicalNodeDto);
+            if (basicType != tBasicTypeEnum.Unset)
+            {
+                sdiDAData.bType = basicType;
+            }
+            dataObj?.AddDA((tDA)sdiDAData);
+            da?.SetAttributeByName(attrname, sdiDAData);
+            return sdiDAData;
+        }
+
+
+
+        public static string RANGEC_STR = "rangeC";
+        private void AddDataAtr(tSDI sdi, InnerDoData innerDoData, tDAType datype, tDA sdiDAData, string str,
+            tFCEnum fc,LogicalNodeDTO logicalNodeDto)
+        {
+            tSDI newsdi = new tSDI();
+            string attrname = innerDoData.Name;
+            newsdi.name = attrname;
+            Type type = null;
+
+            if (sdiDAData.name == RANGEC_STR)
+            {
+                type = ((rangeC)sdiDAData).RangeConfig.GetAttributeByName(attrname);
+            }
+            else
+                type = sdiDAData.GetAttributeByName(attrname);
+
+            object o = null;
+            if (type != null)
+                o = Activator.CreateInstance(type);
+            if (o != null)
+                if (o.GetType().IsSubclassOf(typeof(SDIDADataTypeBDA)))
+                {
+                    SDIDADataTypeBDA sdidaDataTypeBda = (SDIDADataTypeBDA)o;
+                    sdidaDataTypeBda = AddSDIDADataType(newsdi, innerDoData, str + "." + attrname, fc, null, sdidaDataTypeBda, sdiDAData,logicalNodeDto);
+                    sdidaDataTypeBda.name = attrname;
+                    AddStructBDA(datype, attrname, (tDA)sdidaDataTypeBda);
+                }
+
+            sdi.SDI.Add(newsdi);
+        }
+
+        private void AddStructBDA(tDAType dataAtr, string attrname, tDA o)
+        {
+            dataAtr.AddAbstrAtrAsBDA((tAbstractDataAttribute)o);
+        }
+
+        private SDIDADataTypeBDA CreateSDIDADataTypeBDA(SDIDADataTypeBDA sdiDAData, string attrname,
+            tBaseElement dataObj)
+        {
+            Type type = null;
+            if (sdiDAData != null)
+                type = dataObj.GetAttributeByName(attrname);
+            if (type == null)
+            {
+
+            }
+
+            if (type != null)
+                sdiDAData = (SDIDADataTypeBDA)Activator.CreateInstance(type);
+            object o = new object();
+            o = dataObj.GetAttributeValByName(attrname);
+            if (o != null)
+                sdiDAData = (SDIDADataTypeBDA)o;
+            return sdiDAData;
+        }
+
+
+        private void AddEnums(string shortstr, tDA da)
+        {
+            tEnumType enumtype = new tEnumType { id = da.type };
+            if (da is ENUMERATED)
+            {
+                switch (shortstr)
+                {
+                    case "Mod":
+                        (da as ENUMERATED).FullEnumList(typeof(modEnum));
+                        break;
+                    case "Beh":
+                        (da as ENUMERATED).FullEnumList(typeof(behEnum));
+                        break;
+                    case "Health":
+                        (da as ENUMERATED).FullEnumList(typeof(healthEnum));
+                        break;
+                    case "PhyHealth":
+                        (da as ENUMERATED).FullEnumList(typeof(healthEnum));
+                        break;
+                    case "AutoRecSt":
+                        (da as ENUMERATED).FullEnumList(typeof(autoRecStEnum));
+                        break;
+                    case "CBOpCap":
+                        (da as ENUMERATED).FullEnumList(typeof(CBOpCapEnum));
+                        break;
+                    default:
+
+                        break;
+
+                }
+            }
+            else
+            {
+
+            }
+
+            if (da.GetType().IsSubclassOf(typeof(SDIDADataTypeBDA)))
+                enumtype.EnumVal = ((SDIDADataTypeBDA)da).EnumVal;
+
+            if (da.GetType().IsSubclassOf(typeof(DADataType)))
+                enumtype.EnumVal = ((DADataType)da).EnumVal;
+            if (enumtype.EnumVal.Count == 0)
+            {
+
+            }
+
+            da.type = _dataTypeTemplatesModelService.AddEnumType(enumtype.MapEnumType(),_biscProject.MainSclModel);
+        }
+
+        private tBasicTypeEnum GetBasicTypeByPath(string[] pathStrings, string fc,LogicalNodeDTO logicalNodeDto)
+        {
+            MmsTypeDescription typeDescription = logicalNodeDto.DoiTypeDescription.Components
+                .FirstOrDefault((type => type.Name == fc));
+
+            foreach (var pathString in pathStrings)
+            {
+                if (logicalNodeDto.IedName + logicalNodeDto.LDName == pathString) continue;
+                if (logicalNodeDto.ShortName == pathString) continue;
+                if (typeDescription.IsStructure)
+                {
+                    typeDescription = typeDescription.Components
+                        .FirstOrDefault(type => type.Name == pathString);
+                }
+                else
+                {
+
+                }
+            }
+
+            if (!typeDescription.IsStructure)
+            {
+                if (typeDescription.BasicType.HasValue)
+                {
+                    if( (typeDescription.BasicType == tBasicTypeEnum.bit_string)&&(pathStrings.Last()=="q"))
+                    {
+                        return tBasicTypeEnum.Quality;
+                    }
+                    else
+                    {
+                        return typeDescription.BasicType.Value;
+                    }
+                }
+
+            }
+
+            return tBasicTypeEnum.Unset;
+        }
 
 
         public void AddDoiDtoToList(List<DoiDto> doiDtos, DoiDto doiDto)

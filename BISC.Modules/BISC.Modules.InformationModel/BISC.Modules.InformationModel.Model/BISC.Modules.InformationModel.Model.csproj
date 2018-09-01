@@ -55,6 +55,7 @@
     <Compile Include="DataTypeTemplates\LNodeType\Do.cs" />
     <Compile Include="DataTypeTemplates\LNodeType\LNodeType.cs" />
     <Compile Include="Elements\Dai.cs" />
+    <Compile Include="Elements\DeviceAccessPoint.cs" />
     <Compile Include="Elements\DeviceServer.cs" />
     <Compile Include="Elements\Doi.cs" />
     <Compile Include="Elements\LDevice.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Elements\Sdi.cs" />
     <Compile Include="Elements\Val.cs" />
     <Compile Include="LoadingFromConnection\LogicalNodeDTO.cs" />
+    <Compile Include="Extensions\MappingExtensions.cs" />
     <Compile Include="Module\InformationModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers\DataTypeTemplates\BdaSerializer.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="Serializers\DataTypeTemplates\LNodeTypeSerializer.cs" />
     <Compile Include="Serializers\DataTypeTemplates\SdoSerializer.cs" />
     <Compile Include="Serializers\Model\DaiSerializer.cs" />
+    <Compile Include="Serializers\Model\DeviceAccessPointSerializer.cs" />
     <Compile Include="Serializers\Model\DeviceServerSerializer.cs" />
     <Compile Include="Serializers\Model\DoiSerializer.cs" />
     <Compile Include="Serializers\Model\LDeviceSerializer.cs" />

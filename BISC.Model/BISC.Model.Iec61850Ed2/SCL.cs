@@ -12,6 +12,7 @@ using BISC.Model.Iec61850Ed2.SclModelTemplates.Controls;
 using BISC.Model.Iec61850Ed2.SclModelTemplates.DataSet;
 using BISC.Model.Iec61850Ed2.SclModelTemplates.Substation;
 using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Connection.Infrastructure.Connection;
 
 namespace BISC.Model.Iec61850Ed2
 {

@@ -8,8 +8,10 @@ using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Device.Presentation.Interfaces.Services;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Navigation;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.ViewModels
 {
@@ -18,6 +20,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IDeviceLoadingService _deviceLoadingService;
         private readonly IDeviceModelService _deviceModelService;
         private readonly IBiscProject _biscProject;
+        private readonly ITreeManagementService _treeManagementService;
         private string _deviceName;
         private BiscNavigationContext _navigationContext;
         private int _currentProgress;
@@ -26,11 +29,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private IDevice _device;
 
         public DeviceLoadingTreeItemViewModel(IDeviceLoadingService deviceLoadingService,
-            IDeviceModelService deviceModelService, IBiscProject biscProject)
+            IDeviceModelService deviceModelService, IBiscProject biscProject,ITreeManagementService treeManagementService,IDeviceAddingService de)
         {
             _deviceLoadingService = deviceLoadingService;
             _deviceModelService = deviceModelService;
             _biscProject = biscProject;
+            _treeManagementService = treeManagementService;
         }
 
         public string DeviceName
@@ -71,6 +75,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         {
             IsIntermetiateProgress = true;
             await _deviceLoadingService.LoadElements(device, new Progress<DeviceLoadingEvent>(OnDeviceLoadingEvent));
+            _treeManagementService.DeleteTreeItem(_navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key));
+            _treeManagementService.AddTreeItem(new BiscNavigationParameters(){new BiscNavigationParameter("IED",_device)}, DeviceKeys.DeviceTreeItemViewKey, null);
         }
 
 

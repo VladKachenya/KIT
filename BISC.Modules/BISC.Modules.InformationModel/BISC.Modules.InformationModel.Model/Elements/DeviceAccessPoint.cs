@@ -9,18 +9,21 @@ using BISC.Modules.InformationModel.Infrastucture.Elements;
 
 namespace BISC.Modules.InformationModel.Model.Elements
 {
-   public class Sdi:ModelElement,ISdi
+    public class DeviceAccessPoint : ModelElement, IDeviceAccessPoint
     {
-        public Sdi()
+        public DeviceAccessPoint()
         {
-            SdiCollection=new List<ISdi>();
-            DaiCollection=new List<IDai>();
-            ElementName = InfoModelKeys.ModelKeys.SdiKey;
+            ElementName = InfoModelKeys.ModelKeys.AccessPointKey;
         }
 
+        #region Implementation of IDeviceAccessPoint
 
         public string Name { get; set; }
-        public List<ISdi> SdiCollection { get; }
-        public List<IDai> DaiCollection { get; }
+        public bool? Router { get; set; }
+        public bool? Clock { get; set; }
+        public IDeviceServer DeviceServer { get; set; }
+        
+
+    #endregion
     }
 }

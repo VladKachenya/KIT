@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Xml.Serialization;
 using BISC.Model.Iec61850Ed2.Common;
+using BISC.Modules.Connection.Infrastructure.Connection;
 
 namespace BISC.Model.Iec61850Ed2.DataTypeTemplates
 {   

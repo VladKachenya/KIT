@@ -8,11 +8,17 @@ using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Model.Global.Model;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Connection;
+using BISC.Modules.Device.Infrastructure.Keys;
 
 namespace BISC.Modules.Device.Model.Model
 {
     public class Device:ModelElement,IDevice
     {
+        public Device()
+        {
+            ElementName = DeviceKeys.DeviceModelKey;
+        }
+
         #region Implementation of IDevice
 
         public string Name { get; set; }

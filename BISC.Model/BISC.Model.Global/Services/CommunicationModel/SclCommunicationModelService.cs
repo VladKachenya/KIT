@@ -81,5 +81,11 @@ namespace BISC.Model.Global.Services.CommunicationModel
             (sclModel.ChildModelElements.First((element => element is ISclCommunicationModel)) as
                 ISclCommunicationModel)?.SubNetworks[0].ConnectedAccessPoints.Add(connectedAccessPoint);
         }
+
+        public IConnectedAccessPoint GetConnectedAccessPoint(ISclModel sclModel, string deviceName)
+        {
+           return (sclModel.ChildModelElements.First((element => element is ISclCommunicationModel)) as
+                ISclCommunicationModel)?.SubNetworks[0].ConnectedAccessPoints.First((point =>point.IedName==deviceName ));
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 
 namespace BISC.Modules.InformationModel.Model.Elements
@@ -13,6 +14,7 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public DeviceServer()
         {
             LDevicesCollection=new List<ILDevice>();
+            ElementName = InfoModelKeys.ModelKeys.ServerKey;
         }
         public List<ILDevice> LDevicesCollection { get; }
     }

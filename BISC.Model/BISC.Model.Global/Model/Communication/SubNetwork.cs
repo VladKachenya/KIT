@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Keys;
 using BISC.Model.Infrastructure.Project.Communication;
 
 namespace BISC.Model.Global.Model.Communication
@@ -12,6 +13,7 @@ namespace BISC.Model.Global.Model.Communication
         public SubNetwork()
         {
             ConnectedAccessPoints=new List<IConnectedAccessPoint>();
+            ElementName = ModelKeys.SubNetworkKey;
         }
         public string Name { get; set; }
         public string Desc { get; set; }

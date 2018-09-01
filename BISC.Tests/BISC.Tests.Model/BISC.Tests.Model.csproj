@@ -84,6 +84,7 @@
     <Compile Include="InitializeModules\TestBootstrapper.cs" />
     <Compile Include="Model.Global\Serializers\CommunicationSerializerTest.cs" />
     <Compile Include="Model.Global\Serializers\DataTypeTemplatesSerializerTest.cs" />
+    <Compile Include="Model.Global\Serializers\DeviceAccessPointSerializerTest.cs" />
     <Compile Include="Model.Global\Serializers\DeviceServerSerializerTest.cs" />
     <Compile Include="Model.Global\Serializers\SclModelSerializerTest.cs" />
     <Compile Include="Model.InfoModel\Serializers\LDeviceSerializerTest.cs" />

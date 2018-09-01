@@ -69,7 +69,6 @@ namespace BISC.Model.Global.Services
         {
             var xProjectElement = _modelElementsRegistryService.SerializeModelElement(_biscProject);
             xProjectElement.Save(_currentProjectPath);
-
         }
 
         public void OpenProjectAs(string fileName)

@@ -37,6 +37,7 @@ namespace BISC.Modules.InformationModel.Infrastucture
             public const string DaiKey = "DAI";
             public const string ValKey = "Val";
             public const string ServerKey = "Server";
+            public const string AccessPointKey = "AccessPoint";
 
         }
 

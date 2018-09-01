@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 
 namespace BISC.Modules.InformationModel.Model.Elements
@@ -14,6 +15,7 @@ namespace BISC.Modules.InformationModel.Model.Elements
         {
             SdiCollection=new List<ISdi>();
             DaiCollection=new List<IDai>();
+            ElementName = InfoModelKeys.ModelKeys.DoiKey;
         }
 
         public string Name { get; set; }
