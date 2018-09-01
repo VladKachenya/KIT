@@ -112,12 +112,8 @@
             </ListView>
         </Grid>
         <Grid HorizontalAlignment="Stretch" Grid.Row="1" DataContext="{Binding SelectedTreeItem}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
-            <TextBlock Style="{StaticResource MaterialDesignTitleTextBlock}">Выбранный элемент</TextBlock>
-            <ListView Grid.Row="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" AlternationCount="2"  Margin="0" ItemsSource="{Binding TreeItemDetails}">
+            <Expander IsExpanded="True" Header="Выбранный элемент">
+                <ListView  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" AlternationCount="2"  Margin="0" ItemsSource="{Binding TreeItemDetails}">
                 <ItemsControl.Resources>
                     <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
                         <Style.Triggers>
@@ -164,6 +160,7 @@
 
 
             </ListView>
+            </Expander>
         </Grid>
     </Grid>
 </UserControl>

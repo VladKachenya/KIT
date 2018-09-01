@@ -204,7 +204,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 
 
 
-        //    List<DoiDto> doiDtos = CreateDoiDtos(logicalNodeDto.LnDefinitions, logicalNodeDto.DoiTypeDescription);
+           List<DoiDto> doiDtos = CreateDoiDtos(logicalNodeDto.LnDefinitions, logicalNodeDto.DoiTypeDescription);
 
 
             //foreach (var doiDto in doiDtos)
@@ -246,112 +246,112 @@ namespace BISC.Modules.InformationModel.Model.Services
 
 
 
-        //public List<DoiDto> CreateDoiDtos(List<string> allDoiDefinitions, MmsTypeDescription typeDescription)
-        //{
-        //    List<DoiDto> doiDtos = new List<DoiDto>();
-        //    foreach (var doiDefinition in allDoiDefinitions)
-        //    {
+        public List<DoiDto> CreateDoiDtos(List<string> allDoiDefinitions, MmsTypeDescription typeDescription)
+        {
+            List<DoiDto> doiDtos = new List<DoiDto>();
+            foreach (var doiDefinition in allDoiDefinitions)
+            {
 
-        //        var doiDefinitionParts = doiDefinition.Split('$');
-        //        if (doiDefinitionParts.Length == 2)
-        //        {
-        //            string fc = doiDefinitionParts[1];
-        //            var typeDescriptionForFc = typeDescription.Components
-        //                .First((type => type.ComponentName.Value == fc)).ComponentType.TypeDescription;
+                var doiDefinitionParts = doiDefinition.Split('$');
+                if (doiDefinitionParts.Length == 2)
+                {
+                    string fc = doiDefinitionParts[1];
+                    var typeDescriptionForFc = typeDescription.Components
+                        .First((type => type.Name== fc));
 
-        //            if (fc == "RP" || fc == "BR")
-        //            {
-        //                continue;
-        //            }
+                    if (fc == "RP" || fc == "BR")
+                    {
+                        continue;
+                    }
 
-        //            if (fc == "GO")
-        //            {
-        //                continue;
-        //            }
+                    if (fc == "GO")
+                    {
+                        continue;
+                    }
 
-        //            if (fc == "SP")
-        //            {
-        //                continue;
-        //            }
+                    if (fc == "SP")
+                    {
+                        continue;
+                    }
 
-        //            foreach (var component in typeDescriptionForFc.Structure.Components)
-        //            {
-        //                DoiDto doiDto = new DoiDto();
-        //                doiDto.Name = component.ComponentName.Value;
-        //                doiDto.TypeDescription = component.ComponentType.TypeDescription;
-        //                var currentDoiDefinitions = allDoiDefinitions.Where((s =>
-        //                {
-        //                    var parts = s.Split('$');
-        //                    if (parts.Length < 3) return false;
-        //                    return parts[2] == doiDto.Name;
-        //                })).ToList();
-        //                doiDto.MembersList = AddInnerDoDataToDoiDto(currentDoiDefinitions, doiDto.Name, 0,
-        //                    doiDto.TypeDescription, fc);
-        //                AddDoiDtoToList(doiDtos, doiDto);
-        //            }
-        //        }
-        //    }
+                    foreach (var component in typeDescriptionForFc.Components)
+                    {
+                        DoiDto doiDto = new DoiDto();
+                        doiDto.Name = component.Name;
+                        doiDto.DoiTypeDescription = component;
+                        var currentDoiDefinitions = allDoiDefinitions.Where((s =>
+                        {
+                            var parts = s.Split('$');
+                            if (parts.Length < 3) return false;
+                            return parts[2] == doiDto.Name;
+                        })).ToList();
+                        doiDto.MembersList = AddInnerDoDataToDoiDto(currentDoiDefinitions, doiDto.Name, 0,
+                            doiDto.DoiTypeDescription, fc);
+                        AddDoiDtoToList(doiDtos, doiDto);
+                    }
+                }
+            }
 
-        //    return doiDtos;
-        //}
+            return doiDtos;
+        }
 
-        //public List<InnerDoData> AddInnerDoDataToDoiDto(List<string> doiDefinitions, string parentName, int level,
-        //    TypeDescription parentTypeDescription, string fc)
-        //{
-        //    //if (parentName == "phsA")
-        //    //{
+        public List<InnerDoData> AddInnerDoDataToDoiDto(List<string> doiDefinitions, string parentName, int level,
+            MmsTypeDescription parentTypeDescription, string fc)
+        {
+            //if (parentName == "phsA")
+            //{
 
-        //    //}
-        //    List<InnerDoData> innerDoDatas = new List<InnerDoData>();
-        //    if (parentTypeDescription.isStructureSelected())
-        //    {
-        //        foreach (var component in parentTypeDescription.Structure.Components)
-        //        {
-        //            foreach (var doiDefinition in doiDefinitions)
-        //            {
-        //                if (doiDefinition == "IDPDIF1$MX$RstA$q")
-        //                {
+            //}
+            List<InnerDoData> innerDoDatas = new List<InnerDoData>();
+            if (parentTypeDescription.IsStructure)
+            {
+                foreach (var component in parentTypeDescription.Components)
+                {
+                    foreach (var doiDefinition in doiDefinitions)
+                    {
+                        if (doiDefinition == "IDPDIF1$MX$RstA$q")
+                        {
 
-        //                }
+                        }
 
-        //                var parts = doiDefinition.Split('$');
-        //                if ((parts.Length == 4 + level) && (parts[2 + level] == parentName))
-        //                {
+                        var parts = doiDefinition.Split('$');
+                        if ((parts.Length == 4 + level) && (parts[2 + level] == parentName))
+                        {
 
-        //                    if (parts[3 + level] == component.ComponentName.Value && parts[1] == fc)
-        //                    {
+                            if (parts[3 + level] == component.Name && parts[1] == fc)
+                            {
 
-        //                        InnerDoData innerDoData = new InnerDoData();
-        //                        innerDoData.Name = parts[3 + level];
-        //                        innerDoData.Fc = parts[1];
-        //                        innerDoData.MembersList.AddRange(AddInnerDoDataToDoiDto(doiDefinitions.Where((s =>
-        //                            {
-        //                                var partsT = s.Split('$');
-        //                                if (partsT.Contains(innerDoData.Name) && partsT.Contains(innerDoData.Fc) &&
-        //                                    partsT.Contains(parentName)) return true;
+                                InnerDoData innerDoData = new InnerDoData();
+                                innerDoData.Name = parts[3 + level];
+                                innerDoData.Fc = parts[1];
+                                innerDoData.MembersList.AddRange(AddInnerDoDataToDoiDto(doiDefinitions.Where((s =>
+                                    {
+                                        var partsT = s.Split('$');
+                                        if (partsT.Contains(innerDoData.Name) && partsT.Contains(innerDoData.Fc) &&
+                                            partsT.Contains(parentName)) return true;
 
-        //                                return false;
-        //                            })).ToList(), innerDoData.Name, level + 1, component.ComponentType.TypeDescription,
-        //                            fc));
-        //                        if (innerDoData.MembersList.Count > 0)
-        //                        {
-        //                            innerDoData.IsStructure = true;
-        //                        }
+                                        return false;
+                                    })).ToList(), innerDoData.Name, level + 1, component,
+                                    fc));
+                                if (innerDoData.MembersList.Count > 0)
+                                {
+                                    innerDoData.IsStructure = true;
+                                }
 
-        //                        innerDoDatas.Add(innerDoData);
-        //                    }
-        //                }
-
-
-        //            }
-        //        }
-        //    }
+                                innerDoDatas.Add(innerDoData);
+                            }
+                        }
 
 
+                    }
+                }
+            }
 
 
-        //    return innerDoDatas;
-        //}
+
+
+            return innerDoDatas;
+        }
 
 
 

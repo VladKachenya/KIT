@@ -114,7 +114,8 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             LogicalNodeZeroInfoModelItemViewModel logicalNodeZeroInfoModelItemViewModel = _ln0ViewModelCreator();
             logicalNodeZeroInfoModelItemViewModel.Model = lDevice.LogicalNodeZero;
             infoModelItemViewModels.Add(logicalNodeZeroInfoModelItemViewModel);
-
+            logicalNodeZeroInfoModelItemViewModel.ChildInfoModelItemViewModels =
+                GetDoi(lDevice.LogicalNodeZero.DoiCollection);
             foreach (var lDeviceLogicalNode in lDevice.LogicalNodes)
             {
                 LogicalNodeInfoModelItemViewModel logicalNodeInfoModelItemViewModel = _lnViewModelCreator();
