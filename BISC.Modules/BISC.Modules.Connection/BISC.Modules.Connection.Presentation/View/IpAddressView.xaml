@@ -58,21 +58,21 @@
                     <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
                     <TextBox PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp" IsEnabled="{Binding IsEditable}" FontSize="20" Text="{Binding IpPart2, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="35" TextAlignment="Center"
                              Name="IP1"   TabIndex="1"/>
-                <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
+                    <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
                     <TextBox PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp" IsEnabled="{Binding IsEditable}" FontSize="20" Text="{Binding IpPart3, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="35" TextAlignment="Center"
                              Name="IP2"   TabIndex="2"/>
-                <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
+                    <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
                     <TextBox PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp" IsEnabled="{Binding IsEditable}" FontSize="20" Text="{Binding IpPart4, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="35" TextAlignment="Center"
                              Name="IP3"  TabIndex="3"/>
-                <Button Margin="5" Padding="1" Visibility="{Binding IsEditable,Converter={StaticResource booleanToVisibilityConverter}}"
+                    <Button Margin="5" Padding="1" Visibility="{Binding IsEditable,Converter={StaticResource booleanToVisibilityConverter}}"
                         Command="{Binding ClearIpCommand}"
                         Style="{DynamicResource MaterialDesignFlatButton}">
-                    <Button.Content>
-                        <ContentControl ContentTemplate="{DynamicResource BroomIcon}"/>
-                    </Button.Content>
-                </Button>
-        </StackPanel>
-    </Grid>
+                        <Button.Content>
+                            <ContentControl ContentTemplate="{DynamicResource BroomIcon}"/>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </Grid>
 
             <Label HorizontalAlignment="Center"
                    VerticalAlignment="Center"
@@ -90,7 +90,7 @@
                         Command="{Binding PingCommand}"
                         Style="{DynamicResource MaterialDesignFlatButton}"
                         Content="PING"/>
-       
+                 
 
         </StackPanel>
     </Grid>
