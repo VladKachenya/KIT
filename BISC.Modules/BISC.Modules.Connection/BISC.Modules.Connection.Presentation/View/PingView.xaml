@@ -42,27 +42,8 @@
             </StackPanel>
 
 
-            <ScrollViewer Grid.Row="1"
-                              VerticalScrollBarVisibility ="Auto">
-                <ItemsControl x:Name="ipListBox" 
-                             ItemsSource="{Binding LastIpAddresses}"
-                             MinHeight="300"
-                             MinWidth="100" >
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <local:IpAddressView></local:IpAddressView>
-                                <Button Margin="5" Width="24" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"
-                                            Command="{Binding ElementName=ipListBox,Path=DataContext.DeleteItemCommand }"  CommandParameter="{Binding .}"
-                                            Style="{DynamicResource MaterialDesignFlatButton}">
-                                    <Button.Content>
-                                        <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
-                                    </Button.Content>
-                                </Button>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility ="Auto">
+                <local:LastIpAddressesView DataContext="{Binding LastIpAddressesViewModel}"></local:LastIpAddressesView>
             </ScrollViewer>
 
         </Grid>

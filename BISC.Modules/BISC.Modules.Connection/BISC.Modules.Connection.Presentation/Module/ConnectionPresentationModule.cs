@@ -32,6 +32,7 @@ namespace BISC.Modules.Connection.Presentation.Module
             //Рекомендуется создавать экземпляры этого класса через Фабрику.
             _injectionContainer.RegisterType<IIpAddressViewModel, IpAddressViewModel>();
             _injectionContainer.RegisterType<IIpAddressViewModelFactory, IpAddressViewModelFactory>(true);
+            _injectionContainer.RegisterType<ILastIpAddressesViewModel, LastIpAddressesViewModel>();
             var presentationInitialization = _injectionContainer.ResolveType(typeof(ConnectionPresentationInitialization)) as ConnectionPresentationInitialization;
 
         }

@@ -24,108 +24,40 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
     {
         #region private filds
         private ICommandFactory _commandFactory;
-        private IConfigurationService _configurationService;
         private IIpAddressViewModelFactory _ipAddressViewModelFactory;
         private IIpValidationService _ipValidationService;
-        private readonly IGlobalEventsService _globalEventsService;
         private bool _pingAllCanExecute = true;
-        private int _sizeLastConnectionCollection = 20;
         #endregion
 
         #region C-tor
-        public PingViewModel(ICommandFactory commandFactory, IConfigurationService configurationService,
-            IIpAddressViewModelFactory ipAddressViewModelFactory, IIpValidationService ipValidationService, IGlobalEventsService globalEventsService)
+        public PingViewModel(ICommandFactory commandFactory, IIpAddressViewModelFactory ipAddressViewModelFactory, IIpValidationService ipValidationService,
+            LastIpAddressesViewModel lastIpAddressesViewModel)
         {
 
             _ipValidationService = ipValidationService;
-            _globalEventsService = globalEventsService;
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
-            _configurationService = configurationService;
-            LastIpAddresses = _ipAddressViewModelFactory.GetPingViewModelReadonlyCollection(_configurationService.LastIpAddresses);
+            this.LastIpAddressesViewModel = lastIpAddressesViewModel;
             CurrentAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("", false);
-
+            this.LastIpAddressesViewModel.CurrentAddressViewModel = CurrentAddressViewModel; // Необходимо задать обязательно
             _commandFactory = commandFactory;
-            PingAllCommand = _commandFactory.CreatePresentationCommand(OnPingAllCommand, () => _pingAllCanExecute);
-            DeleteItemCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteIpExecute);
+            PingAllCommand = _commandFactory.CreatePresentationCommand(OnPingAllCommand, () => _pingAllCanExecute); 
             CloseCommand = commandFactory.CreatePresentationCommand((() =>
             {
                 DialogCommands.CloseDialogCommand.Execute(null, null);
                 Dispose();
             }));
-            _globalEventsService.Subscribe<IpPingedEvent>((ipPinged => OnIpPinged(ipPinged.Ip,ipPinged.PingResult)));
-            _globalEventsService.Subscribe<IpSelectedEvent>(OnIpSelected);
-        }
-
-        private void OnIpSelected(IpSelectedEvent ipSelectedEvent)
-        {
-            CurrentAddressViewModel.FullIp = ipSelectedEvent.Ip;
-            CurrentAddressViewModel.IsPingSuccess = null;
             
         }
-
-        private void OnDeleteIpExecute(object obj)
-        {
-            if (obj is IIpAddressViewModel ipAddressViewModel)
-            {
-                LastIpAddresses.Remove(ipAddressViewModel);
-                _configurationService.LastIpAddresses = LastIpAddresses.Select((model => model.FullIp)).ToList();
-            }
-            
-        }
-
         #endregion
 
         #region private methods
-
-        private void OnIpPinged(string ip,bool result)
-        {
-            if (CurrentAddressViewModel.FullIp != ip) return;
-            var lastIps = _configurationService.LastIpAddresses.ToList();
-            if (lastIps.Contains(ip))
-            {
-                lastIps.Remove(ip);
-                lastIps.Insert(0, ip);
-            }
-            else
-            {
-                if (lastIps.Count >= _sizeLastConnectionCollection)
-                {
-                    lastIps.Remove(lastIps.Last());
-                }
-
-                lastIps.Add(ip);
-
-            }
-
-            _configurationService.LastIpAddresses = lastIps;
-            
-            var existing = LastIpAddresses.FirstOrDefault((model => model.FullIp == ip));
-            if (existing != null)
-            {
-                LastIpAddresses.Remove(existing);
-                LastIpAddresses.Insert(0, existing);
-            }
-            else
-            {
-                if (LastIpAddresses.Count >= _sizeLastConnectionCollection)
-                {
-                    LastIpAddresses.Remove(LastIpAddresses.Last());
-                }
-                LastIpAddresses.Insert(0,_ipAddressViewModelFactory.GetPingItemViewModel(ip, true,result));
-            }
-
-
-        }
-
-
-
         private async void OnPingAllCommand()
         {
             try
             {
                 _pingAllCanExecute = false;
                 (PingAllCommand as IPresentationCommand).RaiseCanExecute();
-                List<IIpAddressViewModel> items = new List<IIpAddressViewModel>(LastIpAddresses);
+                List<IIpAddressViewModel> items = new List<IIpAddressViewModel>( this.LastIpAddressesViewModel.LastIpAddresses);
 
                 foreach (var connection in items)
                 {
@@ -143,20 +75,18 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             //    tasks[i] = LastConnections[i].OnPing();
             //await Task.WhenAll(tasks);
         }
-
-
-
-
         #endregion
 
         #region Implementation of IPingViewModel
 
 
         public IIpAddressViewModel CurrentAddressViewModel { get; }
-        public ObservableCollection<IIpAddressViewModel> LastIpAddresses { get; }
+
         public ICommand PingAllCommand { get; }
-        public ICommand DeleteItemCommand { get; }
         public ICommand CloseCommand { get; }
+
+        public ILastIpAddressesViewModel LastIpAddressesViewModel { get; }
+
 
         #endregion
 
@@ -164,8 +94,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
         protected override void OnDisposing()
         {
-            _globalEventsService.Unsubscribe<IpSelectedEvent>(OnIpSelected);
-            _globalEventsService.Unsubscribe<IpPingedEvent>((ipPinged => OnIpPinged(ipPinged.Ip,ipPinged.PingResult)));
+            (LastIpAddressesViewModel as ComplexViewModelBase).Dispose();
             base.OnDisposing();
         }
 
