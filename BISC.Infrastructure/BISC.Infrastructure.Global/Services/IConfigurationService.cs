@@ -8,7 +8,6 @@ namespace BISC.Infrastructure.Global.Services
 
         List<string> LastIpAddresses { get; set; }
         List<string> LastConnectedIpAddresses { get; set; }
-        List<string> LastConnectedFTPIpAddresses { get; set; }
         string LastProjectPath { get; set; }
     }
 }
