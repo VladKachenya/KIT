@@ -27,7 +27,7 @@ namespace BISC.Tests.Model.Model.InfoModel.Serializers
 
 
         [TestMethod]
-        public void ShouldSerializeLDevice()
+        public void ShouldDeSerializeLDevice()
         {
             SclModelElementSerializer sclModelElementSerializer = new SclModelElementSerializer();
             var r = sclModelElementSerializer.DeserializeModelElement(XElement.Parse(Properties.Resources.rel670_gooseUROV));
@@ -45,7 +45,28 @@ namespace BISC.Tests.Model.Model.InfoModel.Serializers
                 Assert.IsNotNull(lDeviceItem.LogicalNodes);
                 Assert.IsTrue(lDeviceItem.LogicalNodes.Count>0);
             }
+            
+        }
 
+        [TestMethod]
+        public void ShouldSerializeLDevice()
+        {
+            SclModelElementSerializer sclModelElementSerializer = new SclModelElementSerializer();
+            var r = sclModelElementSerializer.DeserializeModelElement(XElement.Parse(Properties.Resources.rel670_gooseUROV));
+            bool isFinded = r.TryGetFirstChildOfType(out ILDevice lDevice);
+            Assert.IsTrue(isFinded);
+            List<ILDevice> lDevices = new List<ILDevice>();
+            r.GetAllChildrenOfType(ref lDevices);
+            Assert.IsTrue(lDevices.Count == 8);
+
+            foreach (var lDeviceItem in lDevices)
+            {
+                Assert.IsFalse(string.IsNullOrEmpty(lDeviceItem.Inst));
+                Assert.IsFalse(string.IsNullOrEmpty(lDeviceItem.ElementName));
+                Assert.IsNotNull(lDeviceItem.LogicalNodeZero);
+                Assert.IsNotNull(lDeviceItem.LogicalNodes);
+                Assert.IsTrue(lDeviceItem.LogicalNodes.Count > 0);
+            }
 
         }
 

@@ -60,9 +60,11 @@ namespace BISC.Model.Global.Services
             }
             catch (Exception e)
             {
-                biscProject = new BiscProject(new SclModel());
+                biscProject = new BiscProject();
+                biscProject.MainSclModel=new SclModel();
             }
             _biscProject.MainSclModel = biscProject.MainSclModel;
+            _biscProject.ChildModelElements.Add(biscProject.MainSclModel);
         }
 
         public void SaveCurrentProject()

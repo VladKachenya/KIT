@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Presentation.Interfaces;
 using BISC.Presentation.Infrastructure.Navigation;
@@ -26,7 +27,10 @@ namespace BISC.Modules.InformationModel.Presentation.Services
         public void HandleModelElement(IModelElement modelElement, TreeItemIdentifier uiParentId, string uiKey)
         {
 
-            if (uiParentId == null) return;
+            if (uiParentId == null)
+            {
+                return;
+            }
             var treeItemId = _treeManagementService.AddTreeItem(
                    new BiscNavigationParameters() { new BiscNavigationParameter("IED", modelElement) },
                    InfoModelKeys.InfoModelTreeItemViewKey, uiParentId.ItemId);

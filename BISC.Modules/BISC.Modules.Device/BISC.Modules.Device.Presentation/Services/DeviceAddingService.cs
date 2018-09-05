@@ -80,7 +80,7 @@ namespace BISC.Modules.Device.Presentation.Services
                     AddDeviceToTree(element as IDevice);
                 }
             });
-            _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(modelElement, parentTreeId, uiKey);
+            _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(modelElement, parentTreeId, "IED");
         }
     }
 }

@@ -14,14 +14,11 @@ namespace BISC.Model.Global.Project
    public class BiscProject:ModelElement,IBiscProject
     {
         
-        public BiscProject(ISclModel sclModel)
+        public BiscProject()
         {
             ElementName = ModelKeys.BiscProjectKey;
-            MainSclModel = sclModel;
         }
-
-        public override List<IModelElement> ChildModelElements =>new List<IModelElement>(){ MainSclModel };
-
+       
         #region Implementation of IBiscProject
 
         public ISclModel MainSclModel { get; set; }

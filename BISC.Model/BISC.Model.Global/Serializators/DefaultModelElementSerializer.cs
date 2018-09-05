@@ -88,12 +88,58 @@ namespace BISC.Model.Global.Serializators
             {
                 foreach (var property in _properties)
                 {
+                  
                     foreach (var propertyInfo in modelElementProperties)
                     {
                         if (property.Item1 != propertyInfo.Name) continue;
-                        if (TrySetAttributeValue(modelElement, property.Item2,
-                            propertyInfo.GetValue(modelElement)?.ToString()))
+                        var propertyValue = propertyInfo.GetValue(modelElement);
+                        if (propertyValue is IModelElement)
+                        {
+                            modelElement.ChildModelElements.Add(propertyValue as IModelElement);
                             break;
+                        }
+                        else
+                        {
+                            if (TrySetAttributeValue(modelElement, property.Item2,
+                                propertyInfo.GetValue(modelElement)?.ToString()))
+                                break;
+                        }
+                    }
+                }
+            }
+
+            if (_collectionTypes.Count > 0)
+            {
+                if (_collectionTypes.Count > 0)
+                {
+                    foreach (var collectionType in _collectionTypes)
+                    {
+                        foreach (var propertyInfo in modelElementProperties)
+                        {
+                            if ((collectionType.Item2 != null) && (propertyInfo.Name != collectionType.Item2)) continue;
+                            if ((propertyInfo.Name == nameof(IModelElement.ChildModelElements))) continue;
+
+                            Type type = propertyInfo.PropertyType;
+                            if (type.IsGenericType && type.GetGenericTypeDefinition()
+                                == typeof(List<>))
+                            {
+                                Type itemType = type.GetGenericArguments()[0];
+                                if (itemType == collectionType.Item1 || collectionType.Item1.GetInterface(itemType.ToString()) != null)
+                                {
+                                    var elementsOfType =
+                                        modelElement.ChildModelElements.Where((element => element.GetType() == collectionType.Item1)).ToList();
+                                    
+                                    foreach (var element in elementsOfType)
+                                    {
+                                        modelElement.ChildModelElements.Remove(element);
+                                    }
+                                    modelElement.ChildModelElements.AddRange((IEnumerable<IModelElement>)propertyInfo.GetValue(modelElement) );
+                                    
+
+                                }
+                            }
+
+                        }
                     }
                 }
             }
@@ -106,6 +152,7 @@ namespace BISC.Model.Global.Serializators
 
         private bool TrySetAttributeValue(IModelElement modelElement, string attributeName, string attributeValue)
         {
+            if (attributeValue == null) return true;
             var attribute =
                 modelElement.ModelElementAttributes.FirstOrDefault(
                     (xAttribute => xAttribute.Name == attributeName));
@@ -116,8 +163,11 @@ namespace BISC.Model.Global.Serializators
             }
             else
             {
-                return false;
+                modelElement.ModelElementAttributes.Add(new XAttribute(attributeName,attributeValue));
+                return true;
             }
+
+            return false;
         }
 
         public virtual IModelElement GetConcreteObject()
@@ -142,7 +192,8 @@ namespace BISC.Model.Global.Serializators
 
             foreach (var element in xElement.Elements())
             {
-                modelElement.ChildModelElements.Add(_modelElementsRegistryService.DeserializeModelElement<IModelElement>(element));
+                var t = _modelElementsRegistryService.DeserializeModelElement<IModelElement>(element);
+                modelElement.ChildModelElements.Add(t);
             }
 
             FillModelElementCustomProperties(modelElement, xElement);
@@ -196,8 +247,16 @@ namespace BISC.Model.Global.Serializators
                                 attribute.Name == property.Item2))?.Value;
                             if (value == null)
                             {
-                                value = modelElement.ChildModelElements.FirstOrDefault((me =>
-                                me.ElementName == property.Item2));
+                                try
+                                {
+                                    value = modelElement.ChildModelElements.FirstOrDefault((me =>
+                                        me.ElementName == property.Item2));
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e);
+                                }
+                               
                             }
                             SetProperty(propertyInfo, modelElement, value);
                             break;

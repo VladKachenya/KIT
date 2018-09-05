@@ -18,11 +18,11 @@ namespace BISC.Model.Global.Serializators
     {
         public BiscProjectSerializer()
         {
-            RegisterProperty(nameof(IBiscProject.MainSclModel), "MainSclModel");
+            RegisterProperty(nameof(IBiscProject.MainSclModel), "SCL");
         }
         public override IModelElement GetConcreteObject()
         {
-            return new BiscProject(null);
+            return new BiscProject();
         }
 
     }
