@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using BISC.Model.Iec61850Ed2.Common;
-using BISC.Model.Iec61850Ed2.TreeHelpers;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Controls;
 
@@ -18,7 +17,7 @@ namespace BISC.Model.Iec61850Ed2.SclModelTemplates.DataSet
     [XmlType(Namespace = "http://www.iec.ch/61850/2003/SCL")]
     public class tFCDA : IFcda, IParentable
     {
-        private List<ILogicalNodeData> _chilNodes = new List<ILogicalNodeData>();
+       // private List<ILogicalNodeData> _chilNodes = new List<ILogicalNodeData>();
 
         public tFCDA()
         {
@@ -165,20 +164,20 @@ namespace BISC.Model.Iec61850Ed2.SclModelTemplates.DataSet
     
 
 
-        [XmlIgnore]
-        public List<ILogicalNodeData> ChildNodes
-        {
-            get { return _chilNodes; }
-            set { _chilNodes = value; }
-        }
+       // [XmlIgnore]
+        //public List<ILogicalNodeData> ChildNodes
+        //{
+        //    get { return _chilNodes; }
+        //    set { _chilNodes = value; }
+        //}
 
         #region Implementation of IHavingChildCollection
 
-        [XmlIgnore]
-        public List<INameableItem> ChildNamableCollection
-        {
-            get { return _chilNodes.Cast<INameableItem>().ToList(); }
-        }
+        //[XmlIgnore]
+        //public List<INameableItem> ChildNamableCollection
+        //{
+        //    get { return _chilNodes.Cast<INameableItem>().ToList(); }
+        //}
 
         #endregion
 

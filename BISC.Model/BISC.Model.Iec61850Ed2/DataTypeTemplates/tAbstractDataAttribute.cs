@@ -20,7 +20,7 @@ namespace BISC.Model.Iec61850Ed2.DataTypeTemplates
     {
         public tAbstractDataAttribute()
         {
-            this.Val = new List<tVal>();
+           this.Val = new List<tVal>();
         }
 
         [XmlIgnore]

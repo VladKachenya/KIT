@@ -21,6 +21,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IDeviceModelService _deviceModelService;
         private readonly IBiscProject _biscProject;
         private readonly ITreeManagementService _treeManagementService;
+        private readonly IDeviceAddingService _deviceAddingService;
         private string _deviceName;
         private BiscNavigationContext _navigationContext;
         private int _currentProgress;
@@ -29,12 +30,14 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private IDevice _device;
 
         public DeviceLoadingTreeItemViewModel(IDeviceLoadingService deviceLoadingService,
-            IDeviceModelService deviceModelService, IBiscProject biscProject,ITreeManagementService treeManagementService,IDeviceAddingService de)
+            IDeviceModelService deviceModelService, IBiscProject biscProject,
+            ITreeManagementService treeManagementService, IDeviceAddingService deviceAddingService)
         {
             _deviceLoadingService = deviceLoadingService;
             _deviceModelService = deviceModelService;
             _biscProject = biscProject;
             _treeManagementService = treeManagementService;
+            _deviceAddingService = deviceAddingService;
         }
 
         public string DeviceName
@@ -76,14 +79,14 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             IsIntermetiateProgress = true;
             await _deviceLoadingService.LoadElements(device, new Progress<DeviceLoadingEvent>(OnDeviceLoadingEvent));
             _treeManagementService.DeleteTreeItem(_navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key));
-            _treeManagementService.AddTreeItem(new BiscNavigationParameters(){new BiscNavigationParameter("IED",_device)}, DeviceKeys.DeviceTreeItemViewKey, null);
+            _deviceAddingService.AddDevicesInProject(new List<IDevice>() { device }, _biscProject.MainSclModel);
         }
 
 
         private void OnDeviceLoadingEvent(DeviceLoadingEvent deviceLoadingEvent)
         {
             IsIntermetiateProgress = false;
-           if(deviceLoadingEvent.FullItemsCount!=null){ TotalProgress = deviceLoadingEvent.FullItemsCount.Value;}
+            if (deviceLoadingEvent.FullItemsCount != null) { TotalProgress = deviceLoadingEvent.FullItemsCount.Value; }
             CurrentProgress = deviceLoadingEvent.CurrentItemsCount;
             if (deviceLoadingEvent.DeviceNameFinded != null)
             {

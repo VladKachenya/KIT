@@ -13,6 +13,7 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public LogicalNodeZero()
         {
             ElementName = InfoModelKeys.ModelKeys.LogicalNodeZeroKey;
+            LnClass = "LLN0";
         }
     }
 }

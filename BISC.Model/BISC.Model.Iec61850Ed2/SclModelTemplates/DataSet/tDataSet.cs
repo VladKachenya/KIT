@@ -58,16 +58,16 @@ namespace BISC.Model.Iec61850Ed2.SclModelTemplates.DataSet
         }
 
 
-        public string GetIedParentName()
-        {
-            var parent = this.Parent;
-            while (!(parent is tIED))
-            {
-                if(!(parent is IParentable))return String.Empty;
-                parent = (parent as IParentable)?.Parent;
-            }
-            return (parent as INameableItem)?.name;
-        }
+        //public string GetIedParentName()
+        //{
+        //    var parent = this.Parent;
+        //    while (!(parent is tIED))
+        //    {
+        //        if(!(parent is IParentable))return String.Empty;
+        //        parent = (parent as IParentable)?.Parent;
+        //    }
+        //    return (parent as INameableItem)?.name;
+        //}
 
 
    

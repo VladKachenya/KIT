@@ -8,8 +8,7 @@ using BISC.Model.Infrastructure.Common;
 
 namespace BISC.Model.Iec61850Ed2.DataTypeTemplates.Base
 {
-    [XmlInclude(typeof (tLog))]
-    [XmlInclude(typeof (tAccessControl))]
+
     [XmlInclude(typeof (tHitem))]
     [XmlInclude(typeof (tPrivate))]
     [XmlInclude(typeof (tText))]
@@ -52,18 +51,18 @@ namespace BISC.Model.Iec61850Ed2.DataTypeTemplates.Base
         }
 
 
-        public tIED GetIedParent()
-        {
-            var parent = this.Parent;
-            int counter = 0;
-            while (!(parent is tIED))
-            {
-                if (!(parent is IParentable)) return null;
-                parent = (parent as IParentable)?.Parent;
-                counter++;
-                if (counter > 100) return null;
-            }
-            return (parent as tIED);
-        }
+        //public tIED GetIedParent()
+        //{
+        //    var parent = this.Parent;
+        //    int counter = 0;
+        //    while (!(parent is tIED))
+        //    {
+        //        if (!(parent is IParentable)) return null;
+        //        parent = (parent as IParentable)?.Parent;
+        //        counter++;
+        //        if (counter > 100) return null;
+        //    }
+        //    return (parent as tIED);
+        //}
     }
 }

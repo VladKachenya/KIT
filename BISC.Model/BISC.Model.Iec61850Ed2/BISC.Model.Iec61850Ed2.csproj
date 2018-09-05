@@ -90,7 +90,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SCL.cs" />
     <Compile Include="SclModelTemplates\Communication\tAddress.cs" />
     <Compile Include="SclModelTemplates\Communication\tBitRateInMbPerSec.cs" />
     <Compile Include="SclModelTemplates\Communication\tCommunication.cs" />
@@ -103,7 +102,6 @@
     <Compile Include="SclModelTemplates\Communication\tPhysConn.cs" />
     <Compile Include="SclModelTemplates\Communication\tSMV.cs" />
     <Compile Include="SclModelTemplates\Communication\tSubNetwork.cs" />
-    <Compile Include="SclModelTemplates\ControlObjectFromDoi.cs" />
     <Compile Include="SclModelTemplates\Controls\SmvOpts.cs" />
     <Compile Include="SclModelTemplates\Controls\tClientLN.cs" />
     <Compile Include="SclModelTemplates\Controls\tControl.cs" />
@@ -149,32 +147,7 @@
     <Compile Include="SclModelTemplates\Substation\tTransformerWinding.cs" />
     <Compile Include="SclModelTemplates\Substation\tVoltage.cs" />
     <Compile Include="SclModelTemplates\Substation\tVoltageLevel.cs" />
-    <Compile Include="SclModelTemplates\tAccessControl.cs" />
-    <Compile Include="SclModelTemplates\tAccessPoint.cs" />
-    <Compile Include="SclModelTemplates\tAnyLN.cs" />
-    <Compile Include="SclModelTemplates\tAssociation.cs" />
-    <Compile Include="SclModelTemplates\tDAI.cs" />
-    <Compile Include="SclModelTemplates\tDOI.cs" />
-    <Compile Include="SclModelTemplates\tExtRef.cs" />
-    <Compile Include="SclModelTemplates\tIED.cs" />
-    <Compile Include="SclModelTemplates\tInputs.cs" />
-    <Compile Include="SclModelTemplates\tLDevice.cs" />
-    <Compile Include="SclModelTemplates\tLN.cs" />
-    <Compile Include="SclModelTemplates\tLN0.cs" />
-    <Compile Include="SclModelTemplates\tLog.cs" />
-    <Compile Include="SclModelTemplates\tSDI.cs" />
-    <Compile Include="SclModelTemplates\tServer.cs" />
-    <Compile Include="SclModelTemplates\tServerAuthentication.cs" />
     <Compile Include="SclModelTemplates\tVal.cs" />
-    <Compile Include="TreeHelpers\DataTransferingHelper.cs" />
-    <Compile Include="TreeHelpers\IControlObject.cs" />
-    <Compile Include="TreeHelpers\ILogicalNodeData.cs" />
-    <Compile Include="TreeHelpers\IObjectData.cs" />
-    <Compile Include="TreeHelpers\IObjectReferenced.cs" />
-    <Compile Include="TreeHelpers\ObjectItemPath.cs" />
-    <Compile Include="TreeHelpers\OptionsEnumExtensions.cs" />
-    <Compile Include="TreeHelpers\SetFC.cs" />
-    <Compile Include="TreeHelpers\StringHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">

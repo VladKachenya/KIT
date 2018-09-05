@@ -7,11 +7,13 @@ using BISC.Model.Iec61850Ed2;
 using BISC.Model.Iec61850Ed2.DataTypeTemplates;
 using BISC.Model.Iec61850Ed2.DataTypeTemplates.Base;
 using BISC.Model.Iec61850Ed2.SclModelTemplates;
+using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services;
 using BISC.Modules.Connection.Infrastructure.Connection;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
+using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.InformationModel.Model.Elements;
@@ -146,17 +148,64 @@ namespace BISC.Modules.InformationModel.Model.Services
 
         }
 
+
+        private void SetLtName(string lnstr, ILogicalNode logicalNode)
+        {
+            uint i;
+           logicalNode.Prefix = string.Empty;
+            var lnNames = Enum.GetNames(typeof(tLNClassEnum));
+            var allСoncurrences = new List<string>();
+            foreach (string str in lnNames)
+            {
+                if (lnstr.Contains(str))
+                {
+                    allСoncurrences.Add(str);
+                }
+
+            }
+            string lnClassString = allСoncurrences[0];
+
+            if (allСoncurrences.Count > 1)
+            {
+                foreach (var concurrence in allСoncurrences)
+                {
+                    if (lnstr.IndexOf(concurrence) > lnstr.IndexOf(lnClassString))
+                    {
+                        lnClassString = concurrence;
+                    }
+                }
+            }
+
+            string[] s = new string[1];
+            s[0] = lnClassString;
+            logicalNode.LnClass = lnClassString;
+            string[] substr = new string[2];
+            substr = lnstr.Split(s, 2, StringSplitOptions.None);
+            if (substr[0].Length > 0)
+                logicalNode.Prefix = substr[0];
+            if (substr[1].Length > 0)
+            {
+                logicalNode.Inst = (uint.TryParse(substr[1], out i) ? i : 1).ToString();
+            }
+            else logicalNode.Inst = "1";
+            return;
+        }
+
+
+
+
         private async Task<ILogicalNode> CreateLogicalNode(LogicalNodeDTO logicalNodeDto)
         {
 
-            tAnyLN resAnyLn = null;
+            ILogicalNode resAnyLn = null;
             CommonLogicalNode commonLogicalNode = null;
             logicalNodeDto.DoiTypeDescription =
                 (await _connection.MmsConnection.GetMmsTypeDescription(logicalNodeDto.LDName, logicalNodeDto.ShortName))
                 .Item;
             if (logicalNodeDto.ShortName == "LLN0")
             {
-                resAnyLn = new tLN0(logicalNodeDto.ShortName);
+                resAnyLn = new LogicalNodeZero();
+                resAnyLn.LnType = logicalNodeDto.ShortName;
                 commonLogicalNode = new LNTypesEd2.LLN0();
                 commonLogicalNode.id = logicalNodeDto.Path;
             }
@@ -166,8 +215,9 @@ namespace BISC.Modules.InformationModel.Model.Services
                 {
 
 
-                    resAnyLn = new tLN(logicalNodeDto.ShortName);
-
+                    resAnyLn = new LogicalNode();
+                    resAnyLn.LnType = logicalNodeDto.ShortName;
+                    SetLtName(logicalNodeDto.ShortName,resAnyLn);
                     Type typeOfLNode = null;
                     if (logicalNodeDto.ShortName.Contains("PDPR")) // Мишино творение
                     {
@@ -178,14 +228,14 @@ namespace BISC.Modules.InformationModel.Model.Services
                     {
                         typeOfLNode =
                             _modelTypesResolvingService.ResolveTypeByName(typeof(CommonLogicalNode),
-                                ((tLN) resAnyLn).lnClass, 2) as Type;
+                                ( resAnyLn).LnClass, 2) as Type;
                     }
 
                     if (typeOfLNode != null)
                     {
                         commonLogicalNode =
                             (CommonLogicalNode) Activator.CreateInstance(typeOfLNode);
-                        commonLogicalNode.lnClass = ((tLN) resAnyLn).lnClass;
+                        commonLogicalNode.lnClass = ( resAnyLn).LnClass;
                     }
                     else
                     {
@@ -215,7 +265,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 string path = commonLogicalNode.id + "." + doName;
                 DOData dataObj = (DOData)SclObjectFactory.CreateDoType(commonLogicalNode, doName,
                     doiDto.MembersList.Select((data => data.Name)).ToList());
-                tDOI doi = new tDOI { name = doName };
+                IDoi doi = new Doi() { Name = doName };
                 tDO tdo = new tDO(); //tdo нужен для того, чтобы добавить его в шаблон LN как объект
                 //смысл всех этих операций в том, чтобы определить тип DO по его имени
                 //для этого используется сборка IEC61850SCL с определениями этих типов
@@ -234,14 +284,14 @@ namespace BISC.Modules.InformationModel.Model.Services
                 //полученный объект добавляется в набор объектов шаблона LN                                    
                 commonLogicalNode.SetAttributeByName(doName, dataObj);
                 //полученный шаблон добавляется в набор шаблонов шаблона LN   
-                resAnyLn.AddDOI(doi); //полученный объект (инстанс) добавляется в набор объектов объекта LN
+                resAnyLn.DoiCollection.Add(doi); //полученный объект (инстанс) добавляется в набор объектов объекта LN
 
             }
-            resAnyLn.lnType =_dataTypeTemplatesModelService.AddLnodeType(commonLogicalNode.MapLNodeType(),_biscProject.MainSclModel);
+            resAnyLn.LnType =_dataTypeTemplatesModelService.AddLnodeType(commonLogicalNode.MapLNodeType(),_biscProject.MainSclModel);
 
 
 
-            return new LogicalNode();
+            return resAnyLn;
         }
 
 
@@ -344,7 +394,8 @@ namespace BISC.Modules.InformationModel.Model.Services
 
 
 
-        private void AddDataObjectBySpec(DOData dataObj, tDOI doi, DoiDto doiDto,LogicalNodeDTO logicalNodeDto)
+        private void AddDataObjectBySpec(DOData dataObj, 
+            IDoi doi, DoiDto doiDto,LogicalNodeDTO logicalNodeDto)
         {
             foreach (var innerDoItem in doiDto.MembersList)
             {
@@ -365,7 +416,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             return functionalConstraint;
         }
 
-        private void GetDataObjectContentBySpec(DOData dataObj, tDOI doi, tSDI sdi, InnerDoData innerDoData, bool isdoi,LogicalNodeDTO logicalNodeDto)
+        private void GetDataObjectContentBySpec(DOData dataObj, IDoi doi, ISdi sdi, InnerDoData innerDoData, bool isdoi,LogicalNodeDTO logicalNodeDto)
         {
 
             string path = dataObj.id + "." + innerDoData.Name;
@@ -374,7 +425,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             if ((innerDoData != null) && (innerDoData.IsStructure))
             //в случае объекта типа структуры следует создать SDI и шаблон к нему
             {
-                tSDI newsdi = new tSDI { name = innerDoData.Name }; //тут создается SDI, а дальше создается шаблон
+                ISdi newsdi = new Sdi { Name = innerDoData.Name }; //тут создается SDI, а дальше создается шаблон
                 if (dataObj != null)
                 {
                     object structObject = SclObjectFactory.CreateStructureSclObject(dataObj, innerDoData.Name,
@@ -404,20 +455,20 @@ namespace BISC.Modules.InformationModel.Model.Services
                     }
                 }
 
-                if (isdoi) doi.AddSDI(newsdi); //добавление инст к SDI, т.к. структура
-                else sdi.SDI.Add(newsdi);
+                if (isdoi) doi.SdiCollection.Add(newsdi); //добавление инст к SDI, т.к. структура
+                else sdi.SdiCollection.Add(newsdi);
             }
             else
             {
 
                 var tBasicType = GetBasicTypeByPath(path.Split('.').ToArray(), innerDoData.Fc,logicalNodeDto);
                 AddSimpleDataTemplate(dataObj, innerDoData.Name, fc, tBasicType);
-                tDAI dai = new tDAI { name = innerDoData.Name };
+                IDai dai = new Dai() { Name = innerDoData.Name };
                 //   path =StringOperations.PathToDeviceFormat(path); //приведение строки к виду, читаемому устройством
                 //   dai.Val.Add(new tVal { Value = Connection.ReadValue(path, fc).ToString() });
-                dai.FC = fc.ToString();
-                if (isdoi) doi.DAI.Add(dai); //добавление инст к DAI, т.к. структура
-                else sdi.DAI.Add(dai);
+               // dai.FC = fc.ToString();
+                if (isdoi) doi.DaiCollection.Add(dai); //добавление инст к DAI, т.к. структура
+                else sdi.DaiCollection.Add(dai);
             }
         }
         private void AddSimpleDataTemplate(DOData dataObj, string dataObjectName, tFCEnum fc, tBasicTypeEnum tBasicType)
@@ -524,7 +575,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 
 
 
-        private void AddSDO(tDOI doi, tSDI newsdi, tFCEnum fc, DOData dotype,
+        private void AddSDO(IDoi doi, ISdi newsdi, tFCEnum fc, DOData dotype,
             InnerDoData innerDoData, DOData dataObj,LogicalNodeDTO logicalNodeDto)
         {
             string attrname = innerDoData.Name;
@@ -543,7 +594,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             dataObj.AddSDOtoDOType(sdo);
             dataObj.SetAttributeByName(attrname, dotype);
         }
-        private SDIDADataTypeBDA AddSDIDADataType(tSDI newsdi, InnerDoData innerDoData, string str, tFCEnum fc,
+        private SDIDADataTypeBDA AddSDIDADataType(ISdi newsdi, InnerDoData innerDoData, string str, tFCEnum fc,
             DOData dataObj, SDIDADataTypeBDA sdiDAData, tDA da,LogicalNodeDTO logicalNodeDto)
         {
             string attrname = str.Substring(str.LastIndexOf('.') + 1);
@@ -566,11 +617,10 @@ namespace BISC.Modules.InformationModel.Model.Services
                 {
                     AddSimpleBDA(datype, shortstr, sdiDAData, dataObj);
 
-                    tDAI dai = new tDAI { name = shortstr };
+                    IDai dai = new Dai() { Name = shortstr };
                     //   str =StringOperations.PathToDeviceFormat(str + "." + shortstr); //приведение строки к виду, читаемому устройством
-                    dai.FC = fc.ToString();
                     //   dai.Val.Add(new tVal { Value = Connection.ReadValue(str, fc).ToString() });
-                    newsdi.DAI.Add(dai);
+                    newsdi.DaiCollection.Add(dai);
                 }
             }
 
@@ -588,12 +638,12 @@ namespace BISC.Modules.InformationModel.Model.Services
 
 
         public static string RANGEC_STR = "rangeC";
-        private void AddDataAtr(tSDI sdi, InnerDoData innerDoData, tDAType datype, tDA sdiDAData, string str,
+        private void AddDataAtr(ISdi sdi, InnerDoData innerDoData, tDAType datype, tDA sdiDAData, string str,
             tFCEnum fc,LogicalNodeDTO logicalNodeDto)
         {
-            tSDI newsdi = new tSDI();
+            ISdi newsdi = new Sdi();
             string attrname = innerDoData.Name;
-            newsdi.name = attrname;
+            newsdi.Name = attrname;
             Type type = null;
 
             if (sdiDAData.name == RANGEC_STR)
@@ -615,7 +665,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                     AddStructBDA(datype, attrname, (tDA)sdidaDataTypeBda);
                 }
 
-            sdi.SDI.Add(newsdi);
+            sdi.SdiCollection.Add(newsdi);
         }
 
         private void AddStructBDA(tDAType dataAtr, string attrname, tDA o)

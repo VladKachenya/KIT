@@ -14,8 +14,10 @@ namespace BISC.Model.Iec61850Ed2.DataTypeTemplates
     [XmlInclude(typeof(CommonLogicalNode))]
     [XmlType(Namespace = "http://www.iec.ch/61850/2003/SCL")]
 
-    public class tLNodeType : tIDNaming
+    public class tLNodeType:tIDNaming
     {
+      
+
         [XmlElement("DO")]
         [Category("LNodeType"), Browsable(false)]
         public List<tDO> DO { get; set; }
