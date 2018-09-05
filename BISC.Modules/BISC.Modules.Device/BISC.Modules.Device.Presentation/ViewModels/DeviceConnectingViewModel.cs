@@ -34,6 +34,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IIpAddressViewModelFactory _ipAddressViewModelFactory;
         private readonly ITreeManagementService _treeManagementService;
         private readonly IBiscProject _biscProject;
+        private readonly IDeviceLoadingService _deviceLoadingService;
         private IIpAddressViewModel _selectedIpAddressViewModel;
         private bool _isDeviceConnectionFailed;
         private Timer _failedSatatusHidingTimer;
@@ -42,7 +43,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             IConfigurationService configurationService, IGlobalEventsService globalEventsService,
             IIpAddressViewModelFactory ipAddressViewModelFactory,
             ITreeManagementService treeManagementService ,
-            IBiscProject biscProject)
+            IBiscProject biscProject,IDeviceLoadingService deviceLoadingService)
         {
             _commandFactory = commandFactory;
             _deviceConnectionService = deviceConnectionService;
@@ -51,6 +52,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
             _treeManagementService = treeManagementService;
             _biscProject = biscProject;
+            _deviceLoadingService = deviceLoadingService;
             LastConnectedIps = new ObservableCollection<IIpAddressViewModel>();
             ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDeviceExecute);
             var lastConnectedIp = _configurationService.LastConnectedIpAddresses.Count > 0
@@ -70,13 +72,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             var connectResult = await _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
 
             if (connectResult.IsSucceed)
-            {               
-                BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
-                biscNavigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, connectResult.Item);
-                DialogCommands.CloseDialogCommand.Execute(null, null);
-                _treeManagementService.AddTreeItem(biscNavigationParameters, DeviceKeys.DeviceLoadingTreeItemViewKey,
-                    null);
-               
+            {
+                await _deviceLoadingService.LoadElements(new List<IDevice>() {connectResult.Item});
             }
             else
             {
@@ -87,7 +84,6 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         private void FailStatusHide(object o)
         {
-
             IsDeviceConnectionFailed = false;
         }
 

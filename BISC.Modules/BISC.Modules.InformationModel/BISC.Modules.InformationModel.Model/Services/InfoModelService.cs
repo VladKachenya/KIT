@@ -17,12 +17,10 @@ namespace BISC.Modules.InformationModel.Model.Services
     public class InfoModelService : IInfoModelService
     {
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
-        private readonly IBiscProject _biscProject;
 
-        public InfoModelService(ISclCommunicationModelService sclCommunicationModelService,IBiscProject biscProject)
+        public InfoModelService(ISclCommunicationModelService sclCommunicationModelService)
         {
             _sclCommunicationModelService = sclCommunicationModelService;
-            _biscProject = biscProject;
         }
 
 
@@ -34,18 +32,23 @@ namespace BISC.Modules.InformationModel.Model.Services
             if (existingLdevice != null)
             {
                 deviceAccessPoint.DeviceServer.LDevicesCollection.Remove(existingLdevice);
+                deviceAccessPoint.DeviceServer.ChildModelElements.Remove(existingLdevice);
+
             }
 
             deviceAccessPoint.DeviceServer.LDevicesCollection.Add(lDevice);
+            deviceAccessPoint.DeviceServer.ChildModelElements.Add(lDevice);
 
         }
 
-        public void InitializeInfoModel(IModelElement device,string deviceName)
+        public void InitializeInfoModel(IModelElement device,string deviceName,ISclModel sclModel)
         {
             IDeviceAccessPoint deviceAccessPoint = new DeviceAccessPoint();
+            
             deviceAccessPoint.DeviceServer = new DeviceServer();
+            deviceAccessPoint.ChildModelElements.Add(deviceAccessPoint.DeviceServer);
             deviceAccessPoint.Name =
-                _sclCommunicationModelService.GetConnectedAccessPoint(_biscProject.MainSclModel, deviceName).ApName;
+                _sclCommunicationModelService.GetConnectedAccessPoint(sclModel, deviceName).ApName;
             device.ChildModelElements.Add(deviceAccessPoint);
 
         }

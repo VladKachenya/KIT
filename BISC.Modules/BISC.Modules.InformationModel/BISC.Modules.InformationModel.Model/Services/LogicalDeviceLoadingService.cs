@@ -27,7 +27,6 @@ namespace BISC.Modules.InformationModel.Model.Services
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly IModelTypesResolvingService _modelTypesResolvingService;
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
-        private readonly IBiscProject _biscProject;
         private Dictionary<string, List<string>> ldDictionary = new Dictionary<string, List<string>>();
         private string _deviceName;
         private string _ip;
@@ -35,12 +34,11 @@ namespace BISC.Modules.InformationModel.Model.Services
 
         public LogicalDeviceLoadingService(IConnectionPoolService connectionPoolService,
             IModelTypesResolvingService modelTypesResolvingService,
-            IDataTypeTemplatesModelService dataTypeTemplatesModelService, IBiscProject biscProject)
+            IDataTypeTemplatesModelService dataTypeTemplatesModelService)
         {
             _connectionPoolService = connectionPoolService;
             _modelTypesResolvingService = modelTypesResolvingService;
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
-            _biscProject = biscProject;
         }
 
 
@@ -99,13 +97,15 @@ namespace BISC.Modules.InformationModel.Model.Services
             return _deviceName;
         }
 
-        public async Task<List<ILDevice>> GetLDeviceFromConnection(IProgress<LogicalNodeLoadingEvent> progress)
+        public async Task<List<ILDevice>> GetLDeviceFromConnection(IProgress<LogicalNodeLoadingEvent> progress, ISclModel sclModel)
         {
+            _sclModel = sclModel;
             List<ILDevice> lDevicesResult = new List<ILDevice>();
             var logicalNodeDtos = new Dictionary<string, List<LogicalNodeDTO>>();
             foreach (var ldName in ldDictionary.Keys)
             {
                 ILDevice newLDevice = new LDevice();
+                newLDevice.Inst = ldName;
                 logicalNodeDtos.Add(ldName, new List<LogicalNodeDTO>());
                 var lnNames = ldDictionary[ldName].Where((s => !s.Contains("$"))).ToList();
 
@@ -277,7 +277,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 AddDataObjectBySpec(dataObj, doi, doiDto,logicalNodeDto);
 
 
-                string id =_dataTypeTemplatesModelService.AddDoType(dataObj.MapDoType(),_biscProject.MainSclModel);
+                string id =_dataTypeTemplatesModelService.AddDoType(dataObj.MapDoType(), _sclModel);
 
                 tdo.type = id;
                 commonLogicalNode.AddDO(tdo);
@@ -287,7 +287,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 resAnyLn.DoiCollection.Add(doi); //полученный объект (инстанс) добавляется в набор объектов объекта LN
 
             }
-            resAnyLn.LnType =_dataTypeTemplatesModelService.AddLnodeType(commonLogicalNode.MapLNodeType(),_biscProject.MainSclModel);
+            resAnyLn.LnType =_dataTypeTemplatesModelService.AddLnodeType(commonLogicalNode.MapLNodeType(), _sclModel);
 
 
 
@@ -590,7 +590,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 }
             }
 
-            sdo.type = _dataTypeTemplatesModelService.AddDoType(dotype.MapDoType(), _biscProject.MainSclModel);
+            sdo.type = _dataTypeTemplatesModelService.AddDoType(dotype.MapDoType(), _sclModel);
             dataObj.AddSDOtoDOType(sdo);
             dataObj.SetAttributeByName(attrname, dotype);
         }
@@ -624,7 +624,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 }
             }
 
-            sdiDAData.type = _dataTypeTemplatesModelService.AddDaType(datype.MapDaType(), _biscProject.MainSclModel);
+            sdiDAData.type = _dataTypeTemplatesModelService.AddDaType(datype.MapDaType(), _sclModel);
             tBasicTypeEnum basicType = GetBasicTypeByPath(str.Split('.').ToArray(), innerDoData.Fc,logicalNodeDto);
             if (basicType != tBasicTypeEnum.Unset)
             {
@@ -638,6 +638,8 @@ namespace BISC.Modules.InformationModel.Model.Services
 
 
         public static string RANGEC_STR = "rangeC";
+        private ISclModel _sclModel;
+
         private void AddDataAtr(ISdi sdi, InnerDoData innerDoData, tDAType datype, tDA sdiDAData, string str,
             tFCEnum fc,LogicalNodeDTO logicalNodeDto)
         {
@@ -740,7 +742,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 
             }
 
-            da.type = _dataTypeTemplatesModelService.AddEnumType(enumtype.MapEnumType(),_biscProject.MainSclModel);
+            da.type = _dataTypeTemplatesModelService.AddEnumType(enumtype.MapEnumType(), _sclModel);
         }
 
         private tBasicTypeEnum GetBasicTypeByPath(string[] pathStrings, string fc,LogicalNodeDTO logicalNodeDto)

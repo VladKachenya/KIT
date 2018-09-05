@@ -1,4 +1,5 @@
 ﻿using BISC.Model.Infrastructure.Elements;
+using BISC.Model.Infrastructure.Project;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 
 namespace BISC.Modules.InformationModel.Infrastucture.Services
@@ -6,6 +7,6 @@ namespace BISC.Modules.InformationModel.Infrastucture.Services
     public interface IInfoModelService
     {
         void AddOrReplaceLDevice(IDeviceAccessPoint deviceAccessPoint,ILDevice lDevice);
-        void InitializeInfoModel(IModelElement device, string deviceName);
+        void InitializeInfoModel(IModelElement device, string deviceName,ISclModel sclModel);
     }
 }

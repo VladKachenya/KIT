@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading;
+using BISC.Modules.Device.Infrastructure.Loading.Events;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
@@ -17,11 +19,9 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 {
     public class DeviceLoadingTreeItemViewModel : NavigationViewModelBase
     {
-        private readonly IDeviceLoadingService _deviceLoadingService;
         private readonly IDeviceModelService _deviceModelService;
         private readonly IBiscProject _biscProject;
-        private readonly ITreeManagementService _treeManagementService;
-        private readonly IDeviceAddingService _deviceAddingService;
+        private readonly IGlobalEventsService _globalEventsService;
         private string _deviceName;
         private BiscNavigationContext _navigationContext;
         private int _currentProgress;
@@ -29,15 +29,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private bool _isIntermetiateProgress;
         private IDevice _device;
 
-        public DeviceLoadingTreeItemViewModel(IDeviceLoadingService deviceLoadingService,
-            IDeviceModelService deviceModelService, IBiscProject biscProject,
-            ITreeManagementService treeManagementService, IDeviceAddingService deviceAddingService)
+        public DeviceLoadingTreeItemViewModel(IDeviceModelService deviceModelService, IBiscProject biscProject,
+            IGlobalEventsService globalEventsService)
         {
-            _deviceLoadingService = deviceLoadingService;
             _deviceModelService = deviceModelService;
             _biscProject = biscProject;
-            _treeManagementService = treeManagementService;
-            _deviceAddingService = deviceAddingService;
+            _globalEventsService = globalEventsService;
         }
 
         public string DeviceName
@@ -70,30 +67,36 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _device = _navigationContext.BiscNavigationParameters
                 .GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             DeviceName = _device.Name;
-            LoadDeviceAsync(_device);
+            _globalEventsService.Subscribe<DeviceLoadingEvent>(OnDeviceLoadingEvent) ;
+            IsIntermetiateProgress = true;
             base.OnNavigatedTo(navigationContext);
         }
-
-        private async void LoadDeviceAsync(IDevice device)
-        {
-            IsIntermetiateProgress = true;
-            await _deviceLoadingService.LoadElements(device, new Progress<DeviceLoadingEvent>(OnDeviceLoadingEvent));
-            _treeManagementService.DeleteTreeItem(_navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key));
-            _deviceAddingService.AddDevicesInProject(new List<IDevice>() { device }, _biscProject.MainSclModel);
-        }
-
 
         private void OnDeviceLoadingEvent(DeviceLoadingEvent deviceLoadingEvent)
         {
             IsIntermetiateProgress = false;
-            if (deviceLoadingEvent.FullItemsCount != null) { TotalProgress = deviceLoadingEvent.FullItemsCount.Value; }
-            CurrentProgress = deviceLoadingEvent.CurrentItemsCount;
-            if (deviceLoadingEvent.DeviceNameFinded != null)
+            if (deviceLoadingEvent.TotalProgressCount != null)
             {
-                _device.Name = deviceLoadingEvent.DeviceNameFinded;
+                TotalProgress = deviceLoadingEvent.TotalProgressCount.Value;
+            }
+
+            if (deviceLoadingEvent.CurrentProgressCount != null)
+                CurrentProgress = deviceLoadingEvent.CurrentProgressCount.Value;
+            if (deviceLoadingEvent.DeviceName != null)
+            {
+                _device.Name = deviceLoadingEvent.DeviceName;
                 DeviceName = _device.Name;
-                _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel, _device);
             }
         }
+
+        #region Overrides of ViewModelBase
+
+        protected override void OnDisposing()
+        {
+            _globalEventsService.Unsubscribe<DeviceLoadingEvent>(OnDeviceLoadingEvent);
+            base.OnDisposing();
+        }
+
+        #endregion
     }
 }

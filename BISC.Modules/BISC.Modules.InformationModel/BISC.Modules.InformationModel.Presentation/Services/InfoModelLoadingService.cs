@@ -7,6 +7,7 @@ using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Loading;
+using BISC.Modules.Device.Infrastructure.Loading.Events;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
@@ -36,13 +37,13 @@ namespace BISC.Modules.InformationModel.Presentation.Services
             return _logicalDeviceLoadingService.GetLogicalNodeCount();
         }
 
-        public async Task Load(IDevice device, IProgress<DeviceLoadingEvent> deviceLoadingProgress)
+        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress,ISclModel sclModel)
         {
             int loadedLns = 0;
             var devices = await _logicalDeviceLoadingService.GetLDeviceFromConnection(
                  new Progress<LogicalNodeLoadingEvent>(loadingEvent =>
-                     deviceLoadingProgress.Report(new DeviceLoadingEvent(null, ++loadedLns))));
-            _infoModelService.InitializeInfoModel(device,device.Name);
+                     deviceLoadingProgress.Report(new object())),sclModel);
+            _infoModelService.InitializeInfoModel(device,device.Name,sclModel);
             foreach (var ldevice in devices)
             {
                 IDeviceAccessPoint accessPoint;

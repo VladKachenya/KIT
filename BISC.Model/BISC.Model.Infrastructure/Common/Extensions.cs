@@ -32,7 +32,7 @@ namespace BISC.Model.Infrastructure.Common
 
         public static void GetAllChildrenOfType<T>(this IModelElement modelElement, ref List<T> findedChild)
         {
-
+            
             if (modelElement is T result)
             {
                 findedChild.Add(result);

@@ -71,7 +71,7 @@
                 Grid.ColumnSpan="2"
                 Content="Закрыть окно"
                 Margin="0, 5, 0, 0"
-                Command="{x:Static commands:DialogCommands.CloseDialogCommand}">
+                Command="{Binding CloseCommand}">
         </Button>
     </Grid>
 </UserControl>

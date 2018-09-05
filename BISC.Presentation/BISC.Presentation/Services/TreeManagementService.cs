@@ -64,7 +64,6 @@ namespace BISC.Presentation.Services
             {
                 _mainTreeViewModels[treeItemId.ParentId.Value].Item2.ChildItemViewModels
                     .Remove(_mainTreeViewModels[treeItemId.ItemId.Value].Item2);
-
             }
         }
     }

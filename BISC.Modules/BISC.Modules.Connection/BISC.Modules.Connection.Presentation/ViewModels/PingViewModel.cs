@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Modules.Connection.Presentation.Events;
 using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
+using BISC.Presentation.BaseItems.Commands;
 using BISC.Presentation.Infrastructure.Navigation;
 
 namespace BISC.Modules.Connection.Presentation.ViewModels
@@ -46,6 +47,11 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             _commandFactory = commandFactory;
             PingAllCommand = _commandFactory.CreatePresentationCommand(OnPingAllCommand, () => _pingAllCanExecute);
             DeleteItemCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteIpExecute);
+            CloseCommand = commandFactory.CreatePresentationCommand((() =>
+            {
+                DialogCommands.CloseDialogCommand.Execute(null, null);
+                Dispose();
+            }));
             _globalEventsService.Subscribe<IpPingedEvent>((ipPinged => OnIpPinged(ipPinged.Ip,ipPinged.PingResult)));
             _globalEventsService.Subscribe<IpSelectedEvent>(OnIpSelected);
         }
@@ -150,6 +156,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         public ObservableCollection<IIpAddressViewModel> LastIpAddresses { get; }
         public ICommand PingAllCommand { get; }
         public ICommand DeleteItemCommand { get; }
+        public ICommand CloseCommand { get; }
 
         #endregion
 
@@ -157,6 +164,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
         protected override void OnDisposing()
         {
+            _globalEventsService.Unsubscribe<IpSelectedEvent>(OnIpSelected);
             _globalEventsService.Unsubscribe<IpPingedEvent>((ipPinged => OnIpPinged(ipPinged.Ip,ipPinged.PingResult)));
             base.OnDisposing();
         }

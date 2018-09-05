@@ -28,7 +28,7 @@ namespace BISC.Modules.Connection.Presentation.Module
         {
             _injectionContainer.RegisterType<IPingAddingServise, PingAddingServise>(true);
             _injectionContainer.RegisterType<object, PingView>(ConnectionKeys.PingViewKey);
-            _injectionContainer.RegisterType<IPingViewModel, PingViewModel>(true);
+            _injectionContainer.RegisterType<IPingViewModel, PingViewModel>();
             //Рекомендуется создавать экземпляры этого класса через Фабрику.
             _injectionContainer.RegisterType<IIpAddressViewModel, IpAddressViewModel>();
             _injectionContainer.RegisterType<IIpAddressViewModelFactory, IpAddressViewModelFactory>(true);
