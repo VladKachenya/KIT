@@ -82,27 +82,6 @@ namespace BISC.GlobalServices
             }
         }
 
-        public List<string> LastConnectedFTPIpAddresses
-        {
-            get
-            {
-                if (Settings.Default.LastConnectedFTPIpAddreses == null)
-                {
-                    Settings.Default.LastConnectedFTPIpAddreses = new StringCollection();
-                    Settings.Default.Save();
-                }
-                return Settings.Default.LastConnectedFTPIpAddreses.Cast<string>().ToList();
-            }
-
-            set
-            {
-                var lastConnectedFTPIpAddress = new StringCollection();
-                lastConnectedFTPIpAddress.AddRange(value.ToArray());
-                Settings.Default.LastConnectedFTPIpAddreses = lastConnectedFTPIpAddress;
-                Settings.Default.Save();
-            }
-        }
-
         public string LastProjectPath
         {
             get { return Settings.Default.LastProjectPath; }
