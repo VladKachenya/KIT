@@ -34,15 +34,17 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         #region C-tor
         public FTPServiceViewModel(IFTPClientWrapper ftpClientWrapper, ICommandFactory commandFactory, IGlobalEventsService globalEventsService,
-            IIpAddressViewModelFactory ipAddressViewModelFactory)
+            IIpAddressViewModelFactory ipAddressViewModelFactory, ILastIpAddressesViewModel lastIpAddressesViewModel)
         {
             _ftpClientWrapper = ftpClientWrapper;
             _commandFactory = commandFactory;
             _globalEventsService = globalEventsService;
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
+            LastIpAddressesViewModel = lastIpAddressesViewModel;
             ConnectToDeviceCommand = _commandFactory.CreatePresentationCommand(OnConnectToDeviceCommand, () => !_isConnectingInProcess);
             ResetDeviceCommand = _commandFactory.CreatePresentationCommand(OnResetDeviceCommand, CanExecuteResetDeviceCommand);
             this.FtpIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("....", false);
+            LastIpAddressesViewModel.CurrentAddressViewModel = FtpIpAddressViewModel;
             FTPActionMessageList = new ObservableCollection<IFTPActionMessage>();
         }
         #endregion
@@ -61,6 +63,21 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         private async void OnConnectToDeviceCommand()
         {
+            try
+            {
+                await FtpIpAddressViewModel.PingAsync();
+                if ((bool)FtpIpAddressViewModel.IsPingSuccess) AddNoteToActionMassageList(true, "Устройство найдено");
+                else
+                {
+                    AddNoteToActionMassageList(false, "Устройство не найдено");
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                AddNoteToActionMassageList(false, e.Message);
+                return;
+            }
             AddNoteToActionMassageList(null, "Подключение к устройству");
             _isConnectingInProcess = true;
             (ConnectToDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
@@ -78,9 +95,8 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             }
             catch (Exception e)
             {
-                Trace.WriteLine(e.Message);
-                await TryCloseConnection();
                 AddNoteToActionMassageList(_ftpClientWrapper.IsConnected, e.Message);
+                await TryCloseConnection();
             }
             _isConnectingInProcess = false;
             AddNoteToActionMassageList(null, "Процесс подключения завершон");
@@ -138,9 +154,10 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         public ICommand ConnectToDeviceCommand { get; }
 
         public ICommand ResetDeviceCommand { get; }
-        public string ToolTipForConnection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public ObservableCollection<IFTPActionMessage> FTPActionMessageList { get; }
+
+        public ILastIpAddressesViewModel LastIpAddressesViewModel { get; }
         #endregion
     }
 }

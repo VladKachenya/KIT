@@ -18,7 +18,7 @@
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Name="ConnectionRow"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -26,27 +26,10 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Expander Grid.Column="0"
-                  Grid.RowSpan="3"
-            ExpandDirection="Right">
-            <Expander.Header>
-                <TextBlock
-                Text="Ранее подключённые устройства"
-                RenderTransformOrigin=".5,.5">
-                    <TextBlock.LayoutTransform>
-                        <RotateTransform
-                    Angle="90" />
-                    </TextBlock.LayoutTransform>
-                </TextBlock>
-            </Expander.Header>
-            <StackPanel
-              Orientation="Vertical"
-              TextBlock.Foreground="{DynamicResource MaterialDesignBody}"
-              Margin="8,24,16,24">
-                <TextBlock
-                Text="My Content" />
-            </StackPanel>
-        </Expander>
+        <ScrollViewer Grid.Column="0" Grid.RowSpan="3" VerticalScrollBarVisibility ="Auto" 
+                      Height="500">
+            <view:LastIpAddressesView DataContext="{Binding LastIpAddressesViewModel}"></view:LastIpAddressesView>
+        </ScrollViewer>
         <Grid Grid.Row="0" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>

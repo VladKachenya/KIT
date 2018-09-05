@@ -12,6 +12,8 @@ namespace BISC.Modules.FTP.Infrastructure.ViewModels
     public interface IFTPServiceViewModel
     {
         IIpAddressViewModel FtpIpAddressViewModel { get; set; }
+        ILastIpAddressesViewModel LastIpAddressesViewModel { get; }
+
         string FtpPassword { get; set; }
         string FtpLogin { get; set; }
         ICommand ConnectToDeviceCommand { get; }
