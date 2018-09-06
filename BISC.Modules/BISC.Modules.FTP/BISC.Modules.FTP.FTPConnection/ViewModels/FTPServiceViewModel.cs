@@ -65,8 +65,14 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         {
             try
             {
-                await FtpIpAddressViewModel.PingAsync();
-                if ((bool)FtpIpAddressViewModel.IsPingSuccess) AddNoteToActionMassageList(true, "Устройство найдено");
+                if (FtpIpAddressViewModel.FullIp != String.Empty)
+                   await FtpIpAddressViewModel.PingGlobalEventAsync();
+                else
+                {
+                    AddNoteToActionMassageList(false, "IP недоступен");
+                    return;
+                }
+                if (FtpIpAddressViewModel.IsPingSuccess == true) AddNoteToActionMassageList(true, "Устройство найдено");
                 else
                 {
                     AddNoteToActionMassageList(false, "Устройство не найдено");

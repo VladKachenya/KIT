@@ -87,7 +87,9 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             if (existing != null)
             {
                 LastIpAddresses.Remove(existing);
+                existing.IsPingSuccess = result;
                 LastIpAddresses.Insert(0, existing);
+
             }
             else
             {

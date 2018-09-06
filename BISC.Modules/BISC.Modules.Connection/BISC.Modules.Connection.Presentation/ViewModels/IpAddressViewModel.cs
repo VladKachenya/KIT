@@ -50,8 +50,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
         private async void OnPingExecute()
         {
-            await PingAsync();
-            _globalEventsService.SendMessage(new IpPingedEvent(FullIp, IsPingSuccess != null && IsPingSuccess.Value));
+            await PingGlobalEventAsync();
         }
 
         private bool CanPingExecute()
@@ -101,6 +100,12 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             IsPingSuccess = null;
             IsPingSuccess = await _pingService.GetPing(FullIp);
             Application.Current.Dispatcher.Invoke(() => OnPropertyChanged(nameof(IsPingSuccess)));
+        }
+
+        public async Task PingGlobalEventAsync()
+        {
+            await PingAsync();
+            _globalEventsService.SendMessage(new IpPingedEvent(FullIp, IsPingSuccess != null && IsPingSuccess.Value));
         }
 
         #endregion

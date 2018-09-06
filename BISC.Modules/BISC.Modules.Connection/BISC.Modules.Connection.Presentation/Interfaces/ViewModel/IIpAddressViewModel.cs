@@ -18,5 +18,6 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.ViewModel
         bool? IsPingSuccess { get; set; }
         string ForToolTip { get; set; }
         Task PingAsync();
+        Task PingGlobalEventAsync();
     }
 }
