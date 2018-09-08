@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Presentation.Interfaces;
 using BISC.Modules.InformationModel.Presentation.Interfaces.Factories;
@@ -19,11 +20,12 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
         private readonly Func<DoiInfoModelItemViewModel> _doiCreator;
         private readonly Func<DaiInfoModelItemViewModel> _daiCreator;
         private readonly Func<SdiInfoModelItemViewModel> _sdiCreator;
+        private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
 
         public InfoModelTreeFactory(Func<LogicalNodeInfoModelItemViewModel> lnViewModelCreator,
             Func<LogicalNodeZeroInfoModelItemViewModel> ln0ViewModelCreator,
             Func<LDeviceInfoModelItemViewModel> ldeviceViewModelCreator, Func<DoiInfoModelItemViewModel> doiCreator,
-            Func<DaiInfoModelItemViewModel> daiCreator, Func<SdiInfoModelItemViewModel> sdiCreator)
+            Func<DaiInfoModelItemViewModel> daiCreator, Func<SdiInfoModelItemViewModel> sdiCreator,IDataTypeTemplatesModelService dataTypeTemplatesModelService)
         {
             _lnViewModelCreator = lnViewModelCreator;
             _ln0ViewModelCreator = ln0ViewModelCreator;
@@ -31,62 +33,86 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             _doiCreator = doiCreator;
             _daiCreator = daiCreator;
             _sdiCreator = sdiCreator;
+            _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
         }
 
-    
 
-        public ObservableCollection<IInfoModelItemViewModel> CreateFullInfoModelTree(List<ILDevice> lDevices)
+
+        public ObservableCollection<IInfoModelItemViewModel> CreateFullInfoModelTree(List<ILDevice> lDevices,
+            bool isFcSortingEnabled,
+            ObservableCollection<IInfoModelItemViewModel> existingInfoModelItemViewModels = null)
         {
             ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels =
-                new ObservableCollection<IInfoModelItemViewModel>();
+                existingInfoModelItemViewModels ?? new ObservableCollection<IInfoModelItemViewModel>();
 
             foreach (var lDevice in lDevices)
             {
-                LDeviceInfoModelItemViewModel lDeviceInfoModelItemViewModel = _ldeviceViewModelCreator();
+                LDeviceInfoModelItemViewModel lDeviceInfoModelItemViewModel =
+                    infoModelItemViewModels.FirstOrDefault((model => model.Model == lDevice)) as
+                        LDeviceInfoModelItemViewModel ?? _ldeviceViewModelCreator();
                 lDeviceInfoModelItemViewModel.Model = lDevice;
-                lDeviceInfoModelItemViewModel.ChildInfoModelItemViewModels = CreateLDeviceInfoModelTree(lDevice);
+                lDeviceInfoModelItemViewModel.ChildInfoModelItemViewModels = CreateLDeviceInfoModelTree(lDevice,
+                    isFcSortingEnabled, lDeviceInfoModelItemViewModel.ChildInfoModelItemViewModels);
                 infoModelItemViewModels.Add(lDeviceInfoModelItemViewModel);
             }
+
             return infoModelItemViewModels;
         }
 
-        private ObservableCollection<IInfoModelItemViewModel> GetDoi(List<IDoi> dois)
+        private ObservableCollection<IInfoModelItemViewModel> GetDoi(List<IDoi> dois, bool isFcSortingEnabled,
+            ObservableCollection<IInfoModelItemViewModel> existingInfoModelItemViewModels = null)
         {
-            ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels =
+            ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels =existingInfoModelItemViewModels??
                 new ObservableCollection<IInfoModelItemViewModel>();
 
             foreach (var doi in dois)
             {
-                DoiInfoModelItemViewModel doiInfoModelItemViewModel = _doiCreator();
+                DoiInfoModelItemViewModel doiInfoModelItemViewModel = infoModelItemViewModels.FirstOrDefault((model => model.Model==doi)) as DoiInfoModelItemViewModel?? _doiCreator();
                 doiInfoModelItemViewModel.Model = doi;
-                doiInfoModelItemViewModel.ChildInfoModelItemViewModels = GetSdi(doi.SdiCollection);
+                doiInfoModelItemViewModel.ChildInfoModelItemViewModels = GetSdi(doi.SdiCollection,isFcSortingEnabled,doiInfoModelItemViewModel.ChildInfoModelItemViewModels);
                 var dais = GetDais(doi.DaiCollection);
                 foreach (var daiVm in dais)
                 {
                     doiInfoModelItemViewModel.ChildInfoModelItemViewModels.Add(daiVm);
                 }
+
                 infoModelItemViewModels.Add(doiInfoModelItemViewModel);
             }
 
             return infoModelItemViewModels;
-
         }
 
-        private ObservableCollection<IInfoModelItemViewModel> GetSdi(List<ISdi> sdis)
+        private List<string> GetAllFcs(List<IDai> dais,List<ISdi> sdis)
         {
-            ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels =
+            List<string> fcList=new List<string>();
+            foreach (var dai in dais)
+            {
+                
+            }
+
+
+            return fcList;
+        }
+
+
+
+        private ObservableCollection<IInfoModelItemViewModel> GetSdi(List<ISdi> sdis, bool isFcSortingEnabled,
+            ObservableCollection<IInfoModelItemViewModel> existingInfoModelItemViewModels = null)
+        {
+            ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels =existingInfoModelItemViewModels??
                 new ObservableCollection<IInfoModelItemViewModel>();
 
             foreach (var sdi in sdis)
             {
-                SdiInfoModelItemViewModel sdiInfoModelItemViewModel = _sdiCreator();
+                SdiInfoModelItemViewModel sdiInfoModelItemViewModel =infoModelItemViewModels.FirstOrDefault((model => model.Model==sdi)) as SdiInfoModelItemViewModel?? _sdiCreator();
                 sdiInfoModelItemViewModel.Model = sdi;
-                sdiInfoModelItemViewModel.ChildInfoModelItemViewModels = GetSdi(sdi.SdiCollection);
+                sdiInfoModelItemViewModel.ChildInfoModelItemViewModels = GetSdi(sdi.SdiCollection,isFcSortingEnabled);
                 var dais = GetDais(sdi.DaiCollection);
                 foreach (var daiVm in dais)
                 {
                     sdiInfoModelItemViewModel.ChildInfoModelItemViewModels.Add(daiVm);
                 }
+
                 infoModelItemViewModels.Add(sdiInfoModelItemViewModel);
             }
 
@@ -101,29 +127,38 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             foreach (var dai in dais)
             {
                 DaiInfoModelItemViewModel daiInfoModelItemViewModel = _daiCreator();
-                daiInfoModelItemViewModel.Model = dai;         
+                daiInfoModelItemViewModel.Model = dai;
                 infoModelItemViewModels.Add(daiInfoModelItemViewModel);
             }
 
             return infoModelItemViewModels;
         }
 
-        public ObservableCollection<IInfoModelItemViewModel> CreateLDeviceInfoModelTree(ILDevice lDevice)
+        public ObservableCollection<IInfoModelItemViewModel> CreateLDeviceInfoModelTree(ILDevice lDevice,
+            bool isFcSortingEnabled,
+            ObservableCollection<IInfoModelItemViewModel> existingInfoModelItemViewModels = null)
         {
-            ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels =
-                new ObservableCollection<IInfoModelItemViewModel>();
+            ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels = existingInfoModelItemViewModels ??
+                                                                                    new ObservableCollection<
+                                                                                        IInfoModelItemViewModel>();
 
-            LogicalNodeZeroInfoModelItemViewModel logicalNodeZeroInfoModelItemViewModel = _ln0ViewModelCreator();
+            LogicalNodeZeroInfoModelItemViewModel logicalNodeZeroInfoModelItemViewModel =
+                infoModelItemViewModels.FirstOrDefault((model => model.Model == lDevice.LogicalNodeZero)) as
+                    LogicalNodeZeroInfoModelItemViewModel ?? _ln0ViewModelCreator();
             logicalNodeZeroInfoModelItemViewModel.Model = lDevice.LogicalNodeZero;
             infoModelItemViewModels.Add(logicalNodeZeroInfoModelItemViewModel);
             logicalNodeZeroInfoModelItemViewModel.ChildInfoModelItemViewModels =
-                GetDoi(lDevice.LogicalNodeZero.DoiCollection);
+                GetDoi(lDevice.LogicalNodeZero.DoiCollection, isFcSortingEnabled,
+                    logicalNodeZeroInfoModelItemViewModel.ChildInfoModelItemViewModels);
             foreach (var lDeviceLogicalNode in lDevice.LogicalNodes)
             {
-                LogicalNodeInfoModelItemViewModel logicalNodeInfoModelItemViewModel = _lnViewModelCreator();
+                LogicalNodeInfoModelItemViewModel logicalNodeInfoModelItemViewModel =
+                    infoModelItemViewModels.FirstOrDefault((model => model.Model == lDeviceLogicalNode)) as
+                        LogicalNodeInfoModelItemViewModel ?? _lnViewModelCreator();
                 logicalNodeInfoModelItemViewModel.Model = lDeviceLogicalNode;
                 logicalNodeInfoModelItemViewModel.ChildInfoModelItemViewModels =
-                    GetDoi(lDeviceLogicalNode.DoiCollection);
+                    GetDoi(lDeviceLogicalNode.DoiCollection, isFcSortingEnabled,
+                        logicalNodeInfoModelItemViewModel.ChildInfoModelItemViewModels);
                 infoModelItemViewModels.Add(logicalNodeInfoModelItemViewModel);
             }
 

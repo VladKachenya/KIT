@@ -65,14 +65,14 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
                 InfoModelKeys.ModelKeys.LDeviceKey);
             if (ldevice != null)
             {
-                AllIecTreeItems = _infoModelTreeFactory.CreateLDeviceInfoModelTree(ldevice);
+                AllIecTreeItems = _infoModelTreeFactory.CreateLDeviceInfoModelTree(ldevice, IsFcSortChecked, AllIecTreeItems);
             }
             else if (navigationContext.BiscNavigationParameters.Any((parameter =>parameter.ParameterName=="IED" )))
             {
                 List<ILDevice> devices=new List<ILDevice>();
                 navigationContext.BiscNavigationParameters.GetParameterByName<IModelElement>("IED")
                     .GetAllChildrenOfType(ref devices);
-                    AllIecTreeItems = _infoModelTreeFactory.CreateFullInfoModelTree(devices);
+                    AllIecTreeItems = _infoModelTreeFactory.CreateFullInfoModelTree(devices,IsFcSortChecked,AllIecTreeItems);
             }
             base.OnNavigatedTo(navigationContext);
         }
