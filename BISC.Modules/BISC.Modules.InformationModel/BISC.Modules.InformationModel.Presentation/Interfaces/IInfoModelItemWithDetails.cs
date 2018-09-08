@@ -12,5 +12,6 @@ namespace BISC.Modules.InformationModel.Presentation.Interfaces
         List<IInfoModelDetail> TreeItemDetails { get; }
         bool IsSelected { get; set; }
         bool IsChildItemsShowing { get; }
+     
     }
 }

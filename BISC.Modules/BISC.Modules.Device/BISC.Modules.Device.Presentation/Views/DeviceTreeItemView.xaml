@@ -24,7 +24,29 @@
                 <MenuItem Header="Удалить" Command="{Binding DeleteDeviceCommand}"></MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
-        <TextBlock Text="{Binding DeviceName}" Margin="5"></TextBlock>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding DeviceName}" Margin="5"></TextBlock>
+            <ContentControl  Width="15" Height="15" ContentTemplate="{DynamicResource RssIcon}">
+                <ContentControl.Style>
+                    <Style TargetType="ContentControl">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDeviceConnected}" Value="True">
+                                <DataTrigger.Setters>
+                                    <Setter Property="Foreground" Value="MediumSeaGreen"></Setter>
+                                    <Setter Property="ToolTip" Value="Устройство на связи"></Setter>
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsDeviceConnected}" Value="False">
+                                <DataTrigger.Setters>
+                                    <Setter Property="Foreground" Value="IndianRed"></Setter>
+                                    <Setter Property="ToolTip" Value="Устройство не подключено"></Setter>
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentControl.Style>
+            </ContentControl>
+        </StackPanel>
         <Button Grid.Column="1" Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToDetailsCommand}">
             <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}"></ContentControl>
         </Button>

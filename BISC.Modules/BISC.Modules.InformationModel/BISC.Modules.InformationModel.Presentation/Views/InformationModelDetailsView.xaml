@@ -19,10 +19,12 @@
     </UserControl.Resources>
     <Grid HorizontalAlignment="Stretch" Name="MainGrid">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="2*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid>
+        <CheckBox HorizontalAlignment="Left" Content="Сортировать по FC" IsChecked="{Binding IsFcSortChecked}"></CheckBox>
+        <Grid Grid.Row="1">
             <Grid
             Name="dummygrid"
             Width="{Binding ElementName=MainGrid, Path=ActualWidth}"
@@ -111,7 +113,7 @@
                 </ListView.View>
             </ListView>
         </Grid>
-        <Grid HorizontalAlignment="Stretch" Grid.Row="1" DataContext="{Binding SelectedTreeItem}">
+        <Grid HorizontalAlignment="Stretch" Grid.Row="2" DataContext="{Binding SelectedTreeItem}">
             <Expander IsExpanded="True" Header="Выбранный элемент">
                 <ListView  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" AlternationCount="2"  Margin="0" ItemsSource="{Binding TreeItemDetails}">
                 <ItemsControl.Resources>

@@ -6,7 +6,7 @@ namespace BISC.Modules.InformationModel.Presentation.Interfaces
     public interface IInfoModelItemViewModel
     {
         string Header { get; set; }
-
+        object Model { get; }
         int Level { get; set; }
         Action<bool?> Checked { get; set; }
         string TypeName { get; }

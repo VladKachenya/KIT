@@ -47,7 +47,6 @@
             </ScrollViewer>
 
         </Grid>
-
         <Button Grid.Row="2" 
                 Grid.ColumnSpan="2"
                 Content="Закрыть окно"

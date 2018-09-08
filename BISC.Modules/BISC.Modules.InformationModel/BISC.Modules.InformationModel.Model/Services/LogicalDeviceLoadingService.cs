@@ -97,7 +97,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             return _deviceName;
         }
 
-        public async Task<List<ILDevice>> GetLDeviceFromConnection(IProgress<LogicalNodeLoadingEvent> progress, ISclModel sclModel)
+        public async Task<List<ILDevice>> GetLDeviceFromConnection(IProgress<LogicalNodeLoadingEvent> progress, ISclModel sclModel,string deviceName)
         {
             _sclModel = sclModel;
             List<ILDevice> lDevicesResult = new List<ILDevice>();
@@ -105,7 +105,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             foreach (var ldName in ldDictionary.Keys)
             {
                 ILDevice newLDevice = new LDevice();
-                newLDevice.Inst = ldName;
+                newLDevice.Inst = ldName.Replace(deviceName,String.Empty);
                 logicalNodeDtos.Add(ldName, new List<LogicalNodeDTO>());
                 var lnNames = ldDictionary[ldName].Where((s => !s.Contains("$"))).ToList();
 
@@ -311,20 +311,20 @@ namespace BISC.Modules.InformationModel.Model.Services
                     var typeDescriptionForFc = typeDescription.Components
                         .First((type => type.Name== fc));
 
-                    if (fc == "RP" || fc == "BR")
-                    {
-                        continue;
-                    }
+                    //if (fc == "RP" || fc == "BR")
+                    //{
+                    //    continue;
+                    //}
 
-                    if (fc == "GO")
-                    {
-                        continue;
-                    }
+                    //if (fc == "GO")
+                    //{
+                    //    continue;
+                    //}
 
-                    if (fc == "SP")
-                    {
-                        continue;
-                    }
+                    //if (fc == "SP")
+                    //{
+                    //    continue;
+                    //}
 
                     foreach (var component in typeDescriptionForFc.Components)
                     {

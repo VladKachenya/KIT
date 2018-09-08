@@ -42,7 +42,7 @@ namespace BISC.Modules.InformationModel.Presentation.Services
             int loadedLns = 0;
             var devices = await _logicalDeviceLoadingService.GetLDeviceFromConnection(
                  new Progress<LogicalNodeLoadingEvent>(loadingEvent =>
-                     deviceLoadingProgress.Report(new object())),sclModel);
+                     deviceLoadingProgress.Report(new object())),sclModel,device.Name);
             _infoModelService.InitializeInfoModel(device,device.Name,sclModel);
             foreach (var ldevice in devices)
             {

@@ -4,21 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Connection.Infrastructure.Connection;
+using BISC.Modules.Connection.Infrastructure.Events;
 
 namespace BISC.Modules.Connection.Model.Connection
 {
     public class DeviceConnection : IDeviceConnection
     {
+        private readonly IGlobalEventsService _globalEventsService;
         private Timer _connectionCheckingTimer;
+        private bool _isConnected;
 
-        public DeviceConnection(IMmsConnectionFacade mmsConnectionFacade)
+        public DeviceConnection(IMmsConnectionFacade mmsConnectionFacade,IGlobalEventsService globalEventsService)
         {
+            _globalEventsService = globalEventsService;
             MmsConnection = mmsConnectionFacade;
         }
 
         public string Ip { get; set; }
-        public bool IsConnected { get; private set; }
+
+        public bool IsConnected
+        {
+            get => _isConnected;
+            private set
+            {
+                if (_isConnected != value)
+                {
+                    _globalEventsService.SendMessage(new ConnectionEvent(value, Ip));
+                }
+                _isConnected = value;
+            }
+        }
 
         public async Task OpenConnection()
         {

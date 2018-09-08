@@ -33,6 +33,8 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             _sdiCreator = sdiCreator;
         }
 
+    
+
         public ObservableCollection<IInfoModelItemViewModel> CreateFullInfoModelTree(List<ILDevice> lDevices)
         {
             ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels =

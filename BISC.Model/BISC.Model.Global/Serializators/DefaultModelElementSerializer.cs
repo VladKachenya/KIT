@@ -95,7 +95,8 @@ namespace BISC.Model.Global.Serializators
                         var propertyValue = propertyInfo.GetValue(modelElement);
                         if (propertyValue is IModelElement)
                         {
-                            modelElement.ChildModelElements.Add(propertyValue as IModelElement);
+                            if (!modelElement.ChildModelElements.Contains(propertyValue))
+                                modelElement.ChildModelElements.Add(propertyValue as IModelElement);
                             break;
                         }
                         else

@@ -22,6 +22,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         private bool _isLocalValuesShowing;
         private ObservableCollection<IInfoModelItemViewModel> _allIecTreeItems;
         private IInfoModelItemViewModel _selectedTreeItem;
+        private bool _isFcSortChecked;
 
         public InfoModelTreeItemDetailsViewModel(IInfoModelTreeFactory infoModelTreeFactory)
         {
@@ -50,6 +51,12 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         {
             get => _isDeviceConnected;
             set { SetProperty(ref _isDeviceConnected, value); }
+        }
+
+        public bool IsFcSortChecked
+        {
+            get => _isFcSortChecked;
+            set => SetProperty(ref _isFcSortChecked , value);
         }
 
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)

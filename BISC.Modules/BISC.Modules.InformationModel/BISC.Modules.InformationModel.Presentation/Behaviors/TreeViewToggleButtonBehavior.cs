@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Interactivity;
 using BISC.Modules.InformationModel.Presentation.Interfaces;
@@ -24,6 +25,10 @@ namespace BISC.Modules.InformationModel.Presentation.Behaviors
 
             _assToggleButton = AssociatedObject;
             if (!(_assToggleButton.DataContext is IInfoModelItemViewModel)) return;
+            if ((_assToggleButton.DataContext as IInfoModelItemViewModel).ChildInfoModelItemViewModels.Count == 0)
+            {
+                _assToggleButton.Visibility = Visibility.Hidden;
+            }
             (_assToggleButton.DataContext as IInfoModelItemViewModel).Checked += TreeGridItemCheched;
             if (_assToggleButton.IsLoaded)
             {

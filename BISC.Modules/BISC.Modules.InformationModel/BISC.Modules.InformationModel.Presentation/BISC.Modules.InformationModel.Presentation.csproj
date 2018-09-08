@@ -97,6 +97,7 @@
     <Compile Include="ViewModels\InfoModelTree\LogicalNodeInfoModelItemViewModel.cs" />
     <Compile Include="ViewModels\InfoModelTree\LogicalNodeZeroInfoModelItemViewModel.cs" />
     <Compile Include="ViewModels\InfoModelTree\SdiInfoModelItemViewModel.cs" />
+    <Compile Include="ViewModels\InfoModelTree\SetFcModelItemViewModel.cs" />
     <Compile Include="ViewModels\LDeviceTreeItemViewModel.cs" />
     <Compile Include="Views\InfoModelLoadingTreeItemView.xaml.cs">
       <DependentUpon>InfoModelLoadingTreeItemView.xaml</DependentUpon>

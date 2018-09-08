@@ -5,7 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Connection.Infrastructure.Events;
+using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
@@ -21,6 +24,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
     public class DeviceTreeItemViewModel : NavigationViewModelBase, IDeviceTreeItemViewModel
     {
         private readonly IDeviceModelService _deviceModelService;
+        private readonly IGlobalEventsService _globalEventsService;
+        private readonly IConnectionPoolService _connectionPoolService;
         private readonly IBiscProject _biscProject;
         private readonly ITreeManagementService _treeManagementService;
         private readonly ITabManagementService _tabManagementService;
@@ -28,11 +33,14 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private string _deviceName;
         private IDevice _device;
         private TreeItemIdentifier _treeItemIdentifier;
+        private bool _isDeviceConnected;
 
-        public DeviceTreeItemViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService,
-            IBiscProject biscProject, ITreeManagementService treeManagementService,ITabManagementService tabManagementService)
+        public DeviceTreeItemViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService, IGlobalEventsService globalEventsService, IConnectionPoolService connectionPoolService,
+            IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService)
         {
             _deviceModelService = deviceModelService;
+            _globalEventsService = globalEventsService;
+            _connectionPoolService = connectionPoolService;
             _biscProject = biscProject;
             _treeManagementService = treeManagementService;
             _tabManagementService = tabManagementService;
@@ -44,11 +52,18 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         {
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
             biscNavigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, _device);
-            _tabManagementService.NavigateToTab(DeviceKeys.DeviceDetailsViewKey,biscNavigationParameters,$"IED {_device.Name}",_treeItemIdentifier);
+            _tabManagementService.NavigateToTab(DeviceKeys.DeviceDetailsViewKey, biscNavigationParameters, $"IED {_device.Name}", _treeItemIdentifier);
+        }
+
+        public bool IsDeviceConnected
+        {
+            get => _isDeviceConnected;
+            set { SetProperty(ref _isDeviceConnected, value); }
         }
 
         private void OnDeleteDeviceExecute()
         {
+            Dispose();
             var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel, _device);
             if (result.IsSucceed)
             {
@@ -79,8 +94,28 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
                 navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key);
             DeviceName = device.Name;
             _device = device;
+            IsDeviceConnected = _connectionPoolService.GetConnection(_device.Ip).IsConnected;
+            _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChangedEvent);
             base.OnNavigatedTo(navigationContext);
         }
+
+        private void OnConnectionChangedEvent(ConnectionEvent ea)
+        {
+            if (ea.Ip == _device.Ip)
+            {
+                IsDeviceConnected = ea.IsConnected;
+            }
+        }
+
+
+        #region Overrides of ViewModelBase
+
+        protected override void OnDisposing()
+        {
+            base.OnDisposing();
+        }
+
+        #endregion
 
         public ICommand DeleteDeviceCommand { get; }
         public ICommand NavigateToDetailsCommand { get; }
