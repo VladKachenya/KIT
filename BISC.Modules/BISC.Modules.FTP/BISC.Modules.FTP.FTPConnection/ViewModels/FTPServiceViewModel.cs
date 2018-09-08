@@ -84,12 +84,12 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
                 AddNoteToActionMassageList(false, e.Message);
                 return;
             }
-            AddNoteToActionMassageList(null, "Подключение к устройству");
             _isConnectingInProcess = true;
             (ConnectToDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
             try
             {
                 await TryCloseConnection();
+                AddNoteToActionMassageList(null, "Подключение к устройству");
                 var ftpClient = await _ftpClientWrapper.Connect(FtpIpAddressViewModel.FullIp, FtpLogin, FtpPassword);
                 if (_ftpClientWrapper.IsConnected) AddNoteToActionMassageList(true, "Подключение произведено");
                 else AddNoteToActionMassageList(false, "Подключение не произведено");
