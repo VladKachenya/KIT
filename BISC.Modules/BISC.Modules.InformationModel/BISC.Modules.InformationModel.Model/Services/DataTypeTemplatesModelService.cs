@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Iec61850Ed2.DataTypeTemplates;
 using BISC.Model.Infrastructure.Common;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DaType;
@@ -19,10 +20,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 {
    public class DataTypeTemplatesModelService: IDataTypeTemplatesModelService
     {
-        public IDataTypeTemplates MergeDataTypeTemplates(IDataTypeTemplates dataTypeTemplates1, IDataTypeTemplates dataTypeTemplates2)
-        {
-            throw new NotImplementedException();
-        }
+    
 
         private IDataTypeTemplates GetDataTypeTemplates(ISclModel sclModel)
         {
@@ -38,6 +36,30 @@ namespace BISC.Modules.InformationModel.Model.Services
             }
         }
 
+
+        public void MergeDataTypeTemplates(ISclModel sclModelTo, ISclModel sclModelFrom)
+        {
+            var dttFrom = GetDataTypeTemplates(sclModelFrom);
+            foreach (var doType in dttFrom.DoTypes)
+            {
+                AddDoType(doType, sclModelTo);
+            }
+            foreach (var daType in dttFrom.DaTypes)
+            {
+                AddDaType(daType, sclModelTo);
+            }
+            foreach (var lNodeType in dttFrom.LNodeTypes)
+            {
+                AddLnodeType(lNodeType, sclModelTo);
+            }
+            foreach (var enumType in dttFrom.EnumTypes)
+            {
+                AddEnumType(enumType, sclModelTo);
+            }
+
+
+
+        }
 
         public string AddLnodeType(ILNodeType lNodeType, ISclModel sclModel)
         {
@@ -256,6 +278,65 @@ namespace BISC.Modules.InformationModel.Model.Services
             }
             return existing.Id;
         }
+
+        public IDa GetDaOfDai(IDai dai,ISclModel sclModel)
+        {
+            ILDevice parentLDevice = null;
+            ILogicalNode parentLogicalNode = null;
+            IDoi parentDoi = null;
+            List<object> recursiveParents=new List<object>();
+            IModelElement currentElement = dai;
+            recursiveParents.Add(currentElement);
+
+            do
+            {
+                currentElement = currentElement.ParentModelElement;
+
+                if (currentElement is ILDevice)
+                {
+                    parentLDevice = currentElement as ILDevice;
+                    continue;
+                }
+
+                if (currentElement is ILogicalNode)
+                {
+                    parentLogicalNode = currentElement as ILogicalNode;
+                    continue;
+                }
+
+                if (currentElement is IDoi)
+                {
+                    parentDoi = currentElement as IDoi;
+                    continue;
+                }
+
+                recursiveParents.Insert(0,currentElement);
+            } while (parentLDevice == null);
+
+            IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
+            ILNodeType lNodeType =
+                dataTypeTemplates.LNodeTypes.FirstOrDefault((type => type.Id == parentLogicalNode.LnType));
+            IDo parentDo = lNodeType.DoList.FirstOrDefault(parentDoToFind => parentDoToFind.Name == parentDoi.Name);
+
+            IDoType parentDoType = dataTypeTemplates.DoTypes.FirstOrDefault((type => type.Id == parentDo.Type));
+            foreach (var recursiveParent in recursiveParents)
+            {
+                if (recursiveParent is IDai daiParent)
+                {
+                    return parentDoType.DaList.FirstOrDefault((da => da.Name == daiParent.Name));
+                }
+
+                if (recursiveParent is ISdi sdiParent)
+                {
+                    var parentSdo = parentDoType.SdoList.FirstOrDefault((sdo => sdo.Name == sdiParent.Name));
+                    parentDoType = dataTypeTemplates.DoTypes.First((type => type.Id == parentSdo.Type));
+                }
+            }
+
+            return null;
+        }
+        
+
 
         private IEnumType CheckIfExist(IEnumType enumtype,IDataTypeTemplates dataTypeTemplates)
         {

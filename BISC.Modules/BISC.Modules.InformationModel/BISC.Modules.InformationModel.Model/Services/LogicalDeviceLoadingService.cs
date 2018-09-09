@@ -116,7 +116,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                     //    await ReadLNAttributes(ied.name + ldName, lnName, connection, cancellationToken);
                     logicalNodeDto.IedName = _deviceName;
                     logicalNodeDto.LDName = ldName;
-                    logicalNodeDto.Path = _deviceName + ldName + "." + lnName;
+                    logicalNodeDto.Path =  ldName + "." + lnName;
                     logicalNodeDto.LnDefinitions = ldDictionary[ldName]
                         .Where((s =>
                         {
@@ -133,10 +133,12 @@ namespace BISC.Modules.InformationModel.Model.Services
                     if (logicalNode is ILogicalNodeZero)
                     {
                         newLDevice.LogicalNodeZero = logicalNode as ILogicalNodeZero;
+                        newLDevice.LogicalNodeZero.ParentModelElement = newLDevice;
                     }
                     else
                     {
                         newLDevice.LogicalNodes.Add(logicalNode);
+                        logicalNode.ParentModelElement = newLDevice;
                     }
                 }
 
@@ -205,7 +207,8 @@ namespace BISC.Modules.InformationModel.Model.Services
             if (logicalNodeDto.ShortName == "LLN0")
             {
                 resAnyLn = new LogicalNodeZero();
-                resAnyLn.LnType = logicalNodeDto.ShortName;
+                resAnyLn.LnClass = logicalNodeDto.ShortName;
+                resAnyLn.LnType = logicalNodeDto.Path;
                 commonLogicalNode = new LNTypesEd2.LLN0();
                 commonLogicalNode.id = logicalNodeDto.Path;
             }
@@ -216,7 +219,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 
 
                     resAnyLn = new LogicalNode();
-                    resAnyLn.LnType = logicalNodeDto.ShortName;
+                    resAnyLn.LnType = logicalNodeDto.Path;
                     SetLtName(logicalNodeDto.ShortName,resAnyLn);
                     Type typeOfLNode = null;
                     if (logicalNodeDto.ShortName.Contains("PDPR")) // Мишино творение
@@ -284,6 +287,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 //полученный объект добавляется в набор объектов шаблона LN                                    
                 commonLogicalNode.SetAttributeByName(doName, dataObj);
                 //полученный шаблон добавляется в набор шаблонов шаблона LN   
+                doi.ParentModelElement = resAnyLn;
                 resAnyLn.DoiCollection.Add(doi); //полученный объект (инстанс) добавляется в набор объектов объекта LN
 
             }
@@ -423,9 +427,9 @@ namespace BISC.Modules.InformationModel.Model.Services
             tFCEnum fc = GetFunctionalConstraintByString(innerDoData.Fc);
             // спецификация может быть структурой с набором объектов или одним простым объектом
             if ((innerDoData != null) && (innerDoData.IsStructure))
-            //в случае объекта типа структуры следует создать SDI и шаблон к нему
+                //в случае объекта типа структуры следует создать SDI и шаблон к нему
             {
-                ISdi newsdi = new Sdi { Name = innerDoData.Name }; //тут создается SDI, а дальше создается шаблон
+                ISdi newsdi = new Sdi {Name = innerDoData.Name}; //тут создается SDI, а дальше создается шаблон
                 if (dataObj != null)
                 {
                     object structObject = SclObjectFactory.CreateStructureSclObject(dataObj, innerDoData.Name,
@@ -440,35 +444,56 @@ namespace BISC.Modules.InformationModel.Model.Services
                             structObject = buff;
 
                         }
+
                         //объект может быть типом SDIDADataTypeBDA (наследником)
                         if (structObject.GetType().IsSubclassOf(typeof(SDIDADataTypeBDA)))
                         {
-                            AddSDIDADataType(newsdi, innerDoData, path, fc, dataObj, (SDIDADataTypeBDA)structObject,
-                                null,logicalNodeDto);
+                            AddSDIDADataType(newsdi, innerDoData, path, fc, dataObj, (SDIDADataTypeBDA) structObject,
+                                null, logicalNodeDto);
 
                         }
+
                         //или DOData
                         if (structObject.GetType().IsSubclassOf(typeof(DOData)))
                         {
-                            AddSDO(doi, newsdi, fc, (DOData)structObject, innerDoData, dataObj,logicalNodeDto);
+                            AddSDO(doi, newsdi, fc, (DOData) structObject, innerDoData, dataObj, logicalNodeDto);
                         }
                     }
                 }
 
-                if (isdoi) doi.SdiCollection.Add(newsdi); //добавление инст к SDI, т.к. структура
-                else sdi.SdiCollection.Add(newsdi);
+                if (isdoi)
+                {
+                    newsdi.ParentModelElement = doi;
+                    doi.SdiCollection.Add(newsdi); //добавление инст к SDI, т.к. структура
+                }
+
+                else
+                {
+                    newsdi.ParentModelElement = sdi;
+                    sdi.SdiCollection.Add(newsdi);
+                }
             }
             else
             {
 
-                var tBasicType = GetBasicTypeByPath(path.Split('.').ToArray(), innerDoData.Fc,logicalNodeDto);
+                var tBasicType = GetBasicTypeByPath(path.Split('.').ToArray(), innerDoData.Fc, logicalNodeDto);
                 AddSimpleDataTemplate(dataObj, innerDoData.Name, fc, tBasicType);
-                IDai dai = new Dai() { Name = innerDoData.Name };
+                IDai dai = new Dai() {Name = innerDoData.Name};
                 //   path =StringOperations.PathToDeviceFormat(path); //приведение строки к виду, читаемому устройством
                 //   dai.Val.Add(new tVal { Value = Connection.ReadValue(path, fc).ToString() });
-               // dai.FC = fc.ToString();
-                if (isdoi) doi.DaiCollection.Add(dai); //добавление инст к DAI, т.к. структура
-                else sdi.DaiCollection.Add(dai);
+                // dai.FC = fc.ToString();
+                if (isdoi)
+                {
+                    dai.ParentModelElement = doi;
+                    doi.DaiCollection.Add(dai); //добавление инст к DAI, т.к. структура
+                }
+
+
+                else
+                {
+                    dai.ParentModelElement = sdi;
+                    sdi.DaiCollection.Add(dai);
+                }
             }
         }
         private void AddSimpleDataTemplate(DOData dataObj, string dataObjectName, tFCEnum fc, tBasicTypeEnum tBasicType)
@@ -618,6 +643,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                     AddSimpleBDA(datype, shortstr, sdiDAData, dataObj);
 
                     IDai dai = new Dai() { Name = shortstr };
+                    dai.ParentModelElement = newsdi;
                     //   str =StringOperations.PathToDeviceFormat(str + "." + shortstr); //приведение строки к виду, читаемому устройством
                     //   dai.Val.Add(new tVal { Value = Connection.ReadValue(str, fc).ToString() });
                     newsdi.DaiCollection.Add(dai);
@@ -667,6 +693,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                     AddStructBDA(datype, attrname, (tDA)sdidaDataTypeBda);
                 }
 
+            newsdi.ParentModelElement = sdi;
             sdi.SdiCollection.Add(newsdi);
         }
 
@@ -752,12 +779,18 @@ namespace BISC.Modules.InformationModel.Model.Services
 
             foreach (var pathString in pathStrings)
             {
-                if (logicalNodeDto.IedName + logicalNodeDto.LDName == pathString) continue;
+                if (logicalNodeDto.LDName == pathString) continue;
                 if (logicalNodeDto.ShortName == pathString) continue;
+           
                 if (typeDescription.IsStructure)
                 {
+                    var t = typeDescription;
                     typeDescription = typeDescription.Components
                         .FirstOrDefault(type => type.Name == pathString);
+                    if (typeDescription == null)
+                    {
+
+                    }
                 }
                 else
                 {

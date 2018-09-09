@@ -18,7 +18,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
         public SdoSerializer()
         {
             RegisterProperty(nameof(ISdo.Name),"name");
-            RegisterProperty(nameof(ISdo.Type), "type");
+            RegisterProperty(nameof(ISdo.Type), "type");   
 
         }
         public override IModelElement GetConcreteObject()

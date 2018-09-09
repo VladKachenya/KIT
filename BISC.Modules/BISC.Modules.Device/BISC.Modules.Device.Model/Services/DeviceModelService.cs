@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
@@ -10,16 +11,19 @@ using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 
 namespace BISC.Modules.Device.Model.Services
 {
     public class DeviceModelService : IDeviceModelService
     {
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
+        private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
 
-        public DeviceModelService(ISclCommunicationModelService sclCommunicationModelService)
+        public DeviceModelService(ISclCommunicationModelService sclCommunicationModelService,IDataTypeTemplatesModelService dataTypeTemplatesModelService)
         {
             _sclCommunicationModelService = sclCommunicationModelService;
+            _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
         }
 
 
@@ -43,6 +47,8 @@ namespace BISC.Modules.Device.Model.Services
             {
                 return new OperationResult($"Устройство с именем {device.Name} уже существует в модели");
             }
+
+            _dataTypeTemplatesModelService.MergeDataTypeTemplates(sclModel,modelFrom);
             _sclCommunicationModelService.AddConnectedAccessPoint(sclModel,FindConnectedAccessPointOfTheDevice(modelFrom,device.Name));
             sclModel.ChildModelElements.Add(device);
             return OperationResult.SucceedResult;

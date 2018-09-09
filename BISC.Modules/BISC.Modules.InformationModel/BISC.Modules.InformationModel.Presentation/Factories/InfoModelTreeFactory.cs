@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Project;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Presentation.Interfaces;
@@ -21,11 +22,13 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
         private readonly Func<DaiInfoModelItemViewModel> _daiCreator;
         private readonly Func<SdiInfoModelItemViewModel> _sdiCreator;
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
+        private readonly IBiscProject _biscProject;
 
         public InfoModelTreeFactory(Func<LogicalNodeInfoModelItemViewModel> lnViewModelCreator,
             Func<LogicalNodeZeroInfoModelItemViewModel> ln0ViewModelCreator,
             Func<LDeviceInfoModelItemViewModel> ldeviceViewModelCreator, Func<DoiInfoModelItemViewModel> doiCreator,
-            Func<DaiInfoModelItemViewModel> daiCreator, Func<SdiInfoModelItemViewModel> sdiCreator,IDataTypeTemplatesModelService dataTypeTemplatesModelService)
+            Func<DaiInfoModelItemViewModel> daiCreator, Func<SdiInfoModelItemViewModel> sdiCreator,
+            IDataTypeTemplatesModelService dataTypeTemplatesModelService,IBiscProject biscProject)
         {
             _lnViewModelCreator = lnViewModelCreator;
             _ln0ViewModelCreator = ln0ViewModelCreator;
@@ -34,6 +37,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             _daiCreator = daiCreator;
             _sdiCreator = sdiCreator;
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
+            _biscProject = biscProject;
         }
 
 
@@ -67,6 +71,8 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
 
             foreach (var doi in dois)
             {
+                List<string> fcList = GetAllFcs(doi.DaiCollection, doi.SdiCollection);
+
                 DoiInfoModelItemViewModel doiInfoModelItemViewModel = infoModelItemViewModels.FirstOrDefault((model => model.Model==doi)) as DoiInfoModelItemViewModel?? _doiCreator();
                 doiInfoModelItemViewModel.Model = doi;
                 doiInfoModelItemViewModel.ChildInfoModelItemViewModels = GetSdi(doi.SdiCollection,isFcSortingEnabled,doiInfoModelItemViewModel.ChildInfoModelItemViewModels);
@@ -87,7 +93,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             List<string> fcList=new List<string>();
             foreach (var dai in dais)
             {
-                
+                _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel);
             }
 
 

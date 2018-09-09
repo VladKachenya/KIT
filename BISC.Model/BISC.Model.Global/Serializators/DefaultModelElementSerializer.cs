@@ -194,6 +194,7 @@ namespace BISC.Model.Global.Serializators
             foreach (var element in xElement.Elements())
             {
                 var t = _modelElementsRegistryService.DeserializeModelElement<IModelElement>(element);
+                t.ParentModelElement = modelElement;
                 modelElement.ChildModelElements.Add(t);
             }
 

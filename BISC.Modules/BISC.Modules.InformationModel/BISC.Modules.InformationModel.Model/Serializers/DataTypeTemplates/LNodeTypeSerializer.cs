@@ -9,6 +9,7 @@ using BISC.Model.Infrastructure;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.LNodeType;
 using BISC.Model.Global.Common;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType;
 using BISC.Modules.InformationModel.Model.DataTypeTemplates.LNodeType;
 
 namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 
 namespace BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.LNodeType
 {
@@ -10,5 +11,6 @@ namespace BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.LNodeTyp
         string LnClass { get; set; }
 
         List<IDo> DoList { get; }
+
     }
 }
