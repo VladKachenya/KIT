@@ -34,5 +34,11 @@ namespace BISC.Modules.FTP.FileBrowser.Model.BrowserElements
 
         #endregion
 
+        #region Implementation of Loadeble
+
+        public abstract Task Load();
+
+        #endregion
+
     }
 }

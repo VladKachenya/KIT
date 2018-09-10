@@ -49,7 +49,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\BoolToCollorConverter.cs" />
+    <Compile Include="Model\FTPBrowserElementFactory.cs" />
     <Compile Include="Model\FTPClientWrapper.cs" />
+    <Compile Include="Model\FTPDirectoryLoader.cs" />
+    <Compile Include="Model\FTPFileLoader.cs" />
     <Compile Include="Module\FTPConnectionInitialization.cs" />
     <Compile Include="Module\FTPConnectionModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -81,6 +84,10 @@
     <ProjectReference Include="..\..\BISC.Modules.Connection\BISC.Modules.Connection.Presentation\BISC.Modules.Connection.Presentation.csproj">
       <Project>{48f6571c-ed09-4ed9-b76a-ac78ef9e9890}</Project>
       <Name>BISC.Modules.Connection.Presentation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BISC.Modules.FTP.FileBrowser\BISC.Modules.FTP.FileBrowser.csproj">
+      <Project>{0BBF1047-9842-4D70-A83C-2DFD571AB442}</Project>
+      <Name>BISC.Modules.FTP.FileBrowser</Name>
     </ProjectReference>
     <ProjectReference Include="..\BISC.Modules.FTP.Infrastructure\BISC.Modules.FTP.Infrastructure.csproj">
       <Project>{60a162a1-2a6a-4a39-b349-4b718ba1fa1f}</Project>

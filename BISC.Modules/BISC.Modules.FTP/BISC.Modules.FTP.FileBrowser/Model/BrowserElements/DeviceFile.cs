@@ -38,5 +38,14 @@ namespace BISC.Modules.FTP.FileBrowser.Model.BrowserElements
 
         #endregion
 
+        #region Implementation of IDataProviderContaining
+
+        public override async Task Load()
+        {
+
+        }
+
+        #endregion
+
     }
 }

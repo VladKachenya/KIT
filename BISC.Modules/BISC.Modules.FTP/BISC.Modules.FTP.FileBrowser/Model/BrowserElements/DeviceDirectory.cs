@@ -20,6 +20,21 @@ namespace BISC.Modules.FTP.FileBrowser.Model.BrowserElements
             _directoryLoader = directoryLoader;
         }
 
+        #region Implementation of IDataProviderContaining
+
+        public override async Task Load()
+        {
+            _browserElementsInDirectory = await _directoryLoader.LoadDeviceDirectory(ElementPath, this);
+            foreach (var browserElement in BrowserElementsInDirectory)
+            {
+                if (browserElement is ILoadable)
+                {
+                    await (browserElement as ILoadable).Load();
+                }
+
+            }
+        }
+        #endregion
 
         #region Implementation of IDeviceDirectory
 

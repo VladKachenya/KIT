@@ -44,12 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\Factories\IBrowserElementFactory.cs" />
     <Compile Include="Interfaces\Model\BrowserElements\IDeviceBrowserElement.cs" />
     <Compile Include="Interfaces\Model\BrowserElements\IDeviceDirectory.cs" />
     <Compile Include="Interfaces\Model\BrowserElements\IDeviceFile.cs" />
     <Compile Include="Interfaces\Model\IFileBrowser.cs" />
     <Compile Include="Interfaces\Model\Loaders\IDirectoryLoader.cs" />
     <Compile Include="Interfaces\Model\Loaders\IFileLoader.cs" />
+    <Compile Include="Interfaces\Model\Loaders\ILoadable.cs" />
     <Compile Include="Model\BrowserElements\BrowserElementBase.cs" />
     <Compile Include="Model\BrowserElements\DeviceDirectory.cs" />
     <Compile Include="Model\BrowserElements\DeviceFile.cs" />
@@ -58,7 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Factories\" />
-    <Folder Include="Interfaces\Factories\" />
     <Folder Include="Interfaces\ViewModels\" />
     <Folder Include="Module\" />
     <Folder Include="ViewModels\" />
