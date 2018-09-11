@@ -45,7 +45,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Keys\FTPKeys.cs" />
+    <Compile Include="Model\BrowserElements\IDeviceBrowserElement.cs" />
+    <Compile Include="Model\BrowserElements\IDeviceDirectory.cs" />
+    <Compile Include="Model\BrowserElements\IDeviceFile.cs" />
+    <Compile Include="Model\Factory\IBrowserElementFactory.cs" />
+    <Compile Include="Model\IFileBrowser.cs" />
     <Compile Include="Model\IFTPClientWrapper.cs" />
+    <Compile Include="Model\Loaders\IDirectoryLoader.cs" />
+    <Compile Include="Model\Loaders\IFileLoader.cs" />
+    <Compile Include="Model\Loaders\ILoadable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serviсes\IFTPAddingServise.cs" />
     <Compile Include="ViewModels\IFTPActionMessage.cs" />
@@ -61,5 +69,6 @@
       <Name>FluentFTP</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

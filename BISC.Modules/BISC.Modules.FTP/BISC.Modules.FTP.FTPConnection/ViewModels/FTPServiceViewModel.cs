@@ -1,8 +1,6 @@
 ﻿using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Connection.Presentation.Interfaces.Factorys;
 using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
-using BISC.Modules.FTP.FileBrowser.Interfaces.Factories;
-using BISC.Modules.FTP.FileBrowser.Interfaces.Model;
 using BISC.Modules.FTP.FTPConnection.Model;
 using BISC.Modules.FTP.Infrastructure.Model;
 using BISC.Modules.FTP.Infrastructure.ViewModels;
@@ -18,7 +16,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using BISC.Modules.FTP.FileBrowser.Model;
+using BISC.Modules.FTP.Infrastructure.Model.Factory;
+using BISC.Modules.FTP.FTPConnection.Model.Factory;
 
 namespace BISC.Modules.FTP.FTPConnection.ViewModels
 {
@@ -99,7 +98,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
                 else AddNoteToActionMassageList(false, "Подключение не произведено");
                 IBrowserElementFactory browserElementFactory = new FTPBrowserElementFactory();
                 browserElementFactory.SetConnectionProvider(ftpClient);
-                IFileBrowser fileBrowser = new FileBrowser.Model.FileBrowser(browserElementFactory);
+                IFileBrowser fileBrowser = new FileBrowser(browserElementFactory);
                 //FileBrowserViewModel.Model = fileBrowser;
                 //FileBrowserViewModel.LoadRootCommand.Execute(null);
             }

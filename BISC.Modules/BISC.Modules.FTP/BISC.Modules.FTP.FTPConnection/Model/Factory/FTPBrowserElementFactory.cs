@@ -1,7 +1,8 @@
-﻿using BISC.Modules.FTP.FileBrowser.Interfaces.Factories;
-using BISC.Modules.FTP.FileBrowser.Interfaces.Model.BrowserElements;
-using BISC.Modules.FTP.FileBrowser.Interfaces.Model.Loaders;
-using BISC.Modules.FTP.FileBrowser.Model.BrowserElements;
+﻿using BISC.Modules.FTP.FTPConnection.Model.BrowserElements;
+using BISC.Modules.FTP.FTPConnection.Model.Loaders;
+using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
+using BISC.Modules.FTP.Infrastructure.Model.Factory;
+using BISC.Modules.FTP.Infrastructure.Model.Loaders;
 using FluentFTP;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BISC.Modules.FTP.FTPConnection.Model
+namespace BISC.Modules.FTP.FTPConnection.Model.Factory
 {
     public class FTPBrowserElementFactory : IBrowserElementFactory
     {
-
         public FTPBrowserElementFactory()
         {
         }
@@ -27,7 +27,7 @@ namespace BISC.Modules.FTP.FTPConnection.Model
             if (_ftpClient == null) return null;
             _ftpClient.SetWorkingDirectory("1:");
             var f = _ftpClient.GetWorkingDirectory();
-            FTPDirectoryLoader ftpDirectoryLoader = new FTPDirectoryLoader(this);
+            IDirectoryLoader ftpDirectoryLoader = new FTPDirectoryLoader(this);
             ftpDirectoryLoader.SetDataProviderConnection(_ftpClient);
             IDeviceDirectory deviceDirectory = new DeviceDirectory(f, ftpDirectoryLoader, f, null);
             return deviceDirectory;
