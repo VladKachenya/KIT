@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
+using BISC.Model.Global.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Project.Communication;
 using BISC.Model.Infrastructure.Services.Communication;
@@ -12,6 +13,7 @@ using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
 
 namespace BISC.Modules.Device.Model.Services
 {
@@ -109,6 +111,18 @@ namespace BISC.Modules.Device.Model.Services
             {
                 return new OperationResult($"Устройство с именем {device.Name} не существует в модели");
             };
+
+            List<ILDevice> devicesToRemove=new List<ILDevice>();
+            List<ILDevice> devicesToLeave = new List<ILDevice>();
+
+
+            
+            device.FillChildModelElements(devicesToRemove);
+            sclModel.FillChildModelElements(devicesToLeave);
+            devicesToLeave = devicesToLeave.Where((lDevice => !devicesToRemove.Any((remove => lDevice == remove))))
+                .ToList();
+                
+            _dataTypeTemplatesModelService.FilterDataTypeTemplates(sclModel.ChildModelElements.First((element =>element is IDataTypeTemplates )) as IDataTypeTemplates,devicesToRemove,devicesToLeave);
             sclModel.ChildModelElements.Remove(device);
             return OperationResult.SucceedResult;
 

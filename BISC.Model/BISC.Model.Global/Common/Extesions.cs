@@ -47,13 +47,14 @@ namespace BISC.Model.Global.Common
 
         public static IModelElement FillChildModelElements<T>(this IModelElement modelElement, List<T> childElementsList)
         {
-            childElementsList.Clear();
             foreach (var childModelElement in modelElement.ChildModelElements)
             {
                 if (childModelElement is T childModelElementToAdd)
                 {
                     childElementsList.Add(childModelElementToAdd);
                 }
+
+                childModelElement.FillChildModelElements(childElementsList);
             }
             return modelElement;
         }

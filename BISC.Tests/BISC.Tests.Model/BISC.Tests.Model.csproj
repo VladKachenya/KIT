@@ -119,6 +119,10 @@
       <Project>{FCA3F7FE-D64B-4C3C-9F8D-85753FC944BE}</Project>
       <Name>BISC.Model.Global</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Model\BISC.Model.Iec61850Ed2\BISC.Model.Iec61850Ed2.csproj">
+      <Project>{39501F05-C2AA-48B3-BDE8-6009E16980CD}</Project>
+      <Name>BISC.Model.Iec61850Ed2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
       <Name>BISC.Model.Infrastructure</Name>

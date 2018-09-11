@@ -622,6 +622,10 @@ namespace BISC.Modules.InformationModel.Model.Services
         private SDIDADataTypeBDA AddSDIDADataType(ISdi newsdi, InnerDoData innerDoData, string str, tFCEnum fc,
             DOData dataObj, SDIDADataTypeBDA sdiDAData, tDA da,LogicalNodeDTO logicalNodeDto)
         {
+            if (str.Contains(".MMXU1.A"))
+            {
+
+            }
             string attrname = str.Substring(str.LastIndexOf('.') + 1);
             if (dataObj != null)
                 sdiDAData = CreateSDIDADataTypeBDA(sdiDAData, attrname, dataObj);
@@ -866,6 +870,7 @@ namespace BISC.Modules.InformationModel.Model.Services
         public static tDOType CreateDoType(CommonLogicalNode ln, string doName, List<string> doList)
         {
             Type typeOfDo = ln.GetAttributeByName(doName); //подтягивается тип соответствующий названию DO
+
             if (typeOfDo == null)
             {
 
@@ -878,7 +883,11 @@ namespace BISC.Modules.InformationModel.Model.Services
                             isEquivalentType = false;
                     }
 
-                    if (isEquivalentType) typeOfDo = propertyType;
+                    if (isEquivalentType)
+                    {
+                        typeOfDo = propertyType;
+                        break;
+                    }
                 }
             }
 

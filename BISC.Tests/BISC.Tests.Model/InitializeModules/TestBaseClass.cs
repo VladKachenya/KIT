@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using BISC.Bootstrapper;
 using BISC.Infrastructure.CompositionRoot.Bootstraper;
 using BISC.Infrastructure.CompositionRoot.Ioc;
+using BISC.Infrastructure.CompositionRoot.Services;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Global.Module;
 using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.ServiceLocation;
@@ -31,6 +33,7 @@ namespace BISC.Tests.Model.InitializeModules
             TestBootstrapper testBootstrapper=new TestBootstrapper(GetTestingModules().ToArray());
             testBootstrapper.Run();
             StaticContainer.SetContainer(new InjectionContainer(ServiceLocator.Current.GetInstance<IUnityContainer>()));
+            StaticContainer.CurrentContainer.RegisterType<IGlobalEventsService,GlobalEventsService>();
         }
      
     }

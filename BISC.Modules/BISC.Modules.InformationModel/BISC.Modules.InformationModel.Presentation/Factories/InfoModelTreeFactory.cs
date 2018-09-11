@@ -28,7 +28,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             Func<LogicalNodeZeroInfoModelItemViewModel> ln0ViewModelCreator,
             Func<LDeviceInfoModelItemViewModel> ldeviceViewModelCreator, Func<DoiInfoModelItemViewModel> doiCreator,
             Func<DaiInfoModelItemViewModel> daiCreator, Func<SdiInfoModelItemViewModel> sdiCreator,
-            IDataTypeTemplatesModelService dataTypeTemplatesModelService,IBiscProject biscProject)
+            IDataTypeTemplatesModelService dataTypeTemplatesModelService, IBiscProject biscProject)
         {
             _lnViewModelCreator = lnViewModelCreator;
             _ln0ViewModelCreator = ln0ViewModelCreator;
@@ -66,16 +66,24 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
         private ObservableCollection<IInfoModelItemViewModel> GetDoi(List<IDoi> dois, bool isFcSortingEnabled,
             ObservableCollection<IInfoModelItemViewModel> existingInfoModelItemViewModels = null)
         {
-            ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels =existingInfoModelItemViewModels??
+            ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels = existingInfoModelItemViewModels ??
                 new ObservableCollection<IInfoModelItemViewModel>();
 
             foreach (var doi in dois)
             {
-                List<string> fcList = GetAllFcs(doi.DaiCollection, doi.SdiCollection);
-
-                DoiInfoModelItemViewModel doiInfoModelItemViewModel = infoModelItemViewModels.FirstOrDefault((model => model.Model==doi)) as DoiInfoModelItemViewModel?? _doiCreator();
+                DoiInfoModelItemViewModel doiInfoModelItemViewModel = infoModelItemViewModels.FirstOrDefault((model => model.Model == doi)) as DoiInfoModelItemViewModel ?? _doiCreator();
                 doiInfoModelItemViewModel.Model = doi;
-                doiInfoModelItemViewModel.ChildInfoModelItemViewModels = GetSdi(doi.SdiCollection,isFcSortingEnabled,doiInfoModelItemViewModel.ChildInfoModelItemViewModels);
+
+                if (isFcSortingEnabled)
+                {
+                    var fcs = GetAllFcs(doi.DaiCollection, doi.SdiCollection);
+                }
+                else
+                {
+
+                }
+
+                doiInfoModelItemViewModel.ChildInfoModelItemViewModels = GetSdi(doi.SdiCollection, isFcSortingEnabled, doiInfoModelItemViewModel.ChildInfoModelItemViewModels);
                 var dais = GetDais(doi.DaiCollection);
                 foreach (var daiVm in dais)
                 {
@@ -88,14 +96,24 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             return infoModelItemViewModels;
         }
 
-        private List<string> GetAllFcs(List<IDai> dais,List<ISdi> sdis)
+        private List<string> GetAllFcs(List<IDai> dais, List<ISdi> sdis)
         {
-            List<string> fcList=new List<string>();
+            List<string> fcList = new List<string>();
             foreach (var dai in dais)
             {
-                _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel);
+
+                var da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel);
+                if (da == null)
+                {
+
+                }
+                fcList.Add(da.Fc);
             }
 
+            foreach (var sdi in sdis)
+            {
+                fcList.AddRange(GetAllFcs(sdi.DaiCollection, sdi.SdiCollection));
+            }
 
             return fcList;
         }
@@ -105,14 +123,14 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
         private ObservableCollection<IInfoModelItemViewModel> GetSdi(List<ISdi> sdis, bool isFcSortingEnabled,
             ObservableCollection<IInfoModelItemViewModel> existingInfoModelItemViewModels = null)
         {
-            ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels =existingInfoModelItemViewModels??
+            ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels = existingInfoModelItemViewModels ??
                 new ObservableCollection<IInfoModelItemViewModel>();
 
             foreach (var sdi in sdis)
             {
-                SdiInfoModelItemViewModel sdiInfoModelItemViewModel =infoModelItemViewModels.FirstOrDefault((model => model.Model==sdi)) as SdiInfoModelItemViewModel?? _sdiCreator();
+                SdiInfoModelItemViewModel sdiInfoModelItemViewModel = infoModelItemViewModels.FirstOrDefault((model => model.Model == sdi)) as SdiInfoModelItemViewModel ?? _sdiCreator();
                 sdiInfoModelItemViewModel.Model = sdi;
-                sdiInfoModelItemViewModel.ChildInfoModelItemViewModels = GetSdi(sdi.SdiCollection,isFcSortingEnabled);
+                sdiInfoModelItemViewModel.ChildInfoModelItemViewModels = GetSdi(sdi.SdiCollection, isFcSortingEnabled);
                 var dais = GetDais(sdi.DaiCollection);
                 foreach (var daiVm in dais)
                 {
@@ -152,7 +170,10 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                 infoModelItemViewModels.FirstOrDefault((model => model.Model == lDevice.LogicalNodeZero)) as
                     LogicalNodeZeroInfoModelItemViewModel ?? _ln0ViewModelCreator();
             logicalNodeZeroInfoModelItemViewModel.Model = lDevice.LogicalNodeZero;
-            infoModelItemViewModels.Add(logicalNodeZeroInfoModelItemViewModel);
+
+            if (!infoModelItemViewModels.Contains(logicalNodeZeroInfoModelItemViewModel))
+                infoModelItemViewModels.Add(logicalNodeZeroInfoModelItemViewModel);
+
             logicalNodeZeroInfoModelItemViewModel.ChildInfoModelItemViewModels =
                 GetDoi(lDevice.LogicalNodeZero.DoiCollection, isFcSortingEnabled,
                     logicalNodeZeroInfoModelItemViewModel.ChildInfoModelItemViewModels);

@@ -93,7 +93,16 @@ namespace BISC.Model.Iec61850Ed2.DataTypeTemplates.Base
             PropertyInfo prop = GetType().GetProperty(propstr);
             if (prop != null)
             {
-                prop.SetValue(this, val);
+                try
+                {
+                    prop.SetValue(this, val);
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
         }
         public object GetAttributeValByName(string propstr)

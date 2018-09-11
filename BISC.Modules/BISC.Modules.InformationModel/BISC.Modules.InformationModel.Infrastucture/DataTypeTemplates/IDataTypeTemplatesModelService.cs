@@ -1,4 +1,5 @@
-﻿using BISC.Model.Infrastructure.Project;
+﻿using System.Collections.Generic;
+using BISC.Model.Infrastructure.Project;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DaType;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.EnumType;
@@ -12,11 +13,15 @@ namespace BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates
         void MergeDataTypeTemplates(ISclModel sclModelTo,
             ISclModel sclModelFrom);
 
+        void FilterDataTypeTemplates(IDataTypeTemplates dataTypeTemplates, List<ILDevice> lDevices, List<ILDevice> lDevicesToLeave);
+
         string AddLnodeType(ILNodeType lNodeType,ISclModel sclModel);
         string AddDoType(IDoType doType,ISclModel sclModel);
         string AddDaType(IDaType daType, ISclModel sclModel);
         string AddEnumType(IEnumType doType, ISclModel sclModel);
         IDa GetDaOfDai(IDai dai,ISclModel sclModel);
+
+
 
     }
 }

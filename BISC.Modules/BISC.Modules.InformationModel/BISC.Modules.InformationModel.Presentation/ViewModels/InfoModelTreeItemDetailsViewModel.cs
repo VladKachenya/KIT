@@ -23,6 +23,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         private ObservableCollection<IInfoModelItemViewModel> _allIecTreeItems;
         private IInfoModelItemViewModel _selectedTreeItem;
         private bool _isFcSortChecked;
+        private BiscNavigationParameters _biscNavigationParameters;
 
         public InfoModelTreeItemDetailsViewModel(IInfoModelTreeFactory infoModelTreeFactory)
         {
@@ -56,26 +57,44 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         public bool IsFcSortChecked
         {
             get => _isFcSortChecked;
-            set => SetProperty(ref _isFcSortChecked , value);
+            set
+            {
+                if (_isFcSortChecked != value)
+                {
+                    SetProperty(ref _isFcSortChecked, value);
+                    UpdateInfoModelTree();
+                }
+
+                SetProperty(ref _isFcSortChecked, value);
+            }
         }
 
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
-            var ldevice = navigationContext.BiscNavigationParameters.GetParameterByName<ILDevice>(
+            _biscNavigationParameters = navigationContext.BiscNavigationParameters;
+            UpdateInfoModelTree();
+            base.OnNavigatedTo(navigationContext);
+        }
+
+        private void UpdateInfoModelTree()
+        {
+            var ldevice = _biscNavigationParameters.GetParameterByName<ILDevice>(
                 InfoModelKeys.ModelKeys.LDeviceKey);
             if (ldevice != null)
             {
-                AllIecTreeItems = _infoModelTreeFactory.CreateLDeviceInfoModelTree(ldevice, IsFcSortChecked, AllIecTreeItems);
+                AllIecTreeItems =
+                    _infoModelTreeFactory.CreateLDeviceInfoModelTree(ldevice, IsFcSortChecked, AllIecTreeItems);
             }
-            else if (navigationContext.BiscNavigationParameters.Any((parameter =>parameter.ParameterName=="IED" )))
+            else if (_biscNavigationParameters.Any((parameter => parameter.ParameterName == "IED")))
             {
-                List<ILDevice> devices=new List<ILDevice>();
-                navigationContext.BiscNavigationParameters.GetParameterByName<IModelElement>("IED")
+                List<ILDevice> devices = new List<ILDevice>();
+                _biscNavigationParameters.GetParameterByName<IModelElement>("IED")
                     .GetAllChildrenOfType(ref devices);
-                    AllIecTreeItems = _infoModelTreeFactory.CreateFullInfoModelTree(devices,IsFcSortChecked,AllIecTreeItems);
+                AllIecTreeItems =
+                    _infoModelTreeFactory.CreateFullInfoModelTree(devices, IsFcSortChecked, AllIecTreeItems);
             }
-            base.OnNavigatedTo(navigationContext);
         }
+
 
         protected override void OnNavigatedFrom(BiscNavigationContext navigationContext)
         {

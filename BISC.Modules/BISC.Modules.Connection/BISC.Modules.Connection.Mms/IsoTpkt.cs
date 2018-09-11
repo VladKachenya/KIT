@@ -177,7 +177,7 @@ namespace BISC.Modules.Connection.MMS
             tcps.sendBuffer[IsoTpkt.TPKT_IDX_RES] = IsoTpkt.TPKT_RES;
             Array.Copy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)(tcps.sendBytes))), 0, tcps.sendBuffer, IsoTpkt.TPKT_IDX_LEN, 2);
 
-            tcps.logger.LogDebugBuffer("Send Tpkt", tcps.sendBuffer, 0, tcps.sendBytes);
+            tcps?.logger?.LogDebugBuffer("Send Tpkt", tcps.sendBuffer, 0, tcps.sendBytes);
             MMSpdu mmSpdu= await TcpRw.GetMmsPduAsync(tcps);
             if (mmSpdu == null&&!isMmsCanBeNull)
             {

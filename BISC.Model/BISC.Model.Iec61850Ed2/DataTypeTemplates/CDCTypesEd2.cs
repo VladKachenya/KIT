@@ -119,6 +119,9 @@ namespace BISC.Model.Iec61850Ed2.DataTypeTemplates
                 cdc = tCDCEnumEd2.SPS;
             }
 
+            public BOOLEAN general { get; set; }//не по стандарту
+
+
             public BOOLEAN stVal { get; set; }
             public Quality q { get; set; }
             public TimeStamp t { get; set; }
