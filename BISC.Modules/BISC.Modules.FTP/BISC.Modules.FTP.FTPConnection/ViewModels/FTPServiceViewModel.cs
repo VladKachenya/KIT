@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Input;
 using BISC.Modules.FTP.Infrastructure.Model.Factory;
 using BISC.Modules.FTP.FTPConnection.Model.Factory;
+using BISC.Infrastructure.Global.IoC;
 
 namespace BISC.Modules.FTP.FTPConnection.ViewModels
 {
@@ -28,6 +29,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         private ICommandFactory _commandFactory;
         private IGlobalEventsService _globalEventsService;
         private IIpAddressViewModelFactory _ipAddressViewModelFactory;
+        IInjectionContainer _injectionContainer;
         private bool _isConnectingInProcess;
         private string _ftpPassword;
         private string _ftpLogin;
@@ -37,13 +39,14 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         #region C-tor
         public FTPServiceViewModel(IFTPClientWrapper ftpClientWrapper, ICommandFactory commandFactory, IGlobalEventsService globalEventsService,
-            IIpAddressViewModelFactory ipAddressViewModelFactory, ILastIpAddressesViewModel lastIpAddressesViewModel)
+            IIpAddressViewModelFactory ipAddressViewModelFactory, ILastIpAddressesViewModel lastIpAddressesViewModel, IInjectionContainer injectionContainer)
         {
             _ftpClientWrapper = ftpClientWrapper;
             _commandFactory = commandFactory;
             _globalEventsService = globalEventsService;
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
             LastIpAddressesViewModel = lastIpAddressesViewModel;
+            _injectionContainer = injectionContainer;
             ConnectToDeviceCommand = _commandFactory.CreatePresentationCommand(OnConnectToDeviceCommand, () => !_isConnectingInProcess);
             ResetDeviceCommand = _commandFactory.CreatePresentationCommand(OnResetDeviceCommand, CanExecuteResetDeviceCommand);
             this.FtpIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("....", false);
@@ -96,7 +99,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
                 var ftpClient = await _ftpClientWrapper.Connect(FtpIpAddressViewModel.FullIp, FtpLogin, FtpPassword);
                 if (_ftpClientWrapper.IsConnected) AddNoteToActionMassageList(true, "Подключение произведено");
                 else AddNoteToActionMassageList(false, "Подключение не произведено");
-                IBrowserElementFactory browserElementFactory = new FTPBrowserElementFactory();
+                IBrowserElementFactory browserElementFactory = _injectionContainer.ResolveType<IBrowserElementFactory>() ;
                 browserElementFactory.SetConnectionProvider(ftpClient);
                 IFileBrowser fileBrowser = new FileBrowser(browserElementFactory);
                 //FileBrowserViewModel.Model = fileBrowser;

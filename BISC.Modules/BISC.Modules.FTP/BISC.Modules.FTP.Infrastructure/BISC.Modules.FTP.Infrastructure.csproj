@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Factorys\IBrowserElementViewModelFactory.cs" />
     <Compile Include="Keys\FTPKeys.cs" />
     <Compile Include="Model\BrowserElements\IDeviceBrowserElement.cs" />
     <Compile Include="Model\BrowserElements\IDeviceDirectory.cs" />
@@ -56,6 +57,11 @@
     <Compile Include="Model\Loaders\ILoadable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serviсes\IFTPAddingServise.cs" />
+    <Compile Include="ViewModels\Browser\BrowserElements\IBrowserElementViewModel.cs" />
+    <Compile Include="ViewModels\Browser\BrowserElements\IDeviceDirectoryViewModel.cs" />
+    <Compile Include="ViewModels\Browser\BrowserElements\IDeviceFileViewModel.cs" />
+    <Compile Include="ViewModels\Browser\BrowserElements\IModel.cs" />
+    <Compile Include="ViewModels\Browser\IFileBrowserViewModel.cs" />
     <Compile Include="ViewModels\IFTPActionMessage.cs" />
     <Compile Include="ViewModels\IFTPServiceViewModel.cs" />
   </ItemGroup>

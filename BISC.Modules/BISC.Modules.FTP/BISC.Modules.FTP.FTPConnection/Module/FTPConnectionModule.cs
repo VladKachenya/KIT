@@ -1,11 +1,13 @@
 ﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Modules.FTP.FTPConnection.Model;
+using BISC.Modules.FTP.FTPConnection.Model.Factory;
 using BISC.Modules.FTP.FTPConnection.Services;
 using BISC.Modules.FTP.FTPConnection.ViewModels;
 using BISC.Modules.FTP.FTPConnection.Views;
 using BISC.Modules.FTP.Infrastructure.Keys;
 using BISC.Modules.FTP.Infrastructure.Model;
+using BISC.Modules.FTP.Infrastructure.Model.Factory;
 using BISC.Modules.FTP.Infrastructure.Serviсes;
 using BISC.Modules.FTP.Infrastructure.ViewModels;
 using System;
@@ -31,6 +33,7 @@ namespace BISC.Modules.FTP.FTPConnection.Module
             _injectionContainer.RegisterType<IFTPAddingServise, FTPAddingService>(true);
             _injectionContainer.RegisterType<IFTPServiceViewModel, FTPServiceViewModel>(true);
             _injectionContainer.RegisterType<IFTPClientWrapper, FTPClientWrapper>();
+            _injectionContainer.RegisterType<IBrowserElementFactory, FTPBrowserElementFactory>();
             _injectionContainer.RegisterType<object, FTPServiceView>(FTPKeys.FTPServiceViewKey);
 
             var presentationInitialization = _injectionContainer.ResolveType(typeof(FTPConnectionInitialization)) as FTPConnectionInitialization;
