@@ -1,15 +1,21 @@
 ﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
+using BISC.Modules.FTP.FTPConnection.Factory;
 using BISC.Modules.FTP.FTPConnection.Model;
 using BISC.Modules.FTP.FTPConnection.Model.Factory;
 using BISC.Modules.FTP.FTPConnection.Services;
 using BISC.Modules.FTP.FTPConnection.ViewModels;
+using BISC.Modules.FTP.FTPConnection.ViewModels.Browser;
+using BISC.Modules.FTP.FTPConnection.ViewModels.Browser.BrowserElements;
 using BISC.Modules.FTP.FTPConnection.Views;
+using BISC.Modules.FTP.Infrastructure.Factorys;
 using BISC.Modules.FTP.Infrastructure.Keys;
 using BISC.Modules.FTP.Infrastructure.Model;
 using BISC.Modules.FTP.Infrastructure.Model.Factory;
 using BISC.Modules.FTP.Infrastructure.Serviсes;
 using BISC.Modules.FTP.Infrastructure.ViewModels;
+using BISC.Modules.FTP.Infrastructure.ViewModels.Browser;
+using BISC.Modules.FTP.Infrastructure.ViewModels.Browser.BrowserElements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +40,10 @@ namespace BISC.Modules.FTP.FTPConnection.Module
             _injectionContainer.RegisterType<IFTPServiceViewModel, FTPServiceViewModel>(true);
             _injectionContainer.RegisterType<IFTPClientWrapper, FTPClientWrapper>();
             _injectionContainer.RegisterType<IBrowserElementFactory, FTPBrowserElementFactory>();
+            _injectionContainer.RegisterType<IBrowserElementViewModelFactory, BrowserElementViewModelFactory>();
+            _injectionContainer.RegisterType<IBrowserElementViewModel, DeviceDirectoryViewModel>(FTPKeys.DeviceDirectory);
+            _injectionContainer.RegisterType<IBrowserElementViewModel, DeviceFileViewModel>(FTPKeys.DeviceFile);
+            _injectionContainer.RegisterType<IFileBrowserViewModel, FileBrowserViewModel>();
             _injectionContainer.RegisterType<object, FTPServiceView>(FTPKeys.FTPServiceViewKey);
 
             var presentationInitialization = _injectionContainer.ResolveType(typeof(FTPConnectionInitialization)) as FTPConnectionInitialization;

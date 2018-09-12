@@ -1,4 +1,5 @@
-﻿using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
+﻿using BISC.Modules.FTP.Infrastructure.Keys;
+using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
 using BISC.Modules.FTP.Infrastructure.Model.Loaders;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ namespace BISC.Modules.FTP.FTPConnection.Model.BrowserElements
     {
         private List<IDeviceBrowserElement> _browserElementsInDirectory;
         private IDirectoryLoader _directoryLoader;
-        private string _strongName;
 
 
         public DeviceDirectory(string directoryPath, IDirectoryLoader directoryLoader, string name, IDeviceDirectory deviceDirectory) : base(directoryPath, name, deviceDirectory)
@@ -38,6 +38,7 @@ namespace BISC.Modules.FTP.FTPConnection.Model.BrowserElements
 
         #region Implementation of IDeviceDirectory
 
+        public override string StrongName => FTPKeys.DeviceDirectory;
         public List<IDeviceBrowserElement> BrowserElementsInDirectory
         {
             get { return _browserElementsInDirectory; }

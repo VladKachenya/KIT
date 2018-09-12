@@ -9,8 +9,6 @@ namespace BISC.Modules.FTP.FTPConnection.Model.BrowserElements
 {
     public abstract class BrowserElementBase : IDeviceBrowserElement
     {
-        private string _strongName;
-        private string _name;
 
         protected BrowserElementBase(string elementPath, string name, IDeviceDirectory parentDirectory)
         {
@@ -31,6 +29,7 @@ namespace BISC.Modules.FTP.FTPConnection.Model.BrowserElements
         public string ElementPath { get; }
 
         public string Name { get; }
+        public abstract string StrongName { get; }
 
         #endregion
 

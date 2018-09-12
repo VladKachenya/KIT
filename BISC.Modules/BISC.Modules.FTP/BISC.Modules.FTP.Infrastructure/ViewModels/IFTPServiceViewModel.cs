@@ -1,4 +1,5 @@
 ﻿using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
+using BISC.Modules.FTP.Infrastructure.ViewModels.Browser;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,5 +20,6 @@ namespace BISC.Modules.FTP.Infrastructure.ViewModels
         ICommand ConnectToDeviceCommand { get; }
         ICommand ResetDeviceCommand { get; }
         ObservableCollection<IFTPActionMessage> FTPActionMessageList  { get; }
+        IFileBrowserViewModel FileBrowserViewModel { get; }
     }
 }

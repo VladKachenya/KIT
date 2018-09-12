@@ -13,9 +13,6 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser.BrowserElements
 {
     public abstract class BrowserElementViewModel : ViewModelBase, IBrowserElementViewModel
     {
-        private string _strongName;
-        private string _elementPath;
-        private string _name;
         private IDeviceDirectoryViewModel _parentDeviceDirectoryViewModel;
         protected ICommandFactory _commandFactory;
 

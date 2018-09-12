@@ -19,6 +19,7 @@ using System.Windows.Input;
 using BISC.Modules.FTP.Infrastructure.Model.Factory;
 using BISC.Modules.FTP.FTPConnection.Model.Factory;
 using BISC.Infrastructure.Global.IoC;
+using BISC.Modules.FTP.Infrastructure.ViewModels.Browser;
 
 namespace BISC.Modules.FTP.FTPConnection.ViewModels
 {
@@ -39,7 +40,8 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         #region C-tor
         public FTPServiceViewModel(IFTPClientWrapper ftpClientWrapper, ICommandFactory commandFactory, IGlobalEventsService globalEventsService,
-            IIpAddressViewModelFactory ipAddressViewModelFactory, ILastIpAddressesViewModel lastIpAddressesViewModel, IInjectionContainer injectionContainer)
+            IIpAddressViewModelFactory ipAddressViewModelFactory, ILastIpAddressesViewModel lastIpAddressesViewModel, IInjectionContainer injectionContainer,
+            IFileBrowserViewModel fileBrowserViewModel)
         {
             _ftpClientWrapper = ftpClientWrapper;
             _commandFactory = commandFactory;
@@ -47,6 +49,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
             LastIpAddressesViewModel = lastIpAddressesViewModel;
             _injectionContainer = injectionContainer;
+            FileBrowserViewModel = fileBrowserViewModel;
             ConnectToDeviceCommand = _commandFactory.CreatePresentationCommand(OnConnectToDeviceCommand, () => !_isConnectingInProcess);
             ResetDeviceCommand = _commandFactory.CreatePresentationCommand(OnResetDeviceCommand, CanExecuteResetDeviceCommand);
             this.FtpIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("....", false);
@@ -102,8 +105,8 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
                 IBrowserElementFactory browserElementFactory = _injectionContainer.ResolveType<IBrowserElementFactory>() ;
                 browserElementFactory.SetConnectionProvider(ftpClient);
                 IFileBrowser fileBrowser = new FileBrowser(browserElementFactory);
-                //FileBrowserViewModel.Model = fileBrowser;
-                //FileBrowserViewModel.LoadRootCommand.Execute(null);
+                FileBrowserViewModel.Model = fileBrowser;
+                FileBrowserViewModel.LoadRootCommand.Execute(null);
             }
             catch (Exception e)
             {
@@ -135,6 +138,8 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
                 AddNoteToActionMassageList(false, e.Message);
             }
         }
+
+        public IFileBrowserViewModel FileBrowserViewModel { get; }
 
         private bool CanExecuteResetDeviceCommand()
         {

@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\BoolToCollorConverter.cs" />
+    <Compile Include="Factory\BrowserElementViewModelFactory.cs" />
     <Compile Include="Model\BrowserElements\BrowserElementBase.cs" />
     <Compile Include="Model\BrowserElements\DeviceDirectory.cs" />
     <Compile Include="Model\BrowserElements\DeviceFile.cs" />

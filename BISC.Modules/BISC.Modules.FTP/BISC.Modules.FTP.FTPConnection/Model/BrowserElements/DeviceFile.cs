@@ -1,4 +1,5 @@
-﻿using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
+﻿using BISC.Modules.FTP.Infrastructure.Keys;
+using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
 using BISC.Modules.FTP.Infrastructure.Model.Loaders;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,8 @@ namespace BISC.Modules.FTP.FTPConnection.Model.BrowserElements
         }
 
         #region Implementation of IDeviceFile
+
+        public override string StrongName => FTPKeys.DeviceFile;
 
         public byte[] FileData
         {

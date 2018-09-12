@@ -13,5 +13,7 @@ namespace BISC.Modules.FTP.Infrastructure.Model.BrowserElements
         Task<bool> DeleteElementAsync();
         string ElementPath { get; }
         string Name { get; }
+
+        string StrongName { get; }
     }
 }
