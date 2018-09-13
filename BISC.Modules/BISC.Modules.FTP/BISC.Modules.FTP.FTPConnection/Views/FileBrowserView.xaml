@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="BISC.Modules.FTP.FTPConnection.Views.FileBrowserView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BISC.Modules.FTP.FTPConnection.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:commands="clr-namespace:BISC.Presentation.BaseItems.Commands;assembly=BISC.Presentation.BaseItems"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:BrowserElementsVM="clr-namespace:BISC.Modules.FTP.FTPConnection.ViewModels.Browser.BrowserElements"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <Button Margin="0" Content="Загрузить" Command="{Binding LoadRootCommand}" Width="100" HorizontalAlignment="Left" Style="{DynamicResource UniconButtonStyle}"></Button>
+        </StackPanel>
+        <TreeView Grid.Row="1">
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectedItemChanged" >
+                    <command:EventToCommand  PassEventArgsToCommand="True"   Command="{Binding SelectDirectoryCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>-->
+            <TreeView.Resources>
+                <HierarchicalDataTemplate  DataType="{x:Type BrowserElementsVM:DeviceFileViewModel}">
+                    <TextBlock HorizontalAlignment="Left" Text="{Binding ElementPath}"/>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate  DataType="{x:Type BrowserElementsVM:DeviceDirectoryViewModel}"
+                                                  ItemsSource="{Binding ChildBrowserElementViewModels}">
+                    <TextBlock HorizontalAlignment="Left"  Text="{Binding ElementPath}"/>
+
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+            <TreeViewItem Header="{Binding RootDeviceDirectoryViewModel.ElementPath}" ItemsSource="{Binding RootDeviceDirectoryViewModel.ChildBrowserElementViewModels}">
+
+            </TreeViewItem>
+        </TreeView>
+    </Grid>
+</UserControl>

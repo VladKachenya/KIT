@@ -69,6 +69,9 @@
     <Compile Include="ViewModels\Browser\FileBrowserViewModel.cs" />
     <Compile Include="ViewModels\FTPActionMassage.cs" />
     <Compile Include="ViewModels\FTPServiceViewModel.cs" />
+    <Compile Include="Views\FileBrowserView.xaml.cs">
+      <DependentUpon>FileBrowserView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FTPServiceView.xaml.cs">
       <DependentUpon>FTPServiceView.xaml</DependentUpon>
     </Compile>
@@ -104,6 +107,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\FileBrowserView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FTPServiceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

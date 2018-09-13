@@ -28,7 +28,7 @@
         </Grid.ColumnDefinitions>
         <ScrollViewer Grid.Column="0" Grid.RowSpan="3" VerticalScrollBarVisibility ="Auto" 
                       Height="500">
-            <view:LastIpAddressesView DataContext="{Binding LastIpAddressesViewModel}"></view:LastIpAddressesView>
+            <view:LastIpAddressesView DataContext="{Binding LastIpAddressesViewModel}"/>
         </ScrollViewer>
         <Grid Grid.Row="0" Grid.Column="1">
             <Grid.RowDefinitions>
@@ -71,7 +71,6 @@
                     Margin="5" />
             </StackPanel>
             
-            <!---->
             <Button Content="Подключится" 
                     Margin="10"
                     Grid.Column="0"
@@ -135,26 +134,11 @@
                 Margin="5"
                 Command="{x:Static commands:DialogCommands.CloseDialogCommand}">
         </Button>
-        <Expander Grid.Column="2"
-                  Grid.RowSpan="3"
-            ExpandDirection="Right">
-            <Expander.Header>
-              <TextBlock
-                Text="Файловая система"
-                RenderTransformOrigin=".5,.5">
-                <TextBlock.LayoutTransform>
-                  <RotateTransform
-                    Angle="90" />
-                </TextBlock.LayoutTransform>
-              </TextBlock>
-            </Expander.Header>
-            <StackPanel
-              Orientation="Vertical"
-              TextBlock.Foreground="{DynamicResource MaterialDesignBody}"
-              Margin="8,24,16,24">
-              <TextBlock
-                Text="My Content" /> 
-            </StackPanel>
-      </Expander>
+        <StackPanel
+            Grid.Column="2"
+            Grid.RowSpan="3"
+            Width="auto">
+            <local:FileBrowserView DataContext="FileBrowserViewModel"/>
+        </StackPanel>
     </Grid>
 </UserControl>
