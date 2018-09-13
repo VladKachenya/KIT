@@ -19,11 +19,6 @@
             <Button Margin="0" Content="Загрузить" Command="{Binding LoadRootCommand}" Width="100" HorizontalAlignment="Left" Style="{DynamicResource UniconButtonStyle}"></Button>
         </StackPanel>
         <TreeView Grid.Row="1">
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectedItemChanged" >
-                    <command:EventToCommand  PassEventArgsToCommand="True"   Command="{Binding SelectDirectoryCommand}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->
             <TreeView.Resources>
                 <HierarchicalDataTemplate  DataType="{x:Type BrowserElementsVM:DeviceFileViewModel}">
                     <TextBlock HorizontalAlignment="Left" Text="{Binding ElementPath}"/>

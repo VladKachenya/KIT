@@ -50,6 +50,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             LastIpAddressesViewModel = lastIpAddressesViewModel;
             _injectionContainer = injectionContainer;
             FileBrowserViewModel = fileBrowserViewModel;
+            OnPropertyChanged(nameof(FileBrowserViewModel));
             ConnectToDeviceCommand = _commandFactory.CreatePresentationCommand(OnConnectToDeviceCommand, () => !_isConnectingInProcess);
             ResetDeviceCommand = _commandFactory.CreatePresentationCommand(OnResetDeviceCommand, CanExecuteResetDeviceCommand);
             this.FtpIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("....", false);
