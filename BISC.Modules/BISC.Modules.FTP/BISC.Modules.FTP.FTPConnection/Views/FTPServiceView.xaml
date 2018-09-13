@@ -138,7 +138,7 @@
             Grid.Column="2"
             Grid.RowSpan="3"
             Width="auto">
-            <local:FileBrowserView DataContext="FileBrowserViewModel"/>
+            <local:FileBrowserView DataContext="{Binding FileBrowserViewModel}"/>
         </StackPanel>
     </Grid>
 </UserControl>

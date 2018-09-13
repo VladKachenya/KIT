@@ -36,8 +36,8 @@ namespace BISC.Modules.FTP.FTPConnection.Module
         public void Initialize()
         {
             // Работать сдесь!!!
-            _injectionContainer.RegisterType<IFTPAddingServise, FTPAddingService>(true);
-            _injectionContainer.RegisterType<IFTPServiceViewModel, FTPServiceViewModel>(true);
+            _injectionContainer.RegisterType<IFTPAddingServise, FTPAddingService>();
+            _injectionContainer.RegisterType<IFTPServiceViewModel, FTPServiceViewModel>();
             _injectionContainer.RegisterType<IFTPClientWrapper, FTPClientWrapper>();
             _injectionContainer.RegisterType<IBrowserElementFactory, FTPBrowserElementFactory>();
             _injectionContainer.RegisterType<IBrowserElementViewModelFactory, BrowserElementViewModelFactory>();

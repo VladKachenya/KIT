@@ -16,7 +16,9 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel>
-            <Button Margin="0" Content="Загрузить" Command="{Binding LoadRootCommand}" Width="100" HorizontalAlignment="Left" Style="{DynamicResource UniconButtonStyle}"></Button>
+            <Button Margin="0" Content="Загрузить"
+                    Command="{Binding LoadRootCommand}" 
+                    Width="100" HorizontalAlignment="Left"/>
         </StackPanel>
         <TreeView Grid.Row="1">
             <TreeView.Resources>
@@ -30,7 +32,8 @@
 
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
-            <TreeViewItem Header="{Binding RootDeviceDirectoryViewModel.ElementPath}" ItemsSource="{Binding RootDeviceDirectoryViewModel.ChildBrowserElementViewModels}">
+            <TreeViewItem Header="{Binding RootDeviceDirectoryViewModel.ElementPath}" 
+                          ItemsSource="{Binding RootDeviceDirectoryViewModel.ChildBrowserElementViewModels}">
 
             </TreeViewItem>
         </TreeView>
