@@ -16,7 +16,7 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel>
-            <Button Margin="0" Content="Загрузить"
+            <Button Margin="5" Content="Загрузить"
                     Command="{Binding LoadRootCommand}" 
                     Width="100" HorizontalAlignment="Left"/>
         </StackPanel>

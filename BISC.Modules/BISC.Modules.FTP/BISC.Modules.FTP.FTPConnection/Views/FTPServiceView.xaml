@@ -134,11 +134,13 @@
                 Margin="5"
                 Command="{x:Static commands:DialogCommands.CloseDialogCommand}">
         </Button>
-        <StackPanel
+        <ScrollViewer VerticalScrollBarVisibility ="Auto"
+            HorizontalScrollBarVisibility="Auto"
             Grid.Column="2"
-            Grid.RowSpan="3"
-            Width="auto">
-            <local:FileBrowserView DataContext="{Binding FileBrowserViewModel}"/>
-        </StackPanel>
+            Grid.RowSpan="3">
+            <StackPanel Width="200">
+                <local:FileBrowserView DataContext="{Binding FileBrowserViewModel}" />
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>
