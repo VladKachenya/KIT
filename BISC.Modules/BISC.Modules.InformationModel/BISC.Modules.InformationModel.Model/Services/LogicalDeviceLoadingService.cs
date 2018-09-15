@@ -337,10 +337,12 @@ namespace BISC.Modules.InformationModel.Model.Services
                         doiDto.DoiTypeDescription = component;
                         var currentDoiDefinitions = allDoiDefinitions.Where((s =>
                         {
+
                             var parts = s.Split('$');
                             if (parts.Length < 3) return false;
                             return parts[2] == doiDto.Name;
                         })).ToList();
+
                         doiDto.MembersList = AddInnerDoDataToDoiDto(currentDoiDefinitions, doiDto.Name, 0,
                             doiDto.DoiTypeDescription, fc);
                         AddDoiDtoToList(doiDtos, doiDto);
@@ -368,7 +370,10 @@ namespace BISC.Modules.InformationModel.Model.Services
 
                             if (parts[3 + level] == component.Name && parts[1] == fc)
                             {
+                                if (doiDefinition.Contains("A$phsA"))
+                                {
 
+                                }
                                 InnerDoData innerDoData = new InnerDoData();
                                 innerDoData.Name = parts[3 + level];
                                 innerDoData.Fc = parts[1];
@@ -429,6 +434,10 @@ namespace BISC.Modules.InformationModel.Model.Services
             if ((innerDoData != null) && (innerDoData.IsStructure))
                 //в случае объекта типа структуры следует создать SDI и шаблон к нему
             {
+                if (path.Contains("A.phsA"))
+                {
+
+                }
                 ISdi newsdi = new Sdi {Name = innerDoData.Name}; //тут создается SDI, а дальше создается шаблон
                 if (dataObj != null)
                 {
@@ -827,13 +836,28 @@ namespace BISC.Modules.InformationModel.Model.Services
             var existingDto = doiDtos.FirstOrDefault((dto => dto.Name == doiDto.Name));
             if (existingDto != null)
             {
-                existingDto.MembersList.AddRange(doiDto.MembersList);
+                doiDto.MembersList.ForEach((data => AddInnerData(existingDto.MembersList,data)));
+               // existingDto.MembersList.AddRange(doiDto.MembersList);
             }
             else
             {
                 doiDtos.Add(doiDto);
             }
         }
+
+        private void AddInnerData(List<InnerDoData> innerDoDatas,InnerDoData doDataToAdd)
+        {
+            var existing = innerDoDatas.FirstOrDefault((data => data.Name == doDataToAdd.Name));
+            if (existing != null)
+            {
+                doDataToAdd.MembersList.ForEach((data => AddInnerData(existing.MembersList, data)));
+            }
+            else
+            {
+                innerDoDatas.Add(doDataToAdd);
+            }
+        }
+
 
 
     }

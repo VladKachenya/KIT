@@ -9,6 +9,7 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Presentation.Interfaces;
 using BISC.Modules.InformationModel.Presentation.Interfaces.Factories;
+using BISC.Modules.InformationModel.Presentation.ViewModels.Base;
 using BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree;
 
 namespace BISC.Modules.InformationModel.Presentation.Factories
@@ -23,12 +24,13 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
         private readonly Func<SdiInfoModelItemViewModel> _sdiCreator;
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
         private readonly IBiscProject _biscProject;
+        private readonly Func<SetFcTreeItemViewModel> _fcSetCreator;
 
         public InfoModelTreeFactory(Func<LogicalNodeInfoModelItemViewModel> lnViewModelCreator,
             Func<LogicalNodeZeroInfoModelItemViewModel> ln0ViewModelCreator,
             Func<LDeviceInfoModelItemViewModel> ldeviceViewModelCreator, Func<DoiInfoModelItemViewModel> doiCreator,
             Func<DaiInfoModelItemViewModel> daiCreator, Func<SdiInfoModelItemViewModel> sdiCreator,
-            IDataTypeTemplatesModelService dataTypeTemplatesModelService, IBiscProject biscProject)
+            IDataTypeTemplatesModelService dataTypeTemplatesModelService, IBiscProject biscProject, Func<SetFcTreeItemViewModel> fcSetCreator)
         {
             _lnViewModelCreator = lnViewModelCreator;
             _ln0ViewModelCreator = ln0ViewModelCreator;
@@ -38,6 +40,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             _sdiCreator = sdiCreator;
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
             _biscProject = biscProject;
+            _fcSetCreator = fcSetCreator;
         }
 
 
@@ -57,7 +60,10 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                 lDeviceInfoModelItemViewModel.Model = lDevice;
                 lDeviceInfoModelItemViewModel.ChildInfoModelItemViewModels = CreateLDeviceInfoModelTree(lDevice,
                     isFcSortingEnabled, lDeviceInfoModelItemViewModel.ChildInfoModelItemViewModels);
-                infoModelItemViewModels.Add(lDeviceInfoModelItemViewModel);
+                if (!infoModelItemViewModels.Contains(lDeviceInfoModelItemViewModel))
+                {
+                    infoModelItemViewModels.Add(lDeviceInfoModelItemViewModel);
+                }
             }
 
             return infoModelItemViewModels;
@@ -71,26 +77,41 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
 
             foreach (var doi in dois)
             {
-                DoiInfoModelItemViewModel doiInfoModelItemViewModel = infoModelItemViewModels.FirstOrDefault((model => model.Model == doi)) as DoiInfoModelItemViewModel ?? _doiCreator();
+                DoiInfoModelItemViewModel doiInfoModelItemViewModel =
+                    infoModelItemViewModels.FirstOrDefault((model =>
+                        model.Model == doi)) as DoiInfoModelItemViewModel ?? _doiCreator();
                 doiInfoModelItemViewModel.Model = doi;
-
+                var isChecked = doiInfoModelItemViewModel.IsChecked;
+                doiInfoModelItemViewModel.Checked?.Invoke(false);
+                doiInfoModelItemViewModel.IsChecked = false;
+                doiInfoModelItemViewModel.ChildInfoModelItemViewModels.Clear();
                 if (isFcSortingEnabled)
                 {
-                    var fcs = GetAllFcs(doi.DaiCollection, doi.SdiCollection);
+                    var fcs = GetAllFcs(doi.DaiCollection, doi.SdiCollection).Distinct().ToList();
+                    foreach (var fc in fcs)
+                    {
+                        SetFcTreeItemViewModel fcTreeItemViewModel = _fcSetCreator();
+                        fcTreeItemViewModel.Model = fc;
+                        GetChildListByFc(doi.DaiCollection, doi.SdiCollection, fc).ForEach((treeItem =>
+                            fcTreeItemViewModel.ChildInfoModelItemViewModels.Add(treeItem)));
+                        doiInfoModelItemViewModel.ChildInfoModelItemViewModels.Add(fcTreeItemViewModel);
+                    }
+
                 }
                 else
                 {
-
+                    doiInfoModelItemViewModel.ChildInfoModelItemViewModels = GetSdi(doi.SdiCollection,doiInfoModelItemViewModel.ChildInfoModelItemViewModels);
+                    var dais = GetDais(doi.DaiCollection);
+                    foreach (var daiVm in dais)
+                    {
+                        doiInfoModelItemViewModel.ChildInfoModelItemViewModels.Add(daiVm);
+                    }
                 }
 
-                doiInfoModelItemViewModel.ChildInfoModelItemViewModels = GetSdi(doi.SdiCollection, isFcSortingEnabled, doiInfoModelItemViewModel.ChildInfoModelItemViewModels);
-                var dais = GetDais(doi.DaiCollection);
-                foreach (var daiVm in dais)
-                {
-                    doiInfoModelItemViewModel.ChildInfoModelItemViewModels.Add(daiVm);
-                }
-
-                infoModelItemViewModels.Add(doiInfoModelItemViewModel);
+                doiInfoModelItemViewModel.Checked?.Invoke(isChecked);
+                doiInfoModelItemViewModel.IsChecked = isChecked;
+                if (!infoModelItemViewModels.Contains(doiInfoModelItemViewModel))
+                    infoModelItemViewModels.Add(doiInfoModelItemViewModel);
             }
 
             return infoModelItemViewModels;
@@ -105,7 +126,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                 var da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel);
                 if (da == null)
                 {
-
+                    continue;
                 }
                 fcList.Add(da.Fc);
             }
@@ -118,9 +139,44 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             return fcList;
         }
 
+        private List<TreeItemViewModelBase> GetChildListByFc(List<IDai> dais, List<ISdi> sdis, string fc)
+        {
+            List<TreeItemViewModelBase> fcItems = new List<TreeItemViewModelBase>();
+
+            foreach (var dai in dais)
+            {
+                var da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel);
+                if(da==null)continue;
+                if (fc == da.Fc)
+                {
+                    var daiTreeItem = _daiCreator();
+                    daiTreeItem.Model = dai;
+                    fcItems.Add(daiTreeItem);
+                }
+            }
+
+            foreach (var sdi in sdis)
+            {
+                var fcItemsInSdi = GetChildListByFc(sdi.DaiCollection, sdi.SdiCollection, fc);
+
+                if (fcItemsInSdi.Any())
+                {
+                    var sdiTreeItem = _sdiCreator();
+                    sdiTreeItem.Model = sdi;
+                    fcItemsInSdi.ForEach((treeItem => sdiTreeItem.ChildInfoModelItemViewModels.Add(treeItem))); 
+                    fcItems.Add(sdiTreeItem);
+                }
+
+            }
 
 
-        private ObservableCollection<IInfoModelItemViewModel> GetSdi(List<ISdi> sdis, bool isFcSortingEnabled,
+            return fcItems;
+        }
+
+
+
+
+        private ObservableCollection<IInfoModelItemViewModel> GetSdi(List<ISdi> sdis,
             ObservableCollection<IInfoModelItemViewModel> existingInfoModelItemViewModels = null)
         {
             ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels = existingInfoModelItemViewModels ??
@@ -130,7 +186,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             {
                 SdiInfoModelItemViewModel sdiInfoModelItemViewModel = infoModelItemViewModels.FirstOrDefault((model => model.Model == sdi)) as SdiInfoModelItemViewModel ?? _sdiCreator();
                 sdiInfoModelItemViewModel.Model = sdi;
-                sdiInfoModelItemViewModel.ChildInfoModelItemViewModels = GetSdi(sdi.SdiCollection, isFcSortingEnabled);
+                sdiInfoModelItemViewModel.ChildInfoModelItemViewModels = GetSdi(sdi.SdiCollection);
                 var dais = GetDais(sdi.DaiCollection);
                 foreach (var daiVm in dais)
                 {
@@ -186,7 +242,9 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                 logicalNodeInfoModelItemViewModel.ChildInfoModelItemViewModels =
                     GetDoi(lDeviceLogicalNode.DoiCollection, isFcSortingEnabled,
                         logicalNodeInfoModelItemViewModel.ChildInfoModelItemViewModels);
-                infoModelItemViewModels.Add(logicalNodeInfoModelItemViewModel);
+
+                if (!infoModelItemViewModels.Contains(logicalNodeInfoModelItemViewModel))
+                    infoModelItemViewModels.Add(logicalNodeInfoModelItemViewModel);
             }
 
             return infoModelItemViewModels;

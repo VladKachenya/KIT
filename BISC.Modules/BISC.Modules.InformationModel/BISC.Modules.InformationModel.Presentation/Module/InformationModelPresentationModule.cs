@@ -48,6 +48,8 @@ namespace BISC.Modules.InformationModel.Presentation.Module
             _injectionContainer.RegisterType<DoiInfoModelItemViewModel>();
             _injectionContainer.RegisterType<DaiInfoModelItemViewModel>();
             _injectionContainer.RegisterType<SdiInfoModelItemViewModel>();
+            _injectionContainer.RegisterType<SetFcTreeItemViewModel>();
+
             _injectionContainer.RegisterType<IDeviceElementLoadingService, InfoModelLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<InfoModelLoadingTreeItemViewModel>();
 
