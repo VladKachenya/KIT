@@ -44,6 +44,7 @@ namespace BISC.Modules.FTP.FTPConnection.Module
             _injectionContainer.RegisterType<IBrowserElementViewModel, DeviceDirectoryViewModel>(FTPKeys.DeviceDirectory);
             _injectionContainer.RegisterType<IBrowserElementViewModel, DeviceFileViewModel>(FTPKeys.DeviceFile);
             _injectionContainer.RegisterType<IFileBrowserViewModel, FileBrowserViewModel>();
+            _injectionContainer.RegisterType<IDeviceFileWritingServices, DeviceFileWritingServices>();
             _injectionContainer.RegisterType<object, FTPServiceView>(FTPKeys.FTPServiceViewKey);
 
             var presentationInitialization = _injectionContainer.ResolveType(typeof(FTPConnectionInitialization)) as FTPConnectionInitialization;

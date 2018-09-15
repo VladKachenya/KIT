@@ -56,6 +56,7 @@
     <Compile Include="Model\Loaders\IFileLoader.cs" />
     <Compile Include="Model\Loaders\ILoadable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serviсes\IDeviceFileWritingServices.cs" />
     <Compile Include="Serviсes\IFTPAddingServise.cs" />
     <Compile Include="ViewModels\Browser\BrowserElements\IBrowserElementViewModel.cs" />
     <Compile Include="ViewModels\Browser\BrowserElements\IDeviceDirectoryViewModel.cs" />
