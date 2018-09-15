@@ -13,6 +13,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
     {
         private string _ip;
         private readonly Iec61850State _state;
+        private Dictionary<string, List<string>> _cachedLDeviceDefinitions = new Dictionary<string, List<string>>();
 
         public MmsConnectionFacade()
         {
@@ -57,6 +58,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                     return new OperationResult<List<string>>("");
                 }
             }
+
             OperationResult<List<string>> operationResult = new OperationResult<List<string>>(listIdent);
             return operationResult;
         }
@@ -70,49 +72,103 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 .Select((identifier => identifier.Value.ToString())).ToList());
         }
 
-        public async Task<OperationResult<List<string>>> GetListValiablesAsync(string ldInst)
+        public async Task<OperationResult<List<string>>> GetListValiablesAsync(string ldInst, bool acceptCache)
         {
             MMSpdu receivedPdu;
             List<string> ldIdentifiersList = new List<string>();
-            do
+            if (!acceptCache || !_cachedLDeviceDefinitions.ContainsKey(ldInst))
             {
-                receivedPdu = await new InfoModelClientService(_state).SendGetNameListVariablesAsync(ldInst,
-                    ldIdentifiersList.LastOrDefault());
-                if (receivedPdu == null)
+                do
                 {
-                    await Task.Delay(2000);
                     receivedPdu = await new InfoModelClientService(_state).SendGetNameListVariablesAsync(ldInst,
                         ldIdentifiersList.LastOrDefault());
                     if (receivedPdu == null)
                     {
+                        await Task.Delay(2000);
+                        receivedPdu = await new InfoModelClientService(_state).SendGetNameListVariablesAsync(ldInst,
+                            ldIdentifiersList.LastOrDefault());
+                        if (receivedPdu == null)
+                        {
 
+                        }
                     }
-                }
-                if (receivedPdu?.Confirmed_ResponsePDU?.Service?.GetNameList != null)
-                {
-                    ldIdentifiersList.AddRange(
-                        receivedPdu.Confirmed_ResponsePDU.Service.GetNameList.ListOfIdentifier.Select((identifier =>
-                            identifier.Value)));
-                }
-                else
-                {
-                    break;
-                }
+
+                    if (receivedPdu?.Confirmed_ResponsePDU?.Service?.GetNameList != null)
+                    {
+                        ldIdentifiersList.AddRange(
+                            receivedPdu.Confirmed_ResponsePDU.Service.GetNameList.ListOfIdentifier.Select((identifier =>
+                                identifier.Value)));
+                    }
+                    else
+                    {
+                        break;
+                    }
 
 
-            } while (receivedPdu.Confirmed_ResponsePDU.Service.GetNameList.MoreFollows);
+                } while (receivedPdu.Confirmed_ResponsePDU.Service.GetNameList.MoreFollows);
+
+                _cachedLDeviceDefinitions[ldInst] = ldIdentifiersList;
+            }
+            else
+            {
+                ldIdentifiersList = _cachedLDeviceDefinitions[ldInst];
+            }
+
             return new OperationResult<List<string>>(ldIdentifiersList);
         }
 
         public async Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescription(string ldName, string lnName)
         {
-            var typeDescription = await new InfoModelClientService(_state).SendGetVariableAccessAttributesAsync(ldName, lnName);
+            var typeDescription =
+                await new InfoModelClientService(_state).SendGetVariableAccessAttributesAsync(ldName, lnName);
 
             var response = typeDescription.Confirmed_ResponsePDU.Service.GetVariableAccessAttributes;
             MmsTypeDescription mmsTypeDescription = GetMmsTypeDescription(response.TypeDescription, "");
             return new OperationResult<MmsTypeDescription>(mmsTypeDescription);
 
         }
+
+        public async Task<OperationResult<List<string>>> GetListDataSetsAsync(string ldInst, bool acceptCache)
+        {
+            MMSpdu receivedPdu;
+
+            receivedPdu = await new DataSetClientService(_state).SendGetNameListNamedVariableListAsync(ldInst);
+            if (receivedPdu.Confirmed_ResponsePDU.Service.GetNameList != null)
+            {
+                var datasets = receivedPdu.Confirmed_ResponsePDU.Service.GetNameList.ListOfIdentifier.Select(
+                    (identifier =>
+                        identifier.Value)).ToList();
+                return new OperationResult<List<string>>(datasets);
+            }
+
+            return new OperationResult<List<string>>("");
+        }
+
+        public async Task<OperationResult<DataSetDto>> GetListDataSetInfoAsync(string ldInst, string lnName,
+            string datasetName, bool acceptCache)
+        {
+            DataSetDto datasetDto = new DataSetDto();
+
+               var receivedPdu = await (new DataSetClientService(_state)).GetDatasetInformationAsync(ldInst,
+               lnName, datasetName);
+
+
+            if (receivedPdu.Confirmed_ResponsePDU != null &&
+                receivedPdu.Confirmed_ResponsePDU.Service.GetNamedVariableListAttributes != null)
+            {
+                var fcdas =
+                    receivedPdu.Confirmed_ResponsePDU.Service.GetNamedVariableListAttributes
+                        .ListOfVariable.Select((type =>
+                            type.VariableSpecification.Name.Domain_specific.DomainID.Value + "$" +
+                            type.VariableSpecification.Name.Domain_specific.ItemID.Value)).ToList();
+                datasetDto.IsDynamic = receivedPdu.Confirmed_ResponsePDU.Service.GetNamedVariableListAttributes
+                    .MmsDeletable;
+                datasetDto.FcdaList = fcdas;
+                return new OperationResult<DataSetDto>(datasetDto);
+            }
+            return new OperationResult<DataSetDto>("");
+        }
+
 
         private MmsTypeDescription GetMmsTypeDescription(TypeDescription responseTypeDescription, string name)
         {
@@ -167,7 +223,8 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                         break;
                 }
             }
-            else if (responseTypeDescription.isGeneralized_timeSelected() || responseTypeDescription.isUtc_timeSelected() || responseTypeDescription.isBinary_timeSelected())
+            else if (responseTypeDescription.isGeneralized_timeSelected() ||
+                     responseTypeDescription.isUtc_timeSelected() || responseTypeDescription.isBinary_timeSelected())
             {
                 mmsTypeDescription.BasicType = tBasicTypeEnum.Timestamp;
             }
@@ -201,13 +258,16 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                         break;
                 }
             }
+
             if (mmsTypeDescription.IsStructure)
             {
                 foreach (var component in responseTypeDescription.Structure.Components)
                 {
-                    mmsTypeDescription.Components.Add(GetMmsTypeDescription(component.ComponentType.TypeDescription, component.ComponentName.Value));
+                    mmsTypeDescription.Components.Add(GetMmsTypeDescription(component.ComponentType.TypeDescription,
+                        component.ComponentName.Value));
                 }
             }
+
             return mmsTypeDescription;
         }
     }

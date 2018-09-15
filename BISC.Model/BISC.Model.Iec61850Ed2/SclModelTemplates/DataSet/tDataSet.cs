@@ -7,7 +7,6 @@ using System.Xml.Serialization;
 using BISC.Model.Global;
 using BISC.Model.Iec61850Ed2.DataTypeTemplates.Base;
 using BISC.Model.Infrastructure.Common;
-using BISC.Model.Infrastructure.Controls;
 
 namespace BISC.Model.Iec61850Ed2.SclModelTemplates.DataSet
 {
@@ -15,7 +14,7 @@ namespace BISC.Model.Iec61850Ed2.SclModelTemplates.DataSet
     [Serializable]
     [DesignerCategory("code")]
     [XmlType(Namespace = "http://www.iec.ch/61850/2003/SCL")]
-    public class tDataSet : tNaming,IDataSet
+    public class tDataSet : tNaming
     {
         private bool _isDynamic;
 

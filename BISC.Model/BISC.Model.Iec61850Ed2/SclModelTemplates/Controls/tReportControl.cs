@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Xml.Serialization;
 using BISC.Model.Global;
 using BISC.Model.Iec61850Ed2.Common;
-using BISC.Model.Infrastructure.Controls;
 
 namespace BISC.Model.Iec61850Ed2.SclModelTemplates.Controls
 {
@@ -13,8 +12,7 @@ namespace BISC.Model.Iec61850Ed2.SclModelTemplates.Controls
     [Serializable]
     [DesignerCategory("code")]
     [XmlType(Namespace = "http://www.iec.ch/61850/2003/SCL")]
-    public class tReportControl : tControlWithTriggerOpt, ICloneable, IReportControl
-    {
+    public class tReportControl : tControlWithTriggerOpt, ICloneable{
         private ObservableCollection<tReportControl> _reportControlsInDevice;
         private bool _isDynamic;
 

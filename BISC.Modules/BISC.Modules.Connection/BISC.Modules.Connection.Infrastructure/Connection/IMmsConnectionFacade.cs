@@ -7,13 +7,24 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
 {
     public interface IMmsConnectionFacade
     {
+
         Task<bool> TryOpenConnection(string ip);
         bool CheckConnection();
         void StopConnection();
         Task<OperationResult<List<string>>> IdentifyAsync();
         Task<OperationResult<List<string>>> GetLdListAsync();
-        Task<OperationResult<List<string>>> GetListValiablesAsync(string ldInst);
+        Task<OperationResult<List<string>>> GetListValiablesAsync(string ldInst,bool acceptCache);
         Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescription(string ldName, string lnName);
+        Task<OperationResult<List<string>>> GetListDataSetsAsync(string ldInst, bool acceptCache);
+        Task<OperationResult<DataSetDto>> GetListDataSetInfoAsync(string ldInst,string lnName,string datasetName, bool acceptCache);
+
+    }
+
+    public class DataSetDto
+    {
+        public bool IsDynamic { get; set; }
+        public List<string> FcdaList { get; set; }
+
     }
 
     public class MmsTypeDescription

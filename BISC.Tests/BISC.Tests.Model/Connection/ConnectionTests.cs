@@ -88,7 +88,7 @@ namespace BISC.Tests.Model.Connection
             task.Wait();
             var ldList = task.Result;
             Assert.IsTrue(ldList.Item.Count != 0);
-            var lns = connection.MmsConnection.GetListValiablesAsync(ldList.Item.First()).RunSync();
+            var lns = connection.MmsConnection.GetListValiablesAsync(ldList.Item.First(),false).RunSync();
             Assert.IsTrue(lns.IsSucceed);
             connection.StopConnection();
         }

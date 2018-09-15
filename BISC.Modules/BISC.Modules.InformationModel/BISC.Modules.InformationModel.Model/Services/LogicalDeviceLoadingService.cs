@@ -76,7 +76,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             _deviceName = FindSubstring(ldList.Item);
             foreach (var ld in ldList.Item)
             {
-                ldDictionary.Add(ld, (await _connection.MmsConnection.GetListValiablesAsync(ld)).Item);
+                ldDictionary.Add(ld, (await _connection.MmsConnection.GetListValiablesAsync(ld,false)).Item);
             }
         }
 
@@ -264,6 +264,10 @@ namespace BISC.Modules.InformationModel.Model.Services
 
             foreach (var doiDto in doiDtos)
             {
+                if (doiDto.Name.Contains("GseControl"))
+                {
+
+                }
                 string doName = doiDto.Name;
                 string path = commonLogicalNode.id + "." + doName;
                 DOData dataObj = (DOData)SclObjectFactory.CreateDoType(commonLogicalNode, doName,
@@ -275,17 +279,27 @@ namespace BISC.Modules.InformationModel.Model.Services
                 tdo.name = doName;
                 tdo.type = path;
                 doiDto.FullPath = path;
-                if (dataObj == null) continue;
-                dataObj.id = path;
-                AddDataObjectBySpec(dataObj, doi, doiDto,logicalNodeDto);
+                if (dataObj == null)
+                {
+                   
+                }
 
+                if (dataObj != null)
+                {
+                    dataObj.id = path;
+                }
 
-                string id =_dataTypeTemplatesModelService.AddDoType(dataObj.MapDoType(), _sclModel);
+                AddDataObjectBySpec(dataObj, doi, doiDto, logicalNodeDto);
+                if (dataObj != null)
+                {
+                    string id = _dataTypeTemplatesModelService.AddDoType(dataObj.MapDoType(), _sclModel);
 
-                tdo.type = id;
-                commonLogicalNode.AddDO(tdo);
-                //полученный объект добавляется в набор объектов шаблона LN                                    
-                commonLogicalNode.SetAttributeByName(doName, dataObj);
+                    tdo.type = id;
+                    commonLogicalNode.AddDO(tdo);
+                    //полученный объект добавляется в набор объектов шаблона LN                                    
+                    commonLogicalNode.SetAttributeByName(doName, dataObj);
+                }
+
                 //полученный шаблон добавляется в набор шаблонов шаблона LN   
                 doi.ParentModelElement = resAnyLn;
                 resAnyLn.DoiCollection.Add(doi); //полученный объект (инстанс) добавляется в набор объектов объекта LN
@@ -315,20 +329,20 @@ namespace BISC.Modules.InformationModel.Model.Services
                     var typeDescriptionForFc = typeDescription.Components
                         .First((type => type.Name== fc));
 
-                    //if (fc == "RP" || fc == "BR")
-                    //{
-                    //    continue;
-                    //}
+                    if (fc == "RP" || fc == "BR")
+                    {
+                        continue;
+                    }
 
-                    //if (fc == "GO")
-                    //{
-                    //    continue;
-                    //}
+                    if (fc == "GO")
+                    {
+                        continue;
+                    }
 
-                    //if (fc == "SP")
-                    //{
-                    //    continue;
-                    //}
+                    if (fc == "SP")
+                    {
+                        continue;
+                    }
 
                     foreach (var component in typeDescriptionForFc.Components)
                     {

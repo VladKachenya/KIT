@@ -52,5 +52,11 @@ namespace BISC.Modules.InformationModel.Model.Services
             device.ChildModelElements.Add(deviceAccessPoint);
 
         }
+
+        public List<ILDevice> GetLDevicesFromDevices(IModelElement device)
+        {
+            return (device.ChildModelElements.First((element => element is DeviceAccessPoint)) as DeviceAccessPoint)
+                .DeviceServer.LDevicesCollection;
+        }
     }
 }

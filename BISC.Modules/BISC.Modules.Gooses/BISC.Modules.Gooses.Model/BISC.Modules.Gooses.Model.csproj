@@ -45,7 +45,42 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\ExternalGooseRef.cs" />
+    <Compile Include="Model\GooseControl.cs" />
+    <Compile Include="Model\GooseInput.cs" />
+    <Compile Include="Module\GoosesModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializers\ExternalGooseRefSerializer.cs" />
+    <Compile Include="Serializers\GooseControlSerializer.cs" />
+    <Compile Include="Serializers\GooseInputSerializer.cs" />
+    <Compile Include="Services\GoosesLoadingService.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
+      <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
+      <Name>BISC.Infrastructure.Global</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Global\BISC.Model.Global.csproj">
+      <Project>{FCA3F7FE-D64B-4C3C-9F8D-85753FC944BE}</Project>
+      <Name>BISC.Model.Global</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
+      <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
+      <Name>BISC.Model.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.Connection\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
+      <Project>{84925CA6-959A-4094-9688-622DC28B7452}</Project>
+      <Name>BISC.Modules.Connection.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.Device\BISC.Modules.Device.Infrastructure\BISC.Modules.Device.Infrastructure.csproj">
+      <Project>{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}</Project>
+      <Name>BISC.Modules.Device.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BISC.Modules.Gooses.Infrastructure\BISC.Modules.Gooses.Infrastructure.csproj">
+      <Project>{7FD15BE3-633C-4063-8948-B1663736523D}</Project>
+      <Name>BISC.Modules.Gooses.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -104,6 +104,14 @@
       <Project>{48f6571c-ed09-4ed9-b76a-ac78ef9e9890}</Project>
       <Name>BISC.Modules.Connection.Presentation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.DataSets\BISC.Modules.DataSets.Model\BISC.Modules.DataSets.Model.csproj">
+      <Project>{B0245475-552D-4A8F-8F54-6BA350777A92}</Project>
+      <Name>BISC.Modules.DataSets.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.DataSets\BISC.Modules.DataSets.Presentation\BISC.Modules.DataSets.Presentation.csproj">
+      <Project>{70C281BF-18D7-4FE3-8CBB-2A0AA963FD64}</Project>
+      <Name>BISC.Modules.DataSets.Presentation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Device\BISC.Modules.Device.Model\BISC.Modules.Device.Model.csproj">
       <Project>{B16C43D5-A925-428D-8AB6-D5E296DB4B54}</Project>
       <Name>BISC.Modules.Device.Model</Name>
@@ -115,6 +123,14 @@
     <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.FTP\BISC.Modules.FTP.FTPConnection\BISC.Modules.FTP.FTPConnection.csproj">
       <Project>{6aea781c-90e4-458f-9e48-e2ecc893c178}</Project>
       <Name>BISC.Modules.FTP.FTPConnection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Gooses\BISC.Modules.Gooses.Model\BISC.Modules.Gooses.Model.csproj">
+      <Project>{051A7BD8-64D0-4A51-9038-CC66B56D08F5}</Project>
+      <Name>BISC.Modules.Gooses.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Gooses\BISC.Modules.Gooses.Presentation\BISC.Modules.Gooses.Presentation.csproj">
+      <Project>{69D09B0A-122B-4CE2-84EA-2A5DA30991E7}</Project>
+      <Name>BISC.Modules.Gooses.Presentation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Model\BISC.Modules.InformationModel.Model.csproj">
       <Project>{346395B5-8238-45AE-B002-C22B816AC135}</Project>

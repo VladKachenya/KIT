@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Xml.Serialization;
 using BISC.Model.Global;
 using BISC.Model.Iec61850Ed2.Common;
-using BISC.Model.Infrastructure.Controls;
 
 namespace BISC.Model.Iec61850Ed2.SclModelTemplates.Controls
 {
@@ -12,7 +11,7 @@ namespace BISC.Model.Iec61850Ed2.SclModelTemplates.Controls
     [Serializable]
     [DesignerCategory("code")]
     [XmlType(Namespace = "http://www.iec.ch/61850/2003/SCL")]
-    public class tGSEControl : tControlWithIEDName, IGseControl
+    public class tGSEControl : tControlWithIEDName
     {
         private tGSEControlTypeEnum typeField;
         private string appIDField;

@@ -8,9 +8,13 @@ using BISC.Model.Iec61850Ed2.Module;
 using BISC.Modules.Connection.MMS.Module;
 using BISC.Modules.Connection.Model.Module;
 using BISC.Modules.Connection.Presentation.Module;
+using BISC.Modules.DataSets.Model.Module;
+using BISC.Modules.DataSets.Presentation.Module;
 using BISC.Modules.Device.Model.Module;
 using BISC.Modules.Device.Presentation.Module;
 using BISC.Modules.FTP.FTPConnection.Module;
+using BISC.Modules.Gooses.Model.Module;
+using BISC.Modules.Gooses.Presentation.Module;
 using BISC.Modules.InformationModel.Model.Module;
 using BISC.Modules.InformationModel.Presentation.Module;
 using BISC.Presentation.BaseItems.Module;
@@ -62,7 +66,11 @@ namespace BISC.Infrastructure.CompositionRoot.Bootstraper
             Container.RegisterType(typeof(IAppModule), typeof(ConnectionPresentationModule), nameof(ConnectionPresentationModule));
             Container.RegisterType(typeof(IAppModule), typeof(FTPConnectionModule), nameof(FTPConnectionModule));
             Container.RegisterType(typeof(IAppModule), typeof(ConnectionMmsModule), nameof(ConnectionMmsModule));
-
+            Container.RegisterType(typeof(IAppModule), typeof(GoosesModelModule), nameof(GoosesModelModule));
+            Container.RegisterType(typeof(IAppModule), typeof(GoosesPresentationModule), nameof(GoosesPresentationModule));
+ 
+            Container.RegisterType(typeof(IAppModule), typeof(DatasetsModelModule), nameof(DatasetsModelModule));
+            Container.RegisterType(typeof(IAppModule), typeof(DatasetsPresentationModule), nameof(DatasetsPresentationModule));
         }
     }
 }

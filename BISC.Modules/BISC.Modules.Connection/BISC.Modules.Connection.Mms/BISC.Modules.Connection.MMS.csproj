@@ -158,6 +158,7 @@
     <Compile Include="Goose_ASN1_Model\TimeOfDay.cs" />
     <Compile Include="Goose_ASN1_Model\UtcTime.cs" />
     <Compile Include="EmbeddedAssembly.cs" />
+    <Compile Include="MmsClientServices\DataSetClientService.cs" />
     <Compile Include="MmsClientServices\InfoModelClientService.cs" />
     <Compile Include="MmsClientServices\InitService.cs" />
     <Compile Include="MmsClientServices\MmsClientServiceBase.cs" />

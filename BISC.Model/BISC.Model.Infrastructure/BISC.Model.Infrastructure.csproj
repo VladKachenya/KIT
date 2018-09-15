@@ -48,10 +48,6 @@
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\INameableItem.cs" />
     <Compile Include="Common\IParentable.cs" />
-    <Compile Include="Controls\IDataSet.cs" />
-    <Compile Include="Controls\IFcda.cs" />
-    <Compile Include="Controls\IGseControl.cs" />
-    <Compile Include="Controls\IReportControl.cs" />
     <Compile Include="Elements\IModelElement.cs" />
     <Compile Include="IModelElementSerializer.cs" />
     <Compile Include="IModelElementsRegistryService.cs" />

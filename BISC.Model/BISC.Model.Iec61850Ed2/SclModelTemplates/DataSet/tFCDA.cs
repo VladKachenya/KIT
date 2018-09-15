@@ -7,7 +7,6 @@ using System.Text;
 using System.Xml.Serialization;
 using BISC.Model.Iec61850Ed2.Common;
 using BISC.Model.Infrastructure.Common;
-using BISC.Model.Infrastructure.Controls;
 
 namespace BISC.Model.Iec61850Ed2.SclModelTemplates.DataSet
 {
@@ -15,7 +14,7 @@ namespace BISC.Model.Iec61850Ed2.SclModelTemplates.DataSet
     [Serializable]
     [DesignerCategory("code")]
     [XmlType(Namespace = "http://www.iec.ch/61850/2003/SCL")]
-    public class tFCDA : IFcda, IParentable
+    public class tFCDA :  IParentable
     {
        // private List<ILogicalNodeData> _chilNodes = new List<ILogicalNodeData>();
 
