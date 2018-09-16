@@ -20,6 +20,7 @@ namespace BISC.Modules.DataSets.Model.Model
         #region Implementation of IDataSet
 
         public List<IFcda> FcdaList { get; }
+        public string Name { get; set; }
 
         #endregion
     }

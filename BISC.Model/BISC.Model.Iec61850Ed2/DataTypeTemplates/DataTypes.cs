@@ -30,6 +30,7 @@ namespace BISC.Model.Iec61850Ed2.DataTypeTemplates
         {
             this.Visible = true;
             Val = new List<tVal>();
+            EnumVal=new List<tEnumVal>();
         }
 
         public void FullEnumList(Type type)

@@ -15,6 +15,7 @@ namespace BISC.Modules.DataSets.Model.Serializers
         public DataSetSerializer()
         {
             RegisterModelElementCollection(typeof(IFcda));
+            RegisterProperty(nameof(IDataSet.Name),"name");
         }
 
         #region Overrides of DefaultModelElementSerializer<IDataSet>

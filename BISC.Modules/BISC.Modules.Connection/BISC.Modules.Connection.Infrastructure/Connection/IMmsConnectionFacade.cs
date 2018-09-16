@@ -19,6 +19,15 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
         Task<OperationResult<DataSetDto>> GetListDataSetInfoAsync(string ldInst,string lnName,string datasetName, bool acceptCache);
 
     }
+    public class GooseDto
+    {
+        public string DatSet { get; set; }
+        public string GoID { get; set; }
+        public string ConfRev { get; set; }
+        public string FixedOffs { get; set; }
+        public string DstAddress { get; set; }
+        public string Addr { get; set; }
+    }
 
     public class DataSetDto
     {

@@ -13,7 +13,7 @@ namespace BISC.Modules.Gooses.Model.Services
    public class GoosesLoadingService: IDeviceElementLoadingService
     {
         private readonly IConnectionPoolService _connectionPoolService;
-        private List<string> _goosesList=new List<string>();
+        private Dictionary<string,List<string>> _ldGoosesDictionary=new Dictionary<string, List<string>>();
         public GoosesLoadingService(IConnectionPoolService connectionPoolService)
         {
             _connectionPoolService = connectionPoolService;
@@ -38,13 +38,22 @@ namespace BISC.Modules.Gooses.Model.Services
             int count = 0;
             foreach (var lDevice in ldevices)
             {
+             
                var definitions=(await connection.MmsConnection.GetListValiablesAsync(lDevice, true)).Item;
                 foreach (var definition in definitions)
                 {
                     var parts = definition.Split('$');
                     if (parts.Length == 2 && parts[1] == "GO")
                     {
-                        _goosesList.Add(definition);
+                        if (_ldGoosesDictionary.ContainsKey(lDevice))
+                        {
+                            _ldGoosesDictionary[lDevice].Add(definition);
+                        }
+                        else
+                        {
+                            _ldGoosesDictionary.Add(lDevice, new List<string>(){definition});
+
+                        }
                         count ++;
                     }
                 }
@@ -55,9 +64,12 @@ namespace BISC.Modules.Gooses.Model.Services
 
         public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel)
         {
-            if (_goosesList.Any())
+            if (_ldGoosesDictionary.Values.Any())
             {
-
+                foreach (var ldevice in _ldGoosesDictionary.Keys)
+                {
+                    
+                }
             }
             else
             {

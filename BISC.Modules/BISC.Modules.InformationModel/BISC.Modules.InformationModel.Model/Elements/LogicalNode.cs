@@ -21,5 +21,6 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public string LnType { get; set; }
         public List<IDoi> DoiCollection { get; }
         public string Prefix { get; set; }
+        public string Name => Prefix + LnClass + Inst;
     }
 }

@@ -130,6 +130,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 
                     progress?.Report(new LogicalNodeLoadingEvent());
                     ILogicalNode logicalNode = await CreateLogicalNode(logicalNodeDto);
+                    if(logicalNode==null)continue;
                     if (logicalNode is ILogicalNodeZero)
                     {
                         newLDevice.LogicalNodeZero = logicalNode as ILogicalNodeZero;
@@ -253,8 +254,16 @@ namespace BISC.Modules.InformationModel.Model.Services
 
             }
 
+            try
+            {
             logicalNodeDto.RelatedCommonLogicalNode = commonLogicalNode;
             commonLogicalNode.id = logicalNodeDto.Path;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
 
 
 
@@ -271,7 +280,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 string doName = doiDto.Name;
                 string path = commonLogicalNode.id + "." + doName;
                 DOData dataObj = (DOData)SclObjectFactory.CreateDoType(commonLogicalNode, doName,
-                    doiDto.MembersList.Select((data => data.Name)).ToList());
+                    doiDto.MembersList.Select((data => data.Name)).ToList(), _modelTypesResolvingService);
                 IDoi doi = new Doi() { Name = doName };
                 tDO tdo = new tDO(); //tdo нужен для того, чтобы добавить его в шаблон LN как объект
                 //смысл всех этих операций в том, чтобы определить тип DO по его имени
@@ -281,7 +290,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 doiDto.FullPath = path;
                 if (dataObj == null)
                 {
-                   
+                   continue;
                 }
 
                 if (dataObj != null)
@@ -296,8 +305,16 @@ namespace BISC.Modules.InformationModel.Model.Services
 
                     tdo.type = id;
                     commonLogicalNode.AddDO(tdo);
-                    //полученный объект добавляется в набор объектов шаблона LN                                    
-                    commonLogicalNode.SetAttributeByName(doName, dataObj);
+                    //полученный объект добавляется в набор объектов шаблона LN  
+                    try
+                    {
+                        commonLogicalNode.SetAttributeByName(doName, dataObj);
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
                 }
 
                 //полученный шаблон добавляется в набор шаблонов шаблона LN   
@@ -471,7 +488,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                         //объект может быть типом SDIDADataTypeBDA (наследником)
                         if (structObject.GetType().IsSubclassOf(typeof(SDIDADataTypeBDA)))
                         {
-                            AddSDIDADataType(newsdi, innerDoData, path, fc, dataObj, (SDIDADataTypeBDA) structObject,
+                            var res=AddSDIDADataType(newsdi, innerDoData, path, fc, dataObj, (SDIDADataTypeBDA) structObject,
                                 null, logicalNodeDto);
 
                         }
@@ -654,6 +671,10 @@ namespace BISC.Modules.InformationModel.Model.Services
                 sdiDAData = CreateSDIDADataTypeBDA(sdiDAData, attrname, dataObj);
             if (dataObj == null)
                 sdiDAData = CreateSDIDADataTypeBDA(sdiDAData, attrname, da);
+            if (sdiDAData == null)
+            {
+                return null;
+            }
             sdiDAData.name = attrname;
             sdiDAData.fc = (tFCEnum)fc;
 
@@ -703,7 +724,15 @@ namespace BISC.Modules.InformationModel.Model.Services
 
             if (sdiDAData.name == RANGEC_STR)
             {
-                type = ((rangeC)sdiDAData).RangeConfig.GetAttributeByName(attrname);
+                try
+                {
+                    type = ((rangeC)sdiDAData).RangeConfig.GetAttributeByName(attrname);
+
+                }
+                catch (Exception e)
+                {
+                    type = ((RangeConfig)sdiDAData).GetAttributeByName(attrname);
+                }
             }
             else
                 type = sdiDAData.GetAttributeByName(attrname);
@@ -716,6 +745,10 @@ namespace BISC.Modules.InformationModel.Model.Services
                 {
                     SDIDADataTypeBDA sdidaDataTypeBda = (SDIDADataTypeBDA)o;
                     sdidaDataTypeBda = AddSDIDADataType(newsdi, innerDoData, str + "." + attrname, fc, null, sdidaDataTypeBda, sdiDAData,logicalNodeDto);
+                    if (sdidaDataTypeBda == null)
+                    {
+                        return;
+                    }
                     sdidaDataTypeBda.name = attrname;
                     AddStructBDA(datype, attrname, (tDA)sdidaDataTypeBda);
                 }
@@ -737,7 +770,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 type = dataObj.GetAttributeByName(attrname);
             if (type == null)
             {
-
+                return null;
             }
 
             if (type != null)
@@ -791,11 +824,20 @@ namespace BISC.Modules.InformationModel.Model.Services
 
             if (da.GetType().IsSubclassOf(typeof(DADataType)))
                 enumtype.EnumVal = ((DADataType)da).EnumVal;
-            if (enumtype.EnumVal.Count == 0)
+            try
+            {
+       if (enumtype.EnumVal.Count == 0)
             {
 
             }
 
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+     
             da.type = _dataTypeTemplatesModelService.AddEnumType(enumtype.MapEnumType(), _sclModel);
         }
 
@@ -905,7 +947,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 
 
 
-        public static tDOType CreateDoType(CommonLogicalNode ln, string doName, List<string> doList)
+        public static tDOType CreateDoType(CommonLogicalNode ln, string doName, List<string> doList,IModelTypesResolvingService modelTypesResolvingService)
         {
             Type typeOfDo = ln.GetAttributeByName(doName); //подтягивается тип соответствующий названию DO
 
@@ -929,15 +971,81 @@ namespace BISC.Modules.InformationModel.Model.Services
                 }
             }
 
-            if (typeOfDo == null) return null;
-            DOData dataObj = (DOData) Activator.CreateInstance(typeOfDo);
+            if (typeOfDo == null)
+            {
+                var allLnTypes = modelTypesResolvingService.GetAllRegisteredTypes(2, typeof(CommonLogicalNode));
+                foreach (var lnType in allLnTypes)
+                {
+                    foreach (var propertyType in lnType.GetProperties())
+                    {
+                        bool isEquivalentType = true;
+                        foreach (var innerDoName in doList)
+                        {
+                            if (!propertyType.PropertyType.GetProperties().Any((info => info.Name == innerDoName)))
+                                isEquivalentType = false;
+                        }
+
+                        if (isEquivalentType)
+                        {
+                            typeOfDo = propertyType.PropertyType;
+                            break;
+                        }
+                    }
+                    if(typeOfDo!=null)break;
+                }
+                
+            }
+            if (typeOfDo == null)
+            {
+              
+                    foreach (var propertyType in ln.GetAllPropertyTypes())
+                    {
+                        bool isEquivalentType = propertyType.Name == doName;
+
+
+                        if (isEquivalentType)
+                        {
+                            typeOfDo = propertyType;
+                            break;
+                        }
+                    }
+            }
+            if (typeOfDo == null)
+            {
+                var allLnTypes = modelTypesResolvingService.GetAllRegisteredTypes(2, typeof(CommonLogicalNode));
+                foreach (var lnType in allLnTypes)
+                {
+                    foreach (var propertyType in lnType.GetProperties())
+                    {
+                        bool isEquivalentType = propertyType.Name == doName;
+
+
+                        if (isEquivalentType)
+                        {
+                            typeOfDo = propertyType.PropertyType;
+                            break;
+                        }
+                    }
+                    if (typeOfDo != null) break;
+                }
+            }
+            DOData dataObj = null;
+            if (typeOfDo == null)
+            {
+                return null;
+            }
+            else
+            {
+                 dataObj = (DOData)Activator.CreateInstance(typeOfDo);
+
+            }
             object o = (DOData) ln.GetAttributeValByName(doName);
             //если внутри типа LN предопределен тип DO, то он подтягивается и используется
             if (o != null)
                 dataObj = (DOData) o;
             dataObj.name = doName;
             tCDCEnumEd2 cdc;
-            string n = typeOfDo.ToString().Substring(typeOfDo.ToString().LastIndexOf('.') + 1);
+            string n = typeOfDo?.ToString().Substring(typeOfDo.ToString().LastIndexOf('.') + 1);
             if (Enum.TryParse(n, out cdc)) dataObj.cdc = cdc;
             return dataObj;
         }

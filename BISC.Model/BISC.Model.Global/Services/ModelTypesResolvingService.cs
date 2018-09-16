@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Services;
@@ -11,6 +12,7 @@ namespace BISC.Model.Global.Services
     {
 
         private Dictionary<int, Dictionary<Type, Dictionary<string, Type>>> _editionsDictionary;
+        private Func<object> _getLnStubFunc;
 
         public ModelTypesResolvingService()
         {
@@ -51,7 +53,17 @@ namespace BISC.Model.Global.Services
                 return _editionsDictionary[edition][baseType][name];
             }
 
-            return null;
+            return _getLnStubFunc();
+        }
+
+        public List<Type> GetAllRegisteredTypes(int ed, Type baseType)
+        {
+            return _editionsDictionary[ed][baseType].Values.ToList();
+        }
+
+        public void SetLnStub(Func<object> getLnStubFunc)
+        {
+            _getLnStubFunc = getLnStubFunc;
         }
 
         #endregion

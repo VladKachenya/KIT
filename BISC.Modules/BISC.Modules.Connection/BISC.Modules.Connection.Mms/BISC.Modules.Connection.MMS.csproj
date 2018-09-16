@@ -163,6 +163,7 @@
     <Compile Include="MmsClientServices\InitService.cs" />
     <Compile Include="MmsClientServices\MmsClientServiceBase.cs" />
     <Compile Include="MmsClientServices\MmsConnectionFacade.cs" />
+    <Compile Include="MmsClientServices\ReadingValuesClientService.cs" />
     <Compile Include="MMS_ASN1_Model\MMSpdu.cs" />
     <Compile Include="Module\ConnectionMmsModule.cs" />
     <Compile Include="org\bn\attributes\ASN1Any.cs" />
