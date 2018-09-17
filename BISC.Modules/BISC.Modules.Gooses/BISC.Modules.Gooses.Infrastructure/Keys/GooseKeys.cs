@@ -15,5 +15,12 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
             public static string GooseControlKey => "GSEControl";
 
         }
+        public static class GoosePresentationKeys
+        {
+  
+            public static string GooseGroupTreeItemViewKey => "GooseGroupTreeItemView";
+            public static string GooseReceivingTabKey => "GooseReceivingTab";
+
+        }
     }
 }

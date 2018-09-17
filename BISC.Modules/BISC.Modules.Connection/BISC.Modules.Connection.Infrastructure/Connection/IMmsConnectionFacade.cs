@@ -14,25 +14,10 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
         Task<OperationResult<List<string>>> IdentifyAsync();
         Task<OperationResult<List<string>>> GetLdListAsync();
         Task<OperationResult<List<string>>> GetListValiablesAsync(string ldInst,bool acceptCache);
-        Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescription(string ldName, string lnName);
+        Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescription(string ldName, string lnName,bool acceptCache);
         Task<OperationResult<List<string>>> GetListDataSetsAsync(string ldInst, bool acceptCache);
         Task<OperationResult<DataSetDto>> GetListDataSetInfoAsync(string ldInst,string lnName,string datasetName, bool acceptCache);
-
-    }
-    public class GooseDto
-    {
-        public string DatSet { get; set; }
-        public string GoID { get; set; }
-        public string ConfRev { get; set; }
-        public string FixedOffs { get; set; }
-        public string DstAddress { get; set; }
-        public string Addr { get; set; }
-    }
-
-    public class DataSetDto
-    {
-        public bool IsDynamic { get; set; }
-        public List<string> FcdaList { get; set; }
+        Task<OperationResult<List<GooseDto>>> GetListGoosesAsync(string fullLdPath, string lnName,string deviceName);
 
     }
 

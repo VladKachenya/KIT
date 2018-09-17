@@ -87,5 +87,32 @@ namespace BISC.Model.Global.Services.CommunicationModel
            return (sclModel.ChildModelElements.First((element => element is ISclCommunicationModel)) as
                 ISclCommunicationModel)?.SubNetworks[0].ConnectedAccessPoints.First((point =>point.IedName==deviceName ));
         }
+
+        public void DeleteAccessPoint(ISclModel sclModel, string iedName)
+        {
+            ISclCommunicationModel sclCommunicationModel =
+                (sclModel.ChildModelElements.FirstOrDefault((element => (element is ISclCommunicationModel))) as
+                    ISclCommunicationModel);
+          var connectedAp=  sclCommunicationModel?.SubNetworks[0].ConnectedAccessPoints
+                .FirstOrDefault((point => point.IedName == iedName));
+            if (connectedAp != null)
+            {
+                sclCommunicationModel.SubNetworks[0].ConnectedAccessPoints.Remove(connectedAp);
+            }
+            
+        }
+
+        public void AddGse(IGse gse, ISclModel sclModel, string iedName)
+        {
+            ISclCommunicationModel sclCommunicationModel =
+                (sclModel.ChildModelElements.FirstOrDefault((element => (element is ISclCommunicationModel))) as
+                    ISclCommunicationModel);
+            var connectedAp = sclCommunicationModel?.SubNetworks[0].ConnectedAccessPoints
+                .FirstOrDefault((point => point.IedName == iedName));
+            if (connectedAp != null)
+            {
+               connectedAp.GseList.Add(gse);
+            }
+        }
     }
 }

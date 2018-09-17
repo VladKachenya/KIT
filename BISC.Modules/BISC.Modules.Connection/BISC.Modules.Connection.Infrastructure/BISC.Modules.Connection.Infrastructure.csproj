@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Connection\Dto\DataSetDto.cs" />
+    <Compile Include="Connection\Dto\GooseDto.cs" />
     <Compile Include="Connection\IDeviceConnection.cs" />
     <Compile Include="Connection\IMmsConnectionFacade.cs" />
     <Compile Include="Events\ConnectionEvent.cs" />

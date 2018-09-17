@@ -114,7 +114,7 @@ namespace BISC.Modules.Device.Model.Services
 
             List<ILDevice> devicesToRemove=new List<ILDevice>();
             List<ILDevice> devicesToLeave = new List<ILDevice>();
-
+            _sclCommunicationModelService.DeleteAccessPoint(sclModel,device.Name);
 
             
             device.FillChildModelElements(devicesToRemove);

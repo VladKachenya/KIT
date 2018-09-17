@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using BISC.Modules.Gooses.Presentation.ViewModels.Tree;
 
 namespace BISC.Modules.Gooses.Presentation.Views.Tree
 {
@@ -7,9 +8,10 @@ namespace BISC.Modules.Gooses.Presentation.Views.Tree
     /// </summary>
     public partial class GooseGroupTreeItemView : UserControl
     {
-        public GooseGroupTreeItemView()
+        public GooseGroupTreeItemView(GooseGroupTreeItemViewModel gooseGroupTreeItemViewModel)
         {
             InitializeComponent();
+            DataContext = gooseGroupTreeItemViewModel;
         }
     }
 }

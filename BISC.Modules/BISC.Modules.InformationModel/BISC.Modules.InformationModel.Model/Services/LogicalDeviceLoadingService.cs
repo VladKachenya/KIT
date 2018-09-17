@@ -203,7 +203,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             ILogicalNode resAnyLn = null;
             CommonLogicalNode commonLogicalNode = null;
             logicalNodeDto.DoiTypeDescription =
-                (await _connection.MmsConnection.GetMmsTypeDescription(logicalNodeDto.LDName, logicalNodeDto.ShortName))
+                (await _connection.MmsConnection.GetMmsTypeDescription(logicalNodeDto.LDName, logicalNodeDto.ShortName,false))
                 .Item;
             if (logicalNodeDto.ShortName == "LLN0")
             {

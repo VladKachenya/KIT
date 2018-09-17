@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
 using BISC.Modules.Connection.Infrastructure.Connection;
 using BISC.Modules.Connection.MMS.MMS_ASN1_Model;
+using Microsoft.Practices.ObjectBuilder2;
 
 namespace BISC.Modules.Connection.MMS.MmsClientServices
 {
@@ -14,6 +15,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
         private string _ip;
         private readonly Iec61850State _state;
         private Dictionary<string, List<string>> _cachedLDeviceDefinitions = new Dictionary<string, List<string>>();
+        private Dictionary<string, MmsTypeDescription> _cachedTypeDescription = new Dictionary<string, MmsTypeDescription>();
 
         public MmsConnectionFacade()
         {
@@ -117,15 +119,31 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             return new OperationResult<List<string>>(ldIdentifiersList);
         }
 
-        public async Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescription(string ldName, string lnName)
+        public async Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescription(string ldPathName, string lnName,
+            bool acceoptCache)
         {
-            var typeDescription =
-                await new InfoModelClientService(_state).SendGetVariableAccessAttributesAsync(ldName, lnName);
+            if (acceoptCache && _cachedTypeDescription.ContainsKey(ldPathName + lnName))
+            {
+                return new OperationResult<MmsTypeDescription>(_cachedTypeDescription[ldPathName + lnName]);
+            }
+            else
+            {
+                var typeDescription =
+                    await new InfoModelClientService(_state).SendGetVariableAccessAttributesAsync(ldPathName, lnName);
 
-            var response = typeDescription.Confirmed_ResponsePDU.Service.GetVariableAccessAttributes;
-            MmsTypeDescription mmsTypeDescription = GetMmsTypeDescription(response.TypeDescription, "");
-            return new OperationResult<MmsTypeDescription>(mmsTypeDescription);
+                var response = typeDescription.Confirmed_ResponsePDU.Service.GetVariableAccessAttributes;
+                MmsTypeDescription mmsTypeDescription = GetMmsTypeDescription(response.TypeDescription, "");
+                if (_cachedTypeDescription.ContainsKey(ldPathName + lnName))
+                {
+                    _cachedTypeDescription[ldPathName + lnName] = mmsTypeDescription;
+                }
+                else
+                {
+                    _cachedTypeDescription.Add(ldPathName + lnName, mmsTypeDescription);
+                }
 
+                return new OperationResult<MmsTypeDescription>(mmsTypeDescription);
+            }
         }
 
         public async Task<OperationResult<List<string>>> GetListDataSetsAsync(string ldInst, bool acceptCache)
@@ -149,8 +167,8 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
         {
             DataSetDto datasetDto = new DataSetDto();
 
-               var receivedPdu = await (new DataSetClientService(_state)).GetDatasetInformationAsync(ldInst,
-               lnName, datasetName);
+            var receivedPdu = await (new DataSetClientService(_state)).GetDatasetInformationAsync(ldInst,
+            lnName, datasetName);
 
 
             if (receivedPdu.Confirmed_ResponsePDU != null &&
@@ -167,6 +185,135 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 return new OperationResult<DataSetDto>(datasetDto);
             }
             return new OperationResult<DataSetDto>("");
+        }
+
+        public async Task<OperationResult<List<GooseDto>>> GetListGoosesAsync(string fullLdPath, string lnName,
+            string deviceName)
+        {
+            List<GooseDto> gooseDtos = new List<GooseDto>();
+            MMSpdu recievedMmSpdu =
+                (await new ReadingValuesClientService(_state).SendReadAsync(fullLdPath, lnName, "GO"));
+
+            if (recievedMmSpdu.Confirmed_ResponsePDU.Service.Read == null)
+                return new OperationResult<List<GooseDto>>("");
+            AccessResult accessResult = recievedMmSpdu.Confirmed_ResponsePDU.Service.Read.ListOfAccessResult.First();
+            if (accessResult.Success == null && !accessResult.Success.isStructureSelected())
+                return new OperationResult<List<GooseDto>>("");
+
+            var typeDescriptionForFc =
+                (await GetMmsTypeDescription(fullLdPath, lnName, true)).Item.Components.First(
+                    (description => description.Name == "GO"));
+
+
+            for (int i = 0; i < typeDescriptionForFc.Components.Count; i++)
+            {
+                GooseDto gooseDto = new GooseDto();
+                gooseDto.Name = typeDescriptionForFc.Components[i].Name;
+
+                var typeDescriptionForGse = typeDescriptionForFc.Components[i];
+                var dataForGse = accessResult.Success.Structure.ToArray()[i];
+
+                int index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
+                    (type =>
+                        type.Name == "DatSet"));
+                gooseDto.DatSet = dataForGse.Structure.ToArray()[index].Visible_string.Split('$').Last();
+
+
+                index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
+                    (type =>
+                        type.Name == "GoID"));
+                gooseDto.GoId = dataForGse.Structure.ToArray()[index].Visible_string;
+
+                index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
+                (type =>
+                    type.Name == "ConfRev"));
+            gooseDto.ConfRev = (int) dataForGse.Structure.ToArray()[index].Unsigned;
+            index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
+                                        (type =>
+                                            type.Name == "FixedOffs"));
+                if (index > 0)
+                {
+                    gooseDto.FixedOffs = dataForGse.Structure.ToArray()[index].Boolean;
+                }
+
+                index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
+                                         (type =>
+                                             type.Name == "DstAddress"));
+            var dstAddressTypeDescription = typeDescriptionForGse.Components.First((type =>
+                      type.Name == "DstAddress"));
+            var dstAddressData = dataForGse.Structure.ToArray()[index];
+
+
+
+            index = Array.FindIndex(dstAddressTypeDescription.Components.ToArray(),
+                (type =>
+                    type.Name == "Addr"));
+
+            var macAddressString = string.Empty;
+            dstAddressData.Structure.ToArray()[index].Octet_string.ForEach((b =>
+            {
+                if (macAddressString == String.Empty)
+                {
+                    macAddressString += b.ToString("X2");
+                }
+                else
+                {
+                    macAddressString += "-" + b.ToString("X2");
+                }
+            }));
+
+                index = Array.FindIndex(dstAddressTypeDescription.Components.ToArray(),
+                    (type =>
+                        type.Name == "PRIORITY"));
+
+                var prioroty = (uint)dstAddressData.Structure.ToArray()[index].Unsigned;
+                index = Array.FindIndex(dstAddressTypeDescription.Components.ToArray(),
+                    (type =>
+                        type.Name == "VID"));
+
+                var vlanId = (uint)dstAddressData.Structure.ToArray()[index].Unsigned;
+
+
+                index = Array.FindIndex(dstAddressTypeDescription.Components.ToArray(),
+                    (type =>
+                        type.Name == "APPID"));
+
+                var appId = (uint)dstAddressData.Structure.ToArray()[index].Unsigned;
+
+
+
+                gooseDto.LdInst = fullLdPath.Replace(deviceName, "");
+                gooseDto.CbName = gooseDto.Name;
+                gooseDto.MAC_Address = macAddressString;
+                gooseDto.APPID = appId;
+                gooseDto.VLAN_ID =vlanId;
+                gooseDto.VLAN_PRIORITY = prioroty;
+
+                index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
+                   (type =>
+                       type.Name == "MinTime"));
+                var minTime = dataForGse.Structure.ToArray()[index].Unsigned;
+
+
+                index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
+                    (type =>
+                        type.Name == "MaxTime"));
+                var maxTime = dataForGse.Structure.ToArray()[index].Unsigned;
+
+                gooseDto.MaxTime = maxTime ;
+                gooseDto.MinTime = minTime ;
+
+                gooseDtos.Add(gooseDto);
+
+            }
+
+
+
+
+
+
+
+            return new OperationResult<List<GooseDto>>(gooseDtos);
         }
 
 

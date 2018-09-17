@@ -13,6 +13,7 @@ namespace BISC.Model.Global.Model.Communication
         public Gse()
         {
             ElementName = ModelKeys.GseKey;
+            SclAddress=new SclAddress();
         }
         public string VlanId
         {

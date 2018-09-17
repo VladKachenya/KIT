@@ -8,6 +8,7 @@ using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Infrastructure;
 using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Gooses.Infrastructure.Keys;
+using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Model.Serializers;
 using BISC.Modules.Gooses.Model.Services;
 
@@ -32,6 +33,7 @@ namespace BISC.Modules.Gooses.Model.Module
             modelElementsRegistryService.RegisterModelElement(new GooseInputSerializer(),  GooseKeys.GooseModelKeys.GooseInputKey);
             modelElementsRegistryService.RegisterModelElement(new GooseControlSerializer(), GooseKeys.GooseModelKeys.GooseControlKey);
             _injectionContainer.RegisterType<IDeviceElementLoadingService, GoosesLoadingService>(Guid.NewGuid().ToString());
+            _injectionContainer.RegisterType<IGoosesModelService, GoosesModelService>();
 
         }
 

@@ -3,20 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Global.Model.Communication;
 using BISC.Model.Infrastructure.Project;
+using BISC.Model.Infrastructure.Project.Communication;
+using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Gooses.Infrastructure.Model;
+using BISC.Modules.Gooses.Infrastructure.Services;
+using BISC.Modules.Gooses.Model.Model;
 
 namespace BISC.Modules.Gooses.Model.Services
 {
    public class GoosesLoadingService: IDeviceElementLoadingService
     {
         private readonly IConnectionPoolService _connectionPoolService;
+        private readonly IGoosesModelService _goosesModelService;
+        private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private Dictionary<string,List<string>> _ldGoosesDictionary=new Dictionary<string, List<string>>();
-        public GoosesLoadingService(IConnectionPoolService connectionPoolService)
+        public GoosesLoadingService(IConnectionPoolService connectionPoolService,
+            IGoosesModelService goosesModelService,ISclCommunicationModelService sclCommunicationModelService)
         {
             _connectionPoolService = connectionPoolService;
+            _goosesModelService = goosesModelService;
+            _sclCommunicationModelService = sclCommunicationModelService;
         }
 
         #region Implementation of IDisposable
@@ -64,11 +75,39 @@ namespace BISC.Modules.Gooses.Model.Services
 
         public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel)
         {
+            var connection = _connectionPoolService.GetConnection(device.Ip);
             if (_ldGoosesDictionary.Values.Any())
             {
                 foreach (var ldevice in _ldGoosesDictionary.Keys)
                 {
-                    
+                    foreach (var gooseString in _ldGoosesDictionary[ldevice])
+                    {
+                        var goParts = gooseString.Split('$');
+
+                        var gooses = (await connection.MmsConnection.GetListGoosesAsync(ldevice, goParts[0], device.Name)).Item;
+                        foreach (var gooseDto in gooses)
+                        {
+                            IGooseControl gooseControl=new GooseControl();
+                            gooseControl.Name = gooseDto.Name;
+                            gooseControl.ConfRev = gooseDto.ConfRev;
+                            gooseControl.AppId = gooseDto.GoId;
+                            gooseControl.DataSet = gooseDto.DatSet;
+                            _goosesModelService.AddGseControl(goParts[0],ldevice.Replace(device.Name,""),device,gooseControl);
+
+                            IGse gse=new Gse();
+                            gse.CbName = gooseDto.CbName;
+                            gse.LdInst = gooseDto.LdInst;
+                            gse.MaxTime=new DurationInMilliSec("MaxTime") {Multiplier = "m",Value = (int) gooseDto.MaxTime,Unit = "s"};
+                            gse.MinTime = new DurationInMilliSec("MinTime") { Multiplier = "m", Value = (int)gooseDto.MinTime, Unit = "s" };
+                            gse.MacAddress = gooseDto.MAC_Address;
+                            gse.AppId = gooseDto.APPID.ToString("D4");
+                            gse.VlanId = gooseDto.VLAN_ID.ToString();
+                            gse.VlanPriority = (int) gooseDto.VLAN_PRIORITY;
+                            _sclCommunicationModelService.AddGse(gse,sclModel,device.Name);
+                        }
+
+                    }
+
                 }
             }
             else
