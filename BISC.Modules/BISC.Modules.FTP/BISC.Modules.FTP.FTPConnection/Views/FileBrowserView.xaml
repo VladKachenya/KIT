@@ -18,7 +18,7 @@
         <StackPanel>
             <Button Margin="5" Content="Перечитать"
                     Command="{Binding LoadRootCommand}" 
-                    Width="100" HorizontalAlignment="Left"/>
+                    Width="Auto" HorizontalAlignment="Left"/>
         </StackPanel>
         <TreeView Grid.Row="1">
             <TreeView.Resources>
