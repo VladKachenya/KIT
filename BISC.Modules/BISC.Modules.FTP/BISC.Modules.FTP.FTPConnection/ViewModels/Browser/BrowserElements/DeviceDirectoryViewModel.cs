@@ -1,4 +1,5 @@
-﻿using BISC.Modules.FTP.Infrastructure.Factorys;
+﻿using BISC.Infrastructure.Global.Services;
+using BISC.Modules.FTP.Infrastructure.Factorys;
 using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
 using BISC.Modules.FTP.Infrastructure.ViewModels.Browser.BrowserElements;
 using BISC.Presentation.Infrastructure.Factories;
@@ -21,8 +22,9 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser.BrowserElements
         private string _name;
 
 
-        public DeviceDirectoryViewModel(IBrowserElementViewModelFactory browserElementViewModelFactory, ICommandFactory commandFactory)
-            : base (commandFactory)
+        public DeviceDirectoryViewModel(IBrowserElementViewModelFactory browserElementViewModelFactory, ICommandFactory commandFactory,
+            IGlobalEventsService globalEventsService)
+            : base (commandFactory, globalEventsService)
         {
             _browserElementViewModelFactory = browserElementViewModelFactory;
             _childBrowserElementViewModels = new ObservableCollection<IBrowserElementViewModel>();

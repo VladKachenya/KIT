@@ -20,6 +20,7 @@ using BISC.Modules.FTP.Infrastructure.Model.Factory;
 using BISC.Modules.FTP.FTPConnection.Model.Factory;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Modules.FTP.Infrastructure.ViewModels.Browser;
+using BISC.Modules.FTP.FTPConnection.Events;
 
 namespace BISC.Modules.FTP.FTPConnection.ViewModels
 {
@@ -28,7 +29,6 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         #region ptivate filds
         private IFTPClientWrapper _ftpClientWrapper;
         private ICommandFactory _commandFactory;
-        private IGlobalEventsService _globalEventsService;
         private IIpAddressViewModelFactory _ipAddressViewModelFactory;
         IInjectionContainer _injectionContainer;
         private bool _isConnectingInProcess;
@@ -39,13 +39,12 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         #endregion
 
         #region C-tor
-        public FTPServiceViewModel(IFTPClientWrapper ftpClientWrapper, ICommandFactory commandFactory, IGlobalEventsService globalEventsService,
-            IIpAddressViewModelFactory ipAddressViewModelFactory, ILastIpAddressesViewModel lastIpAddressesViewModel, IInjectionContainer injectionContainer,
+        public FTPServiceViewModel(IFTPClientWrapper ftpClientWrapper, ICommandFactory commandFactory, IIpAddressViewModelFactory ipAddressViewModelFactory, 
+            ILastIpAddressesViewModel lastIpAddressesViewModel, IInjectionContainer injectionContainer,
             IFileBrowserViewModel fileBrowserViewModel)
         {
             _ftpClientWrapper = ftpClientWrapper;
             _commandFactory = commandFactory;
-            _globalEventsService = globalEventsService;
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
             LastIpAddressesViewModel = lastIpAddressesViewModel;
             _injectionContainer = injectionContainer;
@@ -177,5 +176,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         public ILastIpAddressesViewModel LastIpAddressesViewModel { get; }
         #endregion
+
+
     }
 }

@@ -16,14 +16,21 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel>
-            <Button Margin="5" Content="Загрузить"
+            <Button Margin="5" Content="Перечитать"
                     Command="{Binding LoadRootCommand}" 
                     Width="100" HorizontalAlignment="Left"/>
         </StackPanel>
         <TreeView Grid.Row="1">
             <TreeView.Resources>
                 <HierarchicalDataTemplate  DataType="{x:Type BrowserElementsVM:DeviceFileViewModel}">
-                    <TextBlock HorizontalAlignment="Left" Text="{Binding ElementPath}"/>
+                    <TextBlock HorizontalAlignment="Left" Text="{Binding ElementPath}">
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Скачать" Command="{Binding DownloadElementCommand}"></MenuItem>
+                                <MenuItem Header="Удалить" Command="{Binding DeleteElementCommand}"></MenuItem>
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                    </TextBlock>
                 </HierarchicalDataTemplate>
 
                 <HierarchicalDataTemplate  DataType="{x:Type BrowserElementsVM:DeviceDirectoryViewModel}"

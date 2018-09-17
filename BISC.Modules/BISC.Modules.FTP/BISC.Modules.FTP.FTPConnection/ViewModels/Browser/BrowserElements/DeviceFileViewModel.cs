@@ -1,4 +1,5 @@
-﻿using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
+﻿using BISC.Infrastructure.Global.Services;
+using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
 using BISC.Modules.FTP.Infrastructure.ViewModels.Browser.BrowserElements;
 using BISC.Presentation.Infrastructure.Factories;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser.BrowserElements
@@ -16,8 +18,8 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser.BrowserElements
         private string _elementPath;
         private string _name;
 
-        public DeviceFileViewModel(ICommandFactory commandFactory)
-            : base(commandFactory)
+        public DeviceFileViewModel(ICommandFactory commandFactory, IGlobalEventsService globalEventsService)
+            : base(commandFactory, globalEventsService)
         {
             DownloadElementCommand = _commandFactory.CreatePresentationCommand(OnDownloadElementExecute);
             ParentDeviceDirectoryViewModel?.LoadDirectoryCommand?.Execute(null);
@@ -25,7 +27,12 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser.BrowserElements
 
         private void OnDownloadElementExecute()
         {
-            (_model as IDeviceFile)?.Download();
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.FileName = _name;
+            if (dlg.ShowDialog() == DialogResult.Cancel)
+                return;
+            string path = dlg.FileName;
+            (_model as IDeviceFile)?.Download(path);
         }
 
 

@@ -1,18 +1,20 @@
 ﻿using BISC.Modules.FTP.Infrastructure.Keys;
 using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
 using BISC.Modules.FTP.Infrastructure.Model.Loaders;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BISC.Modules.FTP.FTPConnection.Model.BrowserElements
 {
     public class DeviceFile : BrowserElementBase, IDeviceFile
     {
         private readonly IFileLoader _fileLoader;
-        private byte[] _fileData;
 
         public DeviceFile(string elementPath, IFileLoader fileLoader, string name, IDeviceDirectory deviceDirectory) : base(elementPath, name, deviceDirectory)
         {
@@ -23,20 +25,25 @@ namespace BISC.Modules.FTP.FTPConnection.Model.BrowserElements
 
         public override string StrongName => FTPKeys.DeviceFile;
 
-        public byte[] FileData
-        {
-            get { return _fileData; }
-        }
+        public byte[] FileData { get; private set; }
 
-        public void Download()
+        public void Download(string path )
         {
-            //_fileData = _fileLoader.LoadFileData(ElementPath);
-            //string path = (StaticContainer.Container.Resolve(typeof(IApplicationGlobalCommands)) as IApplicationGlobalCommands)
-            //     .SelectFilePathToSave("Сохранить файл", "", "", Name).GetFirstValue();
-            //StreamWriter sw = new StreamWriter(path);
-            //sw.Write(UTF8Encoding.UTF8.GetString(_fileData));
-            //sw.Close();
+            FileData = _fileLoader.LoadFileData(ElementPath);
+            StreamWriter sw = new StreamWriter(path);
+            try
+            {
+                sw.Write(UTF8Encoding.UTF8.GetString(FileData));
 
+            }
+            catch (Exception e)
+            {
+
+            }
+            finally
+            {
+                sw.Close();
+            }
         }
 
         #endregion

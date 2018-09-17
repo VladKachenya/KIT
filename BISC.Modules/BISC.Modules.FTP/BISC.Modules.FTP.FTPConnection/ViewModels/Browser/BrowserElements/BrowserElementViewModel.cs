@@ -1,4 +1,6 @@
-﻿using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
+﻿using BISC.Infrastructure.Global.Services;
+using BISC.Modules.FTP.FTPConnection.Events;
+using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
 using BISC.Modules.FTP.Infrastructure.ViewModels.Browser.BrowserElements;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
@@ -15,16 +17,19 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser.BrowserElements
     {
         private IDeviceDirectoryViewModel _parentDeviceDirectoryViewModel;
         protected ICommandFactory _commandFactory;
+        protected IGlobalEventsService _globalEventsService;
 
-        public BrowserElementViewModel(ICommandFactory commandFactory)
+        public BrowserElementViewModel(ICommandFactory commandFactory, IGlobalEventsService globalEventsService)
         {
             _commandFactory = commandFactory;
+            _globalEventsService = globalEventsService;
             DeleteElementCommand = _commandFactory.CreatePresentationCommand(OnDeleteElementExecute);
         }
 
         private async void OnDeleteElementExecute()
         {
             await (Model as IDeviceBrowserElement)?.DeleteElementAsync();
+            _globalEventsService.SendMessage( new FTPReloadEvent());
 
         }
 

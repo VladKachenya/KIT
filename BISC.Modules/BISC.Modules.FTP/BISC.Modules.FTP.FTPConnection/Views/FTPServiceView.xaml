@@ -10,7 +10,7 @@
              xmlns:view="clr-namespace:BISC.Modules.Connection.Presentation.View;assembly=BISC.Modules.Connection.Presentation"
              xmlns:controls="clr-namespace:BISC.Presentation.BaseItems.Controls;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="400">
+             d:DesignHeight="400" d:DesignWidth="800">
     <UserControl.Resources>
         <convert:BoolToCollorConverter x:Key="BoolToCollorConverte" />
     </UserControl.Resources>
@@ -138,9 +138,7 @@
             HorizontalScrollBarVisibility="Auto"
             Grid.Column="2"
             Grid.RowSpan="3">
-            <StackPanel Width="200">
-                <local:FileBrowserView DataContext="{Binding FileBrowserViewModel}" />
-            </StackPanel>
+            <local:FileBrowserView DataContext="{Binding FileBrowserViewModel}" Width="300"/>
         </ScrollViewer>
     </Grid>
 </UserControl>

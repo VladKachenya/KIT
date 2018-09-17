@@ -1,4 +1,6 @@
-﻿using BISC.Modules.FTP.Infrastructure.Factorys;
+﻿using BISC.Infrastructure.Global.Services;
+using BISC.Modules.FTP.FTPConnection.Events;
+using BISC.Modules.FTP.Infrastructure.Factorys;
 using BISC.Modules.FTP.Infrastructure.Model;
 using BISC.Modules.FTP.Infrastructure.ViewModels.Browser;
 using BISC.Modules.FTP.Infrastructure.ViewModels.Browser.BrowserElements;
@@ -22,13 +24,18 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser
         private ICommandFactory _commandFactory;
         private IDeviceDirectoryViewModel _rootDeviceDirectoryViewModel;
         private IDeviceDirectoryViewModel _selectedDirectoryViewModel;
+        private IGlobalEventsService _globalEventsService;
 
 
-        public FileBrowserViewModel(IBrowserElementViewModelFactory browserElementViewModelFactory, ICommandFactory commandFactory)
+
+        public FileBrowserViewModel(IBrowserElementViewModelFactory browserElementViewModelFactory, ICommandFactory commandFactory,
+            IGlobalEventsService globalEventsService)
         {
             _browserElementViewModelFactory = browserElementViewModelFactory;
             _commandFactory = commandFactory;
+            _globalEventsService = globalEventsService;
             LoadRootCommand = _commandFactory.CreatePresentationCommand(OnLoadRootExecute);
+            _globalEventsService.Subscribe<FTPReloadEvent>(reload => OnLoadRootExecute());
             SelectDirectoryCommand = _commandFactory.CreatePresentationCommand<object>(OnSelectDirectoryExecute);
         }
 

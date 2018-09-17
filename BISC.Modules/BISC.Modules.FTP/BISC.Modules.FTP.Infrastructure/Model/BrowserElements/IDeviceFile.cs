@@ -10,6 +10,6 @@ namespace BISC.Modules.FTP.Infrastructure.Model.BrowserElements
     public interface IDeviceFile : ILoadable, IDeviceBrowserElement
     {
         byte[] FileData { get; }
-        void Download();
+        void Download(string path);
     }
 }
