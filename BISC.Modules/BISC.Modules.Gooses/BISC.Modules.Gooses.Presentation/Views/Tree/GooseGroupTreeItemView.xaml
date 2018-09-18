@@ -13,8 +13,23 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <TextBlock Text="GOOSE" Margin="5"></TextBlock>
-        <Button Grid.Column="1" Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToDetailsCommand}">
-            <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}"></ContentControl>
-        </Button>
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Button Margin="4" Grid.Column="0" ToolTip="Найстройка Goose подписок" Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToSubscriptionCommand}">
+                <ContentControl ContentTemplate="{DynamicResource LanPendingIcon}"></ContentControl>
+            </Button>
+            <Button Margin="4" Grid.Column="1" ToolTip="Goose матрица" Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToMatrixCommand}">
+                <ContentControl ContentTemplate="{DynamicResource ViewGridIcon}"></ContentControl>
+            </Button>
+            <Button Margin="4" Grid.Column="2" ToolTip="Редактировать блоки управления Goose" Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToDetailsCommand}">
+                <ContentControl ContentTemplate="{DynamicResource PencilIcon}"></ContentControl>
+            </Button>
+        </Grid>
+
     </Grid>
 </UserControl>

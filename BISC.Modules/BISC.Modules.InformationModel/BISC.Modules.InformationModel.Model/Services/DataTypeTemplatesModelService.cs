@@ -76,7 +76,10 @@ namespace BISC.Modules.InformationModel.Model.Services
 
             foreach (var lnTypeToExcludeFiltered in lnTypesToExcludeFiltered)
             {
-                var removeItem = dataTypeTemplates.LNodeTypes.First((type => type.Id == lnTypeToExcludeFiltered));
+                var removeItem = dataTypeTemplates.LNodeTypes.FirstOrDefault((type => type.Id == lnTypeToExcludeFiltered));
+                if (removeItem == null) continue;
+                
+                
                 doTypesToExclude.AddRange(removeItem.DoList.Select((ddo => ddo.Type)));
                 dataTypeTemplates.LNodeTypes.Remove(removeItem);
             }

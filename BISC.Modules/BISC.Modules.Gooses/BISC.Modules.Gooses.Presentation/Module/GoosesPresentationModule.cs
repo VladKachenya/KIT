@@ -31,9 +31,13 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<GoosesUiHandlingService>();
             _injectionContainer.ResolveType<IUiFromModelElementRegistryService>().RegisterModelElement(_injectionContainer.ResolveType<GoosesUiHandlingService>(),"IED");
             _injectionContainer.RegisterType<GooseGroupTreeItemViewModel>();
+            _injectionContainer.RegisterType<GooseSubscriptionTabViewModel>();
+            _injectionContainer.RegisterType<GooseMatrixTabViewModel>();
+            _injectionContainer.RegisterType<GooseEditingTabViewModel>();
             _injectionContainer.RegisterType<object,GooseGroupTreeItemView>(GooseKeys.GoosePresentationKeys.GooseGroupTreeItemViewKey);
-            _injectionContainer.RegisterType<object, GooseReceivingTab>(GooseKeys.GoosePresentationKeys.GooseReceivingTabKey);
-            _injectionContainer.RegisterType<GooseReceivingTabViewModel>();
+            _injectionContainer.RegisterType<object, GooseSubscriptionTab>(GooseKeys.GoosePresentationKeys.GooseSubscriptionTabKey);
+            _injectionContainer.RegisterType<object, GooseEditingTab>(GooseKeys.GoosePresentationKeys.GooseEditingTabKey);
+            _injectionContainer.RegisterType<object, GooseMatrixTab>(GooseKeys.GoosePresentationKeys.GooseMatrixTabKey);
 
         }
 

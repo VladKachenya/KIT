@@ -227,6 +227,11 @@ namespace BISC.Model.Global.Serializators
                             {
                                 var elementsOfType =
                                     modelElement.ChildModelElements.Where((element => element.GetType() == collectionType.Item1)).ToList();
+                                if (elementsOfType.Count == 0)
+                                {
+                                    elementsOfType =
+                                        modelElement.ChildModelElements.Where((element => element.GetType().GetInterface(collectionType.Item1.ToString()) != null)).ToList();
+                                }
                                 foreach (var element in elementsOfType)
                                 {
                                     type.GetMethod("Add").Invoke(propertyInfo.GetValue(modelElement), new[] { element });

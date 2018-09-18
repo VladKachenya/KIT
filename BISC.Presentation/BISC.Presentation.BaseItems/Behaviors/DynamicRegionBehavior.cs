@@ -23,7 +23,7 @@ namespace BISC.Presentation.BaseItems.Behaviors
                 typeof(string),
                 typeof(DynamicRegionBehavior),
                 new UIPropertyMetadata(string.Empty, OnSetRegionKey));
-
+        
         private static void OnSetRegionKey(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var regionManager = ServiceLocator.Current.GetInstance<IRegionManager>();

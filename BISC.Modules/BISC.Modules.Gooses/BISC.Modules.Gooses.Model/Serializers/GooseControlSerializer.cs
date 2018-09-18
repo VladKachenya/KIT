@@ -18,6 +18,7 @@ namespace BISC.Modules.Gooses.Model.Serializers
             RegisterProperty(nameof(IGooseControl.Name), "name");
             RegisterProperty(nameof(IGooseControl.DataSet), "datSet");
             RegisterProperty(nameof(IGooseControl.ConfRev), "confRev");
+            RegisterModelElementCollection(typeof(ISubscriberDevice));
         }
 
         #region Overrides of DefaultModelElementSerializer<IGooseControl>

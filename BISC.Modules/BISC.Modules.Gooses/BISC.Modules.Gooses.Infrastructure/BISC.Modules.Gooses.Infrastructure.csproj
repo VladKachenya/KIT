@@ -49,6 +49,7 @@
     <Compile Include="Model\IExternalGooseRef.cs" />
     <Compile Include="Model\IGooseControl.cs" />
     <Compile Include="Model\IGooseInput.cs" />
+    <Compile Include="Model\ISubscriberDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IGoosesModelService.cs" />
   </ItemGroup>
@@ -56,6 +57,10 @@
     <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
       <Name>BISC.Model.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.Device\BISC.Modules.Device.Infrastructure\BISC.Modules.Device.Infrastructure.csproj">
+      <Project>{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}</Project>
+      <Name>BISC.Modules.Device.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

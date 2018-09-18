@@ -1,4 +1,5 @@
-﻿using BISC.Model.Infrastructure.Elements;
+﻿using System.Collections.Generic;
+using BISC.Model.Infrastructure.Elements;
 
 namespace BISC.Modules.Gooses.Infrastructure.Model
 {
@@ -8,5 +9,6 @@ namespace BISC.Modules.Gooses.Infrastructure.Model
         string DataSet { get; set; }
         int ConfRev { get; set; }
         string AppId { get; set; }
+        List<ISubscriberDevice> SubscriberDevice { get;}
     }
 }

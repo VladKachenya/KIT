@@ -19,12 +19,12 @@ namespace BISC.Modules.Gooses.Presentation.Views.Tabs
     /// <summary>
     /// Логика взаимодействия для GooseReceivingTab.xaml
     /// </summary>
-    public partial class GooseReceivingTab : UserControl
+    public partial class GooseSubscriptionTab : UserControl
     {
-        public GooseReceivingTab(GooseReceivingTabViewModel gooseReceivingTabViewModel)
+        public GooseSubscriptionTab(GooseSubscriptionTabViewModel gooseSubscriptionTabViewModel)
         {
             InitializeComponent();
-            DataContext = gooseReceivingTabViewModel;
+            DataContext = gooseSubscriptionTabViewModel;
         }
     }
 }

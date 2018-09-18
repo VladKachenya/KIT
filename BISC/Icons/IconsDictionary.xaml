@@ -41,6 +41,15 @@
     <DataTemplate x:Key="RssIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Rss" />
     </DataTemplate>
+    <DataTemplate x:Key="LanPendingIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="LanPending" />
+    </DataTemplate>
+    <DataTemplate x:Key="ViewGridIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ViewGrid" />
+    </DataTemplate>
+    <DataTemplate x:Key="PencilIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Pencil" />
+    </DataTemplate>
     <DataTemplate x:Key="LightbulbOn">
         <!--Лампочка-->
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="LightbulbOn" />
