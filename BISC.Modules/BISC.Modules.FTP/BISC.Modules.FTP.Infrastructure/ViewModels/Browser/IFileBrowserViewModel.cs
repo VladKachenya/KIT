@@ -12,7 +12,7 @@ namespace BISC.Modules.FTP.Infrastructure.ViewModels.Browser
     {
         IDeviceDirectoryViewModel RootDeviceDirectoryViewModel { get; }
         IDeviceDirectoryViewModel SelectedDirectoryViewModel { get; set; }
-        ICommand SelectDirectoryCommand { get; }
         ICommand LoadRootCommand { get; }
+        ICommand LoadFileToDeviceCommand { get; }
     }
 }

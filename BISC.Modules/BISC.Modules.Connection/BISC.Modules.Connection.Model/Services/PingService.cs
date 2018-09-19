@@ -27,12 +27,25 @@ namespace BISC.Modules.Connection.Model.Services
             SemaphoreSlim semaphoreSlim = new SemaphoreSlim(0);
             var isPing = false;
             Ping pinger = new Ping();
-            pinger.PingCompleted += (o, e) =>
+            try
             {
-                PingReply reply = e.Reply;
-                isPing = reply.Status == IPStatus.Success;
-                semaphoreSlim.Release();
-            };
+                pinger.PingCompleted += (o, e) =>
+                {
+                    PingReply reply = e.Reply;
+                    try
+                    {
+                        isPing = reply.Status == IPStatus.Success;
+                        semaphoreSlim.Release();
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                };
+            }
+            catch (Exception e)
+            {
+            }
+            
             PingOptions pingOptions = new PingOptions(128, true);
             int timeout = 1000;
             string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";

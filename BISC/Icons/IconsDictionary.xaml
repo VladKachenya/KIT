@@ -51,8 +51,10 @@
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Pencil" />
     </DataTemplate>
     <DataTemplate x:Key="LightbulbOn">
-        <!--Лампочка-->
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="LightbulbOn" />
+    </DataTemplate>
+    <DataTemplate x:Key="CircleIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Circle" />
     </DataTemplate>
     <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
         <!--<Style.Resources >

@@ -12,15 +12,19 @@
              d:DesignHeight="200" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
             <Button Margin="5" Content="Перечитать"
                     Command="{Binding LoadRootCommand}" 
                     Width="Auto" HorizontalAlignment="Left"/>
+            <Button Content="Загрузить фаил" 
+                    Margin="5"
+                    Style="{StaticResource MaterialDesignRaisedLightButton}"
+                    Command="{Binding LoadFileToDeviceCommand}"/>
         </StackPanel>
-        <TreeView Grid.Row="1">
+        <TreeView Grid.Row="0">
             <TreeView.Resources>
                 <HierarchicalDataTemplate  DataType="{x:Type BrowserElementsVM:DeviceFileViewModel}">
                     <TextBlock HorizontalAlignment="Left" Text="{Binding ElementPath}">
@@ -35,14 +39,17 @@
 
                 <HierarchicalDataTemplate  DataType="{x:Type BrowserElementsVM:DeviceDirectoryViewModel}"
                                                   ItemsSource="{Binding ChildBrowserElementViewModels}">
-                    <TextBlock HorizontalAlignment="Left"  Text="{Binding ElementPath}"/>
-
+                    <TextBlock HorizontalAlignment="Left"  Text="{Binding ElementPath}">
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Записать" Command="{Binding UploadFileInDirectoryCommand}"/>
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                    </TextBlock>
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
             <TreeViewItem Header="{Binding RootDeviceDirectoryViewModel.ElementPath}" 
-                          ItemsSource="{Binding RootDeviceDirectoryViewModel.ChildBrowserElementViewModels}">
-
-            </TreeViewItem>
+                          ItemsSource="{Binding RootDeviceDirectoryViewModel.ChildBrowserElementViewModels}"/>
         </TreeView>
     </Grid>
 </UserControl>

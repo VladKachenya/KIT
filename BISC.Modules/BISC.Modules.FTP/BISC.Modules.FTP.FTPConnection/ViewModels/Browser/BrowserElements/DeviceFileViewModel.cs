@@ -1,4 +1,5 @@
 ﻿using BISC.Infrastructure.Global.Services;
+using BISC.Modules.FTP.FTPConnection.Events;
 using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
 using BISC.Modules.FTP.Infrastructure.ViewModels.Browser.BrowserElements;
 using BISC.Presentation.Infrastructure.Factories;
@@ -32,6 +33,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser.BrowserElements
             if (dlg.ShowDialog() == DialogResult.Cancel)
                 return;
             string path = dlg.FileName;
+            _globalEventsService.SendMessage(new FTPActionMassageEvent { Status = null, Message = "Скачивание файла" + Name });
             (_model as IDeviceFile)?.Download(path);
         }
 

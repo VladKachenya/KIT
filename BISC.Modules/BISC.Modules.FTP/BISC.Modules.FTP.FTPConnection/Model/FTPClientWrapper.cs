@@ -1,4 +1,6 @@
-﻿using BISC.Modules.FTP.FTPConnection.Services;
+﻿using BISC.Infrastructure.Global.Services;
+using BISC.Modules.FTP.FTPConnection.Events;
+using BISC.Modules.FTP.FTPConnection.Services;
 using BISC.Modules.FTP.Infrastructure.Model;
 using FluentFTP;
 using System;
@@ -16,11 +18,12 @@ namespace BISC.Modules.FTP.FTPConnection.Model
         //private readonly IProjectGlobalModel _projectGlobalModel;
         private FtpClient _ftpClient;
         private bool _isFtpConnected = false;
+        private IGlobalEventsService _globalEventsService;
 
         //public FtpClientWrapper(IProjectGlobalModel projectGlobalModel)
-        public FTPClientWrapper()
+        public FTPClientWrapper(IGlobalEventsService globalEventsService)
         {
-            //_projectGlobalModel = projectGlobalModel;
+            _globalEventsService = globalEventsService;
         }
 
         public async Task<FtpClient> Connect(string host, string login = null, string password = null)
@@ -31,7 +34,7 @@ namespace BISC.Modules.FTP.FTPConnection.Model
             _ftpClient.Host = host;
             _ftpClient.Credentials = new NetworkCredential(login, password);
             await _ftpClient.ConnectAsync();
-            _isFtpConnected = true;
+            IsConnected = true;
             return _ftpClient;
         }
 
@@ -40,7 +43,7 @@ namespace BISC.Modules.FTP.FTPConnection.Model
             if (_ftpClient != null && _ftpClient.IsConnected)
             {
                 await _ftpClient.DisconnectAsync();
-                _isFtpConnected = false;
+                IsConnected = false;
             }
         }
 
@@ -111,6 +114,17 @@ namespace BISC.Modules.FTP.FTPConnection.Model
             }
         }
 
-        public bool IsConnected => _isFtpConnected;
+        public bool IsConnected
+        {
+            get
+            {
+                return _isFtpConnected;
+            }
+            protected set
+            {
+                _isFtpConnected = value;
+                _globalEventsService.SendMessage(new FTPChangingConnectionEvent());
+            }
+        }
     }
 }

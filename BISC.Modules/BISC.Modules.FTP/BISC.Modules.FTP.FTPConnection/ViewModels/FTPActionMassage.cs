@@ -16,7 +16,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         public FTPActionMassage ()
         {
-            CreationDateTime = DateTime.Now.ToString() + ": ";
+            CreationDateTime = DateTime.Now.ToLongTimeString() + ": ";
         }
 
         #region Implementation of IFTPActionViewModel

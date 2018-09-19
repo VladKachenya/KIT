@@ -5,62 +5,79 @@ using BISC.Modules.FTP.Infrastructure.Model;
 using BISC.Modules.FTP.Infrastructure.ViewModels.Browser;
 using BISC.Modules.FTP.Infrastructure.ViewModels.Browser.BrowserElements;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser
 {
-    public class FileBrowserViewModel : ViewModelBase, IFileBrowserViewModel
+    public class FileBrowserViewModel : ComplexViewModelBase, IFileBrowserViewModel
     {
+        #region private filds
         private readonly IBrowserElementViewModelFactory _browserElementViewModelFactory;
         private IFileBrowser _fileBrowser;
+        private IFTPClientWrapper _ftpClientWrapper;
         private ICommandFactory _commandFactory;
         private IDeviceDirectoryViewModel _rootDeviceDirectoryViewModel;
         private IDeviceDirectoryViewModel _selectedDirectoryViewModel;
         private IGlobalEventsService _globalEventsService;
+        #endregion
 
-
-
+        #region C-tor
         public FileBrowserViewModel(IBrowserElementViewModelFactory browserElementViewModelFactory, ICommandFactory commandFactory,
-            IGlobalEventsService globalEventsService)
+            IGlobalEventsService globalEventsService, IFTPClientWrapper ftpClientWrapper)
         {
+            _ftpClientWrapper = ftpClientWrapper;
             _browserElementViewModelFactory = browserElementViewModelFactory;
             _commandFactory = commandFactory;
             _globalEventsService = globalEventsService;
-            LoadRootCommand = _commandFactory.CreatePresentationCommand(OnLoadRootExecute);
-            _globalEventsService.Subscribe<FTPReloadEvent>(reload => OnLoadRootExecute());
-            SelectDirectoryCommand = _commandFactory.CreatePresentationCommand<object>(OnSelectDirectoryExecute);
+
+            LoadFileToDeviceCommand = _commandFactory.CreatePresentationCommand(OnLoadFileToDevice, () => _ftpClientWrapper.IsConnected); 
+            LoadRootCommand = _commandFactory.CreatePresentationCommand(OnLoadRootExecuteAsync);
+            _globalEventsService.Subscribe<FTPReloadEvent>(reload => OnLoadRootExecuteAsync());
+            _globalEventsService.Subscribe<FTPChangingConnectionEvent>(obj => VerifyConnection());
         }
 
 
+        #endregion
 
-
-        private void OnSelectDirectoryExecute(object obj)
+        #region private methods
+        private void VerifyConnection()
         {
-
-            if ((obj as RoutedPropertyChangedEventArgs<object>)?.NewValue is TreeViewItem)
+            (LoadFileToDeviceCommand as IPresentationCommand).RaiseCanExecute();
+        }
+        private async void OnLoadFileToDevice()
+        {
+            var openDilog = new OpenFileDialog(){ Multiselect = true, Title = "Выберите файлы" };
+            openDilog.Filter = "All files(*.*)|*.*";
+            if (openDilog.ShowDialog() == DialogResult.Cancel)
+                return;
+            List<string> data = new List<string>();
+            foreach (string fileName in openDilog.FileNames)
             {
-                SelectedDirectoryViewModel =
-                (((obj as RoutedPropertyChangedEventArgs<object>)?.NewValue as TreeViewItem)?.DataContext as
-                    IFileBrowserViewModel)?.RootDeviceDirectoryViewModel;
+                FileStream file = new FileStream(openDilog.FileName, FileMode.Open);
+                StreamReader readFile = new StreamReader(file);
+                data.Add(readFile.ReadToEnd());
+                readFile.Close();
+                file.Close();
             }
-            else
-            {
-                SelectedDirectoryViewModel =
-                    (obj as RoutedPropertyChangedEventArgs<object>)?.NewValue as
-                    IDeviceDirectoryViewModel;
-            }
+            _globalEventsService.SendMessage(message: new FTPActionMassageEvent { Status = null, Message = "Процесс записи" });
+            await _ftpClientWrapper.UploadFileString(data, openDilog.SafeFileNames.ToList<string>());
+            OnLoadRootExecuteAsync();
         }
 
-        private async void OnLoadRootExecute()
+        private async void OnLoadRootExecuteAsync()
         {
+            _globalEventsService.SendMessage(new FTPActionMassageEvent { Status = null, Message = "Перечитывание файловой системы" });
             if (_fileBrowser == null) return;
             await _fileBrowser.LoadRootDirectory();
             _rootDeviceDirectoryViewModel =
@@ -69,7 +86,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser
             OnPropertyChanged(nameof(RootDeviceDirectoryViewModel));
         }
 
-
+        #endregion
 
         #region Implementation of IFileBrowserViewModel
 
@@ -101,10 +118,19 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser
             }
         }
 
-        public ICommand SelectDirectoryCommand { get; }
-
         public ICommand LoadRootCommand { get; }
+        public ICommand LoadFileToDeviceCommand { get; }
 
+        #endregion
+
+        #region Overrides of ViewModelBase
+
+        protected override void OnDisposing()
+        {
+            _globalEventsService.Unsubscribe<FTPChangingConnectionEvent>(obj => VerifyConnection());
+            _globalEventsService.Unsubscribe<FTPReloadEvent>(reload => OnLoadRootExecuteAsync());
+            base.OnDisposing();
+        }
 
         #endregion
 

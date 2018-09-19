@@ -50,7 +50,14 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
         private async void OnPingExecute()
         {
-            await PingGlobalEventAsync();
+            try
+            {
+                await PingGlobalEventAsync();
+            }
+            catch (Exception e)
+            {
+                ForToolTip = e.Message;
+            }
         }
 
         private bool CanPingExecute()

@@ -28,6 +28,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser.BrowserElements
 
         private async void OnDeleteElementExecute()
         {
+            _globalEventsService.SendMessage(new FTPActionMassageEvent { Status = null, Message = "Удаление файла" + Name });
             await (Model as IDeviceBrowserElement)?.DeleteElementAsync();
             _globalEventsService.SendMessage( new FTPReloadEvent());
 

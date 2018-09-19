@@ -1,4 +1,5 @@
 ﻿using BISC.Infrastructure.Global.Services;
+using BISC.Modules.FTP.FTPConnection.Events;
 using BISC.Modules.FTP.Infrastructure.Factorys;
 using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
 using BISC.Modules.FTP.Infrastructure.ViewModels.Browser.BrowserElements;
@@ -34,7 +35,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser.BrowserElements
 
         private void OnUploadFileInDirectoryExecute()
         {
-
+            _globalEventsService.SendMessage(new FTPUploadEvetn() { PathInDevise = _elementPath });
         }
 
         private void OnCreateChildDirectoryExecute()
