@@ -38,9 +38,10 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="31*"></ColumnDefinition>
-                <ColumnDefinition Width="222*"/>
-                <ColumnDefinition Width="127*"></ColumnDefinition>
+                <ColumnDefinition Width="85*"></ColumnDefinition>
+                <ColumnDefinition Width="85*"/>
+                <ColumnDefinition Width="160*"></ColumnDefinition>
+                <ColumnDefinition Width="29*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Row="0" Grid.ColumnSpan="3">
                 <view:IpAddressView DataContext="{Binding FtpIpAddressViewModel}"
@@ -48,21 +49,21 @@
             </StackPanel>
 
             <TextBlock Grid.Column="2" Grid.Row="1" Text="Логин"
-                       FontSize="16" Margin="5,5,5,5.28"
+                       FontSize="16" Margin="5,5,5,4.14"
                        TextAlignment="Center"/>
             <TextBox Grid.Column="0" Grid.Row="1"
                      Text="{Binding FtpLogin}" 
                      FontSize="16"
-                     Margin="5,5,5,4.28"
+                     Margin="5,5,5,2.14"
                      MaxWidth="200"
                      TextAlignment="Center" Grid.ColumnSpan="2"/>
 
             <TextBlock  Text="Пароль"
                        Grid.Column="2" Grid.Row="2"
                        FontSize="16"
-                       Margin="5,4.72,5,5.28"
+                       Margin="5,3.86,5,5"
                        TextAlignment="Center"/>
-            <StackPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="0,33,0,0.28" Grid.RowSpan="2">
+            <StackPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="0,31,0,0" Grid.RowSpan="2">
                 <TextBox 
                     Text="{Binding FtpPassword}"
                     Name="PasswordBox"
@@ -73,58 +74,68 @@
             </StackPanel>
 
             <Button Content="Подключится" 
-                    Margin="10,9.72,10,10.28"
+                    Margin="10"
                     Grid.Column="0"
                     Grid.Row="3"
                     Style="{StaticResource MaterialDesignRaisedLightButton}"
                     Command="{Binding ConnectToDeviceCommand}" Grid.ColumnSpan="2"/>
             <Button Content="Перезагрузить"
-                    Margin="10,9.72,10,10.28"
+                    Margin="10"
                     Grid.Column="2"
                     Grid.Row="3"
                     Style="{StaticResource MaterialDesignRaisedLightButton}"
                     Command="{Binding ResetDeviceCommand}"/>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
-            <Border 
-              Width="350">
-                <GroupBox
-                    Margin="5"
-                    Header="Список действий"
-                    UseLayoutRounding="True"
-                    SnapsToDevicePixels="True">
-                    <ScrollViewer VerticalScrollBarVisibility ="Auto"
-                                  HorizontalScrollBarVisibility="Auto">
-                        <ItemsControl x:Name="noteList" 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock 
+                TextAlignment="Center"
+                Grid.Column="0" Grid.Row="0"
+                Padding="3"
+                Text="Список действий" Background="Gainsboro" Width="Auto"/>
+            <Border Grid.Row="1" Grid.ColumnSpan="2" 
+              BorderBrush="Gainsboro" BorderThickness="2"
+                    HorizontalAlignment="Stretch">
+                <ScrollViewer VerticalScrollBarVisibility ="Auto"
+                              HorizontalScrollBarVisibility="Auto"
+                              Loaded="LoadedEvent">
+                    <ItemsControl x:Name="noteList" 
                              ItemsSource="{Binding FTPActionMessageList}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Margin="0">
-                                        <Label HorizontalAlignment="Center"
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0">
+                                    <Label HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                Width="20"
                                                Height="20"
                                                Foreground="{Binding Status, Converter={StaticResource BoolToCollorConverte}}">
-                                            <Label.Content>
-                                                <ContentControl  ContentTemplate="{DynamicResource CircleIcon}" Margin="0" Padding="0"/>
-                                            </Label.Content>
-                                        </Label>
-                                        <TextBlock
+                                        <Label.Content>
+                                            <ContentControl  ContentTemplate="{DynamicResource CircleIcon}" Margin="0" Padding="0"/>
+                                        </Label.Content>
+                                    </Label>
+                                    <TextBlock
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Text="{Binding CreationDateTime}"
                                             Height="Auto"/>
-                                        <TextBlock 
+                                    <TextBlock 
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Text="{Binding Message}"
                                             Height="Auto"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </GroupBox>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
             </Border>
 
         </Grid>

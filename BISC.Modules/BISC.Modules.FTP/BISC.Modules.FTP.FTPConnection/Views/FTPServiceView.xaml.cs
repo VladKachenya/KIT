@@ -26,5 +26,10 @@ namespace BISC.Modules.FTP.FTPConnection.Views
             InitializeComponent();
             this.DataContext = FTPServiceViewModel;
         }
+
+        private void LoadedEvent(object sender, RoutedEventArgs e)
+        {
+            (sender as FrameworkElement).Width = (sender as FrameworkElement).ActualWidth -40;
+        }
     }
 }

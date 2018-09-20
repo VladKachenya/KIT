@@ -42,11 +42,6 @@ namespace BISC.Modules.FTP.FTPConnection.Services
             // }
         }
 
-        public void OpenFtpBrowser()
-        {
-            //
-        }
-
         public async Task ResetDevice()
         {
             try
