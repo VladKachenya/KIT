@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BISC.Modules.Gooses.Presentation.Views.Tabs"
              xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -12,13 +13,18 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <!--<Grid Grid.Row="0">
             <Button HorizontalAlignment="Left" Margin="10" ToolTip="Сохранить изменения" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding SaveChangesCommand}">
                 <ContentControl Margin="1" ContentTemplate="{DynamicResource SaveIcon}"></ContentControl>
             </Button>
-        </Grid>
+        </Grid>-->
         <Grid Grid.Row="1">
-            <DataGrid CanUserSortColumns="False"  AutoGenerateColumns="True" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding GooseSubscriptionTable}" Grid.Row="0">
+            <DataGrid  CanUserSortColumns="False" AutoGenerateColumns="True" Name="DataGrid" MouseUp="Control_OnMouseDoubleClick" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding GooseSubscriptionTable}" Grid.Row="0">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseUp" >
+                        <i:InvokeCommandAction Command="{Binding SaveChangesCommand}" ></i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </DataGrid>
         </Grid>
 

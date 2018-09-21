@@ -9,6 +9,7 @@ using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Services;
+using BISC.Modules.Gooses.Model.Model;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 
 namespace BISC.Modules.Gooses.Model.Services
@@ -75,6 +76,29 @@ namespace BISC.Modules.Gooses.Model.Services
                     {
                         goose.SubscriberDevice.Remove(deviceSubsriber);
                     }
+                }
+            }
+        }
+
+        public void SetGooseControlSubscriber(bool isSubscribed, IGooseControl gooseControl, IDevice device)
+        {
+            var subscriber = gooseControl.SubscriberDevice.FirstOrDefault((subscriberDevice =>
+                subscriberDevice.DeviceName == device.Name));
+            if (!isSubscribed)
+            {
+                if (subscriber != null)
+                {
+                    gooseControl.SubscriberDevice.Remove(subscriber);
+                }
+            }
+            else
+            {
+                if (subscriber == null)
+                {
+                    gooseControl.SubscriberDevice.Add(new SubscriberDevice()
+                    {
+                        DeviceName = device.Name,
+                    });
                 }
             }
         }

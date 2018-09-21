@@ -13,5 +13,6 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
         List<IGooseControl> GetGooseControlsOfDevice(IDevice device);
         void DeleteAllDeviceReferencesInGooseControlsInModel(ISclModel sclModel, string iedName);
         //void AddSubscriberDevice(IDevice device,ISclModel sclModelOfDevice,)
+        void SetGooseControlSubscriber(bool isSubscribed, IGooseControl gooseControl, IDevice device);
     }
 }

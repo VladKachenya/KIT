@@ -26,5 +26,13 @@ namespace BISC.Modules.Gooses.Presentation.Views.Tabs
             InitializeComponent();
             DataContext = gooseSubscriptionTabViewModel;
         }
+
+        private void Control_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            DataGrid.CommitEdit();
+            //CollectionViewSource.GetDefaultView(DataGrid.ItemsSource).Refresh();
+            DataGrid.Items.Refresh();
+            
+        }
     }
 }

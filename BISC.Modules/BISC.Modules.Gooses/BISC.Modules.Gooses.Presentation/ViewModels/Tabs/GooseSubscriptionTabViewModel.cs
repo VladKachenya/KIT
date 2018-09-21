@@ -9,6 +9,7 @@ using System.Windows.Input;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Gooses.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Presentation.ViewModels.Subscription;
 using BISC.Presentation.BaseItems.Behaviors.DataTable;
@@ -26,6 +27,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         private readonly ICommandFactory _commandFactory;
         private IDevice _device;
         private DataTable _gooseSubscriptionTable=new DataTable();
+        private List<IGooseControl> _gooseControls;
+
         public GooseSubscriptionTabViewModel(IDeviceModelService deviceModelService,IBiscProject biscProject,IGoosesModelService goosesModelService,ICommandFactory commandFactory)
         {
             _deviceModelService = deviceModelService;
@@ -37,19 +40,25 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         private void OnSaveChanges()
         {
-            for (int rowIndex = 0; rowIndex < _gooseSubscriptionTable.Rows.Count; rowIndex++)
+            var allDevices=_deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel);
+          //  _gooseSubscriptionTable.AcceptChanges();
+          var table = GooseSubscriptionTable.ToTable();
+            for (int rowIndex = 0; rowIndex < table.Rows.Count; rowIndex++)
             {
-                for (int colimnIndex= 1; colimnIndex < _gooseSubscriptionTable.Columns.Count; colimnIndex++)
+                for (int colimnIndex= 1; colimnIndex < table.Columns.Count; colimnIndex++)
                 {
-                    var deviceName = _gooseSubscriptionTable.Columns[colimnIndex].Caption;
+                    var deviceName = table.Columns[colimnIndex].Caption;
+                    var device = allDevices.First((device1 => device1.Name == deviceName));
 
+                    var isSubscribed = table.Rows[rowIndex].ItemArray[colimnIndex];
 
-                    var isSubscribed = _gooseSubscriptionTable.Rows[rowIndex].ItemArray[colimnIndex];
-
-                    if ((bool)isSubscribed)
+                    if (isSubscribed is bool)
                     {
-                       // _goosesModelService.
+                        var gooseControlName = table.Rows[rowIndex][0].ToString();
+                        var gooseControl = _gooseControls.First((control => control.AppId == gooseControlName));
+                        _goosesModelService.SetGooseControlSubscriber((bool) isSubscribed,gooseControl,device);
                     }
+
                 }
             }
         }
@@ -73,8 +82,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                 if (deviceInProject == _device) continue;
                 _gooseSubscriptionTable.Columns.Add(new DataColumn(deviceInProject.Name, typeof(bool)));
             }
-            var gooseControls=  _goosesModelService.GetGooseControlsOfDevice(_device);
-            foreach (var gooseControl in gooseControls)
+            _gooseControls=  _goosesModelService.GetGooseControlsOfDevice(_device);
+            foreach (var gooseControl in _gooseControls)
             {
                 var rowValues=new List<object>();
                 rowValues.Add(gooseControl.AppId);

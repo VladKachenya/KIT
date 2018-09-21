@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="BISC.Modules.Gooses.Presentation.Views.UserControl.SelectableBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SCLConfigurator.GooseReceiveEditing.View.UserControls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:interactivity="http://prismlibrary.com/"
+             xmlns:converters="clr-namespace:SCLConfigurator.GooseReceiveEditing.Converters"
+             mc:Ignorable="d"   IsEnabled="{Binding IsSelectingEnabled,Mode=TwoWay}"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <converters:IsEnabledToSelectableBoxBackgroundConverter x:Key="isEnabledToSelectableBoxBackgroundConverter"></converters:IsEnabledToSelectableBoxBackgroundConverter>
+    </UserControl.Resources>
+    <CheckBox Background="{Binding IsSelectingEnabled,Converter={StaticResource isEnabledToSelectableBoxBackgroundConverter}}" IsChecked="{Binding SelectedValue}" ToolTip="{Binding ToolTip}" >
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="MouseEnter">
+                <i:InvokeCommandAction Command="{Binding OnMouseEnterCommand}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+    </CheckBox>
+</UserControl>
