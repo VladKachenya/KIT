@@ -73,30 +73,42 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser
                 return;
             List<string> data = new List<string>();
             var fileNames = openDilog.SafeFileNames;
-            for (int i = 0; i < openDilog.FileNames.Length; i++)// (string fileName in openDilog.FileNames)
+            _globalEventsService.SendMessage( new FTPInteraktionEvent(true));
+            try
             {
-                if (!IsDigitsOnly(fileNames[i]))
+                for (int i = 0; i < openDilog.FileNames.Length; i++)// (string fileName in openDilog.FileNames)
                 {
-                    _globalEventsService.SendMessage(message: new FTPActionMassageEvent { Status = false, Message = "Имя файла не должно " +
-                        "содержать цифры, переименуёте фаил "  + fileNames[i] });
-                    fileNames[i]=null;
-                    continue;
+                    if (!IsDigitsOnly(fileNames[i]))
+                    {
+                        _globalEventsService.SendMessage(message: new FTPActionMassageEvent
+                        {
+                            Status = false,
+                            Message = "Имя файла не должно " +
+                            "содержать цифры, переименуёте фаил " + fileNames[i]
+                        });
+                        fileNames[i] = null;
+                        continue;
+                    }
+                    FileStream file = new FileStream(openDilog.FileNames[i], FileMode.Open);
+                    StreamReader readFile = new StreamReader(file);
+                    data.Add(readFile.ReadToEnd());
+                    readFile.Close();
+                    file.Close();
                 }
-                FileStream file = new FileStream(openDilog.FileNames[i], FileMode.Open);
-                StreamReader readFile = new StreamReader(file);
-                data.Add(readFile.ReadToEnd());
-                readFile.Close();
-                file.Close();
-            }
-            var fileNamesLict = new List<string>();
-            foreach (var el in fileNames.ToList<string>())
-                if (el != null) fileNamesLict.Add(el);
-            
-            _globalEventsService.SendMessage(message: new FTPActionMassageEvent { Status = null, Message = "Начало процесса записи" });
-            await _ftpClientWrapper.UploadFileString(data, fileNamesLict);
-            _globalEventsService.SendMessage(message: new FTPActionMassageEvent { Status = true, Message = "Процесс записи окончен" });
+                var fileNamesLict = new List<string>();
+                foreach (var el in fileNames.ToList<string>())
+                    if (el != null) fileNamesLict.Add(el);
 
-            OnLoadRootExecuteAsync();
+                _globalEventsService.SendMessage(message: new FTPActionMassageEvent { Status = null, Message = "Начало процесса записи" });
+                await _ftpClientWrapper.UploadFileString(data, fileNamesLict);
+                _globalEventsService.SendMessage(message: new FTPActionMassageEvent { Status = true, Message = "Процесс записи окончен" });
+
+                OnLoadRootExecuteAsync();
+            }
+            finally
+            {
+                _globalEventsService.SendMessage(new FTPInteraktionEvent(false));
+            }
         }
 
         private async void OnLoadRootExecuteAsync()

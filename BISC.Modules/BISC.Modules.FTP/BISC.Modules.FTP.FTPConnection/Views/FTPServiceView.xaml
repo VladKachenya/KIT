@@ -43,9 +43,11 @@
                 <ColumnDefinition Width="160*"></ColumnDefinition>
                 <ColumnDefinition Width="29*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Row="0" Grid.ColumnSpan="3">
+            <StackPanel Grid.Row="0" Grid.ColumnSpan="3" Orientation="Horizontal">
                 <view:IpAddressView DataContext="{Binding FtpIpAddressViewModel}"
                                     Margin="10"/>
+                <ProgressBar IsIndeterminate ="{Binding IsAnimate}"
+                    Style="{StaticResource MaterialDesignCircularProgressBar}"/>
             </StackPanel>
 
             <TextBlock Grid.Column="2" Grid.Row="1" Text="Логин"
@@ -93,14 +95,15 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="193*"/>
+                <ColumnDefinition Width="68*"/>
             </Grid.ColumnDefinitions>
             <TextBlock 
                 TextAlignment="Center"
                 Grid.Column="0" Grid.Row="0"
                 Padding="3"
                 Text="Список действий" Background="Gainsboro" Width="Auto"/>
-            <Border Grid.Row="1" Grid.ColumnSpan="2" 
+            <Border Grid.Row="1" Grid.ColumnSpan="3" 
               BorderBrush="Gainsboro" BorderThickness="2"
                     HorizontalAlignment="Stretch">
                 <ScrollViewer VerticalScrollBarVisibility ="Auto"

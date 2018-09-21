@@ -52,6 +52,7 @@
     <Compile Include="Converters\BoolToCollorConverter.cs" />
     <Compile Include="Events\FTPActionMassageEvent.cs" />
     <Compile Include="Events\FTPChangingConnectionEvent.cs" />
+    <Compile Include="Events\FTPInteraktionEvent.cs" />
     <Compile Include="Events\FTPReloadEvent.cs" />
     <Compile Include="Events\FTPUploadEvetn.cs" />
     <Compile Include="Factory\BrowserElementViewModelFactory.cs" />

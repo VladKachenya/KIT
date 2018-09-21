@@ -32,9 +32,17 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser.BrowserElements
             dlg.FileName = _name;
             if (dlg.ShowDialog() == DialogResult.Cancel)
                 return;
-            string path = dlg.FileName;
-            _globalEventsService.SendMessage(new FTPActionMassageEvent { Status = null, Message = "Скачивание файла" + Name });
-            (_model as IDeviceFile)?.Download(path);
+            _globalEventsService.SendMessage(new FTPInteraktionEvent(true));
+            try
+            { 
+                string path = dlg.FileName;
+                _globalEventsService.SendMessage(new FTPActionMassageEvent { Status = null, Message = "Скачивание файла" + Name });
+                (_model as IDeviceFile)?.Download(path);
+            }
+            finally
+            {
+                _globalEventsService.SendMessage(new FTPInteraktionEvent(false));
+            }
         }
 
 

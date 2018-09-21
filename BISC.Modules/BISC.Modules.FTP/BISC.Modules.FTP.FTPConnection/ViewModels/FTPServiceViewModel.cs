@@ -32,8 +32,9 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         private IFTPClientWrapper _ftpClientWrapper;
         private ICommandFactory _commandFactory;
         private IIpAddressViewModelFactory _ipAddressViewModelFactory;
-        IInjectionContainer _injectionContainer;
+        private IInjectionContainer _injectionContainer;
         private IGlobalEventsService _globalEventsService;
+        private bool _isAnimate;
         private bool _isConnectingInProcess;
         private string _ftpPassword;
         private string _ftpLogin;
@@ -58,6 +59,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             ResetDeviceCommand = _commandFactory.CreatePresentationCommand(OnResetDeviceCommand, CanExecuteResetDeviceCommand);
             _globalEventsService.Subscribe<FTPChangingConnectionEvent>(obj => VerifyConnection());
             _globalEventsService.Subscribe<FTPActionMassageEvent>(obj => AddNoteToActionMassageList(obj.Status, obj.Message));
+            _globalEventsService.Subscribe<FTPInteraktionEvent>(obj => IsAnimate = obj.IsInteractFTP);
             FTPActionMessageList = new ObservableCollection<IFTPActionMessage>();
 
             this.FtpIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("...", false);
@@ -70,57 +72,65 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         private async void OnConnectToDeviceCommand()
         {
-            //Проверка правильности IP
+            IsAnimate = true;
             try
-            {
-                // Проверка валидности IP
-                if (FtpIpAddressViewModel.FullIp != "..." && FtpIpAddressViewModel.FullIp != String.Empty)
-                { 
-                   await FtpIpAddressViewModel.PingGlobalEventAsync();
-                }
-                else
+            { 
+                //Проверка правильности IP
+                try
                 {
-                    AddNoteToActionMassageList(false, "IP недоступен");
+                    // Проверка валидности IP
+                    if (FtpIpAddressViewModel.FullIp != "..." && FtpIpAddressViewModel.FullIp != String.Empty)
+                    {
+                        await FtpIpAddressViewModel.PingGlobalEventAsync();
+                    }
+                    else
+                    {
+                        AddNoteToActionMassageList(false, "IP недоступен");
+                        return;
+                    }
+                    //Проверка пинга 
+                    if (FtpIpAddressViewModel.IsPingSuccess == true)
+
+                        AddNoteToActionMassageList(true, "Устройство найдено");
+                    else
+                    {
+                        AddNoteToActionMassageList(false, "Устройство не найдено");
+                        return;
+                    }
+                }
+                catch (Exception e)
+                {
+                    AddNoteToActionMassageList(false, e.Message);
                     return;
                 }
-                //Проверка пинга 
-                if (FtpIpAddressViewModel.IsPingSuccess == true)
-
-                    AddNoteToActionMassageList(true, "Устройство найдено");
-                else
+           
+                // Начало процесса подключения
+                IsConnectingInProcess = true;
+                try
                 {
-                    AddNoteToActionMassageList(false, "Устройство не найдено");
-                    return;
+                    await TryCloseConnection();
+                    AddNoteToActionMassageList(null, "Подключение к устройству");
+                    var ftpClient = await _ftpClientWrapper.Connect(FtpIpAddressViewModel.FullIp, FtpLogin, FtpPassword);
+
+                    if (_ftpClientWrapper.IsConnected) AddNoteToActionMassageList(true, "Подключение произведено");
+                    else AddNoteToActionMassageList(false, "Подключение не произведено");
+
+                    // Создание объекта файловой системы устройства
+                    IBrowserElementFactory browserElementFactory = _injectionContainer.ResolveType<IBrowserElementFactory>() ;
+                    browserElementFactory.SetConnectionProvider(ftpClient);
+                    IFileBrowser fileBrowser = new FileBrowser(browserElementFactory);
+                    FileBrowserViewModel.Model = fileBrowser;
+                    FileBrowserViewModel.LoadRootCommand.Execute(null);
+                }
+                catch (Exception e)
+                {
+                    AddNoteToActionMassageList(_ftpClientWrapper.IsConnected, e.Message);
+                    await TryCloseConnection();
                 }
             }
-            catch (Exception e)
+            finally
             {
-                AddNoteToActionMassageList(false, e.Message);
-                return;
-            }
-
-            // Начало процесса подключения
-            IsConnectingInProcess = true;
-            try
-            {
-                await TryCloseConnection();
-                AddNoteToActionMassageList(null, "Подключение к устройству");
-                var ftpClient = await _ftpClientWrapper.Connect(FtpIpAddressViewModel.FullIp, FtpLogin, FtpPassword);
-
-                if (_ftpClientWrapper.IsConnected) AddNoteToActionMassageList(true, "Подключение произведено");
-                else AddNoteToActionMassageList(false, "Подключение не произведено");
-
-                // Создание объекта файловой системы устройства
-                IBrowserElementFactory browserElementFactory = _injectionContainer.ResolveType<IBrowserElementFactory>() ;
-                browserElementFactory.SetConnectionProvider(ftpClient);
-                IFileBrowser fileBrowser = new FileBrowser(browserElementFactory);
-                FileBrowserViewModel.Model = fileBrowser;
-                FileBrowserViewModel.LoadRootCommand.Execute(null);
-            }
-            catch (Exception e)
-            {
-                AddNoteToActionMassageList(_ftpClientWrapper.IsConnected, e.Message);
-                await TryCloseConnection();
+                IsAnimate = false;
             }
             IsConnectingInProcess = false;
             AddNoteToActionMassageList(null, "Процесс подключения завершон");
@@ -129,6 +139,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         private async void OnResetDeviceCommand()
         {
+            IsAnimate = true;
             try
             {
                 AddNoteToActionMassageList(null, "Перезапуск устройства");
@@ -137,6 +148,10 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             catch (Exception e)
             {
                 AddNoteToActionMassageList(false, e.Message);
+            }
+            finally
+            {
+                IsAnimate = false;
             }
         }
 
@@ -195,6 +210,17 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             set => SetProperty(ref _ftpPassword, value);
         }
 
+        public bool IsAnimate
+        {
+            get => _isAnimate;
+            set
+            {
+                if (_isAnimate && value || !_isAnimate && !value)
+                    return;
+                SetProperty(ref _isAnimate, value);
+            }
+        }
+        
         public ICommand ConnectToDeviceCommand { get; }
 
         public ICommand ResetDeviceCommand { get; }
@@ -210,6 +236,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         {
             _globalEventsService.Unsubscribe<FTPChangingConnectionEvent>(obj => VerifyConnection());
             _globalEventsService.Unsubscribe<FTPActionMassageEvent> (obj => AddNoteToActionMassageList(obj.Status, obj.Message));
+            _globalEventsService.Unsubscribe<FTPInteraktionEvent>(obj => IsAnimate = obj.IsInteractFTP);
             base.OnDisposing();
         }
 

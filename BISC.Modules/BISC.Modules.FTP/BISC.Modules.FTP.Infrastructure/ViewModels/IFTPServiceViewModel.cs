@@ -17,6 +17,7 @@ namespace BISC.Modules.FTP.Infrastructure.ViewModels
 
         string FtpPassword { get; set; }
         string FtpLogin { get; set; }
+        bool IsAnimate { get; set; }
         ICommand ConnectToDeviceCommand { get; }
         ICommand ResetDeviceCommand { get; }
         ObservableCollection<IFTPActionMessage> FTPActionMessageList  { get; }
