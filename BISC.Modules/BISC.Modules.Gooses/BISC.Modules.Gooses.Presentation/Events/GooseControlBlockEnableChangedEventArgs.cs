@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace BISC.Modules.Gooses.Presentation.Events
 {
-    public class GooseControlBlockEnableChangedEventArgs
-    {
-        public GooseControlBlockEnableChangedEventArgs(IGooseControlBlockViewModel changedGooseControlBlockViewModel)
-        {
-            ChangedGooseControlBlockViewModel = changedGooseControlBlockViewModel;
-        }
-        public IGooseControlBlockViewModel ChangedGooseControlBlockViewModel { get; }
-    }
+    //public class GooseControlBlockEnableChangedEventArgs
+    //{
+    //    public GooseControlBlockEnableChangedEventArgs(IGooseControlBlockViewModel changedGooseControlBlockViewModel)
+    //    {
+    //        ChangedGooseControlBlockViewModel = changedGooseControlBlockViewModel;
+    //    }
+    //    public IGooseControlBlockViewModel ChangedGooseControlBlockViewModel { get; }
+    //}
 }

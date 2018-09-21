@@ -18,7 +18,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.Tabs
     /// <summary>
     /// Логика взаимодействия для GooseEditingTab.xaml
     /// </summary>
-    public partial class GooseEditingTab : UserControl
+    public partial class GooseEditingTab : System.Windows.Controls.UserControl
     {
         public GooseEditingTab()
         {

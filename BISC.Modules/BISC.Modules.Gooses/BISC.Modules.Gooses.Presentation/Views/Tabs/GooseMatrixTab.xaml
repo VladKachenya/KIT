@@ -4,9 +4,55 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BISC.Modules.Gooses.Presentation.Views.Tabs"
+             xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
+             xmlns:commands="clr-namespace:BISC.Presentation.BaseItems.Commands;assembly=BISC.Presentation.BaseItems"
+             xmlns:keys1="clr-namespace:BISC.Modules.Device.Infrastructure.Keys;assembly=BISC.Modules.Device.Infrastructure"
+             xmlns:keys="clr-namespace:BISC.Modules.Gooses.Infrastructure.Keys;assembly=BISC.Modules.Gooses.Infrastructure"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-            
+    <UserControl.Resources>
+        <Style  x:Key="ToggleLikeButtonStyleForGooseControl" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsGooseControlAssignmentSelected}" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource MaterialDesignFlatButtonClick}"></Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style  x:Key="ToggleLikeButtonStyleForMatrix" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsGooseControlAssignmentSelected}" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource MaterialDesignFlatButtonClick}"></Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions></Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition  Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Style="{StaticResource ToggleLikeButtonStyleForGooseControl}" Command="{Binding SelectGooseControlAssignmentCommand}" Width="200" Content="Назначить блоки управления нусами">
+
+            </Button>
+            <Button Style="{StaticResource ToggleLikeButtonStyleForMatrix}" Command="{Binding SelectMatrixEditCommand}" Grid.Column="1" Width="200" Content="Редактировать матрицу">
+
+            </Button>
+
+        </Grid>
+        <Grid Margin="8" Grid.Row="1">
+            <ContentControl HorizontalAlignment="Stretch" Margin ="2" behaviors:DynamicRegionBehavior.RegionKey="{x:Static keys:GooseKeys+GoosePresentationKeys.GooseMatrixTabFieldKey}" />
+
+        </Grid>
+        <Button Grid.Row="2" Content="Отмена"  Command="{x:Static commands:DialogCommands.CloseDialogCommand}"></Button>
     </Grid>
 </UserControl>

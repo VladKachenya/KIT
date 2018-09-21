@@ -12,17 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BISC.Modules.Gooses.Presentation.ViewModels.Matrix;
 
-namespace BISC.Modules.Gooses.Presentation.Views.Tabs
+namespace BISC.Modules.Gooses.Presentation.Views.Matrix
 {
     /// <summary>
-    /// Логика взаимодействия для GooseMatrixTab.xaml
+    /// Логика взаимодействия для GooseMatrixView.xaml
     /// </summary>
-    public partial class GooseMatrixTab
+    public partial class GooseMatrixView : System.Windows.Controls.UserControl
     {
-        public GooseMatrixTab()
+        public GooseMatrixView(GooseMatrixViewModel gooseMatrixViewModel)
         {
             InitializeComponent();
+            DataContext = gooseMatrixViewModel;
         }
     }
 }

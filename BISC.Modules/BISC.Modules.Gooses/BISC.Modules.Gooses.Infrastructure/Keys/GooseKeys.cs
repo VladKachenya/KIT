@@ -14,6 +14,8 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
             public static string ExternalGooseRefKey => "ExtRef";
             public static string GooseControlKey => "GSEControl";
             public static string SubscriberDeviceKey => "IEDName";
+            public static string GooseRowKey => "GooseRow";
+
 
         }
         public static class GoosePresentationKeys
@@ -23,6 +25,12 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
             public static string GooseSubscriptionTabKey => "GooseSubscriptionTab";
             public static string GooseEditingTabKey => "GooseEditingTab";
             public static string GooseMatrixTabKey => "GooseMatrixTab";
+            public static string GooseMatrixTabFieldKey => "GooseMatrixTabField";
+            public static string GooseControlAssignmentViewKey => "GooseControlAssignmentView";
+
+            public static string GooseMatrixViewKey => "GooseMatrixView";
+
+
 
         }
     }

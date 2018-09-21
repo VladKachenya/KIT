@@ -19,7 +19,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.Tabs
     /// <summary>
     /// Логика взаимодействия для GooseReceivingTab.xaml
     /// </summary>
-    public partial class GooseSubscriptionTab : UserControl
+    public partial class GooseSubscriptionTab 
     {
         public GooseSubscriptionTab(GooseSubscriptionTabViewModel gooseSubscriptionTabViewModel)
         {

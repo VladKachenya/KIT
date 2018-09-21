@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace BISC.Modules.Gooses.Presentation.Events
 {
-    public class SelectableBoxEventArgs
-    {
-        public SelectableBoxEventArgs(ISelectableValueViewModel selectableValueViewModel)
-        {
-            SelectableValueViewModel = selectableValueViewModel;
-        }
-        public ISelectableValueViewModel SelectableValueViewModel { get; }
-    }
+    //public class SelectableBoxEventArgs
+    //{
+    //    public SelectableBoxEventArgs(ISelectableValueViewModel selectableValueViewModel)
+    //    {
+    //        SelectableValueViewModel = selectableValueViewModel;
+    //    }
+    //    public ISelectableValueViewModel SelectableValueViewModel { get; }
+    //}
 }

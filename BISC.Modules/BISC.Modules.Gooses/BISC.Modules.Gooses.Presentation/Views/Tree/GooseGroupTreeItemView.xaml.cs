@@ -6,7 +6,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.Tree
     /// <summary>
     /// Логика взаимодействия для GooseGroupTreeItemView.xaml
     /// </summary>
-    public partial class GooseGroupTreeItemView : UserControl
+    public partial class GooseGroupTreeItemView 
     {
         public GooseGroupTreeItemView(GooseGroupTreeItemViewModel gooseGroupTreeItemViewModel)
         {

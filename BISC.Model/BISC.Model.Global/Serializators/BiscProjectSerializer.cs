@@ -19,6 +19,8 @@ namespace BISC.Model.Global.Serializators
         public BiscProjectSerializer()
         {
             RegisterProperty(nameof(IBiscProject.MainSclModel), "SCL");
+            RegisterProperty(nameof(IBiscProject.CustomElements), "CustomElements");
+
         }
         public override IModelElement GetConcreteObject()
         {

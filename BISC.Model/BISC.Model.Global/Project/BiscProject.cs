@@ -17,11 +17,15 @@ namespace BISC.Model.Global.Project
         public BiscProject()
         {
             ElementName = ModelKeys.BiscProjectKey;
+            CustomElements = new ModelElement();
         }
        
         #region Implementation of IBiscProject
 
         public ISclModel MainSclModel { get; set; }
+
+        public IModelElement CustomElements { get; set; }
+
 
         #endregion
     }
