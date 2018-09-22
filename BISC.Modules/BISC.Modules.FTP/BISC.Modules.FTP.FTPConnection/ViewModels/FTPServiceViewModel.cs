@@ -188,7 +188,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         private void AddNoteToActionMassageList(bool? status, string massage)
         {
             var note = new FTPActionMassage() { Status = status, Message = massage };
-            FTPActionMessageList.Add(note);
+            FTPActionMessageList.Insert(0, note);
             while (FTPActionMessageList.Count > _maxSizeOfList)
                 FTPActionMessageList.RemoveAt(0);
 
