@@ -292,10 +292,11 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
                    (type =>
                        type.Name == "MinTime"));
-                var minTime = dataForGse.Structure.ToArray()[index].Unsigned;
+                try
+                {
+                    var minTime = dataForGse.Structure.ToArray()[index].Unsigned;
 
-
-                index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
+                    index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
                     (type =>
                         type.Name == "MaxTime"));
                 var maxTime = dataForGse.Structure.ToArray()[index].Unsigned;
@@ -303,6 +304,12 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 gooseDto.MaxTime = maxTime ;
                 gooseDto.MinTime = minTime ;
 
+                }
+                catch(Exception e)
+                {
+
+                }
+              
                 gooseDtos.Add(gooseDto);
 
             }

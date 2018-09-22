@@ -116,7 +116,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                     //    await ReadLNAttributes(ied.name + ldName, lnName, connection, cancellationToken);
                     logicalNodeDto.IedName = _deviceName;
                     logicalNodeDto.LDName = ldName;
-                    logicalNodeDto.Path =  ldName + "." + lnName;
+                    logicalNodeDto.Path = ldName + "." + lnName;
                     logicalNodeDto.LnDefinitions = ldDictionary[ldName]
                         .Where((s =>
                         {
@@ -130,7 +130,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 
                     progress?.Report(new LogicalNodeLoadingEvent());
                     ILogicalNode logicalNode = await CreateLogicalNode(logicalNodeDto);
-                    if(logicalNode==null)continue;
+                    if (logicalNode == null) continue;
                     if (logicalNode is ILogicalNodeZero)
                     {
                         newLDevice.LogicalNodeZero = logicalNode as ILogicalNodeZero;
@@ -297,7 +297,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 {
                     dataObj.id = path;
                 }
-
+                
                 AddDataObjectBySpec(dataObj, doi, doiDto, logicalNodeDto);
                 if (dataObj != null)
                 {
@@ -484,7 +484,6 @@ namespace BISC.Modules.InformationModel.Model.Services
                             structObject = buff;
 
                         }
-
                         //объект может быть типом SDIDADataTypeBDA (наследником)
                         if (structObject.GetType().IsSubclassOf(typeof(SDIDADataTypeBDA)))
                         {
@@ -544,7 +543,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             Type type = null;
             tDA dataAtrobj = null;
             if (dataObj != null)
-                type = dataObj.GetAttributeByName(dataObjectName);
+                type = dataObj.GetAttributeByName(dataObjectName);// баг тут
 
             if (type != null)
             {

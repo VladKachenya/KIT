@@ -33,7 +33,9 @@ namespace BISC.Model.Iec61850Ed2.DataTypeTemplates.Base
 
         public Type GetAttributeByName(string propstr)
         {
-            PropertyInfo prop = GetType().GetProperty(propstr);
+            if (propstr == "name")
+            { }
+            PropertyInfo prop = GetPropertyInfoForClass(propstr);
             if (prop != null)
             {
                 return prop.PropertyType;
@@ -56,7 +58,7 @@ namespace BISC.Model.Iec61850Ed2.DataTypeTemplates.Base
         private Type GetTypeWithDigit(string propstr)
         {
             var propStrWithoutDigit = propstr.Remove(propstr.Length - 1);
-            PropertyInfo prop = GetType().GetProperty(propStrWithoutDigit);
+            PropertyInfo prop = GetPropertyInfoForClass(propStrWithoutDigit);
             if (prop != null)
             {
                 return prop.PropertyType;
@@ -90,7 +92,7 @@ namespace BISC.Model.Iec61850Ed2.DataTypeTemplates.Base
 
         public void SetAttributeByName(string propstr, object val)
         {
-            PropertyInfo prop = GetType().GetProperty(propstr);
+            PropertyInfo prop = GetPropertyInfoForClass(propstr);
             if (prop != null)
             {
                 try
@@ -105,10 +107,36 @@ namespace BISC.Model.Iec61850Ed2.DataTypeTemplates.Base
                 }
             }
         }
+
+
+        private PropertyInfo GetPropertyInfoForClass(string propstr)
+        {
+            PropertyInfo prop = null;
+            try
+            {
+                prop = GetType()?.GetProperty(propstr);
+            }
+            catch (Exception e)
+            {
+            }
+            if (prop == null)
+            {
+                try
+                {
+                    var t = GetType().GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
+                    prop = t.FirstOrDefault((a) => a.Name == propstr);
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+            return prop;
+        }
         public object GetAttributeValByName(string propstr)
         {
 
-            PropertyInfo prop = GetType().GetProperty(propstr);
+            var prop = GetPropertyInfoForClass(propstr);
             if (prop != null)
             {
                 return prop.GetValue(this);

@@ -63,6 +63,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             LastConnectedIps =
                 _ipAddressViewModelFactory.GetPingViewModelReadonlyCollection(_configurationService
                     .LastConnectedIpAddresses);
+            //LastConnectedIps.Insert(0, _ipAddressViewModelFactory.GetPingItemViewModel("192.168.2.35", true)); //Потом удалить
 
         }
 
