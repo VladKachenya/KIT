@@ -1,9 +1,11 @@
-﻿using BISC.Infrastructure.Global.Services;
+﻿using BISC.Infrastructure.Global.Common;
+using BISC.Infrastructure.Global.Services;
 using BISC.Modules.FTP.FTPConnection.Events;
 using BISC.Modules.FTP.Infrastructure.Factorys;
 using BISC.Modules.FTP.Infrastructure.Model;
 using BISC.Modules.FTP.Infrastructure.ViewModels.Browser;
 using BISC.Modules.FTP.Infrastructure.ViewModels.Browser.BrowserElements;
+using BISC.Presentation.BaseItems.Common;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
@@ -67,42 +69,41 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser
         }
         private async void OnLoadFileToDevice()
         {
-            var openDilog = new OpenFileDialog(){ Multiselect = true, Title = "Выберите файлы" };
-            openDilog.Filter = "All files(*.*)|*.*";
-            if (openDilog.ShowDialog() == DialogResult.Cancel)
-                return;
-            List<string> data = new List<string>();
-            var fileNames = openDilog.SafeFileNames;
+            List<FileInfo> selectidFilesInfo = FileHelper.SelectFileToOpen("Выберите файлы", "All files(*.*)|*.*", true).GetListOfValue();
+            if (!selectidFilesInfo.Any()) return;
+
             _globalEventsService.SendMessage( new FTPInteraktionEvent(true));
+            List<FileInfo> editedSelectidFileInfo = new List<FileInfo>(selectidFilesInfo);
             try
             {
-                for (int i = 0; i < openDilog.FileNames.Length; i++)// (string fileName in openDilog.FileNames)
+                _globalEventsService.SendMessage(new FTPActionMassageEvent {Status = null, Message = "Проверка имён выбранных файлов" });
+                foreach (var element in selectidFilesInfo)
                 {
-                    if (!IsDigitsOnly(fileNames[i]))
+                    if (!IsDigitsOnly(element.Name))
                     {
-                        _globalEventsService.SendMessage(message: new FTPActionMassageEvent
-                        {
+                        _globalEventsService.SendMessage(
+                            new FTPActionMassageEvent {
                             Status = false,
                             Message = "Имя файла не должно " +
-                            "содержать цифры, переименуёте фаил " + fileNames[i]
-                        });
-                        fileNames[i] = null;
-                        continue;
+                                      "содержать цифры, переименуёте фаил " + element.Name
+                            });
+                        editedSelectidFileInfo.Remove(element);
                     }
-                    FileStream file = new FileStream(openDilog.FileNames[i], FileMode.Open);
+                }
+                _globalEventsService.SendMessage(new FTPActionMassageEvent { Status = null, Message = "Вычитывание выбранных файлов" });
+                List<string> data = new List<string>();
+                foreach (var element in editedSelectidFileInfo)
+                {
+                    FileStream file = new FileStream(element.FullName, FileMode.Open);
                     StreamReader readFile = new StreamReader(file);
                     data.Add(readFile.ReadToEnd());
                     readFile.Close();
                     file.Close();
                 }
-                var fileNamesLict = new List<string>();
-                foreach (var el in fileNames.ToList<string>())
-                    if (el != null) fileNamesLict.Add(el);
-
+                var fileNamesList = new List<string>( from element in editedSelectidFileInfo select element.Name);
                 _globalEventsService.SendMessage(message: new FTPActionMassageEvent { Status = null, Message = "Начало процесса записи" });
-                await _ftpClientWrapper.UploadFileString(data, fileNamesLict);
+                await _ftpClientWrapper.UploadFileString(data, fileNamesList);
                 _globalEventsService.SendMessage(message: new FTPActionMassageEvent { Status = true, Message = "Процесс записи окончен" });
-
                 OnLoadRootExecuteAsync();
             }
             finally

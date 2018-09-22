@@ -12,20 +12,23 @@ namespace BISC.Presentation.BaseItems.Common
    public static class FileHelper
     {
 
-        public static Maybe<FileInfo> SelectFileToOpen(string windowTitle, string filter)
+        public static Maybe<FileInfo> SelectFileToOpen(string windowTitle, string filter, bool multiselect = false)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             Maybe<FileInfo> fileInfoMaybe = new Maybe<FileInfo>();
-            ofd.Multiselect = false;
+            ofd.Multiselect = multiselect;
             ofd.Title = windowTitle;
             ofd.Filter = filter;
             ofd.CheckFileExists = true;
             if (ofd.ShowDialog() == true)
             {
-                fileInfoMaybe.AddValue(new FileInfo(ofd.FileName));
+                foreach (var element in ofd.FileNames)
+                    fileInfoMaybe.AddValue(new FileInfo(element));
             }
             return fileInfoMaybe;
         }
+
+        //public static Maybe<>
 
 
         public static Maybe<string> SelectFilePathToSave(string windowTitle, string defaultExtension, string filter, string initialName)
