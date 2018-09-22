@@ -1,7 +1,9 @@
-﻿using BISC.Infrastructure.Global.Services;
+﻿using BISC.Infrastructure.Global.Common;
+using BISC.Infrastructure.Global.Services;
 using BISC.Modules.FTP.FTPConnection.Events;
 using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
 using BISC.Modules.FTP.Infrastructure.ViewModels.Browser.BrowserElements;
+using BISC.Presentation.BaseItems.Common;
 using BISC.Presentation.Infrastructure.Factories;
 using System;
 using System.Collections.Generic;
@@ -28,16 +30,13 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser.BrowserElements
 
         private void OnDownloadElementExecute()
         {
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.FileName = _name;
-            if (dlg.ShowDialog() == DialogResult.Cancel)
-                return;
+            Maybe<string> listOfPaths = FileHelper.SelectFilePathToSave("Сохранение файла", null, null, Name );
+            if (!listOfPaths.Any()) return;
             _globalEventsService.SendMessage(new FTPInteraktionEvent(true));
             try
             { 
-                string path = dlg.FileName;
                 _globalEventsService.SendMessage(new FTPActionMassageEvent { Status = null, Message = "Скачивание файла" + Name });
-                (_model as IDeviceFile)?.Download(path);
+                (_model as IDeviceFile)?.Download(listOfPaths.GetFirstValue());
             }
             finally
             {

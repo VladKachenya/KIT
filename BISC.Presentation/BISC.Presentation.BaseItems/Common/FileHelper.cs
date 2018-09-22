@@ -28,8 +28,6 @@ namespace BISC.Presentation.BaseItems.Common
             return fileInfoMaybe;
         }
 
-        //public static Maybe<>
-
 
         public static Maybe<string> SelectFilePathToSave(string windowTitle, string defaultExtension, string filter, string initialName)
         {
