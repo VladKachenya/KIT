@@ -29,7 +29,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <materialDesign:DialogHost     attachedCommandBehavior:CommandBehavior.Command="{Binding ShellLoadedCommand}"
-                                   attachedCommandBehavior:CommandBehavior.Event="Loaded"  Identifier="{x:Static constants:Constants.RootDialogKey}" SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
+                                   attachedCommandBehavior:CommandBehavior.Event="Loaded"  Identifier="{x:Static constants:Constants.RootDialogKey}"  SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
 
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <materialDesign:DrawerHost.LeftDrawerContent>

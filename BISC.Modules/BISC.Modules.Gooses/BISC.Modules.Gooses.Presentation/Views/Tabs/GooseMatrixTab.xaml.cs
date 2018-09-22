@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BISC.Modules.Gooses.Presentation.ViewModels.Tabs;
 
 namespace BISC.Modules.Gooses.Presentation.Views.Tabs
 {
@@ -20,9 +21,10 @@ namespace BISC.Modules.Gooses.Presentation.Views.Tabs
     /// </summary>
     public partial class GooseMatrixTab
     {
-        public GooseMatrixTab()
+        public GooseMatrixTab(GooseMatrixTabViewModel gooseMatrixTabViewModel)
         {
             InitializeComponent();
+            DataContext = gooseMatrixTabViewModel;
         }
     }
 }

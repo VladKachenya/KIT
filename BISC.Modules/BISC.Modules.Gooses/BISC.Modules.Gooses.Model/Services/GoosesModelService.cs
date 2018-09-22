@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
+using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Model;
@@ -14,7 +15,7 @@ using BISC.Modules.InformationModel.Infrastucture.Services;
 
 namespace BISC.Modules.Gooses.Model.Services
 {
-   public class GoosesModelService: IGoosesModelService
+   public class  GoosesModelService: IGoosesModelService
     {
         private readonly IInfoModelService _infoModelService;
         private readonly IDeviceModelService _deviceModelService;
@@ -100,6 +101,32 @@ namespace BISC.Modules.Gooses.Model.Services
                         DeviceName = device.Name,
                     });
                 }
+            }
+        }
+
+        public void AddGooseExternalReferenceToDevice(IFcda fcda, IDevice device,string deviceNameOfFcda)
+        {
+            var inputs = GetGooseInputsOfDevice(device);
+            var extRef = new ExternalGooseRef()
+            {
+                DaName = fcda.DaName,
+                DoName = fcda.DoName,
+                LdInst = fcda.LdInst,
+                LnClass = fcda.LnClass,
+                LnInst = fcda.LnInst,
+                Prefix = fcda.Prefix,
+                IedName = deviceNameOfFcda
+            };
+            if (inputs.Any())
+            {
+                inputs.First().ExternalGooseReferences.Add(extRef);
+            }
+            else
+            {
+                var ldevices = _infoModelService.GetLDevicesFromDevices(device);
+                GooseInput gooseInput=new GooseInput();
+                gooseInput.ExternalGooseReferences.Add(extRef);
+                ldevices.First().LogicalNodeZero.ChildModelElements.Add(gooseInput);
             }
         }
 

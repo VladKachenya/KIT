@@ -52,7 +52,6 @@ namespace BISC.Model.Global.Serializators
             {
                 throw new Exception("Элемент должен быть зарегистрирован");
             }
-
             XElement xElement;
 
             if (!string.IsNullOrEmpty((modelElement as ModelElement).Namespace))
@@ -88,7 +87,7 @@ namespace BISC.Model.Global.Serializators
             {
                 foreach (var property in _properties)
                 {
-                  
+
                     foreach (var propertyInfo in modelElementProperties)
                     {
                         if (property.Item1 != propertyInfo.Name) continue;
@@ -129,13 +128,17 @@ namespace BISC.Model.Global.Serializators
                                 {
                                     var elementsOfType =
                                         modelElement.ChildModelElements.Where((element => element.GetType() == collectionType.Item1)).ToList();
-                                    
+                                    if (elementsOfType.Count == 0)
+                                    {
+                                        elementsOfType =
+                                            modelElement.ChildModelElements.Where((element => element.GetType().GetInterface(collectionType.Item1.ToString()) != null)).ToList();
+                                    }
                                     foreach (var element in elementsOfType)
                                     {
                                         modelElement.ChildModelElements.Remove(element);
                                     }
-                                    modelElement.ChildModelElements.AddRange((IEnumerable<IModelElement>)propertyInfo.GetValue(modelElement) );
-                                    
+                                    modelElement.ChildModelElements.AddRange((IEnumerable<IModelElement>)propertyInfo.GetValue(modelElement));
+
 
                                 }
                             }
@@ -164,7 +167,7 @@ namespace BISC.Model.Global.Serializators
             }
             else
             {
-                modelElement.ModelElementAttributes.Add(new XAttribute(attributeName,attributeValue));
+                modelElement.ModelElementAttributes.Add(new XAttribute(attributeName, attributeValue));
                 return true;
             }
 
@@ -263,7 +266,7 @@ namespace BISC.Model.Global.Serializators
                                 {
                                     Console.WriteLine(e);
                                 }
-                               
+
                             }
                             SetProperty(propertyInfo, modelElement, value);
                             break;

@@ -4,9 +4,43 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BISC.Modules.Gooses.Presentation.Views.Matrix"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:entities="clr-namespace:BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-          <TextBlock Text="contrl"></TextBlock>  
+        <ScrollViewer HorizontalScrollBarVisibility="Auto"></ScrollViewer>
+        <ItemsControl  Name="itemsControl" ItemsSource="{Binding GooseControlBlockAssignmentItems}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="entities:GooseControlBlockAssignmentItem">
+                    <Border  Margin="3" BorderThickness="1" BorderBrush="Gray">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Margin="10" VerticalAlignment="Center" Text="{Binding Signature}"></TextBlock>
+                            <ListBox Grid.Column="1" ItemsSource="{ Binding FcdaAssignmentItems}" HorizontalAlignment="Stretch">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="entities:FcdaAssignmentItem">
+                                        <CheckBox Content="{Binding Signature}" IsChecked="{Binding IsSubscribed}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Checked" >
+                                                    <i:InvokeCommandAction Command="{Binding DataContext.SaveChangesCommand,Source={x:Reference Name=itemsControl}}"></i:InvokeCommandAction>
+                                                </i:EventTrigger>
+                                                <i:EventTrigger EventName="Unchecked" >
+                                                    <i:InvokeCommandAction Command="{Binding DataContext.SaveChangesCommand,Source={x:Reference Name=itemsControl}}"></i:InvokeCommandAction>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </CheckBox>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
     </Grid>
 </UserControl>

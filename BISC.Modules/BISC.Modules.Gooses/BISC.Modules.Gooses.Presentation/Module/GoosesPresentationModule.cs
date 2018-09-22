@@ -36,7 +36,6 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<GooseSubscriptionTabViewModel>();
             _injectionContainer.RegisterType<GooseMatrixTabViewModel>();
             _injectionContainer.RegisterType<GooseEditingTabViewModel>();
-            _injectionContainer.RegisterType<GooseMatrixTabViewModel>();
             _injectionContainer.RegisterType<GooseControlAssignmentViewModel>();
 
             _injectionContainer.RegisterType<object,GooseGroupTreeItemView>(GooseKeys.GoosePresentationKeys.GooseGroupTreeItemViewKey);

@@ -38,13 +38,13 @@
         <Grid>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button Style="{StaticResource ToggleLikeButtonStyleForGooseControl}" Command="{Binding SelectGooseControlAssignmentCommand}" Width="200" Content="Назначить блоки управления нусами">
+            <Button Style="{StaticResource ToggleLikeButtonStyleForGooseControl}" Command="{Binding SelectGooseControlAssignmentCommand}" Content="Назначить блоки управления гусами">
 
             </Button>
-            <Button Style="{StaticResource ToggleLikeButtonStyleForMatrix}" Command="{Binding SelectMatrixEditCommand}" Grid.Column="1" Width="200" Content="Редактировать матрицу">
+            <Button Style="{StaticResource ToggleLikeButtonStyleForMatrix}" Command="{Binding SelectMatrixEditCommand}" Grid.Column="1" Content="Редактировать матрицу">
 
             </Button>
 
@@ -53,6 +53,6 @@
             <ContentControl HorizontalAlignment="Stretch" Margin ="2" behaviors:DynamicRegionBehavior.RegionKey="{x:Static keys:GooseKeys+GoosePresentationKeys.GooseMatrixTabFieldKey}" />
 
         </Grid>
-        <Button Grid.Row="2" Content="Отмена"  Command="{x:Static commands:DialogCommands.CloseDialogCommand}"></Button>
+      
     </Grid>
 </UserControl>

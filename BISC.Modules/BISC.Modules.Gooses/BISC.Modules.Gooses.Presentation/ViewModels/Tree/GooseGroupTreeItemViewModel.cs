@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Presentation.BaseItems.ViewModels;
@@ -11,8 +12,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
     public class GooseGroupTreeItemViewModel : NavigationViewModelBase
     {
         private readonly ITabManagementService _tabManagementService;
-        private TreeItemIdentifier _treeItemIdentifier;
         private IDevice _device;
+
+        private TreeItemIdentifier _subscriptionIdentifier;
+        private TreeItemIdentifier _matrixIdentifier;
+        private TreeItemIdentifier _gooseEditIdentifier;
 
 
         public GooseGroupTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService)
@@ -26,14 +30,16 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
 
         private void OnNavigateToMatrix()
         {
-
+            BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
+            biscNavigationParameters.AddParameterByName("IED", _device);
+            _tabManagementService.NavigateToTab(GooseKeys.GoosePresentationKeys.GooseMatrixTabKey, biscNavigationParameters, $"Goose матрица {_device.Name}", _matrixIdentifier);
         }
 
         private void OnNavigateToSubscription()
         {
             BiscNavigationParameters biscNavigationParameters=new BiscNavigationParameters();
             biscNavigationParameters.AddParameterByName("IED", _device);
-            _tabManagementService.NavigateToTab(GooseKeys.GoosePresentationKeys.GooseSubscriptionTabKey, biscNavigationParameters, "Подписка", _treeItemIdentifier);
+            _tabManagementService.NavigateToTab(GooseKeys.GoosePresentationKeys.GooseSubscriptionTabKey, biscNavigationParameters, $"Подписка {_device.Name}", _subscriptionIdentifier);
         }
 
         private void OnNavigateToDetails()
@@ -48,9 +54,13 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
-            _treeItemIdentifier =
+            var treeItemIdentifier =
                 navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(
                     TreeItemIdentifier.Key);
+            _subscriptionIdentifier=new TreeItemIdentifier(treeItemIdentifier.ItemId,Guid.NewGuid());
+            _matrixIdentifier = new TreeItemIdentifier(treeItemIdentifier.ItemId, Guid.NewGuid());
+            _gooseEditIdentifier = new TreeItemIdentifier(treeItemIdentifier.ItemId, Guid.NewGuid());
+
             base.OnNavigatedTo(navigationContext);
         }
        

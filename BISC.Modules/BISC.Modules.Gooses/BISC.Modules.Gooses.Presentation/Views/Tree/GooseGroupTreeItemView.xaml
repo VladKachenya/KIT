@@ -26,9 +26,9 @@
             <Button Margin="4" Grid.Column="1" ToolTip="Goose матрица" Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToMatrixCommand}">
                 <ContentControl ContentTemplate="{DynamicResource ViewGridIcon}"></ContentControl>
             </Button>
-            <Button Margin="4" Grid.Column="2" ToolTip="Редактировать блоки управления Goose" Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToDetailsCommand}">
+            <!--<Button Margin="4" Grid.Column="2" ToolTip="Редактировать блоки управления Goose" Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToDetailsCommand}">
                 <ContentControl ContentTemplate="{DynamicResource PencilIcon}"></ContentControl>
-            </Button>
+            </Button>-->
         </Grid>
 
     </Grid>

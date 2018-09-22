@@ -88,7 +88,8 @@ namespace BISC.Model.Global.Services
             if (_currentProjectPath == null) return null;
             if (isFull)
             {
-                return _currentProjectPath;
+                FileInfo fileInfo = new FileInfo(_currentProjectPath);
+                return fileInfo.FullName;
 
             }
             else

@@ -58,7 +58,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                         var gooseControl = _gooseControls.First((control => control.AppId == gooseControlName));
                         _goosesModelService.SetGooseControlSubscriber((bool) isSubscribed,gooseControl,device);
                     }
-
                 }
             }
         }

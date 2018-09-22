@@ -60,6 +60,7 @@
     <Compile Include="Module\GoosesPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\GoosesUiHandlingService.cs" />
+    <Compile Include="ViewModels\Matrix\Entities\GooseControlBlockAssignmentItem.cs" />
     <Compile Include="ViewModels\Matrix\GooseControlAssignmentViewModel.cs" />
     <Compile Include="ViewModels\Matrix\GooseControlBlockViewModel.cs" />
     <Compile Include="ViewModels\Matrix\GooseMatrixViewModel.cs" />
@@ -146,6 +147,10 @@
     <ProjectReference Include="..\..\..\BISC.Presentation\BISC.Presentation.Infrastructure\BISC.Presentation.Infrastructure.csproj">
       <Project>{D4FEAC3B-C8F9-4DE7-8953-988C75F0F9AA}</Project>
       <Name>BISC.Presentation.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.DataSets\BISC.Modules.DataSets.Infrastructure\BISC.Modules.DataSets.Infrastructure.csproj">
+      <Project>{B2BF5767-508B-469C-B196-A991678867AE}</Project>
+      <Name>BISC.Modules.DataSets.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules.Device\BISC.Modules.Device.Infrastructure\BISC.Modules.Device.Infrastructure.csproj">
       <Project>{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}</Project>

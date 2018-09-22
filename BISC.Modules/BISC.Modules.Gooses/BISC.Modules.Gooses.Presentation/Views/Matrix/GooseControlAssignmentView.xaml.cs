@@ -27,5 +27,6 @@ namespace BISC.Modules.Gooses.Presentation.Views.Matrix
             DataContext = gooseControlAssignmentViewModel;
         }
 
+       
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
+using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model;
 
@@ -14,5 +15,6 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
         void DeleteAllDeviceReferencesInGooseControlsInModel(ISclModel sclModel, string iedName);
         //void AddSubscriberDevice(IDevice device,ISclModel sclModelOfDevice,)
         void SetGooseControlSubscriber(bool isSubscribed, IGooseControl gooseControl, IDevice device);
+        void AddGooseExternalReferenceToDevice(IFcda fcda, IDevice device, string deviceNameOfFcda);
     }
 }

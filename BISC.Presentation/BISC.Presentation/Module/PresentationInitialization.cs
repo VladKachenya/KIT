@@ -20,11 +20,12 @@ namespace BISC.Presentation.Module
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private readonly ICommandFactory _commandFactory;
         private readonly IMainTreeViewModel _mainTreeViewModel;
+        private readonly IUserNotificationService _userNotificationService;
 
         public PresentationInitialization(IEventAggregator eventAggregator, 
             INavigationService navigationService,IProjectService projectService
             ,IUiFromModelElementRegistryService uiFromModelElementRegistryService,IBiscProject biscProject
-            ,IUserInterfaceComposingService userInterfaceComposingService,ICommandFactory commandFactory,IMainTreeViewModel mainTreeViewModel)
+            ,IUserInterfaceComposingService userInterfaceComposingService,ICommandFactory commandFactory,IMainTreeViewModel mainTreeViewModel,IUserNotificationService userNotificationService)
         {
 
             _eventAggregator = eventAggregator;
@@ -35,6 +36,7 @@ namespace BISC.Presentation.Module
             _userInterfaceComposingService = userInterfaceComposingService;
             _commandFactory = commandFactory;
             _mainTreeViewModel = mainTreeViewModel;
+            _userNotificationService = userNotificationService;
             _eventAggregator.GetEvent<ShellLoadedEvent>().Subscribe((args =>
             {
                 _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject),"Сохранить проект",IconsKeys.SaveIconKey);
@@ -56,6 +58,7 @@ namespace BISC.Presentation.Module
         private void OnSaveProject()
         {
             _projectService.SaveCurrentProject();
+            _userNotificationService.NotifyUserGlobal($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}");
         }
 
     }

@@ -17,7 +17,7 @@ namespace BISC.Model.Global.Project
         public BiscProject()
         {
             ElementName = ModelKeys.BiscProjectKey;
-            CustomElements = new ModelElement();
+            CustomElements = new ModelElement(){ElementName = "CustomElements" };
         }
        
         #region Implementation of IBiscProject
