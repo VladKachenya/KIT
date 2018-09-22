@@ -9,8 +9,10 @@ using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Model;
+using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Model.Model;
+using BISC.Modules.Gooses.Model.Model.Matrix;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 
 namespace BISC.Modules.Gooses.Model.Services
@@ -19,11 +21,13 @@ namespace BISC.Modules.Gooses.Model.Services
     {
         private readonly IInfoModelService _infoModelService;
         private readonly IDeviceModelService _deviceModelService;
+        private readonly IBiscProject _biscProject;
 
-        public GoosesModelService(IInfoModelService infoModelService,IDeviceModelService deviceModelService)
+        public GoosesModelService(IInfoModelService infoModelService,IDeviceModelService deviceModelService,IBiscProject biscProject)
         {
             _infoModelService = infoModelService;
             _deviceModelService = deviceModelService;
+            _biscProject = biscProject;
         }
         public void AddGseControl(string lnName, string ldName, IModelElement devcice, IGooseControl gooseControl)
         {
@@ -79,6 +83,22 @@ namespace BISC.Modules.Gooses.Model.Services
                     }
                 }
             }
+
+            IGooseMatrix gooseMatrix = null;
+            foreach (var customElement in _biscProject.CustomElements.ChildModelElements)
+            {
+                if (customElement is IGooseMatrix gooseMatrixInModel)
+                {
+                    if (gooseMatrix.RelatedIedName == iedName)
+                    {
+                        gooseMatrix = gooseMatrixInModel;
+                    }
+                }
+            }
+            if (gooseMatrix != null)
+            {
+                _biscProject.CustomElements.ChildModelElements.Remove(gooseMatrix);
+            }
         }
 
         public void SetGooseControlSubscriber(bool isSubscribed, IGooseControl gooseControl, IDevice device)
@@ -129,6 +149,49 @@ namespace BISC.Modules.Gooses.Model.Services
                 ldevices.First().LogicalNodeZero.ChildModelElements.Add(gooseInput);
             }
         }
+
+        public List<Tuple<IDevice, IGooseControl>> GetGooseControlsSubscribed(IDevice deviceSubscriber, ISclModel sclModel)
+        {
+            List<Tuple<IDevice, IGooseControl>> result=new List<Tuple<IDevice, IGooseControl>>();
+            var devices = _deviceModelService.GetDevicesFromModel(sclModel);
+            foreach (var device in devices)
+            {
+                if (device == deviceSubscriber)
+                {
+                    continue;
+                }
+                var gooseControls = GetGooseControlsOfDevice(device);
+                foreach (var gooseControl in gooseControls)
+                {
+                    if (gooseControl.SubscriberDevice.Any((subscriberDevice =>
+                        subscriberDevice.DeviceName == deviceSubscriber.Name)))
+                    {
+                        result.Add(new Tuple<IDevice, IGooseControl>(device, gooseControl));
+                    }
+                }
+            }
+            return result;
+
+        }
+
+        public IGooseMatrix GetGooseMatrixForDevice(IDevice device)
+        {
+            foreach (var customElement in _biscProject.CustomElements.ChildModelElements)
+            {
+                if (customElement is IGooseMatrix gooseMatrixInModel)
+                {
+                    if (gooseMatrixInModel.RelatedIedName == device.Name)
+                    {
+                        return gooseMatrixInModel;
+                    }
+                }
+            }
+            IGooseMatrix gooseMatrix=new GooseMatrix();
+            gooseMatrix.RelatedIedName = device.Name;
+            _biscProject.CustomElements.ChildModelElements.Add(gooseMatrix);
+            return gooseMatrix;
+        }
+
 
         public List<IGooseInput> GetGooseInputsOfDevice(IDevice device)
         {

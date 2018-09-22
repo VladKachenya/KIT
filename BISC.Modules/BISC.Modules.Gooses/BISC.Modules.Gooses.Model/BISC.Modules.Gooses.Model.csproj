@@ -48,6 +48,7 @@
     <Compile Include="Model\ExternalGooseRef.cs" />
     <Compile Include="Model\GooseControl.cs" />
     <Compile Include="Model\GooseInput.cs" />
+    <Compile Include="Model\Matrix\GooseMatrix.cs" />
     <Compile Include="Model\Matrix\GooseRow.cs" />
     <Compile Include="Model\SubscriberDevice.cs" />
     <Compile Include="Module\GoosesModelModule.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="Serializers\ExternalGooseRefSerializer.cs" />
     <Compile Include="Serializers\GooseControlSerializer.cs" />
     <Compile Include="Serializers\GooseInputSerializer.cs" />
+    <Compile Include="Serializers\GooseMatrixSerializer.cs" />
     <Compile Include="Serializers\GooseRowSerializer.cs" />
     <Compile Include="Serializers\SubscriberDeviceSerializer.cs" />
     <Compile Include="Services\GoosesLoadingService.cs" />

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BISC.Model.Iec61850Ed2.SclModelTemplates.DataSet;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Model;

@@ -12,7 +12,7 @@ namespace BISC.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.7.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -76,6 +76,30 @@ namespace BISC.Properties {
             }
             set {
                 this["LastConnectedFTPIpAddreses"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsAutoEnabledQualityInGooseReceiving {
+            get {
+                return ((bool)(this["IsAutoEnabledQualityInGooseReceiving"]));
+            }
+            set {
+                this["IsAutoEnabledQualityInGooseReceiving"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsAutoEnabledValidityInGooseReceiving {
+            get {
+                return ((bool)(this["IsAutoEnabledValidityInGooseReceiving"]));
+            }
+            set {
+                this["IsAutoEnabledValidityInGooseReceiving"] = value;
             }
         }
     }

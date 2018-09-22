@@ -25,6 +25,12 @@ namespace BISC.Modules.Gooses.Model.Model
         public string LnInst { get; set; }
         public string DoName { get; set; }
         public string DaName { get; set; }
+        public string AsString()
+        {
+            return IedName +"/"+ LdInst+"/"+
+                   Prefix + LnClass + LnInst +"/"+
+                   DoName + "." + DaName;
+        }
 
         #endregion
     }

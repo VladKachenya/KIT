@@ -18,7 +18,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
     /// <summary>
     /// Interaction logic for SelectableBox.xaml
     /// </summary>
-    public partial class SelectableBox : UserControl
+    public partial class SelectableBox : System.Windows.Controls.UserControl
     {
         public SelectableBox()
         {

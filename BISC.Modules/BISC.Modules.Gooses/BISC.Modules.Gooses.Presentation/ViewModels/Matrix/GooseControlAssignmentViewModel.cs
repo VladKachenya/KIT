@@ -86,25 +86,9 @@ public ObservableCollection<GooseControlBlockAssignmentItem> GooseControlBlockAs
         {
             GooseControlBlockAssignmentItems.Clear();
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
-            var subscribedGooseControlsForCurrentDevice=new List<Tuple<IDevice,IGooseControl>>();
-            var devices = _deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel);
-            foreach (var device in devices)
-            {
-                if (device == _device)
-                {
-                    continue;
-                }
-
-                var gooseControls = _goosesModelService.GetGooseControlsOfDevice(device);
-                foreach (var gooseControl in gooseControls)
-                {
-                    if (gooseControl.SubscriberDevice.Any((subscriberDevice =>
-                        subscriberDevice.DeviceName == _device.Name)))
-                    {
-                        subscribedGooseControlsForCurrentDevice.Add(new Tuple<IDevice, IGooseControl>(device,gooseControl));
-                    }
-                }
-            }
+            var subscribedGooseControlsForCurrentDevice =
+                _goosesModelService.GetGooseControlsSubscribed(_device, _biscProject.MainSclModel);
+        
 
             var existingGooseInputsOfDevice = _goosesModelService.GetGooseInputsOfDevice(_device);
 

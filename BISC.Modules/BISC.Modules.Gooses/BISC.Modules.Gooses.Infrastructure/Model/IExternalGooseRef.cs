@@ -11,5 +11,7 @@ namespace BISC.Modules.Gooses.Infrastructure.Model
         string LnInst { get; set; }
         string DoName { get; set; }
         string DaName { get; set; }
+
+        string AsString();
     }
 }

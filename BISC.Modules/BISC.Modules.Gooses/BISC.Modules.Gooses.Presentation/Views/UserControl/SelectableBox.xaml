@@ -3,21 +3,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:SCLConfigurator.GooseReceiveEditing.View.UserControls"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:interactivity="http://prismlibrary.com/"
-             xmlns:converters="clr-namespace:SCLConfigurator.GooseReceiveEditing.Converters"
+             xmlns:converters1="clr-namespace:BISC.Modules.Gooses.Presentation.Converters"
              mc:Ignorable="d"   IsEnabled="{Binding IsSelectingEnabled,Mode=TwoWay}"
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
-        <converters:IsEnabledToSelectableBoxBackgroundConverter x:Key="isEnabledToSelectableBoxBackgroundConverter"></converters:IsEnabledToSelectableBoxBackgroundConverter>
-    </UserControl.Resources>
-    <CheckBox Background="{Binding IsSelectingEnabled,Converter={StaticResource isEnabledToSelectableBoxBackgroundConverter}}" IsChecked="{Binding SelectedValue}" ToolTip="{Binding ToolTip}" >
+        <converters1:IsEnabledToSelectableBoxBackgroundConverter x:Key="isEnabledToSelectableBoxBackgroundConverter"></converters1:IsEnabledToSelectableBoxBackgroundConverter>
+    <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
+        </UserControl.Resources>
+    <Border Margin="2" BorderBrush="Black"
+            Background="{Binding IsSelectingEnabled,Converter={StaticResource isEnabledToSelectableBoxBackgroundConverter}}" ToolTip="{Binding ToolTip}" >
+        <Border.Style>
+            <Style TargetType="Border">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Trigger.Setters>
+                            <Setter Property="BorderThickness"  Value="2"></Setter>
+                        </Trigger.Setters>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="False">
+                        <Trigger.Setters>
+                            <Setter Property="BorderThickness" Value="1"></Setter>
+                        </Trigger.Setters>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        <Border Margin="2" BorderBrush="Black" Background="Black"  Visibility="{Binding SelectedValue,Converter={StaticResource booleanToVisibilityConverter}}">
+        </Border>
+
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="MouseEnter">
                 <i:InvokeCommandAction Command="{Binding OnMouseEnterCommand}" />
             </i:EventTrigger>
+            <i:EventTrigger EventName="MouseDown">
+                <i:InvokeCommandAction Command="{Binding OnMouseDownCommand}" />
+            </i:EventTrigger>
         </i:Interaction.Triggers>
-    </CheckBox>
+    </Border>
 </UserControl>

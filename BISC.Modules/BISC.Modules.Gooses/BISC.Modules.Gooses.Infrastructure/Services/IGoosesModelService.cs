@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model;
+using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 
 namespace BISC.Modules.Gooses.Infrastructure.Services
 {
@@ -16,5 +18,9 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
         //void AddSubscriberDevice(IDevice device,ISclModel sclModelOfDevice,)
         void SetGooseControlSubscriber(bool isSubscribed, IGooseControl gooseControl, IDevice device);
         void AddGooseExternalReferenceToDevice(IFcda fcda, IDevice device, string deviceNameOfFcda);
+        List<Tuple<IDevice, IGooseControl>> GetGooseControlsSubscribed(IDevice deviceSubscriber, ISclModel sclModel);
+
+
+        IGooseMatrix GetGooseMatrixForDevice(IDevice device);
     }
 }

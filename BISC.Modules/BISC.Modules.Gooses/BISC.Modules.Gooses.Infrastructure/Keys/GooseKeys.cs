@@ -15,6 +15,7 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
             public static string GooseControlKey => "GSEControl";
             public static string SubscriberDeviceKey => "IEDName";
             public static string GooseRowKey => "GooseRow";
+            public static string GooseMatrixKey => "GooseMatrix";
 
 
         }

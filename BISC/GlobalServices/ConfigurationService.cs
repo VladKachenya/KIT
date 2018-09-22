@@ -11,7 +11,6 @@ namespace BISC.GlobalServices
 {
     public class ConfigurationService : IConfigurationService
     {
-        private List<string> _lastConnectedIpAddresses;
 
 
         public ConfigurationService()
@@ -88,6 +87,26 @@ namespace BISC.GlobalServices
             set
             {
                 Settings.Default.LastProjectPath = value;
+                Settings.Default.Save();
+            }
+        }
+
+        public bool IsAutoEnabledValidityInGooseReceiving
+        {
+            get => Settings.Default.IsAutoEnabledValidityInGooseReceiving;
+            set
+            {
+                Settings.Default.IsAutoEnabledValidityInGooseReceiving = value;
+                Settings.Default.Save();
+            }
+        }
+
+        public bool IsAutoEnabledQualityInGooseReceiving
+        {
+            get => Settings.Default.IsAutoEnabledQualityInGooseReceiving;
+            set
+            {
+                Settings.Default.IsAutoEnabledQualityInGooseReceiving = value;
                 Settings.Default.Save();
             }
         }

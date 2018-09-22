@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Modules.Gooses.Infrastructure.Keys;
+using BISC.Modules.Gooses.Presentation.Factories;
+using BISC.Modules.Gooses.Presentation.Interfaces;
 using BISC.Modules.Gooses.Presentation.Services;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix;
+using BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities;
 using BISC.Modules.Gooses.Presentation.ViewModels.Tabs;
 using BISC.Modules.Gooses.Presentation.ViewModels.Tree;
 using BISC.Modules.Gooses.Presentation.Views.Matrix;
@@ -37,6 +40,9 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<GooseMatrixTabViewModel>();
             _injectionContainer.RegisterType<GooseEditingTabViewModel>();
             _injectionContainer.RegisterType<GooseControlAssignmentViewModel>();
+            _injectionContainer.RegisterType<ISelectableValueViewModel, SelectableValueViewModel>();
+            _injectionContainer.RegisterType<GooseRowViewModelFactory>();
+            _injectionContainer.RegisterType<GooseControlBlockViewModel>();
 
             _injectionContainer.RegisterType<object,GooseGroupTreeItemView>(GooseKeys.GoosePresentationKeys.GooseGroupTreeItemViewKey);
             _injectionContainer.RegisterType<object, GooseSubscriptionTab>(GooseKeys.GoosePresentationKeys.GooseSubscriptionTabKey);
