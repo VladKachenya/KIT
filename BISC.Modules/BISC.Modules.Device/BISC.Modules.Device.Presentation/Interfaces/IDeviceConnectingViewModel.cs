@@ -5,11 +5,12 @@ using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
 
 namespace BISC.Modules.Device.Presentation.Interfaces
 {
-    public interface IDeviceConnectingViewModel
+public interface IDeviceConnectingViewModel
     {
         IIpAddressViewModel SelectedIpAddressViewModel { get; set; }
-        ObservableCollection<IIpAddressViewModel> LastConnectedIps { get; }
+        ILastIpAddressesViewModel LastConnectedIps { get; }
         ICommand ConnectDeviceCommand { get; }
         bool IsDeviceConnectionFailed { get; }
+        bool IsConnectionProcess { get; set; }
     }
 }

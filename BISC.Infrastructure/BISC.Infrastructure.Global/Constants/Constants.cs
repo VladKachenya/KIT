@@ -10,7 +10,11 @@ namespace BISC.Infrastructure.Global.Constants
    {
        public static string RootDialogKey = "RootDialog";
 
+        public static class ConfigurationServiceConstants
+        {
+            public readonly static string LastIpAddresses = "LastIpAddresses";
+            public readonly static string LastConnectedIpAddresses = "LastConnectedIpAddresses";
+        }
 
-
-   }
+    }
 }

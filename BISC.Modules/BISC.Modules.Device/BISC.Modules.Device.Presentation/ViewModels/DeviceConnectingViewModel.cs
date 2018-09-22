@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Infrastructure.Global.Constants;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Services;
@@ -19,6 +20,7 @@ using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces;
 using BISC.Presentation.BaseItems.Commands;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
@@ -37,13 +39,16 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IDeviceLoadingService _deviceLoadingService;
         private IIpAddressViewModel _selectedIpAddressViewModel;
         private bool _isDeviceConnectionFailed;
+        private bool _isConnectionProcess;
         private Timer _failedSatatusHidingTimer;
+
         public DeviceConnectingViewModel(ICommandFactory commandFactory,
             IDeviceConnectionService deviceConnectionService,
             IConfigurationService configurationService, IGlobalEventsService globalEventsService,
             IIpAddressViewModelFactory ipAddressViewModelFactory,
             ITreeManagementService treeManagementService ,
-            IBiscProject biscProject,IDeviceLoadingService deviceLoadingService)
+            IBiscProject biscProject,IDeviceLoadingService deviceLoadingService,
+            ILastIpAddressesViewModel lastConnectedIps)
         {
             _commandFactory = commandFactory;
             _deviceConnectionService = deviceConnectionService;
@@ -53,34 +58,45 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _treeManagementService = treeManagementService;
             _biscProject = biscProject;
             _deviceLoadingService = deviceLoadingService;
-            LastConnectedIps = new ObservableCollection<IIpAddressViewModel>();
-            ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDeviceExecute);
+            LastConnectedIps = lastConnectedIps;
+            LastConnectedIps.ConfigurationCollectionName = Constants.ConfigurationServiceConstants.LastConnectedIpAddresses;
+            ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDeviceExecute, ()=> !_isConnectionProcess);
             var lastConnectedIp = _configurationService.LastConnectedIpAddresses.Count > 0
                 ? _configurationService.LastConnectedIpAddresses[0]
                 : "...";
             SelectedIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel(lastConnectedIp, false);
-            _failedSatatusHidingTimer=new Timer(FailStatusHide,null,Timeout.Infinite,Timeout.Infinite);
-            LastConnectedIps =
-                _ipAddressViewModelFactory.GetPingViewModelReadonlyCollection(_configurationService
-                    .LastConnectedIpAddresses);
-            //LastConnectedIps.Insert(0, _ipAddressViewModelFactory.GetPingItemViewModel("192.168.2.35", true)); //Потом удалить
-
+            LastConnectedIps.CurrentAddressViewModel = SelectedIpAddressViewModel;
+            _failedSatatusHidingTimer = new Timer(FailStatusHide,null,Timeout.Infinite,Timeout.Infinite);
+            IsConnectionProcess = false;
         }
 
+        #region private methods
         private async void OnConnectDeviceExecute()
         {
             IsDeviceConnectionFailed = false;
-            var connectResult = await _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
+            IsConnectionProcess = true;
+            try
+            {
+                (ConnectDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
+                await SelectedIpAddressViewModel.PingAsync();
+                if (SelectedIpAddressViewModel.IsPingSuccess == false) return;
+                var connectResult = await _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
+                if (connectResult.IsSucceed)
+                {
+                    await _deviceLoadingService.LoadElements(new List<IDevice>() { connectResult.Item });
+                }
+                else
+                {
+                    IsDeviceConnectionFailed = true;
+                    _failedSatatusHidingTimer.Change(5000, Timeout.Infinite);
+                }
+            }
+            finally
+            {
+                IsConnectionProcess = false;
+                (ConnectDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
+            }
 
-            if (connectResult.IsSucceed)
-            {
-                await _deviceLoadingService.LoadElements(new List<IDevice>() {connectResult.Item});
-            }
-            else
-            {
-                IsDeviceConnectionFailed = true;
-                _failedSatatusHidingTimer.Change(2000, Timeout.Infinite);
-            }
         }
 
         private void FailStatusHide(object o)
@@ -88,11 +104,13 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             IsDeviceConnectionFailed = false;
         }
 
-        public IIpAddressViewModel SelectedIpAddressViewModel
+        private void OnIpSelectedEvent(IpSelectedEvent ipSelectedEvent)
         {
-            get => _selectedIpAddressViewModel;
-            set { SetProperty(ref _selectedIpAddressViewModel, value); }
+            SelectedIpAddressViewModel.FullIp = ipSelectedEvent.Ip;
         }
+        #endregion
+
+        #region protected methods
 
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
@@ -106,12 +124,17 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             base.OnNavigatedFrom(navigationContext);
         }
 
-        private void OnIpSelectedEvent(IpSelectedEvent ipSelectedEvent)
+        #endregion
+
+        #region Implementation of IDeviceConnectingViewModel
+
+        public IIpAddressViewModel SelectedIpAddressViewModel
         {
-            SelectedIpAddressViewModel.FullIp = ipSelectedEvent.Ip;
+            get => _selectedIpAddressViewModel;
+            set { SetProperty(ref _selectedIpAddressViewModel, value); }
         }
 
-        public ObservableCollection<IIpAddressViewModel> LastConnectedIps { get; }
+        public ILastIpAddressesViewModel LastConnectedIps { get; }
         public ICommand ConnectDeviceCommand { get; }
 
         public bool IsDeviceConnectionFailed
@@ -119,5 +142,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             get => _isDeviceConnectionFailed;
             set { SetProperty(ref _isDeviceConnectionFailed, value); }
         }
+
+        public bool IsConnectionProcess
+        {
+            get => _isConnectionProcess;
+            set => SetProperty(ref _isConnectionProcess, value); 
+        }
+        #endregion
     }
 }

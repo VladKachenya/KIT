@@ -1,4 +1,5 @@
-﻿using BISC.Infrastructure.Global.Services;
+﻿using BISC.Infrastructure.Global.Constants;
+using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Connection.Presentation.Events;
 using BISC.Modules.Connection.Presentation.Interfaces.Factorys;
 using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
@@ -20,6 +21,8 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         private IGlobalEventsService _globalEventsService;
         private IConfigurationService _configurationService;
         private IIpAddressViewModelFactory _ipAddressViewModelFactory;
+        ObservableCollection<IIpAddressViewModel> _lastIpAddresses;
+        private string _configurationCollectionName;
 
         private int _sizeLastConnectionCollection = 20;
         #endregion
@@ -31,7 +34,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             _globalEventsService = globalEventsService;
             _configurationService = configurationService;
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
-            LastIpAddresses = _ipAddressViewModelFactory.GetPingViewModelReadonlyCollection(_configurationService.LastIpAddresses);
+            ConfigurationCollectionName = Constants.ConfigurationServiceConstants.LastIpAddresses;
             _globalEventsService.Subscribe<IpPingedEvent>((ipPinged => OnIpPinged(ipPinged.Ip, ipPinged.PingResult)));
             _globalEventsService.Subscribe<IpSelectedEvent>(OnIpSelected);
             DeleteItemCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteIpExecute);
@@ -47,7 +50,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             if (obj is IIpAddressViewModel ipAddressViewModel)
             {
                 LastIpAddresses.Remove(ipAddressViewModel);
-                _configurationService.LastIpAddresses = LastIpAddresses.Select((model => model.FullIp)).ToList();
+                _configurationService.SetIpsCollection(ConfigurationCollectionName, LastIpAddresses.Select((model => model.FullIp)).ToList());
             }
 
         }
@@ -64,7 +67,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         {
             if (CurrentAddressViewModel == null) return;
             if (CurrentAddressViewModel.FullIp != ip) return;
-            var lastIps = _configurationService.LastIpAddresses.ToList();
+            var lastIps = _configurationService.GetIpsCollection(ConfigurationCollectionName).ToList();
             if (lastIps.Contains(ip))
             {
                 lastIps.Remove(ip);
@@ -81,7 +84,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
             }
 
-            _configurationService.LastIpAddresses = lastIps;
+            _configurationService.SetIpsCollection(ConfigurationCollectionName, lastIps);
 
             var existing = LastIpAddresses.FirstOrDefault((model => model.FullIp == ip));
             if (existing != null)
@@ -105,11 +108,26 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         #endregion
 
         #region Implementation of ILastIpAddressesViewModel
-        public ObservableCollection<IIpAddressViewModel> LastIpAddresses { get; }
+        public ObservableCollection<IIpAddressViewModel> LastIpAddresses
+        {
+            get => _lastIpAddresses;
+            private set => SetProperty(ref _lastIpAddresses, value);
+        }
 
         public ICommand DeleteItemCommand { get; }
         public IIpAddressViewModel CurrentAddressViewModel { get; set; }
-
+        public string ConfigurationCollectionName
+        {
+            set
+            {
+                _configurationCollectionName = value;
+                LastIpAddresses = _ipAddressViewModelFactory.GetPingViewModelReadonlyCollection(_configurationService.GetIpsCollection(ConfigurationCollectionName));
+            }
+            get
+            {
+                return _configurationCollectionName;
+            }
+        }
         #endregion
 
         #region Overrides of ViewModelBase

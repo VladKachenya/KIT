@@ -8,6 +8,9 @@ namespace BISC.Infrastructure.Global.Services
 
         List<string> LastIpAddresses { get; set; }
         List<string> LastConnectedIpAddresses { get; set; }
+        List<string> GetIpsCollection(string key);
+        void SetIpsCollection(string key, List<string> setCollection);
+
         string LastProjectPath { get; set; }
 
         bool IsAutoEnabledValidityInGooseReceiving { get; set; }

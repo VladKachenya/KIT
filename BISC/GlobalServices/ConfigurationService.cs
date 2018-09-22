@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Constants;
 using BISC.Infrastructure.Global.Services;
 using BISC.Properties;
 
@@ -11,8 +12,6 @@ namespace BISC.GlobalServices
 {
     public class ConfigurationService : IConfigurationService
     {
-
-
         public ConfigurationService()
         {
 
@@ -111,6 +110,23 @@ namespace BISC.GlobalServices
             }
         }
 
+        public List<string> GetIpsCollection(string key)
+        {
+            if (key == Constants.ConfigurationServiceConstants.LastConnectedIpAddresses)
+                return LastConnectedIpAddresses;
+            else if (key == Constants.ConfigurationServiceConstants.LastIpAddresses)
+                return LastIpAddresses;
+            else
+                return null;
+
+        }
+        public void SetIpsCollection(string key, List<string> setCollection)
+        {
+            if (key == Constants.ConfigurationServiceConstants.LastConnectedIpAddresses)
+                LastConnectedIpAddresses = setCollection;
+            else if (key == Constants.ConfigurationServiceConstants.LastIpAddresses)
+                LastIpAddresses = setCollection;
+        }
         #endregion
     }
 }

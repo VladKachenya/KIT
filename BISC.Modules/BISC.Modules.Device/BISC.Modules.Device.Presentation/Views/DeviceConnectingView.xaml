@@ -23,13 +23,17 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <view:IpAddressView DataContext="{Binding SelectedIpAddressViewModel}"></view:IpAddressView>
-            <Button Grid.Column="1" Command="{Binding ConnectDeviceCommand}" Content="Подключить"></Button>
+            <Button Grid.Column="1" Command="{Binding ConnectDeviceCommand}" Content="Подключить"/>
         </Grid>
-        <TextBlock Grid.Row="1" Foreground="DarkRed" Margin="5" Visibility="{Binding IsDeviceConnectionFailed,Converter={StaticResource BooleanToVisibilityConverter}}" Text="Не удалось подключить устройство"></TextBlock>
+        <StackPanel Grid.Row="1" Margin="0, 5, 0, 5" >
+            <ProgressBar IsIndeterminate ="{Binding IsConnectionProcess}"/>
+            <TextBlock Foreground="DarkRed" Margin="1"
+                       Visibility="{Binding IsDeviceConnectionFailed,Converter={StaticResource BooleanToVisibilityConverter}}" Text="Не удалось подключиться к устройстройству"/>
+        </StackPanel>
         <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility ="Auto">
             <ItemsControl x:Name="ipListBox" 
-                          ItemsSource="{Binding LastConnectedIps}"
+                          ItemsSource="{Binding LastConnectedIps.LastIpAddresses}"
                           MinHeight="300"
                           MinWidth="100" >
                 <ItemsControl.ItemTemplate>

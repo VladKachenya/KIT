@@ -13,5 +13,6 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.ViewModel
         ObservableCollection<IIpAddressViewModel> LastIpAddresses { get; }
         ICommand DeleteItemCommand { get; }
         IIpAddressViewModel CurrentAddressViewModel { get; set; }
+        string ConfigurationCollectionName { set; get; }
     }
 }
