@@ -155,7 +155,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             }
         }
 
-
+        public object GoCbReference { get; set; }
 
 
         //#region Overrides of DisposableBindableBase

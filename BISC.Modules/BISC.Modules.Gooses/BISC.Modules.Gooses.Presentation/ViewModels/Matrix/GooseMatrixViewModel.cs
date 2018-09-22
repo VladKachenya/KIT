@@ -10,6 +10,7 @@ using BISC.Model.Infrastructure.Project;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.FTP.Infrastructure.Serviсes;
 using BISC.Modules.Gooses.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Infrastructure.Services;
@@ -17,6 +18,7 @@ using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Modules.Gooses.Model.Model.Matrix;
 using BISC.Modules.Gooses.Presentation.Events;
+using BISC.Modules.Gooses.Presentation.FileParsers;
 using BISC.Modules.Gooses.Presentation.Interfaces;
 using BISC.Presentation.Infrastructure.Factories;
 
@@ -30,6 +32,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         private readonly Func<GooseControlBlockViewModel> _gooseControlBlockViewModelFunc;
         private readonly IGlobalEventsService _globalEventsService;
         private readonly IUserNotificationService _userNotificationService;
+        private readonly IDeviceFileWritingServices _deviceFileWritingServices;
+      //  private readonly ResultFileParser _resultFileParser;
         private IDevice _device;
 
         public ICommand SaveFtpCommand { get; }
@@ -37,7 +41,10 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 
         public GooseMatrixViewModel(IGoosesModelService goosesModelService, IBiscProject biscProject,
             IDatasetModelService datasetModelService, Func<GooseControlBlockViewModel> gooseControlBlockViewModelFunc,
-            IGlobalEventsService globalEventsService,IUserNotificationService userNotificationService,ICommandFactory commandFactory)
+            IGlobalEventsService globalEventsService,IUserNotificationService userNotificationService,ICommandFactory commandFactory,
+            IDeviceFileWritingServices deviceFileWritingServices
+      //      ,ResultFileParser resultFileParser
+            )
         {
             _goosesModelService = goosesModelService;
             _biscProject = biscProject;
@@ -45,6 +52,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             _gooseControlBlockViewModelFunc = gooseControlBlockViewModelFunc;
             _globalEventsService = globalEventsService;
             _userNotificationService = userNotificationService;
+            _deviceFileWritingServices = deviceFileWritingServices;
+         //   _resultFileParser = resultFileParser;
             GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>();
             MessagesList = new ObservableCollection<string>();
             _globalEventsService.Subscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
@@ -54,7 +63,9 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 
         private void OnSaveFtp()
         {
-            throw new NotImplementedException();
+      //    var str=  _resultFileParser.GetFileStringFromGooseModel(GooseControlBlockViewModels);
+       //     _deviceFileWritingServices.WriteFileStringInDevice(_device.Ip, new List<string>() {str},
+        //        new List<string>() {"GOOSERE.CFG"});
         }
 
         #region Overrides of NavigationViewModelBase
@@ -72,10 +83,12 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
                 gooseControlBlockViewModel.AppId = gooseControlBlockSubscribed.Item2.AppId;
                 gooseControlBlockViewModel.Name = gooseControlBlockSubscribed.Item2.Name;
                 gooseControlBlockViewModel.DataSetName = gooseControlBlockSubscribed.Item2.DataSet;
+            //    gooseControlBlockViewModel.GoCbReference= gooseControlBlockSubscribed.Item1.Name+ gooseControlBlockSubscribed.Item1.
+                    
+                  //  MR771N127LD0 / LLN0$GO$gcbIn
+                   //    var dataSet = _datasetModelService.GetAllDataSetOfDevice(gooseControlBlockSubscribed.Item1).FirstOrDefault((set => set.Name == gooseControlBlockSubscribed.Item2.DataSet));
 
-                //    var dataSet = _datasetModelService.GetAllDataSetOfDevice(gooseControlBlockSubscribed.Item1).FirstOrDefault((set => set.Name == gooseControlBlockSubscribed.Item2.DataSet));
-
-                var input = _goosesModelService.GetGooseInputsOfDevice(_device).FirstOrDefault();
+                   var input = _goosesModelService.GetGooseInputsOfDevice(_device).FirstOrDefault();
                 if (input == null) break;
                 List<IGooseRow> rowsForBlock = new List<IGooseRow>();
                 foreach (var externalGooseReference in input.ExternalGooseReferences)

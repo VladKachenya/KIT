@@ -57,6 +57,7 @@
     <Compile Include="Events\GooseControlBlockEnableChangedEventArgs.cs" />
     <Compile Include="Events\SelectableBoxEventArgs.cs" />
     <Compile Include="Factories\GooseRowViewModelFactory.cs" />
+    <Compile Include="FileParsers\ResultFileParser.cs" />
     <Compile Include="Interfaces\IGooseRowViewModel.cs" />
     <Compile Include="Interfaces\ISelectableValueViewModel.cs" />
     <Compile Include="Module\GoosesPresentationModule.cs" />
@@ -170,6 +171,10 @@
     <ProjectReference Include="..\..\BISC.Modules.Device\BISC.Modules.Device.Infrastructure\BISC.Modules.Device.Infrastructure.csproj">
       <Project>{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}</Project>
       <Name>BISC.Modules.Device.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.FTP\BISC.Modules.FTP.Infrastructure\BISC.Modules.FTP.Infrastructure.csproj">
+      <Project>{60A162A1-2A6A-4A39-B349-4B718BA1FA1F}</Project>
+      <Name>BISC.Modules.FTP.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\BISC.Modules.Gooses.Infrastructure\BISC.Modules.Gooses.Infrastructure.csproj">
       <Project>{7FD15BE3-633C-4063-8948-B1663736523D}</Project>

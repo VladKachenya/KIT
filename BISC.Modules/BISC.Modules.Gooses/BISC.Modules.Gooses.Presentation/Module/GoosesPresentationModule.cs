@@ -7,6 +7,7 @@ using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Presentation.Factories;
+using BISC.Modules.Gooses.Presentation.FileParsers;
 using BISC.Modules.Gooses.Presentation.Interfaces;
 using BISC.Modules.Gooses.Presentation.Services;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix;
@@ -43,6 +44,8 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<ISelectableValueViewModel, SelectableValueViewModel>();
             _injectionContainer.RegisterType<GooseRowViewModelFactory>();
             _injectionContainer.RegisterType<GooseControlBlockViewModel>();
+        //    _injectionContainer.RegisterType<ResultFileParser>();
+            _injectionContainer.RegisterType<GooseMatrixViewModel>();
 
             _injectionContainer.RegisterType<object,GooseGroupTreeItemView>(GooseKeys.GoosePresentationKeys.GooseGroupTreeItemViewKey);
             _injectionContainer.RegisterType<object, GooseSubscriptionTab>(GooseKeys.GoosePresentationKeys.GooseSubscriptionTabKey);

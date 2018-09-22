@@ -114,5 +114,20 @@ namespace BISC.Model.Global.Services.CommunicationModel
                connectedAp.GseList.Add(gse);
             }
         }
+
+        public List<IGse> GetGsesForDevice(string deviceName, ISclModel sclModel)
+        {
+            ISclCommunicationModel sclCommunicationModel =
+                (sclModel.ChildModelElements.FirstOrDefault((element => (element is ISclCommunicationModel))) as
+                    ISclCommunicationModel);
+            var connectedAp = sclCommunicationModel?.SubNetworks[0].ConnectedAccessPoints
+                .FirstOrDefault((point => point.IedName == deviceName));
+            if (connectedAp != null)
+            {
+                return connectedAp.GseList;
+            }
+
+            return null;
+        }
     }
 }

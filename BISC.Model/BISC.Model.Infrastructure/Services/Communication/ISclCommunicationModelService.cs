@@ -1,4 +1,5 @@
-﻿using BISC.Model.Infrastructure.Project;
+﻿using System.Collections.Generic;
+using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Project.Communication;
 
 namespace BISC.Model.Infrastructure.Services.Communication
@@ -10,5 +11,6 @@ namespace BISC.Model.Infrastructure.Services.Communication
         IConnectedAccessPoint GetConnectedAccessPoint(ISclModel sclModel, string deviceName);
         void DeleteAccessPoint(ISclModel sclModel, string iedName);
         void AddGse(IGse gse, ISclModel sclModel,string iedName);
+        List<IGse> GetGsesForDevice(string deviceName,ISclModel sclModel);
     }
 }
