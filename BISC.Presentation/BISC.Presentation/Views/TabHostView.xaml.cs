@@ -1,7 +1,11 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using BISC.Presentation.Interfaces;
 using BISC.Presentation.Interfaces.Tree;
 using BISC.Presentation.ViewModels.Tab;
+using CommonServiceLocator;
+using Prism.Regions;
+using Xceed.Wpf.AvalonDock;
 
 namespace BISC.Presentation.Views
 {
@@ -17,5 +21,7 @@ namespace BISC.Presentation.Views
             InitializeComponent();
             DataContext = tabHostViewModel;
         }
+
+
     }
 }

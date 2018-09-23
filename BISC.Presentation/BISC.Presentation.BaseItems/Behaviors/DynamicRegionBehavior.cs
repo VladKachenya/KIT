@@ -9,7 +9,7 @@ namespace BISC.Presentation.BaseItems.Behaviors
 {
     public class DynamicRegionBehavior 
     {
-        private readonly IRegionManager _regionManager;
+      //  private readonly IRegionManager _regionManager;
 
 
         public static void SetRegionKey(DependencyObject target, string value)
@@ -33,9 +33,12 @@ namespace BISC.Presentation.BaseItems.Behaviors
             }
             RegionManager.SetRegionName(d,e.NewValue as string);
             RegionManager.SetRegionManager(d,regionManager);
-            (d as FrameworkElement).Unloaded += DynamicRegionBehavior_Unloaded;
+         //   (d as FrameworkElement).Unloaded += DynamicRegionBehavior_Unloaded;
+
             OnRegionInitialized(e.NewValue as string);
         }
+
+   
 
         private static void OnRegionInitialized(string regionId)
         {
@@ -43,22 +46,22 @@ namespace BISC.Presentation.BaseItems.Behaviors
             navigationService.TryNavigateToWaitingRegion(regionId);
         }
 
-        private static void DynamicRegionBehavior_Unloaded(object sender, RoutedEventArgs e)
-        {
-            (sender as FrameworkElement).Unloaded -= DynamicRegionBehavior_Unloaded;
-            var regionManager = ServiceLocator.Current.GetInstance<IRegionManager>();
-            var regionName = RegionManager.GetRegionName(sender as FrameworkElement);
-            if (regionManager.Regions.ContainsRegionWithName(regionName))
-            {
+        //private static void DynamicRegionBehavior_Unloaded(object sender, RoutedEventArgs e)
+        //{
+        //    (sender as FrameworkElement).Unloaded -= DynamicRegionBehavior_Unloaded;
+        //    var regionManager = ServiceLocator.Current.GetInstance<IRegionManager>();
+        //    var regionName = RegionManager.GetRegionName(sender as FrameworkElement);
+        //    if (regionManager.Regions.ContainsRegionWithName(regionName))
+        //    {
                 
-                regionManager.Regions.Remove(regionName);
-            }
+        //        regionManager.Regions.Remove(regionName);
+        //    }
             
-        }
+        //}
 
-        public DynamicRegionBehavior(IRegionManager regionManager)
+        public DynamicRegionBehavior()
         {
-            _regionManager = regionManager;
+           // _regionManager = regionManager;
         }
       
     }

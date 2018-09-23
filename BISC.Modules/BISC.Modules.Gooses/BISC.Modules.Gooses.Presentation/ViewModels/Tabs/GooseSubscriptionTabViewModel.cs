@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Model.Infrastructure.Project;
@@ -64,7 +65,10 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         public ICommand SaveChangesCommand { get; }
 
-        
+        protected override void OnDisposing()
+        {
+            base.OnDisposing();
+        }
 
         public DataView GooseSubscriptionTable => _gooseSubscriptionTable.DefaultView;
         #region Overrides of NavigationViewModelBase
@@ -94,6 +98,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                 _gooseSubscriptionTable.Rows.Add(rowValues.ToArray());
             }
             base.OnNavigatedTo(navigationContext);
+        }
+
+        protected override void OnNavigatedFrom(BiscNavigationContext navigationContext)
+        {
+            base.OnNavigatedFrom(navigationContext);
         }
 
         #endregion

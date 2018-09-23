@@ -86,14 +86,16 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             //    gooseControlBlockViewModel.GoCbReference= gooseControlBlockSubscribed.Item1.Name+ gooseControlBlockSubscribed.Item1.
                     
                   //  MR771N127LD0 / LLN0$GO$gcbIn
-                   //    var dataSet = _datasetModelService.GetAllDataSetOfDevice(gooseControlBlockSubscribed.Item1).FirstOrDefault((set => set.Name == gooseControlBlockSubscribed.Item2.DataSet));
+                      var dataSet = _datasetModelService.GetAllDataSetOfDevice(gooseControlBlockSubscribed.Item1).FirstOrDefault((set => set.Name == gooseControlBlockSubscribed.Item2.DataSet));
 
                    var input = _goosesModelService.GetGooseInputsOfDevice(_device).FirstOrDefault();
                 if (input == null) break;
                 List<IGooseRow> rowsForBlock = new List<IGooseRow>();
                 foreach (var externalGooseReference in input.ExternalGooseReferences)
                 {
-                    IGooseRow relatedGooseRow = GetGooseRowForRef(externalGooseReference, gooseMatrix);
+                    IGooseRow relatedGooseRow = GetGooseRowForRef(externalGooseReference, gooseMatrix,dataSet);
+
+                    if(relatedGooseRow==null)continue;
                     if (externalGooseReference.DaName == "q" || externalGooseReference.DaName == "stVal")
                     {
                         rowsForBlock.Add(relatedGooseRow);
@@ -103,10 +105,14 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
                         MessagesList.Add($"Элемент GOOSE.Dataset {externalGooseReference.AsString()} не был принят");
                     }
                 }
+
                 CheckBlockRows(rowsForBlock);
+                if(rowsForBlock.Count==0)continue;
                 var validityRowForBlock = GetValidityGooseRow(gooseMatrix, gooseControlBlockSubscribed.Item2.AppId);
+
                 rowsForBlock.Add(validityRowForBlock);
                 gooseControlBlockViewModel.SetRows(rowsForBlock);
+                
                 GooseControlBlockViewModels.Add(gooseControlBlockViewModel);
                 InitDictionary();
 
@@ -153,7 +159,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             rowsToRemove.ForEach((row => rowsForBlock.Remove(row)));
         }
 
-        private IGooseRow GetGooseRowForRef(IExternalGooseRef externalGooseRef, IGooseMatrix gooseMatrix)
+        private IGooseRow GetGooseRowForRef(IExternalGooseRef externalGooseRef, IGooseMatrix gooseMatrix,IDataSet dataset)
         {
             foreach (var gooseRow in gooseMatrix.GooseRows)
             {
@@ -162,11 +168,29 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
                     return gooseRow;
                 }
             }
-
+            int fcdaNum = -1;
+            foreach (var fcda in dataset.FcdaList)
+            {
+                if (CompareFcdaAndExtRef(externalGooseRef, fcda))
+                {
+                    fcdaNum = dataset.FcdaList.IndexOf(fcda);
+                    break;
+                }
+            }
+            if (fcdaNum == -1)
+            {
+                return null;
+            }
             string type = externalGooseRef.DaName == "q" ? "Quality" : externalGooseRef.DaName == "stVal" ? "State" : "Unknown";
-            return new GooseRow() { ReferencePath = externalGooseRef.AsString(), Signature = externalGooseRef.AsString(), ValueList = new bool[64].ToList(), GooseRowType = type };
+            return new GooseRow() {NumberOfFcdaInDataSetOfGoose = fcdaNum,ReferencePath = externalGooseRef.AsString(), Signature = externalGooseRef.AsString(), ValueList = new bool[64].ToList(), GooseRowType = type };
 
         }
+
+        protected override void OnNavigatedFrom(BiscNavigationContext navigationContext)
+        {
+            base.OnNavigatedFrom(navigationContext);
+        }
+
         private IGooseRow GetValidityGooseRow(IGooseMatrix gooseMatrix, string gooseBlockName)
         {
             foreach (var gooseRow in gooseMatrix.GooseRows)

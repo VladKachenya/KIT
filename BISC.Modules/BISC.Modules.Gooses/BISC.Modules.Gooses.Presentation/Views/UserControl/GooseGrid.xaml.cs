@@ -170,24 +170,44 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
             int scrollViewerGridRowIndex = 0;
             foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
             {
-               // if (!gooseControlBlockViewModel.IsReferenceEnabled) continue;
+
+             
+
+                // if (!gooseControlBlockViewModel.IsReferenceEnabled) continue;
                 mainGrid.RowDefinitions.Add(new RowDefinition()
                 {
-                    Height = new GridLength(CellSize + 10)
+                    Height = new GridLength(CellSize + 35)
                 }); //первая шапка
 
-                scrollViewerGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize + 10) });
+                scrollViewerGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize + 35) });
 
 
-                TextBlock upperTextBlock = new TextBlock();
-                upperTextBlock.Text = "GoIn State";
-                upperTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
-                upperTextBlock.VerticalAlignment = VerticalAlignment.Bottom;
+                Grid headerGrid = new Grid();
+                headerGrid.RowDefinitions.Add(new RowDefinition());
+                headerGrid.RowDefinitions.Add(new RowDefinition());
 
-                upperTextBlock.SetValue(Grid.ColumnProperty, 0);
-                upperTextBlock.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
-                upperTextBlock.SetValue(Grid.ColumnSpanProperty, GoInCount);
-                scrollViewerGrid.Children.Add(upperTextBlock);
+                TextBlock gooseControlHeaderTextBlock = new TextBlock();
+                gooseControlHeaderTextBlock.Text = gooseControlBlockViewModel.AppId;
+                gooseControlHeaderTextBlock.FontSize += 5;
+
+                TextBlock stateTextBlock = new TextBlock();
+                stateTextBlock.Text = "GoIn State";
+
+                gooseControlHeaderTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                gooseControlHeaderTextBlock.VerticalAlignment = VerticalAlignment.Stretch;
+                stateTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                stateTextBlock.VerticalAlignment = VerticalAlignment.Stretch;
+                gooseControlHeaderTextBlock.SetValue(Grid.RowProperty, 0);
+                stateTextBlock.SetValue(Grid.RowProperty, 1);
+                headerGrid.Children.Add(gooseControlHeaderTextBlock);
+                headerGrid.Children.Add(stateTextBlock);
+
+
+
+                headerGrid.SetValue(Grid.ColumnProperty, 0);
+                headerGrid.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
+                headerGrid.SetValue(Grid.ColumnSpanProperty, GoInCount);
+                scrollViewerGrid.Children.Add(headerGrid);
 
 
 

@@ -76,6 +76,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         }
 
 
+        protected override void OnNavigatedFrom(BiscNavigationContext navigationContext)
+        {
+            base.OnNavigatedFrom(navigationContext);
+        }
+
 
         public ICommand SaveChangesCommand { get; }
 

@@ -26,6 +26,10 @@ namespace BISC.Presentation.Infrastructure.Navigation
         public static BiscNavigationContext FromNavigationContext(NavigationContext navigationContext)
         {
             BiscNavigationContext biscNavigationContext = new BiscNavigationContext();
+            if (navigationContext == null)
+            {
+                return null;
+            }
             biscNavigationContext.BiscNavigationParameters = BiscNavigationParameters.FromNavigationParameters(navigationContext.Parameters);
             biscNavigationContext.Uri = navigationContext.Uri;
             return biscNavigationContext;

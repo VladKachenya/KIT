@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.Gooses.Model.Model.Matrix;
 
 namespace BISC.Modules.Gooses.Model.Serializers
 {
@@ -16,6 +18,13 @@ namespace BISC.Modules.Gooses.Model.Serializers
             RegisterProperty(nameof(IGooseRow.Signature), "Signature");
             RegisterProperty(nameof(IGooseRow.ReferencePath), "ReferencePath");
             RegisterProperty(nameof(IGooseRow.ValueList), "ValueList");
+            RegisterProperty(nameof(IGooseRow.NumberOfFcdaInDataSetOfGoose), "NumberOfFcdaInDataSetOfGoose");
+
+        }
+
+        public override IModelElement GetConcreteObject()
+        {
+            return new GooseRow();
         }
     }
 }

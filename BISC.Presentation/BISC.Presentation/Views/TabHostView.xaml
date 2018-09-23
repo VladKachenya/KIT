@@ -25,11 +25,11 @@
             Grid.Column="0"
             VerticalAlignment="Stretch"
             ActiveContent="{Binding ActiveTabViewModel, Converter={StaticResource ActiveDocumentConverter}, Mode=TwoWay}"
-            AllowMixedOrientation="True"
+            AllowMixedOrientation="True" 
             AnchorableHeaderTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
             AnchorableTitleTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
             AnchorablesSource="{Binding AnchorableWindows}"
-        DocumentHeaderTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
+            DocumentHeaderTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
             DocumentTitleTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
             DocumentsSource="{Binding TabViewModels}">
         <xcad:DockingManager.DocumentPaneMenuItemHeaderTemplate>

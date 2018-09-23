@@ -52,6 +52,7 @@ namespace BISC.Presentation.Services
             }
             Application.Current.Dispatcher.Invoke(() =>
             {
+               
                 _regionManager.RequestNavigate(regionName, new Uri(viewName, UriKind.Relative),(result =>
                 {
                     if (result.Error != null)
@@ -63,6 +64,24 @@ namespace BISC.Presentation.Services
             });
         }
 
+        public void NavigateFromRegion(string regionName)
+        {
+            if (_regionManager.Regions.ContainsRegionWithName(regionName))
+            {
+              var reg=  _regionManager.Regions[regionName];
+                foreach (var view in reg.Views)
+                {
+                    if (view is FrameworkElement frameworkElement)
+                    {
+                        if (frameworkElement.DataContext is INavigationAware navigationAware)
+                        {
+                            navigationAware.OnNavigatedFrom(null);
+                        }
+                    }
+                }
+            }
+        }
+    
         public async Task NavigateViewToGlobalRegion(string viewName, BiscNavigationParameters navigationParameters = null)
         {
             var content = _injectionContainer.ResolveType<object>(viewName);

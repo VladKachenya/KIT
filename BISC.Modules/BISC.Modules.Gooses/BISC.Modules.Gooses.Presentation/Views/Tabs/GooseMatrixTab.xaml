@@ -50,7 +50,7 @@
 
         </Grid>
         <Grid Margin="8" Grid.Row="1">
-            <ContentControl HorizontalAlignment="Stretch" Margin ="2" behaviors:DynamicRegionBehavior.RegionKey="{x:Static keys:GooseKeys+GoosePresentationKeys.GooseMatrixTabFieldKey}" />
+            <ContentControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin ="2" behaviors:DynamicRegionBehavior.RegionKey="{x:Static keys:GooseKeys+GoosePresentationKeys.GooseMatrixTabFieldKey}" />
 
         </Grid>
       

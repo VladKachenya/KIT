@@ -18,6 +18,8 @@ namespace BISC.Modules.Gooses.Model.Model.Matrix
         public string Signature { get; set; }
         public string ReferencePath { get; set; }
         public string GooseRowType { get; set; }
+        public int NumberOfFcdaInDataSetOfGoose { get; set; }
+
         public List<bool> ValueList { get; set; }
     }
 }
