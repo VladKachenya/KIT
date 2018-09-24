@@ -34,7 +34,6 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
             _globalEventsService = globalEventsService;
             _configurationService = configurationService;
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
-            ConfigurationCollectionName = Constants.ConfigurationServiceConstants.LastIpAddresses;
             _globalEventsService.Subscribe<IpPingedEvent>((ipPinged => OnIpPinged(ipPinged.Ip, ipPinged.PingResult)));
             _globalEventsService.Subscribe<IpSelectedEvent>(OnIpSelected);
             DeleteItemCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteIpExecute);

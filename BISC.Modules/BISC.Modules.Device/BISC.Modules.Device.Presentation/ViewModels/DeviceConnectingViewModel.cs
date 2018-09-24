@@ -31,12 +31,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels
     {
         private readonly ICommandFactory _commandFactory;
         private readonly IDeviceConnectionService _deviceConnectionService;
-        private readonly IConfigurationService _configurationService;
         private readonly IGlobalEventsService _globalEventsService;
-        private readonly IIpAddressViewModelFactory _ipAddressViewModelFactory;
         private readonly ITreeManagementService _treeManagementService;
         private readonly IBiscProject _biscProject;
         private readonly IDeviceLoadingService _deviceLoadingService;
+        private ILastIpAddressesViewModel _lastConnectedIps;
         private IIpAddressViewModel _selectedIpAddressViewModel;
         private bool _isDeviceConnectionFailed;
         private bool _isConnectionProcess;
@@ -44,28 +43,20 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         public DeviceConnectingViewModel(ICommandFactory commandFactory,
             IDeviceConnectionService deviceConnectionService,
-            IConfigurationService configurationService, IGlobalEventsService globalEventsService,
-            IIpAddressViewModelFactory ipAddressViewModelFactory,
+            IGlobalEventsService globalEventsService,
             ITreeManagementService treeManagementService ,
             IBiscProject biscProject,IDeviceLoadingService deviceLoadingService,
-            ILastIpAddressesViewModel lastConnectedIps)
+            ILastIpAddressesViewModelFactory lastConnectedIpsFactoty)
         {
             _commandFactory = commandFactory;
             _deviceConnectionService = deviceConnectionService;
-            _configurationService = configurationService;
             _globalEventsService = globalEventsService;
-            _ipAddressViewModelFactory = ipAddressViewModelFactory;
             _treeManagementService = treeManagementService;
             _biscProject = biscProject;
             _deviceLoadingService = deviceLoadingService;
-            LastConnectedIps = lastConnectedIps;
-            LastConnectedIps.ConfigurationCollectionName = Constants.ConfigurationServiceConstants.LastConnectedIpAddresses;
             ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDeviceExecute, ()=> !_isConnectionProcess);
-            var lastConnectedIp = _configurationService.LastConnectedIpAddresses.Count > 0
-                ? _configurationService.LastConnectedIpAddresses[0]
-                : "...";
-            SelectedIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel(lastConnectedIp, false);
-            LastConnectedIps.CurrentAddressViewModel = SelectedIpAddressViewModel;
+            //SelectedIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel();
+            lastConnectedIpsFactoty.BuildLastConnectedIpAdresses(out _selectedIpAddressViewModel, out _lastConnectedIps);
             _failedSatatusHidingTimer = new Timer(FailStatusHide,null,Timeout.Infinite,Timeout.Infinite);
             IsConnectionProcess = false;
         }
@@ -134,7 +125,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             set { SetProperty(ref _selectedIpAddressViewModel, value); }
         }
 
-        public ILastIpAddressesViewModel LastConnectedIps { get; }
+        public ILastIpAddressesViewModel LastConnectedIps
+        {
+            get => _lastConnectedIps;
+        }
         public ICommand ConnectDeviceCommand { get; }
 
         public bool IsDeviceConnectionFailed

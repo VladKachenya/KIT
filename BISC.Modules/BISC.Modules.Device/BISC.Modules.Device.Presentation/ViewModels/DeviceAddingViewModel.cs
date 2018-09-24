@@ -37,6 +37,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
             SelectConnectCommand = _commandFactory.CreatePresentationCommand(OnSelectConnectExecute);
             SelectOpenFromFileCommand = _commandFactory.CreatePresentationCommand(OnSelectOpenFromFileExecute);
+
             OnSelectConnectExecute();
         }
 

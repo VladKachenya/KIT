@@ -34,6 +34,8 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         private IIpAddressViewModelFactory _ipAddressViewModelFactory;
         private IInjectionContainer _injectionContainer;
         private IGlobalEventsService _globalEventsService;
+        private IIpAddressViewModel _ipAddressViewModel;
+        private ILastIpAddressesViewModel _lastIpAddressesViewModel;
         private bool _isAnimate;
         private bool _isConnectingInProcess;
         private string _ftpPassword;
@@ -44,14 +46,13 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         #region C-tor
         public FTPServiceViewModel(IFTPClientWrapper ftpClientWrapper, ICommandFactory commandFactory, IIpAddressViewModelFactory ipAddressViewModelFactory,
-            ILastIpAddressesViewModel lastIpAddressesViewModel, IInjectionContainer injectionContainer, IGlobalEventsService globalEventsService,
+            ILastIpAddressesViewModelFactory lastIpAddressesViewModelFactory, IInjectionContainer injectionContainer, IGlobalEventsService globalEventsService,
             IFileBrowserViewModel fileBrowserViewModel)
         {
             _globalEventsService = globalEventsService;
             _ftpClientWrapper = ftpClientWrapper;
             _commandFactory = commandFactory;
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
-            LastIpAddressesViewModel = lastIpAddressesViewModel;
             _injectionContainer = injectionContainer;
             FileBrowserViewModel = fileBrowserViewModel;
 
@@ -63,7 +64,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             FTPActionMessageList = new ObservableCollection<IFTPActionMessage>();
 
             this.FtpIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("...", false);
-            LastIpAddressesViewModel.CurrentAddressViewModel = FtpIpAddressViewModel;
+            lastIpAddressesViewModelFactory.BuildLastPingIpAdresses(out _ipAddressViewModel, out _lastIpAddressesViewModel);
             OnPropertyChanged(nameof(FileBrowserViewModel));
         }
         #endregion
@@ -198,7 +199,11 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         #region Implementation of IFTPSreviceViewModel
 
-        public IIpAddressViewModel FtpIpAddressViewModel { get; set; }
+        public IIpAddressViewModel FtpIpAddressViewModel
+        {
+            get => _ipAddressViewModel;
+            set => SetProperty(ref _ipAddressViewModel, value);
+        }
         public string FtpLogin
         {
             get => _ftpLogin;
@@ -227,7 +232,10 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         public ObservableCollection<IFTPActionMessage> FTPActionMessageList { get; }
 
-        public ILastIpAddressesViewModel LastIpAddressesViewModel { get; }
+        public ILastIpAddressesViewModel LastIpAddressesViewModel
+        {
+            get => _lastIpAddressesViewModel;
+        }
         #endregion
 
         #region Overrides of ViewModelBase

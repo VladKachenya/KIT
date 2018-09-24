@@ -24,21 +24,19 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
     {
         #region private filds
         private ICommandFactory _commandFactory;
-        private IIpAddressViewModelFactory _ipAddressViewModelFactory;
         private IIpValidationService _ipValidationService;
+        private IIpAddressViewModel _ipAddressViewModel;
+        private ILastIpAddressesViewModel _lastIpAddressesViewModel;
         private bool _pingAllCanExecute = true;
         #endregion
 
         #region C-tor
-        public PingViewModel(ICommandFactory commandFactory, IIpAddressViewModelFactory ipAddressViewModelFactory, IIpValidationService ipValidationService,
-            LastIpAddressesViewModel lastIpAddressesViewModel)
+        public PingViewModel(ICommandFactory commandFactory, IIpValidationService ipValidationService,
+            ILastIpAddressesViewModelFactory lastIpAddressesViewModel)
         {
 
             _ipValidationService = ipValidationService;
-            _ipAddressViewModelFactory = ipAddressViewModelFactory;
-            this.LastIpAddressesViewModel = lastIpAddressesViewModel;
-            CurrentAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel("", false);
-            this.LastIpAddressesViewModel.CurrentAddressViewModel = CurrentAddressViewModel; // Необходимо задать обязательно
+            lastIpAddressesViewModel.BuildLastPingIpAdresses(out _ipAddressViewModel, out _lastIpAddressesViewModel); 
             _commandFactory = commandFactory;
             PingAllCommand = _commandFactory.CreatePresentationCommand(OnPingAllCommand, () => _pingAllCanExecute); 
             CloseCommand = commandFactory.CreatePresentationCommand((() =>
@@ -80,12 +78,18 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         #region Implementation of IPingViewModel
 
 
-        public IIpAddressViewModel CurrentAddressViewModel { get; }
+        public IIpAddressViewModel CurrentAddressViewModel
+        {
+            get => _ipAddressViewModel;
+        }
 
         public ICommand PingAllCommand { get; }
         public ICommand CloseCommand { get; }
 
-        public ILastIpAddressesViewModel LastIpAddressesViewModel { get; }
+        public ILastIpAddressesViewModel LastIpAddressesViewModel
+        {
+            get => _lastIpAddressesViewModel;
+        }
 
 
         #endregion

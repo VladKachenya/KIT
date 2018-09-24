@@ -51,7 +51,9 @@
     <Compile Include="Events\IpPingedEvent.cs" />
     <Compile Include="Events\IpSelectedEvent.cs" />
     <Compile Include="Factorys\IpAddressViewModelFactory.cs" />
+    <Compile Include="Factorys\LastIpAddressesViewModelFactory.cs" />
     <Compile Include="Interfaces\Factorys\IIpAddressViewModelFactory.cs" />
+    <Compile Include="Interfaces\Factorys\ILastIpAddressesViewModelFactory.cs" />
     <Compile Include="Interfaces\ViewModel\IIpAddressViewModel.cs" />
     <Compile Include="Interfaces\ViewModel\ILastIpAddressesViewModel.cs" />
     <Compile Include="Interfaces\ViewModel\IPingViewModel.cs" />

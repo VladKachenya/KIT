@@ -27,7 +27,7 @@ namespace BISC.Modules.Connection.Presentation.Factorys
 
         #region Implementation of IPingItemsViewModelFactory
 
-        public IIpAddressViewModel GetPingItemViewModel(string ip, bool isReadonly, bool? initialState = null)
+        public IIpAddressViewModel GetPingItemViewModel(string ip = "...", bool isReadonly = false, bool? initialState = null)
         {
             IIpAddressViewModel ipAddressViewModel = _ipAddressViewModelFactory();
             (ipAddressViewModel as ComplexViewModelBase)?.SetIsEditable(!isReadonly);

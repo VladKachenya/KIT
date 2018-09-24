@@ -33,6 +33,7 @@ namespace BISC.Modules.Connection.Presentation.Module
             _injectionContainer.RegisterType<IIpAddressViewModel, IpAddressViewModel>();
             _injectionContainer.RegisterType<IIpAddressViewModelFactory, IpAddressViewModelFactory>(true);
             _injectionContainer.RegisterType<ILastIpAddressesViewModel, LastIpAddressesViewModel>();
+            _injectionContainer.RegisterType<ILastIpAddressesViewModelFactory, LastIpAddressesViewModelFactory>(true);
             var presentationInitialization = _injectionContainer.ResolveType(typeof(ConnectionPresentationInitialization)) as ConnectionPresentationInitialization;
 
         }
