@@ -54,6 +54,6 @@
             <ContentControl HorizontalAlignment="Stretch" Margin ="2" behaviors:DynamicRegionBehavior.RegionKey="{x:Static keys1:DeviceKeys.DeviceAddingRegionKey}" />
 
         </Grid>
-        <Button Grid.Row="2" Content="Отмена"  Command="{x:Static commands:DialogCommands.CloseDialogCommand}"></Button>
+        <Button Grid.Row="2" Content="Отмена"  Command="{Binding CloseCommand}"/>
     </Grid>
 </UserControl>

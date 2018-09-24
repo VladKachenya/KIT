@@ -22,5 +22,7 @@ namespace BISC.Modules.FTP.Infrastructure.ViewModels
         ICommand ResetDeviceCommand { get; }
         ObservableCollection<IFTPActionMessage> FTPActionMessageList  { get; }
         IFileBrowserViewModel FileBrowserViewModel { get; }
+        ICommand CloseCommand { get; }
+
     }
 }

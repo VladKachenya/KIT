@@ -15,6 +15,7 @@ using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces;
 using BISC.Modules.Device.Presentation.Interfaces.Factories;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
+using BISC.Presentation.BaseItems.Commands;
 using BISC.Presentation.BaseItems.Common;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
@@ -38,7 +39,15 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             SelectConnectCommand = _commandFactory.CreatePresentationCommand(OnSelectConnectExecute);
             SelectOpenFromFileCommand = _commandFactory.CreatePresentationCommand(OnSelectOpenFromFileExecute);
 
+            CloseCommand = commandFactory.CreatePresentationCommand((() =>
+            {
+                DialogCommands.CloseDialogCommand.Execute(null, null);
+                Dispose();
+            }));
+
             OnSelectConnectExecute();
+            //OnSelectOpenFromFileExecute();
+
         }
 
         private void OnSelectOpenFromFileExecute()
@@ -63,5 +72,15 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         public ICommand SelectOpenFromFileCommand { get; }
         public ICommand SelectConnectCommand { get; }
+        public ICommand CloseCommand { get; }
+
+        #region Overrides of ViewModelBase
+
+        protected override void OnDisposing()
+        {
+            base.OnDisposing();
+        }
+
+        #endregion
     }
 }

@@ -23,6 +23,7 @@ using BISC.Modules.FTP.Infrastructure.ViewModels.Browser;
 using BISC.Modules.FTP.FTPConnection.Events;
 using System.Windows.Forms;
 using System.IO;
+using BISC.Presentation.BaseItems.Commands;
 
 namespace BISC.Modules.FTP.FTPConnection.ViewModels
 {
@@ -58,6 +59,12 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
             ConnectToDeviceCommand = _commandFactory.CreatePresentationCommand(OnConnectToDeviceCommand, () => !IsConnectingInProcess);
             ResetDeviceCommand = _commandFactory.CreatePresentationCommand(OnResetDeviceCommand, CanExecuteResetDeviceCommand);
+            CloseCommand = commandFactory.CreatePresentationCommand((() =>
+            {
+                DialogCommands.CloseDialogCommand.Execute(null, null);
+                Dispose();
+            }));
+
             _globalEventsService.Subscribe<FTPChangingConnectionEvent>(obj => VerifyConnection());
             _globalEventsService.Subscribe<FTPActionMassageEvent>(obj => AddNoteToActionMassageList(obj.Status, obj.Message));
             _globalEventsService.Subscribe<FTPInteraktionEvent>(obj => IsAnimate = obj.IsInteractFTP);
@@ -229,6 +236,8 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
         public ICommand ConnectToDeviceCommand { get; }
 
         public ICommand ResetDeviceCommand { get; }
+        public ICommand CloseCommand { get; }
+
 
         public ObservableCollection<IFTPActionMessage> FTPActionMessageList { get; }
 
@@ -247,7 +256,6 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
             _globalEventsService.Unsubscribe<FTPInteraktionEvent>(obj => IsAnimate = obj.IsInteractFTP);
             base.OnDisposing();
         }
-
         #endregion
 
     }

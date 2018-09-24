@@ -14,7 +14,7 @@ namespace BISC.Modules.Device.Presentation.Interfaces
      
         ICommand SelectOpenFromFileCommand { get; }
         ICommand SelectConnectCommand { get; }
-
+        ICommand CloseCommand { get; }
     }
 
 

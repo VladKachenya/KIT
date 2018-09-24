@@ -55,7 +55,6 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _biscProject = biscProject;
             _deviceLoadingService = deviceLoadingService;
             ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDeviceExecute, ()=> !_isConnectionProcess);
-            //SelectedIpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel();
             lastConnectedIpsFactoty.BuildLastConnectedIpAdresses(out _selectedIpAddressViewModel, out _lastConnectedIps);
             _failedSatatusHidingTimer = new Timer(FailStatusHide,null,Timeout.Infinite,Timeout.Infinite);
             IsConnectionProcess = false;
@@ -69,7 +68,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             try
             {
                 (ConnectDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
-                await SelectedIpAddressViewModel.PingAsync();
+                await SelectedIpAddressViewModel.PingGlobalEventAsync();
                 if (SelectedIpAddressViewModel.IsPingSuccess == false) return;
                 var connectResult = await _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
                 if (connectResult.IsSucceed)

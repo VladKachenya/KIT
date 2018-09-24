@@ -118,7 +118,7 @@ namespace BISC.Presentation.BaseItems.ViewModels
         /// <summary>
         /// Does actual explicit disposal of available managed resources
         /// </summary>
-        protected virtual void OnDisposing()
+    protected virtual void OnDisposing()
         {
             ChangeTracker?.Dispose();
         }

@@ -140,13 +140,12 @@
                 </ScrollViewer>
 
             </Border>
-
         </Grid>
         <Button Grid.Row="3" 
                 Grid.Column="0"
                 Content="Закрыть окно"
                 Margin="5"
-                Command="{x:Static commands:DialogCommands.CloseDialogCommand}">
+                Command="{Binding CloseCommand}">
         </Button>
         <ScrollViewer VerticalScrollBarVisibility ="Auto"
             HorizontalScrollBarVisibility="Auto"
