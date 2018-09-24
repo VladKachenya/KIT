@@ -63,6 +63,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         }
 
+        protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
+        {
+            OnSelectConnectExecute();
+            base.OnNavigatedTo(navigationContext);
+        }
 
         public bool IsOpeningFromFile
         {

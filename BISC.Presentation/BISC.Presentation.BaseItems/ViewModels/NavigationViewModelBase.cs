@@ -24,6 +24,14 @@ namespace BISC.Presentation.BaseItems.ViewModels
             {
                 _isActive = value;
                 OnPropertyChanged();
+                if (value)
+                {
+                    OnActivate();
+                }
+                else
+                {
+                    OnDeactivate();
+                }
                 if (Dispatcher.CurrentDispatcher == Application.Current.Dispatcher)
                 {
                     IsActiveChanged?.Invoke(this, null);
@@ -37,6 +45,14 @@ namespace BISC.Presentation.BaseItems.ViewModels
             }
         }
 
+        public virtual void OnActivate()
+        {
+            
+        }
+        public virtual void OnDeactivate()
+        {
+
+        }
         public event EventHandler IsActiveChanged;
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -51,6 +67,7 @@ namespace BISC.Presentation.BaseItems.ViewModels
 
         void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
+            OnDeactivate();
             OnNavigatedFrom(BiscNavigationContext.FromNavigationContext(navigationContext));
         }
         protected virtual void OnNavigatedFrom(BiscNavigationContext navigationContext)
@@ -59,6 +76,7 @@ namespace BISC.Presentation.BaseItems.ViewModels
         }
          void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
         {
+            OnActivate();
             OnNavigatedTo(BiscNavigationContext.FromNavigationContext(navigationContext));
         }
         protected virtual void OnNavigatedTo(BiscNavigationContext navigationContext)

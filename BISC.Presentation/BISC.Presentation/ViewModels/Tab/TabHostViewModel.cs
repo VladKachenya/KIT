@@ -7,7 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using BISC.Infrastructure.Global.IoC;
+using BISC.Infrastructure.Global.Services;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Events;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Interfaces;
 using BISC.Presentation.Views;
@@ -19,11 +21,13 @@ namespace BISC.Presentation.ViewModels.Tab
     public class TabHostViewModel :ViewModelBase, ITabHostViewModel
     {
         private readonly INavigationService _navigationService;
+        private readonly IGlobalEventsService _globalEventsService;
         private ITabViewModel _activeTabViewModel;
 
-        public TabHostViewModel(INavigationService navigationService)
+        public TabHostViewModel(INavigationService navigationService,IGlobalEventsService globalEventsService)
         {
             _navigationService = navigationService;
+            _globalEventsService = globalEventsService;
             TabViewModels = new ObservableCollection<ITabViewModel>();
             TabViewModels.CollectionChanged += TabViewModels_CollectionChanged;
         }
@@ -33,7 +37,7 @@ namespace BISC.Presentation.ViewModels.Tab
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 var regionName = (e.OldItems[0] as ITabViewModel)?.TabRegionName;
-                _navigationService.NavigateFromRegion(regionName);
+                _globalEventsService.SendMessage(new RegionDisposingEvent(regionName));
             }
         }
 

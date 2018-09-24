@@ -12,6 +12,7 @@ using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Views;
+using Prism;
 using Prism.Regions;
 
 namespace BISC.Presentation.Services
@@ -21,7 +22,11 @@ namespace BISC.Presentation.Services
         private readonly IRegionManager _regionManager;
         private readonly IUserNotificationService _userNotificationService;
         private readonly IInjectionContainer _injectionContainer;
-        private Dictionary<string, Tuple<string, BiscNavigationParameters>> _waitingRegionsdictionary = new Dictionary<string, Tuple<string, BiscNavigationParameters>>();
+        private Dictionary<string, Tuple<string, BiscNavigationParameters>> _waitingRegionsdictionary = 
+            new Dictionary<string, Tuple<string, BiscNavigationParameters>>();
+
+
+
 
         public NavigationService(IRegionManager regionManager, IUserNotificationService userNotificationService, IInjectionContainer injectionContainer)
         {
@@ -61,10 +66,11 @@ namespace BISC.Presentation.Services
                     }
                 }), navigationParameters?.ToNavigationParameters());
 
+      
             });
         }
 
-        public void NavigateFromRegion(string regionName)
+        public void DeactivateRegion(string regionName)
         {
             if (_regionManager.Regions.ContainsRegionWithName(regionName))
             {
@@ -73,15 +79,33 @@ namespace BISC.Presentation.Services
                 {
                     if (view is FrameworkElement frameworkElement)
                     {
-                        if (frameworkElement.DataContext is INavigationAware navigationAware)
+                        if (frameworkElement.DataContext is IActiveAware activeAware)
                         {
-                            navigationAware.OnNavigatedFrom(null);
+                            activeAware.IsActive=false;
                         }
                     }
                 }
             }
         }
-    
+
+        public void ActivateRegion(string regionName)
+        {
+            if (_regionManager.Regions.ContainsRegionWithName(regionName))
+            {
+                var reg = _regionManager.Regions[regionName];
+                foreach (var view in reg.Views)
+                {
+                    if (view is FrameworkElement frameworkElement)
+                    {
+                        if (frameworkElement.DataContext is IActiveAware activeAware)
+                        {
+                            activeAware.IsActive=true;
+                        }
+                    }
+                }
+            }
+        }
+
         public async Task NavigateViewToGlobalRegion(string viewName, BiscNavigationParameters navigationParameters = null)
         {
             var content = _injectionContainer.ResolveType<object>(viewName);

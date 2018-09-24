@@ -64,6 +64,7 @@
     <Compile Include="Commands\IAsyncCommand.cs" />
     <Compile Include="Commands\IPresentationCommand.cs" />
     <Compile Include="Commands\ITrackableCommand.cs" />
+    <Compile Include="Events\RegionDisposingEvent.cs" />
     <Compile Include="Factories\ICommandFactory.cs" />
     <Compile Include="Keys\KeysForNavigation.cs" />
     <Compile Include="Navigation\BiscNavigationContext.cs" />
@@ -87,5 +88,6 @@
       <Name>BISC.Model.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

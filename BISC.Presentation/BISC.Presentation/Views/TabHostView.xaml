@@ -89,7 +89,7 @@
             <docking:DockingManagerTemplateSelector>
                 <docking:DockingManagerTemplateSelector.TabTemplate>
                     <DataTemplate DataType="interfaces:ITabViewModel">
-                        <ContentControl behaviors:DynamicRegionBehavior.RegionKey="{Binding TabRegionName}">
+                        <ContentControl  behaviors:DynamicRegionBehavior.RegionKey="{Binding TabRegionName}">
                         </ContentControl>
                     </DataTemplate>
                 </docking:DockingManagerTemplateSelector.TabTemplate>

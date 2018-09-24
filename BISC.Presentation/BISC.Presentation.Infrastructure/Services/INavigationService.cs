@@ -9,7 +9,8 @@ namespace BISC.Presentation.Infrastructure.Services
         void NavigateViewToRegion(string viewName, string regionName, BiscNavigationParameters navigationParameters =null);
         Task NavigateViewToGlobalRegion(string viewName, BiscNavigationParameters navigationParameters = null);
         void TryNavigateToWaitingRegion(string regionId);
-        void NavigateFromRegion(string regionId);
+        void DeactivateRegion(string regionId);
 
+        void ActivateRegion(string regionName);
     }
 }
