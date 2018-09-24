@@ -36,7 +36,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
       //  private readonly ResultFileParser _resultFileParser;
         private IDevice _device;
 
-        public ICommand SaveFtpCommand { get; }
+        public ICommand SaveCommand { get; }
         public ObservableCollection<GooseControlBlockViewModel> GooseControlBlockViewModels { get; }
 
         public GooseMatrixViewModel(IGoosesModelService goosesModelService, IBiscProject biscProject,
@@ -57,15 +57,53 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>();
             MessagesList = new ObservableCollection<string>();
             _globalEventsService.Subscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
-            SaveFtpCommand = commandFactory.CreatePresentationCommand(OnSaveFtp);
+            SaveCommand = commandFactory.CreatePresentationCommand(OnSave);
 
         }
 
-        private void OnSaveFtp()
+        public bool IsSynchronizedWithDevice
+        {
+            get { return _isSynchronizedWithDevice; }
+            set { SetProperty(ref _isSynchronizedWithDevice , value); }
+        }
+
+        private void OnSave()
         {
       //    var str=  _resultFileParser.GetFileStringFromGooseModel(GooseControlBlockViewModels);
        //     _deviceFileWritingServices.WriteFileStringInDevice(_device.Ip, new List<string>() {str},
         //        new List<string>() {"GOOSERE.CFG"});
+        var gooseControlBlocksSubscribed = _goosesModelService.GetGooseControlsSubscribed(_device, _biscProject.MainSclModel);
+            IGooseMatrix gooseMatrix = _goosesModelService.GetGooseMatrixForDevice(_device);
+            foreach (var gooseControlBlockSubscribed in gooseControlBlocksSubscribed)
+            {
+                GooseControlBlockViewModel gooseControlBlockViewModel =
+                    GooseControlBlockViewModels.FirstOrDefault(
+                        (model => model.AppId == gooseControlBlockSubscribed.Item2.AppId));
+           if(gooseControlBlockViewModel==null)continue;
+                var input = _goosesModelService.GetGooseInputsOfDevice(_device).FirstOrDefault();
+                if (input == null) break;
+                List<IGooseRow> rowsForBlock = new List<IGooseRow>();
+                foreach (var externalGooseReference in input.ExternalGooseReferences)
+                {
+                    IGooseRow relatedGooseRow = gooseControlBlockViewModel.GooseRowViewModels.FirstOrDefault((model => model.Model.ReferencePath == externalGooseReference.AsString()))?.Model;
+
+                    if (relatedGooseRow == null) continue;
+                    if (externalGooseReference.DaName == "q" || externalGooseReference.DaName == "stVal")
+                    {
+                        rowsForBlock.Add(relatedGooseRow);
+                    }
+
+                }
+
+                if (rowsForBlock.Count == 0) continue;
+
+                IGooseRow validityRow = gooseControlBlockViewModel.GooseRowViewModels.FirstOrDefault((model => model.Model.ReferencePath == gooseControlBlockSubscribed.Item2.AppId&&model.Model.GooseRowType=="Validity"))?.Model;
+                rowsForBlock.Add(validityRow);
+                gooseMatrix.GooseRows.AddRange(rowsForBlock);
+            }
+
+            _goosesModelService.SetGooseMatrixForDevice(_device,gooseMatrix);
+
         }
 
         #region Overrides of NavigationViewModelBase
@@ -244,6 +282,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 
         private Dictionary<int, List<ISelectableValueViewModel>> _columnSelectableValueViewModelsDictionary =
             new Dictionary<int, List<ISelectableValueViewModel>>();
+
+        private bool _isSynchronizedWithDevice;
 
         public void Validate(ISelectableValueViewModel initiatorSelectableValueViewModel = null)
         {

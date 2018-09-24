@@ -12,10 +12,39 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Button Margin="4" Grid.Column="1" ToolTip="Сохранить по FTP" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding SaveFtpCommand}">
-            <ContentControl ContentTemplate="{DynamicResource SaveIcon}"></ContentControl>
-        </Button>
-
+        <StackPanel Orientation="Horizontal">
+            <Grid>
+                <ContentControl Margin="4"  Background="White" ToolTip="Синхронизированы ли данные (устройство - проект)"  Width="25" Height="25" ContentTemplate="{DynamicResource SyncIcon}">
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSynchronizedWithDevice}" Value="True">
+                                    <Setter Property="Foreground" Value="DarkGreen"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsSynchronizedWithDevice}" Value="False">
+                                    <Setter Property="Foreground" Value="DarkRed"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
+            </Grid>
+            <Button Margin="4" ToolTip="Проверить, сонхронизирована ли матрица проекта с устройством" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding CheckCommand}">
+                <ContentControl ContentTemplate="{DynamicResource CheckIcon}"></ContentControl>
+            </Button>
+            <Button Margin="4" ToolTip="Закачать матрицу в устройство по FTP" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding GetFromCommand}">
+                <ContentControl ContentTemplate="{DynamicResource CallMadeIcon}"></ContentControl>
+            </Button>
+            <Button Margin="4" ToolTip="Получить матрицу из устройства по FTP" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding SaveToDeviceCommand}">
+                <ContentControl ContentTemplate="{DynamicResource CallReceivedIcon}"></ContentControl>
+            </Button>
+            <Button Margin="4" ToolTip="Просмотреть существующую матрицу в устройстве" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding OverviewDeviceMatrixCommand}">
+                <ContentControl ContentTemplate="{DynamicResource OpenInAppIcon}"></ContentControl>
+            </Button>
+            <Button Margin="50,4,4,4" ToolTip="Сохранить изменения в проект" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding SaveCommand}">
+                <ContentControl ContentTemplate="{DynamicResource SaveIcon}"></ContentControl>
+            </Button>
+        </StackPanel>
         <userControl:GooseGrid Grid.Row="1" x:Name="gooseGrid" GoInCount="64" GooseControlBlockViewModels="{Binding GooseControlBlockViewModels}"></userControl:GooseGrid>
     </Grid>
 </UserControl>

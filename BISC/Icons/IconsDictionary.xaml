@@ -1,7 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
-
+    <DataTemplate x:Key="SyncIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Sync" />
+    </DataTemplate>
     <DataTemplate x:Key="CloseIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Close" />
     </DataTemplate>
@@ -20,7 +22,7 @@
     <DataTemplate x:Key="AlertIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Alert" />
     </DataTemplate>
-   <DataTemplate x:Key="ServerPlusIcon">
+    <DataTemplate x:Key="ServerPlusIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ServerPlus" />
     </DataTemplate>
     <DataTemplate x:Key="BlurRadialIcon">
@@ -34,10 +36,10 @@
     </DataTemplate>
     <DataTemplate x:Key="ArrowDown">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ArrowDown" />
-     </DataTemplate>
+    </DataTemplate>
     <DataTemplate x:Key="ArrowBottomRight">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ArrowBottomRight" />
-     </DataTemplate>
+    </DataTemplate>
     <DataTemplate x:Key="RssIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Rss" />
     </DataTemplate>
@@ -55,6 +57,18 @@
     </DataTemplate>
     <DataTemplate x:Key="CircleIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Circle" />
+    </DataTemplate>
+    <DataTemplate x:Key="CallReceivedIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="CallReceived" />
+    </DataTemplate>
+    <DataTemplate x:Key="CallMadeIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="CallMade" />
+    </DataTemplate>
+    <DataTemplate x:Key="CheckIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Check" />
+    </DataTemplate>
+    <DataTemplate x:Key="OpenInAppIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="OpenInApp" />
     </DataTemplate>
     <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
         <!--<Style.Resources >

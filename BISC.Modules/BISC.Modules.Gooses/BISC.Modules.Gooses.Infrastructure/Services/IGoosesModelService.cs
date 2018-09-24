@@ -20,6 +20,7 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
         void AddGooseExternalReferenceToDevice(IFcda fcda, IDevice device, string deviceNameOfFcda);
         List<Tuple<IDevice, IGooseControl>> GetGooseControlsSubscribed(IDevice deviceSubscriber, ISclModel sclModel);
 
+        void SetGooseMatrixForDevice(IDevice device,IGooseMatrix gooseMatrix);
 
         IGooseMatrix GetGooseMatrixForDevice(IDevice device);
     }

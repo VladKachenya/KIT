@@ -13,6 +13,12 @@ namespace BISC.Modules.Gooses.Infrastructure.Model.Matrix
         string ReferencePath { get; set; }
         string GooseRowType { get; set; }
         List<bool> ValueList { get; set; }
+
+        string ValuesString { get; set; }
+
+
         int NumberOfFcdaInDataSetOfGoose { get; set; }
     }
+
+
 }

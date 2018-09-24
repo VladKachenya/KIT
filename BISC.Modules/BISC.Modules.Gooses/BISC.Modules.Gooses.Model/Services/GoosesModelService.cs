@@ -174,6 +174,32 @@ namespace BISC.Modules.Gooses.Model.Services
 
         }
 
+        public void SetGooseMatrixForDevice(IDevice device, IGooseMatrix gooseMatrix)
+        {
+            IGooseMatrix existing = null;
+            foreach (var customElement in _biscProject.CustomElements.ChildModelElements)
+            {
+                if (customElement is IGooseMatrix gooseMatrixInModel)
+                {
+                    if (gooseMatrixInModel.RelatedIedName == device.Name)
+                    {
+                        existing= gooseMatrixInModel;
+                    }
+                }
+            }
+            if (existing!= null)
+            {
+                if(existing==gooseMatrix)return;
+                    existing.GooseRows.Clear();
+                existing.GooseRows.AddRange(gooseMatrix.GooseRows);
+            }
+            else
+            {
+                gooseMatrix.RelatedIedName = device.Name;
+                _biscProject.CustomElements.ChildModelElements.Add(gooseMatrix);
+            }
+        }
+
         public IGooseMatrix GetGooseMatrixForDevice(IDevice device)
         {
             foreach (var customElement in _biscProject.CustomElements.ChildModelElements)

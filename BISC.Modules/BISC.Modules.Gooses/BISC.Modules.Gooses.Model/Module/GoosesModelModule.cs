@@ -34,6 +34,7 @@ namespace BISC.Modules.Gooses.Model.Module
             modelElementsRegistryService.RegisterModelElement(new GooseControlSerializer(), GooseKeys.GooseModelKeys.GooseControlKey);
             modelElementsRegistryService.RegisterModelElement(new SubscriberDeviceSerializer(), GooseKeys.GooseModelKeys.SubscriberDeviceKey);
             modelElementsRegistryService.RegisterModelElement(new GooseRowSerializer(), GooseKeys.GooseModelKeys.GooseRowKey);
+            modelElementsRegistryService.RegisterModelElement(new GooseMatrixSerializer(), GooseKeys.GooseModelKeys.GooseMatrixKey);
 
             _injectionContainer.RegisterType<IDeviceElementLoadingService, GoosesLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IGoosesModelService, GoosesModelService>();

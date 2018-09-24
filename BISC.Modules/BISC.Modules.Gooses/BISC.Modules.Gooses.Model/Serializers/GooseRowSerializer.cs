@@ -17,7 +17,7 @@ namespace BISC.Modules.Gooses.Model.Serializers
             RegisterProperty(nameof(IGooseRow.GooseRowType), "GooseRowType");
             RegisterProperty(nameof(IGooseRow.Signature), "Signature");
             RegisterProperty(nameof(IGooseRow.ReferencePath), "ReferencePath");
-            RegisterProperty(nameof(IGooseRow.ValueList), "ValueList");
+            RegisterProperty(nameof(IGooseRow.ValuesString), "ValuesString");
             RegisterProperty(nameof(IGooseRow.NumberOfFcdaInDataSetOfGoose), "NumberOfFcdaInDataSetOfGoose");
 
         }
