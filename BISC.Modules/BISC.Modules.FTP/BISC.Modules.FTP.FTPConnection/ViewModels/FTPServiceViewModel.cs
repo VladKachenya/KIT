@@ -141,7 +141,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
                 IsAnimate = false;
             }
             IsConnectingInProcess = false;
-            AddNoteToActionMassageList(null, "Процесс подключения завершон");
+            AddNoteToActionMassageList(null, "Процесс подключения завершен");
 
         }
 

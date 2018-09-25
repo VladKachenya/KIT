@@ -8,6 +8,7 @@ using System.Windows.Input;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Project;
+using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
@@ -36,6 +37,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         private readonly IDeviceFileWritingServices _deviceFileWritingServices;
         private readonly ResultFileParser _resultFileParser;
         private readonly IModelElementsRegistryService _modelElementsRegistryService;
+        private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private IDevice _device;
 
         public ICommand SaveCommand { get; }
@@ -45,9 +47,10 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 
         public GooseMatrixViewModel(IGoosesModelService goosesModelService, IBiscProject biscProject,
             IDatasetModelService datasetModelService, Func<GooseControlBlockViewModel> gooseControlBlockViewModelFunc,
-            IGlobalEventsService globalEventsService,IUserNotificationService userNotificationService,ICommandFactory commandFactory,
+            IGlobalEventsService globalEventsService, IUserNotificationService userNotificationService, ICommandFactory commandFactory,
             IDeviceFileWritingServices deviceFileWritingServices
-           ,ResultFileParser resultFileParser,IModelElementsRegistryService modelElementsRegistryService
+           , ResultFileParser resultFileParser, IModelElementsRegistryService modelElementsRegistryService,
+            ISclCommunicationModelService sclCommunicationModelService
             )
         {
             _goosesModelService = goosesModelService;
@@ -59,39 +62,52 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             _deviceFileWritingServices = deviceFileWritingServices;
             _resultFileParser = resultFileParser;
             _modelElementsRegistryService = modelElementsRegistryService;
+            _sclCommunicationModelService = sclCommunicationModelService;
             GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>();
             MessagesList = new ObservableCollection<string>();
             SaveCommand = commandFactory.CreatePresentationCommand(OnSave);
             SaveToDeviceCommand = commandFactory.CreatePresentationCommand(OnSaveToDevice);
         }
 
-        private void OnSaveToDevice()
+        private async void OnSaveToDevice()
         {
 
             var proj = _modelElementsRegistryService.SerializeModelElement(_biscProject).ToString();
-                var str=  _resultFileParser.GetFileStringFromGooseModel(GooseControlBlockViewModels).ToString();
-                 _deviceFileWritingServices.WriteFileStringInDevice(_device.Ip, new List<string>() {str,proj},
-                    new List<string>() {"GOOSERE.CFG", "GOPROJECT.ZIP" });
+            var str = _resultFileParser.GetFileStringFromGooseModel(GooseControlBlockViewModels, _device).ToString();
+            if (_device.Ip == null)
+            {
+                _device.Ip =_sclCommunicationModelService.GetIpOfDevice(_device.Name, _biscProject.MainSclModel);
+            }
+
+            if (await _deviceFileWritingServices.WriteFileStringInDevice(_device.Ip, new List<string>() {str, proj},
+                new List<string>() {"GOOSERE.CFG", "PROJECT.ZIP"}))
+            {
+                _userNotificationService.NotifyUserGlobal("Goose матрица успешно записана в устройство");
+            }
+            else
+            {
+                _userNotificationService.NotifyUserGlobal("Запись Goose матрицы прошла с ошибками");
+
+            }
 
         }
 
         public bool IsSynchronizedWithDevice
         {
             get { return _isSynchronizedWithDevice; }
-            set { SetProperty(ref _isSynchronizedWithDevice , value); }
+            set { SetProperty(ref _isSynchronizedWithDevice, value); }
         }
 
         private void OnSave()
         {
-    
-        var gooseControlBlocksSubscribed = _goosesModelService.GetGooseControlsSubscribed(_device, _biscProject.MainSclModel);
+            var gooseControlBlocksSubscribed = _goosesModelService.GetGooseControlsSubscribed(_device, _biscProject.MainSclModel);
             IGooseMatrix gooseMatrix = _goosesModelService.GetGooseMatrixForDevice(_device);
             foreach (var gooseControlBlockSubscribed in gooseControlBlocksSubscribed)
             {
                 GooseControlBlockViewModel gooseControlBlockViewModel =
                     GooseControlBlockViewModels.FirstOrDefault(
                         (model => model.AppId == gooseControlBlockSubscribed.Item2.AppId));
-           if(gooseControlBlockViewModel==null)continue;
+                if (gooseControlBlockViewModel == null) continue;
                 var input = _goosesModelService.GetGooseInputsOfDevice(_device).FirstOrDefault();
                 if (input == null) break;
                 List<IGooseRow> rowsForBlock = new List<IGooseRow>();
@@ -104,17 +120,16 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
                     {
                         rowsForBlock.Add(relatedGooseRow);
                     }
-
                 }
 
                 if (rowsForBlock.Count == 0) continue;
 
-                IGooseRow validityRow = gooseControlBlockViewModel.GooseRowViewModels.FirstOrDefault((model => model.Model.ReferencePath == gooseControlBlockSubscribed.Item2.AppId&&model.Model.GooseRowType=="Validity"))?.Model;
+                IGooseRow validityRow = gooseControlBlockViewModel.GooseRowViewModels.FirstOrDefault((model => model.Model.ReferencePath == gooseControlBlockSubscribed.Item2.AppId && model.Model.GooseRowType == "Validity"))?.Model;
                 rowsForBlock.Add(validityRow);
                 gooseMatrix.GooseRows.AddRange(rowsForBlock);
             }
 
-            _goosesModelService.SetGooseMatrixForDevice(_device,gooseMatrix);
+            _goosesModelService.SetGooseMatrixForDevice(_device, gooseMatrix);
 
         }
 
@@ -133,19 +148,21 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
                 gooseControlBlockViewModel.AppId = gooseControlBlockSubscribed.Item2.AppId;
                 gooseControlBlockViewModel.Name = gooseControlBlockSubscribed.Item2.Name;
                 gooseControlBlockViewModel.DataSetName = gooseControlBlockSubscribed.Item2.DataSet;
-            //    gooseControlBlockViewModel.GoCbReference= gooseControlBlockSubscribed.Item1.Name+ gooseControlBlockSubscribed.Item1.
-                    
-                  //  MR771N127LD0 / LLN0$GO$gcbIn
-                      var dataSet = _datasetModelService.GetAllDataSetOfDevice(gooseControlBlockSubscribed.Item1).FirstOrDefault((set => set.Name == gooseControlBlockSubscribed.Item2.DataSet));
 
-                   var input = _goosesModelService.GetGooseInputsOfDevice(_device).FirstOrDefault();
+                gooseControlBlockViewModel.GoCbReference = gooseControlBlockSubscribed.Item1.Name + "LD0/LLN0$GO$" +
+                                                           gooseControlBlockSubscribed.Item2.Name;
+
+                //  MR771N127LD0 / LLN0$GO$gcbIn
+                var dataSet = _datasetModelService.GetAllDataSetOfDevice(gooseControlBlockSubscribed.Item1).FirstOrDefault((set => set.Name == gooseControlBlockSubscribed.Item2.DataSet));
+
+                var input = _goosesModelService.GetGooseInputsOfDevice(_device).FirstOrDefault();
                 if (input == null) break;
                 List<IGooseRow> rowsForBlock = new List<IGooseRow>();
                 foreach (var externalGooseReference in input.ExternalGooseReferences)
                 {
-                    IGooseRow relatedGooseRow = GetGooseRowForRef(externalGooseReference, gooseMatrix,dataSet);
+                    IGooseRow relatedGooseRow = GetGooseRowForRef(externalGooseReference, gooseMatrix, dataSet);
 
-                    if(relatedGooseRow==null)continue;
+                    if (relatedGooseRow == null) continue;
                     if (externalGooseReference.DaName == "q" || externalGooseReference.DaName == "stVal")
                     {
                         rowsForBlock.Add(relatedGooseRow);
@@ -157,12 +174,12 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
                 }
 
                 CheckBlockRows(rowsForBlock);
-                if(rowsForBlock.Count==0)continue;
+                if (rowsForBlock.Count == 0) continue;
                 var validityRowForBlock = GetValidityGooseRow(gooseMatrix, gooseControlBlockSubscribed.Item2.AppId);
 
                 rowsForBlock.Add(validityRowForBlock);
                 gooseControlBlockViewModel.SetRows(rowsForBlock);
-                
+
                 GooseControlBlockViewModels.Add(gooseControlBlockViewModel);
                 InitDictionary();
 
@@ -209,7 +226,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             rowsToRemove.ForEach((row => rowsForBlock.Remove(row)));
         }
 
-        private IGooseRow GetGooseRowForRef(IExternalGooseRef externalGooseRef, IGooseMatrix gooseMatrix,IDataSet dataset)
+        private IGooseRow GetGooseRowForRef(IExternalGooseRef externalGooseRef, IGooseMatrix gooseMatrix, IDataSet dataset)
         {
             foreach (var gooseRow in gooseMatrix.GooseRows)
             {
@@ -232,7 +249,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
                 return null;
             }
             string type = externalGooseRef.DaName == "q" ? "Quality" : externalGooseRef.DaName == "stVal" ? "State" : "Unknown";
-            return new GooseRow() {NumberOfFcdaInDataSetOfGoose = fcdaNum,ReferencePath = externalGooseRef.AsString(), Signature = externalGooseRef.AsString(), ValueList = new bool[64].ToList(), GooseRowType = type };
+            return new GooseRow() { NumberOfFcdaInDataSetOfGoose = fcdaNum, ReferencePath = externalGooseRef.AsString(), Signature = externalGooseRef.AsString(), ValueList = new bool[64].ToList(), GooseRowType = type };
 
         }
 
@@ -327,7 +344,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
                 }
             }
         }
-        
+
 
 
 
@@ -447,7 +464,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
                 }
             }
         }
-        
+
 
         #region Overrides of ViewModelBase
 

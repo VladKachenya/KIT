@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
+using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix;
 
 namespace BISC.Modules.Gooses.Presentation.FileParsers
@@ -15,26 +17,28 @@ namespace BISC.Modules.Gooses.Presentation.FileParsers
     {
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IBiscProject _biscProject;
+        private readonly IGoosesModelService _goosesModelService;
 
 
-        public ResultFileParser(ISclCommunicationModelService sclCommunicationModelService, IBiscProject biscProject)
+        public ResultFileParser(ISclCommunicationModelService sclCommunicationModelService, IBiscProject biscProject,IGoosesModelService goosesModelService)
         {
             _sclCommunicationModelService = sclCommunicationModelService;
             _biscProject = biscProject;
+            _goosesModelService = goosesModelService;
         }
 
-        public string GetFileStringFromGooseModel(ObservableCollection<GooseControlBlockViewModel> gooseControlBlockViewModels)
+        public string GetFileStringFromGooseModel(ObservableCollection<GooseControlBlockViewModel> gooseControlBlockViewModels,IDevice device)
         {
             StringBuilder sb = new StringBuilder();
             TextWriter streamWriter = new StringWriter(sb);
-            Write(gooseControlBlockViewModels, streamWriter);
+            Write(gooseControlBlockViewModels, streamWriter,device);
             return sb.ToString();
         }
 
 
-        private void Write(ObservableCollection<GooseControlBlockViewModel> gooseControlBlockViewModels, TextWriter streamWriter)
+        private void Write(ObservableCollection<GooseControlBlockViewModel> gooseControlBlockViewModels, TextWriter streamWriter,IDevice device)
         {
-
+            var goosesForDevice = _goosesModelService.GetGooseControlsSubscribed(device,_biscProject.MainSclModel);
 
             using (streamWriter)
             {
@@ -42,8 +46,10 @@ namespace BISC.Modules.Gooses.Presentation.FileParsers
                 streamWriter.WriteLine("MAC{");
                 foreach (var gooseControlBlockViewModel in gooseControlBlockViewModels)
                 {
-                    var gses = _sclCommunicationModelService.GetGsesForDevice(gooseControlBlockViewModel.AppId, _biscProject.MainSclModel);
-
+                    var deviceForGoose =
+                        goosesForDevice.First((tuple => tuple.Item2.AppId == gooseControlBlockViewModel.AppId)).Item1;
+                    var gses = _sclCommunicationModelService.GetGsesForDevice(deviceForGoose.Name, _biscProject.MainSclModel);
+                 
                     var mac = gses.FirstOrDefault((gse => gse.CbName == gooseControlBlockViewModel.Name))?.MacAddress;
                     if (mac != null)
                         streamWriter.WriteLine(mac);

@@ -12,5 +12,7 @@ namespace BISC.Model.Infrastructure.Services.Communication
         void DeleteAccessPoint(ISclModel sclModel, string iedName);
         void AddGse(IGse gse, ISclModel sclModel,string iedName);
         List<IGse> GetGsesForDevice(string deviceName,ISclModel sclModel);
+        string GetIpOfDevice(string deviceName, ISclModel sclModel);
+
     }
 }

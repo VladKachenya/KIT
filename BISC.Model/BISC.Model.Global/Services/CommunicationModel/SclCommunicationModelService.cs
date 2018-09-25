@@ -24,17 +24,18 @@ namespace BISC.Model.Global.Services.CommunicationModel
                 {
                     nextApName = apPart + count.ToString();
                 }
+
                 count++;
             } while (string.IsNullOrEmpty(nextApName));
 
             return nextApName;
         }
 
-        public void AddDefaultConnectedAccessPointForDevice(ISclModel sclModel,string deviceName, string ip)
+        public void AddDefaultConnectedAccessPointForDevice(ISclModel sclModel, string deviceName, string ip)
         {
             IConnectedAccessPoint connectedAccessPoint = new ConnectedAccessPoint();
             List<IConnectedAccessPoint> connectedAccessPoints = new List<IConnectedAccessPoint>();
-         sclModel.GetAllChildrenOfType(ref connectedAccessPoints);
+            sclModel.GetAllChildrenOfType(ref connectedAccessPoints);
             connectedAccessPoint.ApName = GetNextApName(connectedAccessPoints.Select((point => point.ApName)).ToList());
             connectedAccessPoint.IedName = deviceName;
             SclAddress sclAddress = new SclAddress();
@@ -55,7 +56,7 @@ namespace BISC.Model.Global.Services.CommunicationModel
         {
             if (!sclCommunicationModel.SubNetworks.Any())
             {
-                sclCommunicationModel.SubNetworks.Add(new SubNetwork() { Name = "WA1", Type = "8-MMS" });
+                sclCommunicationModel.SubNetworks.Add(new SubNetwork() {Name = "WA1", Type = "8-MMS"});
             }
         }
 
@@ -64,18 +65,20 @@ namespace BISC.Model.Global.Services.CommunicationModel
         private void AddCommunicationToSclIfItNeeded(ISclModel sclModel)
         {
             var communticationModel =
-                sclModel.ChildModelElements.FirstOrDefault((element => element is ISclCommunicationModel)) as ISclCommunicationModel;
+                sclModel.ChildModelElements.FirstOrDefault((element => element is ISclCommunicationModel)) as
+                    ISclCommunicationModel;
             if (communticationModel == null)
             {
                 communticationModel = new SclCommunicationModel();
                 sclModel.ChildModelElements.Add(communticationModel);
             }
+
             AddSubnetworkIfNeeded(communticationModel);
 
         }
 
 
-        public void AddConnectedAccessPoint(ISclModel sclModel,IConnectedAccessPoint connectedAccessPoint)
+        public void AddConnectedAccessPoint(ISclModel sclModel, IConnectedAccessPoint connectedAccessPoint)
         {
             AddCommunicationToSclIfItNeeded(sclModel);
             (sclModel.ChildModelElements.First((element => element is ISclCommunicationModel)) as
@@ -84,8 +87,9 @@ namespace BISC.Model.Global.Services.CommunicationModel
 
         public IConnectedAccessPoint GetConnectedAccessPoint(ISclModel sclModel, string deviceName)
         {
-           return (sclModel.ChildModelElements.First((element => element is ISclCommunicationModel)) as
-                ISclCommunicationModel)?.SubNetworks[0].ConnectedAccessPoints.First((point =>point.IedName==deviceName ));
+            return (sclModel.ChildModelElements.First((element => element is ISclCommunicationModel)) as
+                    ISclCommunicationModel)?.SubNetworks[0].ConnectedAccessPoints
+                .First((point => point.IedName == deviceName));
         }
 
         public void DeleteAccessPoint(ISclModel sclModel, string iedName)
@@ -93,13 +97,13 @@ namespace BISC.Model.Global.Services.CommunicationModel
             ISclCommunicationModel sclCommunicationModel =
                 (sclModel.ChildModelElements.FirstOrDefault((element => (element is ISclCommunicationModel))) as
                     ISclCommunicationModel);
-          var connectedAp=  sclCommunicationModel?.SubNetworks[0].ConnectedAccessPoints
+            var connectedAp = sclCommunicationModel?.SubNetworks[0].ConnectedAccessPoints
                 .FirstOrDefault((point => point.IedName == iedName));
             if (connectedAp != null)
             {
                 sclCommunicationModel.SubNetworks[0].ConnectedAccessPoints.Remove(connectedAp);
             }
-            
+
         }
 
         public void AddGse(IGse gse, ISclModel sclModel, string iedName)
@@ -111,7 +115,7 @@ namespace BISC.Model.Global.Services.CommunicationModel
                 .FirstOrDefault((point => point.IedName == iedName));
             if (connectedAp != null)
             {
-               connectedAp.GseList.Add(gse);
+                connectedAp.GseList.Add(gse);
             }
         }
 
@@ -128,6 +132,13 @@ namespace BISC.Model.Global.Services.CommunicationModel
             }
 
             return null;
+        }
+
+        public string GetIpOfDevice(string deviceName, ISclModel sclModel)
+        {
+            IConnectedAccessPoint connectedAccessPoint = GetConnectedAccessPoint(sclModel, deviceName);
+            var address = connectedAccessPoint.SclAddresses.FirstOrDefault();
+            return address?.GetProperty("IP");
         }
     }
 }
