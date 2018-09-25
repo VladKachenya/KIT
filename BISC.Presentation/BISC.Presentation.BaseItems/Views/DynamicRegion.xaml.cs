@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using BISC.Infrastructure.Global.Services;
+using BISC.Presentation.BaseItems.Helpers;
 using BISC.Presentation.Infrastructure.Events;
 using BISC.Presentation.Infrastructure.Services;
 using Microsoft.Practices.ServiceLocation;
@@ -61,19 +62,11 @@ namespace BISC.Presentation.BaseItems.Views
             InitializeComponent();
 
             var globalEventsService = ServiceLocator.Current.GetInstance<IGlobalEventsService>();
-            void Dispose(RegionDisposingEvent eventDisposing)
-            {
-                if (GetValue(RegionKeyProperty).ToString() != eventDisposing.DisposingRegionName) return;
-                regionContentControl.Unloaded -= DynamicRegionBehavior_Unloaded;
-                regionContentControl.Loaded -= DynamicRegionBehavior_Loaded;
-                globalEventsService.Unsubscribe<RegionDisposingEvent>((Dispose));
-                DynamicRegionBehavior_Unloaded(this,null);
-            }
-            globalEventsService.Subscribe<RegionDisposingEvent>((Dispose));
+            globalEventsService.Subscribe<RegionDisposingEvent>((DisposeRegion));
 
             regionContentControl.Unloaded += DynamicRegionBehavior_Unloaded;
             regionContentControl.Loaded += DynamicRegionBehavior_Loaded;
-    
+
         }
 
         private void DynamicRegionBehavior_Loaded(object sender, RoutedEventArgs e)
@@ -90,5 +83,35 @@ namespace BISC.Presentation.BaseItems.Views
             var regionName = RegionManager.GetRegionName(sender as FrameworkElement);
             navigationService.DeactivateRegion(regionName);
         }
+
+        #region Implementation of IDisposable
+
+        public void DisposeRegion(RegionDisposingEvent eventDisposing)
+        {
+            if (GetValue(RegionKeyProperty).ToString() != eventDisposing.DisposingRegionName) return;
+            var dynamicRegionChildren = VisualTreeRecursiveHelper.FindVisualChildren<DynamicRegion>(this);
+            foreach (DynamicRegion dynamicRegionChild in dynamicRegionChildren)
+            {
+                dynamicRegionChild.Dispose();
+            }
+            Dispose();
+
+        }
+
+        #endregion
+
+        #region IDisposable
+
+        public void Dispose()
+        {
+            regionContentControl.Unloaded -= DynamicRegionBehavior_Unloaded;
+            regionContentControl.Loaded -= DynamicRegionBehavior_Loaded;
+            var globalEventsService = ServiceLocator.Current.GetInstance<IGlobalEventsService>();
+            globalEventsService.Unsubscribe<RegionDisposingEvent>(action: (DisposeRegion));
+            DynamicRegionBehavior_Unloaded(this, null);
+          
+        }
+
+        #endregion
     }
 }
