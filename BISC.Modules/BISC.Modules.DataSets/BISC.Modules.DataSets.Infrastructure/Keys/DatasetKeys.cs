@@ -14,5 +14,10 @@ namespace BISC.Modules.DataSets.Infrastructure.Keys
             public static string FcdaModelKey => "FCDA";
 
         }
+
+        public static class DatasetViewModelKeys
+        {
+            public const string DataSetsTreeItemView = "DataSetsTreeItemView";
+        }
     }
 }
