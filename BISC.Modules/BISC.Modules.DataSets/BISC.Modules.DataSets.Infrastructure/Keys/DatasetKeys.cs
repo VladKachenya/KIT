@@ -18,6 +18,8 @@ namespace BISC.Modules.DataSets.Infrastructure.Keys
         public static class DatasetViewModelKeys
         {
             public const string DataSetsTreeItemView = "DataSetsTreeItemView";
+            public const string DataSetsDetailsView = "DataSetsDetailsView";
+
         }
     }
 }

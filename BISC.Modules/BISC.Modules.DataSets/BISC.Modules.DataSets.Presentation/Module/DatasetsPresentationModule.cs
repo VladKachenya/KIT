@@ -32,8 +32,12 @@ namespace BISC.Modules.DataSets.Presentation.Module
             _injectionContainer.ResolveType<IUiFromModelElementRegistryService>().RegisterModelElement(_injectionContainer.ResolveType<DataSetsUiHandlingService>(), "IED");
 
             _injectionContainer.RegisterType<object, DataSetsTreeItemView>(DatasetKeys.DatasetViewModelKeys.DataSetsTreeItemView);
+            _injectionContainer.RegisterType<object, DataSetsDetailsView>(DatasetKeys.DatasetViewModelKeys.DataSetsDetailsView);
+
 
             _injectionContainer.RegisterType<DataSetsTreeItemViewModel>();
+            _injectionContainer.RegisterType<DataSetsDetailsViewModel>();
+
         }
 
         #endregion
