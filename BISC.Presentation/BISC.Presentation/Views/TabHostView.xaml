@@ -13,6 +13,7 @@
              xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
              xmlns:converters="clr-namespace:BISC.Presentation.Converters"
              xmlns:docking="clr-namespace:BISC.Presentation.Docking"
+             xmlns:views="clr-namespace:BISC.Presentation.BaseItems.Views;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance tab:TabHostViewModel, IsDesignTimeCreatable=False}">
@@ -89,8 +90,8 @@
             <docking:DockingManagerTemplateSelector>
                 <docking:DockingManagerTemplateSelector.TabTemplate>
                     <DataTemplate DataType="interfaces:ITabViewModel">
-                        <ContentControl  behaviors:DynamicRegionBehavior.RegionKey="{Binding TabRegionName}">
-                        </ContentControl>
+                        <views:DynamicRegion RegionKey="{Binding TabRegionName}">
+                        </views:DynamicRegion>
                     </DataTemplate>
                 </docking:DockingManagerTemplateSelector.TabTemplate>
 

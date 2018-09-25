@@ -106,9 +106,6 @@
     <Compile Include="ViewModels\ToolBarMenuViewModel.cs" />
     <Compile Include="ViewModels\Tree\MainTreeViewModel.cs" />
     <Compile Include="ViewModels\Tree\TreeItemViewModel.cs" />
-    <Compile Include="Views\DynamicRegionView.xaml.cs">
-      <DependentUpon>DynamicRegionView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\GlobalDialogView.xaml.cs">
       <DependentUpon>GlobalDialogView.xaml</DependentUpon>
     </Compile>
@@ -137,10 +134,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\DynamicRegionView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\GlobalDialogView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

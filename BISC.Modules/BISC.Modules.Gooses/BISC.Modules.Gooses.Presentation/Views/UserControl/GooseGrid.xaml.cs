@@ -23,7 +23,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
     /// <summary>
     /// Interaction logic for GooseGrid.xaml
     /// </summary>
-    public partial class GooseGrid : System.Windows.Controls.UserControl, IDisposable
+    public partial class GooseGrid : System.Windows.Controls.UserControl,IDisposable
     {
         private readonly int CellSize = 20;
         private List<TextBlock> _goinNumTextBlocks;
@@ -31,16 +31,33 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
         private List<TextBlock> _goinSignatureTextBlocks;
         private TextBlock _currentFocusedGoInSignatureTextBlock;
         private Brush _highlightBrush = new SolidColorBrush(Color.FromArgb(150, 255, 0xF5, 0x50));
+        private bool _isInitialized = false;
         public GooseGrid()
         {
             InitializeComponent();
             _globalEventsService = StaticContainer.CurrentContainer.ResolveType<IGlobalEventsService>();
-            _globalEventsService.Subscribe<SelectableBoxEventArgs>((OnSelectableBoxFocused));
+            this.Loaded += GooseGrid_Loaded;
+            this.Unloaded += GooseGrid_Unloaded; 
+            this.MouseEnter += GooseGrid_Loaded;
+            this.MouseLeave += GooseGrid_Unloaded; 
+
+        }
+
+        private void GooseGrid_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (_isInitialized)
+                _globalEventsService.Unsubscribe<SelectableBoxEventArgs>((OnSelectableBoxFocused));
+        }
+
+        private void GooseGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!_isInitialized)
+                _globalEventsService.Subscribe<SelectableBoxEventArgs>((OnSelectableBoxFocused));
         }
 
         private void OnSelectableBoxFocused(SelectableBoxEventArgs selectableBoxEventArgs)
         {
-            if(!selectableBoxEventArgs.IsFocused)return;
+            if (!selectableBoxEventArgs.IsFocused) return;
             if (_currentFocusedGoInNumberTextBlock != null)
             {
                 DeHighlightTextBlock(_currentFocusedGoInNumberTextBlock);
@@ -52,8 +69,9 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
             {
                 DeHighlightTextBlock(_currentFocusedGoInSignatureTextBlock);
             }
-            if(_goinSignatureTextBlocks==null)return;
-            _currentFocusedGoInSignatureTextBlock = _goinSignatureTextBlocks.First((block => block.Text == selectableBoxEventArgs.SelectableValueViewModel.Parent.RowName));
+            if (_goinSignatureTextBlocks == null) return;
+            _currentFocusedGoInSignatureTextBlock = _goinSignatureTextBlocks.FirstOrDefault((block => block.Text == selectableBoxEventArgs?.SelectableValueViewModel?.Parent?.RowName));
+            if(_currentFocusedGoInSignatureTextBlock==null)return;
             HighlightTextBlock(_currentFocusedGoInSignatureTextBlock);
         }
 
@@ -171,7 +189,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
             foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
             {
 
-             
+
 
                 // if (!gooseControlBlockViewModel.IsReferenceEnabled) continue;
                 mainGrid.RowDefinitions.Add(new RowDefinition()
@@ -220,7 +238,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
                 foreach (var gooseRow in gooseControlBlockViewModel.GooseRowViewModels)
                 {
-                    if (gooseRow.Model.GooseRowType=="State")
+                    if (gooseRow.Model.GooseRowType == "State")
                     {
                         mainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) });
                         scrollViewerGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) });
@@ -272,7 +290,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
                 foreach (var gooseRow in gooseControlBlockViewModel.GooseRowViewModels)
                 {
-                    if ((gooseRow.Model.GooseRowType=="Validity"))
+                    if ((gooseRow.Model.GooseRowType == "Validity"))
                     {
                         mainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) });
                         scrollViewerGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) });
@@ -346,10 +364,6 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
         #region Implementation of IDisposable
 
-        public void Dispose()
-        {
-            _globalEventsService.Unsubscribe<SelectableBoxEventArgs>((OnSelectableBoxFocused));
-        }
 
         #endregion
 
@@ -364,5 +378,18 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
                 scrollViewer.LineUp();
             }
         }
+
+        #region Implementation of IDisposable
+
+        public void Dispose()
+        {
+            this.Loaded -= GooseGrid_Loaded;
+            this.Unloaded -= GooseGrid_Unloaded;
+            this.MouseEnter -= GooseGrid_Loaded;
+            this.MouseLeave -= GooseGrid_Unloaded;
+            this.mainGrid.Children.Clear();
+        }
+
+        #endregion
     }
 }

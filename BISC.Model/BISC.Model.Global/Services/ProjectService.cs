@@ -65,6 +65,7 @@ namespace BISC.Model.Global.Services
             }
             _biscProject.MainSclModel = biscProject.MainSclModel;
             _biscProject.ChildModelElements.Add(biscProject.MainSclModel);
+            _biscProject.CustomElements = biscProject.CustomElements;
         }
 
         public void SaveCurrentProject()

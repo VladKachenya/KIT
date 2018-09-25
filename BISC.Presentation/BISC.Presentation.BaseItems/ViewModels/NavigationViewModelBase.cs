@@ -67,7 +67,6 @@ namespace BISC.Presentation.BaseItems.ViewModels
 
         void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
-            OnDeactivate();
             OnNavigatedFrom(BiscNavigationContext.FromNavigationContext(navigationContext));
         }
         protected virtual void OnNavigatedFrom(BiscNavigationContext navigationContext)
@@ -76,7 +75,6 @@ namespace BISC.Presentation.BaseItems.ViewModels
         }
          void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
         {
-            OnActivate();
             OnNavigatedTo(BiscNavigationContext.FromNavigationContext(navigationContext));
         }
         protected virtual void OnNavigatedTo(BiscNavigationContext navigationContext)

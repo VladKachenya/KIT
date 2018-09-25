@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Services;
+using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
@@ -33,17 +34,20 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         private readonly IGlobalEventsService _globalEventsService;
         private readonly IUserNotificationService _userNotificationService;
         private readonly IDeviceFileWritingServices _deviceFileWritingServices;
-      //  private readonly ResultFileParser _resultFileParser;
+        private readonly ResultFileParser _resultFileParser;
+        private readonly IModelElementsRegistryService _modelElementsRegistryService;
         private IDevice _device;
 
         public ICommand SaveCommand { get; }
+        public ICommand SaveToDeviceCommand { get; }
+
         public ObservableCollection<GooseControlBlockViewModel> GooseControlBlockViewModels { get; }
 
         public GooseMatrixViewModel(IGoosesModelService goosesModelService, IBiscProject biscProject,
             IDatasetModelService datasetModelService, Func<GooseControlBlockViewModel> gooseControlBlockViewModelFunc,
             IGlobalEventsService globalEventsService,IUserNotificationService userNotificationService,ICommandFactory commandFactory,
             IDeviceFileWritingServices deviceFileWritingServices
-      //      ,ResultFileParser resultFileParser
+           ,ResultFileParser resultFileParser,IModelElementsRegistryService modelElementsRegistryService
             )
         {
             _goosesModelService = goosesModelService;
@@ -53,11 +57,21 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             _globalEventsService = globalEventsService;
             _userNotificationService = userNotificationService;
             _deviceFileWritingServices = deviceFileWritingServices;
-         //   _resultFileParser = resultFileParser;
+            _resultFileParser = resultFileParser;
+            _modelElementsRegistryService = modelElementsRegistryService;
             GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>();
             MessagesList = new ObservableCollection<string>();
-            _globalEventsService.Subscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
             SaveCommand = commandFactory.CreatePresentationCommand(OnSave);
+            SaveToDeviceCommand = commandFactory.CreatePresentationCommand(OnSaveToDevice);
+        }
+
+        private void OnSaveToDevice()
+        {
+
+            var proj = _modelElementsRegistryService.SerializeModelElement(_biscProject).ToString();
+                var str=  _resultFileParser.GetFileStringFromGooseModel(GooseControlBlockViewModels).ToString();
+                 _deviceFileWritingServices.WriteFileStringInDevice(_device.Ip, new List<string>() {str,proj},
+                    new List<string>() {"GOOSERE.CFG", "GOPROJECT.ZIP" });
 
         }
 
@@ -69,9 +83,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 
         private void OnSave()
         {
-      //    var str=  _resultFileParser.GetFileStringFromGooseModel(GooseControlBlockViewModels);
-       //     _deviceFileWritingServices.WriteFileStringInDevice(_device.Ip, new List<string>() {str},
-        //        new List<string>() {"GOOSERE.CFG"});
+    
         var gooseControlBlocksSubscribed = _goosesModelService.GetGooseControlsSubscribed(_device, _biscProject.MainSclModel);
             IGooseMatrix gooseMatrix = _goosesModelService.GetGooseMatrixForDevice(_device);
             foreach (var gooseControlBlockSubscribed in gooseControlBlocksSubscribed)
@@ -439,7 +451,17 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 
         #region Overrides of ViewModelBase
 
-        
+        public override void OnActivate()
+        {
+            _globalEventsService.Subscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
+            base.OnActivate();
+        }
+
+        public override void OnDeactivate()
+        {
+            _globalEventsService.Unsubscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
+            base.OnDeactivate();
+        }
 
         protected override void OnDisposing()
         {
@@ -447,7 +469,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             {
                 gooseControlBlockViewModel.Dispose();
             }
-            _globalEventsService.Unsubscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
 
             base.OnDisposing();
         }

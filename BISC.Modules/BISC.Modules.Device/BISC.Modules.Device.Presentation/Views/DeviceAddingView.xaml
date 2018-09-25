@@ -9,6 +9,7 @@
              xmlns:keys="clr-namespace:BISC.Presentation.Infrastructure.Keys;assembly=BISC.Presentation.Infrastructure"
              xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
              xmlns:keys1="clr-namespace:BISC.Modules.Device.Infrastructure.Keys;assembly=BISC.Modules.Device.Infrastructure"
+             xmlns:views="clr-namespace:BISC.Presentation.BaseItems.Views;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -51,7 +52,7 @@
 
         </Grid>
         <Grid Margin="8" Grid.Row="1">
-            <ContentControl HorizontalAlignment="Stretch" Margin ="2" behaviors:DynamicRegionBehavior.RegionKey="{x:Static keys1:DeviceKeys.DeviceAddingRegionKey}" />
+            <views:DynamicRegion HorizontalAlignment="Stretch" Margin ="2" RegionKey="{x:Static keys1:DeviceKeys.DeviceAddingRegionKey}" />
 
         </Grid>
         <Button Grid.Row="2" Content="Отмена"  Command="{Binding CloseCommand}"/>

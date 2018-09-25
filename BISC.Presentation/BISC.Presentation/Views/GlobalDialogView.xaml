@@ -6,9 +6,10 @@
              xmlns:regions="http://prismlibrary.com/"
              xmlns:keys="clr-namespace:BISC.Presentation.Infrastructure.Keys;assembly=BISC.Presentation.Infrastructure"
              xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
+             xmlns:views="clr-namespace:BISC.Presentation.BaseItems.Views;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <ContentControl MinHeight="100" MinWidth="100" behaviors:DynamicRegionBehavior.RegionKey="{x:Static keys:KeysForNavigation+RegionNames.GlobalDialogRegionKey}" ></ContentControl>  
+        <views:DynamicRegion MinHeight="100" MinWidth="100" RegionKey="{x:Static keys:KeysForNavigation+RegionNames.GlobalDialogRegionKey}" ></views:DynamicRegion>  
     </Grid>
 </UserControl>

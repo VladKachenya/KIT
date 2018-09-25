@@ -68,7 +68,6 @@
   <ItemGroup>
     <Compile Include="Behaviors\DataTable\ColumnDescriptor.cs" />
     <Compile Include="Behaviors\DynamicColumnsDataDridBehavior.cs" />
-    <Compile Include="Behaviors\DynamicRegionBehavior.cs" />
     <Compile Include="Behaviors\FocusBehavior.cs" />
     <Compile Include="ChangeTracker\ChangeTracker.cs" />
     <Compile Include="Commands\DialogCommands.cs" />
@@ -87,6 +86,9 @@
     <Compile Include="ViewModels\ComplexViewModelBase.cs" />
     <Compile Include="ViewModels\NavigationViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\DynamicRegion.xaml.cs">
+      <DependentUpon>DynamicRegion.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -101,11 +103,13 @@
       <Name>BISC.Presentation.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Page Include="Controls\BadgedControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DynamicRegion.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
