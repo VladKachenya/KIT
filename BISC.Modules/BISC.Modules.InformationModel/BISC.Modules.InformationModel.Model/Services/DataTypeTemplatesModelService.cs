@@ -98,9 +98,9 @@ namespace BISC.Modules.InformationModel.Model.Services
             List<string> doTypesToLeave = new List<string>();
             var enumTypesToExclude = new List<string>();
 
-            dataTypeTemplates.LNodeTypes.ForEach((type =>
+            dataTypeTemplates.LNodeTypes.ToList().ForEach((type =>
             {
-                type.DoList.ForEach((ddo =>
+                type.DoList.ToList().ForEach((ddo =>
                 {
 
                     doTypesToLeave.Add(ddo.Type);
@@ -128,7 +128,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             if (doTypesToExcludeNew.Count > 0)
                 RemoveDoTypes(dataTypeTemplates, doTypesToExcludeNew);
             List<string> daTypesToLeave = new List<string>();
-            dataTypeTemplates.DoTypes.ForEach((type => type.DaList.ForEach((da => daTypesToLeave.Add(da.Type)))));
+            dataTypeTemplates.DoTypes.ToList().ForEach((type => type.DaList.ToList().ForEach((da => daTypesToLeave.Add(da.Type)))));
 
             var daTypesToExcludeFiltered =
                 daTypesToExclude.Where((exclude => !daTypesToLeave.Any((leave => leave == exclude)))).Distinct().ToList();
@@ -171,7 +171,7 @@ namespace BISC.Modules.InformationModel.Model.Services
         private void RemoveEnums(IDataTypeTemplates dataTypeTemplates, List<string> enumTypesToExclude)
         {
             var enumTypesToLeave = new List<string>();
-            dataTypeTemplates.DaTypes.ForEach((type => type.Bdas.ForEach((bda =>
+            dataTypeTemplates.DaTypes.ToList().ForEach((type => type.Bdas.ToList().ForEach((bda =>
             {
                 if (bda.BType == "Enum")
                     enumTypesToLeave.Add(bda.Type);
@@ -198,7 +198,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 {
                     lnTypesToExclude.Add(logicalNode.LnType);
                 }
-                lnTypesToExclude.Add(lDevice.LogicalNodeZero.LnType);
+                lnTypesToExclude.Add(lDevice.LogicalNodeZero.Value.LnType);
             }
 
             return lnTypesToExclude;
@@ -237,7 +237,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 bool isExist = true;
                 foreach (IDo newDo in nodetype.DoList)
                 {
-                    if (!nodetypetypeitem.DoList.Exists(oldDo => oldDo.Type == newDo.Type))
+                    if (!nodetypetypeitem.DoList.ToList().Exists(oldDo => oldDo.Type == newDo.Type))
                     {
                         isExist = false;
                         break;
@@ -245,7 +245,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 }
                 foreach (var newDo in nodetype.DoList)
                 {
-                    if (!nodetypetypeitem.DoList.Exists(oldDo => oldDo.Name == newDo.Name))
+                    if (!nodetypetypeitem.DoList.ToList().Exists(oldDo => oldDo.Name == newDo.Name))
                     {
                         isExist = false;
                         break;
@@ -253,7 +253,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 }
                 foreach (IDo oldDo in nodetypetypeitem.DoList)
                 {
-                    if (!nodetype.DoList.Exists(newDo => newDo.Type == oldDo.Type))
+                    if (!nodetype.DoList.ToList().Exists(newDo => newDo.Type == oldDo.Type))
                     {
                         isExist = false;
                         break;
@@ -262,7 +262,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 
                 foreach (IDo oldDo in nodetypetypeitem.DoList)
                 {
-                    if (!nodetype.DoList.Exists(newDo => newDo.Name == oldDo.Name))
+                    if (!nodetype.DoList.ToList().Exists(newDo => newDo.Name == oldDo.Name))
                     {
                         isExist = false;
                         break;

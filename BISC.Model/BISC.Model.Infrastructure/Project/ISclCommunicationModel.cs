@@ -6,6 +6,6 @@ namespace BISC.Model.Infrastructure.Project
 {
     public interface ISclCommunicationModel:IModelElement
     {
-        List<ISubNetwork> SubNetworks { get; }
+        ChildModelsList<ISubNetwork> SubNetworks { get; }
     }
 }

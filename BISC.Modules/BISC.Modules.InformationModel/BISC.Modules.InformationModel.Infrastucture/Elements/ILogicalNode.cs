@@ -12,7 +12,7 @@ namespace BISC.Modules.InformationModel.Infrastucture.Elements
         string LnClass { get; set; }
         string Inst { get; set; }
         string LnType { get; set; }
-        List<IDoi> DoiCollection { get;  }
+        ChildModelsList<IDoi> DoiCollection { get;  }
         string Prefix { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Keys;
 using BISC.Model.Infrastructure.Project.Communication;
 
@@ -12,11 +13,10 @@ namespace BISC.Model.Global.Model.Communication
     {
         public SclAddress()
         {
-            AddressProperties = new List<IAddressProperty>();
             ElementName = ModelKeys.SclAddressKey;
         }
 
-        public List<IAddressProperty> AddressProperties { get; }
+        public ChildModelsList<IAddressProperty> AddressProperties=>new ChildModelsList<IAddressProperty>(this, ModelKeys.AddressPropertyKey);
 
         public void SetProperty(string addressPropertyName, string value)
         {

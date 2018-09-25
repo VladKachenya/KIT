@@ -10,6 +10,6 @@ namespace BISC.Modules.InformationModel.Infrastucture.Elements
         string Name { get; set; }
         bool? Router { get; set; }
         bool? Clock { get; set; }
-        IDeviceServer DeviceServer { get; set; }
+        ChildModelProperty<IDeviceServer> DeviceServer { get;  }
     }
 }

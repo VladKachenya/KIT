@@ -19,8 +19,6 @@ namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
         {
             RegisterProperty(nameof(IDoType.Cdc),"cdc");
             RegisterProperty(nameof(IDoType.Id),"id");
-            RegisterModelElementCollection(typeof(Da));
-            RegisterModelElementCollection(typeof(Sdo));
         }
         public override IModelElement GetConcreteObject()
         {

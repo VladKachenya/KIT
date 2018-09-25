@@ -10,6 +10,8 @@ namespace BISC.Model.Infrastructure.Keys
     {
         public const string BiscProjectKey = "BiscProject";
         public const string SclModelKey = "SCL";
+        public const string CustomElementsKey = "CustomElements";
+
         public const string CommunicationModelKey = "Communication";
         public const string DurationInMillisecMinTimeKey = "MinTime";
         public const string DurationInMillisecMaxTimeKey = "MaxTime";

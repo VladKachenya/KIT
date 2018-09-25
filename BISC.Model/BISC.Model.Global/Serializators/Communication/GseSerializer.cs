@@ -19,7 +19,6 @@ namespace BISC.Model.Global.Serializators.Communication
             RegisterProperty(nameof(IGse.MinTime), "MinTime");
             RegisterProperty(nameof(IGse.MaxTime), "MaxTime");
             RegisterProperty(nameof(IGse.SclAddress), "Address");
-            RegisterModelElementCollection(typeof(IAddressProperty),"P");
             RegisterProperty(nameof(IGse.LdInst), "ldInst");
             RegisterProperty(nameof(IGse.CbName), "cbName");
 

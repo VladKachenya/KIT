@@ -5,6 +5,6 @@ namespace BISC.Modules.Gooses.Infrastructure.Model
 {
     public interface IGooseInput:IModelElement
     {
-        List<IExternalGooseRef> ExternalGooseReferences { get; }
+        ChildModelsList<IExternalGooseRef> ExternalGooseReferences { get; }
     }
 }

@@ -9,6 +9,6 @@ namespace BISC.Modules.Gooses.Infrastructure.Model
         string DataSet { get; set; }
         int ConfRev { get; set; }
         string AppId { get; set; }
-        List<ISubscriberDevice> SubscriberDevice { get;}
+        ChildModelsList<ISubscriberDevice> SubscriberDevice { get;}
     }
 }

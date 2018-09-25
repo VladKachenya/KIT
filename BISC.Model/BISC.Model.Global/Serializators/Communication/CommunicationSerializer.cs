@@ -17,7 +17,6 @@ namespace BISC.Model.Global.Serializators.Communication
 
         public CommunicationSerializer()
         {
-            RegisterModelElementCollection(typeof(SubNetwork));
         }
         public override IModelElement GetConcreteObject()
         {

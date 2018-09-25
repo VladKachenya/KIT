@@ -6,7 +6,7 @@ namespace BISC.Modules.InformationModel.Infrastucture.Elements
     public interface ILDevice:IModelElement
     {
         string Inst { get; set; }
-        ILogicalNodeZero LogicalNodeZero{get; set; }
-        List<ILogicalNode> LogicalNodes { get; }
+        ChildModelProperty<ILogicalNodeZero> LogicalNodeZero{get; }
+        ChildModelsList<ILogicalNode> LogicalNodes { get; }
     }
 }

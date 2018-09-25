@@ -6,7 +6,7 @@ namespace BISC.Modules.InformationModel.Infrastucture.Elements
     public interface ISdi:IModelElement
     {
         string Name { get; set; }
-        List<ISdi> SdiCollection { get; }
-        List<IDai> DaiCollection { get; }
+        ChildModelsList<ISdi> SdiCollection { get; }
+        ChildModelsList<IDai> DaiCollection { get; }
     }
 }

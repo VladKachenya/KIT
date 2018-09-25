@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Infrastructure.Model;
 
@@ -13,7 +14,6 @@ namespace BISC.Modules.Gooses.Model.Model
     {
         public GooseControl()
         {
-            SubscriberDevice=new List<ISubscriberDevice>();
             ElementName = GooseKeys.GooseModelKeys.GooseControlKey;
         }
 
@@ -24,7 +24,7 @@ namespace BISC.Modules.Gooses.Model.Model
         public string DataSet { get; set; }
         public int ConfRev { get; set; }
         public string AppId { get; set; }
-        public List<ISubscriberDevice> SubscriberDevice { get; }
+        public ChildModelsList<ISubscriberDevice> SubscriberDevice=>new ChildModelsList<ISubscriberDevice>(this, GooseKeys.GooseModelKeys.SubscriberDeviceKey);
 
         #endregion
     }

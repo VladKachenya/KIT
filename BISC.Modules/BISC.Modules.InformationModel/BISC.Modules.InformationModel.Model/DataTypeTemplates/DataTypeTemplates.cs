@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DaType;
@@ -17,19 +18,15 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates
     {
         public DataTypeTemplates()
         {
-            LNodeTypes=new List<ILNodeType>();
-            DoTypes=new List<IDoType>();
-            DaTypes=new List<IDaType>();
-            EnumTypes=new List<IEnumType>();
             ElementName = InfoModelKeys.DataTypeTemplateKeys.DataTypeTemplatesModelItemKey;
         }
 
         #region Implementation of IDataTypeTemplates
 
-        public List<ILNodeType> LNodeTypes { get; }
-        public List<IDoType> DoTypes { get; }
-        public List<IDaType> DaTypes { get; }
-        public List<IEnumType> EnumTypes { get; }
+        public ChildModelsList<ILNodeType> LNodeTypes =>new ChildModelsList<ILNodeType>(this,InfoModelKeys.DataTypeTemplateKeys.LNodeTypeModelItemKey);
+        public ChildModelsList<IDoType> DoTypes => new ChildModelsList<IDoType>(this, InfoModelKeys.DataTypeTemplateKeys.DOTypeModelItemKey);
+        public ChildModelsList<IDaType> DaTypes => new ChildModelsList<IDaType>(this, InfoModelKeys.DataTypeTemplateKeys.DATypeModelItemKey);
+        public ChildModelsList<IEnumType> EnumTypes => new ChildModelsList<IEnumType>(this, InfoModelKeys.DataTypeTemplateKeys.EnumTypeModelItemKey);
 
         #endregion
     }

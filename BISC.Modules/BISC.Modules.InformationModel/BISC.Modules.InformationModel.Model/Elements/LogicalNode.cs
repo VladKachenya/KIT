@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 
@@ -13,13 +14,12 @@ namespace BISC.Modules.InformationModel.Model.Elements
     {
         public LogicalNode()
         {
-            DoiCollection=new List<IDoi>();
             ElementName = InfoModelKeys.ModelKeys.LogicalNodeKey;
         }
         public string LnClass { get; set; }
         public string Inst { get; set; }
         public string LnType { get; set; }
-        public List<IDoi> DoiCollection { get; }
+        public ChildModelsList<IDoi> DoiCollection=>new ChildModelsList<IDoi>(this, InfoModelKeys.ModelKeys.DoiKey);
         public string Prefix { get; set; }
         public string Name => Prefix + LnClass + Inst;
     }

@@ -109,7 +109,11 @@ namespace BISC.Presentation.BaseItems.Views
             var globalEventsService = ServiceLocator.Current.GetInstance<IGlobalEventsService>();
             globalEventsService.Unsubscribe<RegionDisposingEvent>(action: (DisposeRegion));
             DynamicRegionBehavior_Unloaded(this, null);
-          
+            var regionManager = ServiceLocator.Current.GetInstance<IRegionManager>();
+            if (regionManager.Regions.ContainsRegionWithName(this.GetValue(RegionKeyProperty) as string))
+            {
+                regionManager.Regions.Remove(this.GetValue(RegionKeyProperty) as string);
+            }
         }
 
         #endregion

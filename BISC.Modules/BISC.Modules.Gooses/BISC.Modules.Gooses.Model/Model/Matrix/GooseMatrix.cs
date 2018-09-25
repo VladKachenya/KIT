@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 
@@ -14,13 +16,15 @@ namespace BISC.Modules.Gooses.Model.Model.Matrix
         public GooseMatrix()
         {
             ElementName = GooseKeys.GooseModelKeys.GooseMatrixKey;
-            GooseRows=new List<IGooseRow>();
         }
         #region Implementation of IGooseMatrix
 
         public string RelatedIedName { get; set; }
-        public List<IGooseRow> GooseRows { get; }
+        public ChildModelsList<IGooseRow> GooseRows =>new ChildModelsList<IGooseRow>(this, "GooseRow");
 
         #endregion
     }
+
+
+ 
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 
@@ -21,7 +22,7 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public string Name { get; set; }
         public bool? Router { get; set; }
         public bool? Clock { get; set; }
-        public IDeviceServer DeviceServer { get; set; }
+        public ChildModelProperty<IDeviceServer> DeviceServer =>new ChildModelProperty<IDeviceServer>(this, InfoModelKeys.ModelKeys.ServerKey);
         
 
     #endregion

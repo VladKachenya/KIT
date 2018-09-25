@@ -8,7 +8,7 @@ namespace BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType
     {
         string Id { get; set; }
         string Cdc { get; set; }
-        List<IDa> DaList { get; }
-        List<ISdo> SdoList { get;  }
+        ChildModelsList<IDa> DaList { get; }
+        ChildModelsList<ISdo> SdoList { get;  }
     }
 }

@@ -133,8 +133,8 @@ namespace BISC.Modules.InformationModel.Model.Services
                     if (logicalNode == null) continue;
                     if (logicalNode is ILogicalNodeZero)
                     {
-                        newLDevice.LogicalNodeZero = logicalNode as ILogicalNodeZero;
-                        newLDevice.LogicalNodeZero.ParentModelElement = newLDevice;
+                        newLDevice.LogicalNodeZero.Value = logicalNode as ILogicalNodeZero;
+                        newLDevice.LogicalNodeZero.Value.ParentModelElement = newLDevice;
                     }
                     else
                     {

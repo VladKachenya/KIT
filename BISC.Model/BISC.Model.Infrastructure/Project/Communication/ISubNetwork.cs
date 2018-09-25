@@ -8,6 +8,6 @@ namespace BISC.Model.Infrastructure.Project.Communication
         string Name { get; set; }
         string Desc { get; set; }
         string Type { get; set; }
-        List<IConnectedAccessPoint> ConnectedAccessPoints { get; }
+        ChildModelsList<IConnectedAccessPoint> ConnectedAccessPoints { get; }
     }
 }

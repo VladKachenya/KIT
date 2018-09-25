@@ -14,7 +14,7 @@ namespace BISC.Model.Infrastructure.Project.Communication
     public interface ISclAddress : IModelElement
     {
         
-        List<IAddressProperty> AddressProperties { get; }
+        ChildModelsList<IAddressProperty> AddressProperties { get; }
         void SetProperty(string addressPropertyName, string value);
         string GetProperty(string addressPropertyName);
     }

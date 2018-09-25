@@ -5,6 +5,6 @@ namespace BISC.Modules.InformationModel.Infrastucture.Elements
 {
     public interface IDeviceServer:IModelElement
     {
-        List<ILDevice> LDevicesCollection { get; }
+        ChildModelsList<ILDevice> LDevicesCollection { get; }
     }
 }

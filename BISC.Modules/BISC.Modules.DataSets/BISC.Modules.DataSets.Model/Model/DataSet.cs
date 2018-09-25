@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
 
@@ -15,11 +16,10 @@ namespace BISC.Modules.DataSets.Model.Model
         public DataSet()
         {
             ElementName = DatasetKeys.DatasetModelKeys.DataSetModelKey;
-            FcdaList=new List<IFcda>();
         }
         #region Implementation of IDataSet
 
-        public List<IFcda> FcdaList { get; }
+        public ChildModelsList<IFcda> FcdaList =>new ChildModelsList<IFcda>(this,DatasetKeys.DatasetModelKeys.FcdaModelKey);
         public string Name { get; set; }
 
         #endregion

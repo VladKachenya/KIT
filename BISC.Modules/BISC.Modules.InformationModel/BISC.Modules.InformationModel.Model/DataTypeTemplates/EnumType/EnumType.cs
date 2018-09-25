@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.EnumType;
 
 namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType
@@ -12,10 +13,9 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType
     {
         public EnumType()
         {
-            EnumValList=new List<IEnumVal>();
             ElementName = "EnumType";
         }
         public string Id { get; set; }
-        public List<IEnumVal> EnumValList { get; }
+        public ChildModelsList<IEnumVal> EnumValList =>new ChildModelsList<IEnumVal>(this, "EnumVal");
     }
 }

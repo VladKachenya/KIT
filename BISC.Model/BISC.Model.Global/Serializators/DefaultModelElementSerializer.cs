@@ -22,11 +22,7 @@ namespace BISC.Model.Global.Serializators
             _modelElementsRegistryService = modelElementsRegistryService;
         }
 
-        private List<Tuple<Type, string>> _collectionTypes = new List<Tuple<Type, String>>();
-        protected void RegisterModelElementCollection(Type collectionType, string name = null)
-        {
-            _collectionTypes.Add(new Tuple<Type, string>(collectionType, name));
-        }
+      
         private List<Tuple<string, string>> _properties = new List<Tuple<string, string>>();
 
         protected void RegisterProperty(string propertyName, string name)
@@ -108,45 +104,7 @@ namespace BISC.Model.Global.Serializators
                 }
             }
 
-            if (_collectionTypes.Count > 0)
-            {
-                if (_collectionTypes.Count > 0)
-                {
-                    foreach (var collectionType in _collectionTypes)
-                    {
-                        foreach (var propertyInfo in modelElementProperties)
-                        {
-                            if ((collectionType.Item2 != null) && (propertyInfo.Name != collectionType.Item2)) continue;
-                            if ((propertyInfo.Name == nameof(IModelElement.ChildModelElements))) continue;
-
-                            Type type = propertyInfo.PropertyType;
-                            if (type.IsGenericType && type.GetGenericTypeDefinition()
-                                == typeof(List<>))
-                            {
-                                Type itemType = type.GetGenericArguments()[0];
-                                if (itemType == collectionType.Item1 || collectionType.Item1.GetInterface(itemType.ToString()) != null)
-                                {
-                                    var elementsOfType =
-                                        modelElement.ChildModelElements.Where((element => element.GetType() == collectionType.Item1)).ToList();
-                                    if (elementsOfType.Count == 0)
-                                    {
-                                        elementsOfType =
-                                            modelElement.ChildModelElements.Where((element => element.GetType().GetInterface(collectionType.Item1.ToString()) != null)).ToList();
-                                    }
-                                    foreach (var element in elementsOfType)
-                                    {
-                                        modelElement.ChildModelElements.Remove(element);
-                                    }
-                                    modelElement.ChildModelElements.AddRange((IEnumerable<IModelElement>)propertyInfo.GetValue(modelElement));
-
-
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
+         
             if (_valuePropertyName != null)
             {
                 var property = modelElement.GetType().GetProperty(_valuePropertyName);
@@ -211,40 +169,7 @@ namespace BISC.Model.Global.Serializators
         private void FillModelElementCustomProperties(IModelElement modelElement, XElement xElement)
         {
             var modelElementProperties = modelElement.GetType().GetProperties();
-
-            if (_collectionTypes.Count > 0)
-            {
-                foreach (var collectionType in _collectionTypes)
-                {
-                    foreach (var propertyInfo in modelElementProperties)
-                    {
-                        if ((collectionType.Item2 != null) && (propertyInfo.Name != collectionType.Item2)) continue;
-                        if ((propertyInfo.Name == nameof(IModelElement.ChildModelElements))) continue;
-
-                        Type type = propertyInfo.PropertyType;
-                        if (type.IsGenericType && type.GetGenericTypeDefinition()
-                            == typeof(List<>))
-                        {
-                            Type itemType = type.GetGenericArguments()[0];
-                            if (itemType == collectionType.Item1 || collectionType.Item1.GetInterface(itemType.ToString()) != null)
-                            {
-                                var elementsOfType =
-                                    modelElement.ChildModelElements.Where((element => element.GetType() == collectionType.Item1)).ToList();
-                                if (elementsOfType.Count == 0)
-                                {
-                                    elementsOfType =
-                                        modelElement.ChildModelElements.Where((element => element.GetType().GetInterface(collectionType.Item1.ToString()) != null)).ToList();
-                                }
-                                foreach (var element in elementsOfType)
-                                {
-                                    type.GetMethod("Add").Invoke(propertyInfo.GetValue(modelElement), new[] { element });
-                                }
-                            }
-                        }
-
-                    }
-                }
-            }
+            
             if (_properties.Count > 0)
             {
                 foreach (var property in _properties)

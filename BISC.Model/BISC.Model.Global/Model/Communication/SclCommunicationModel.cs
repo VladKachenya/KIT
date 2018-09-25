@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Keys;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Project.Communication;
@@ -13,9 +14,8 @@ namespace BISC.Model.Global.Model.Communication
     {
         public SclCommunicationModel()
         {
-            SubNetworks=new List<ISubNetwork>();
             ElementName = ModelKeys.CommunicationModelKey;
         }
-        public List<ISubNetwork> SubNetworks { get; }
+        public ChildModelsList<ISubNetwork> SubNetworks =>new ChildModelsList<ISubNetwork>(this, ModelKeys.SubNetworkKey);
     }
 }

@@ -61,11 +61,11 @@ namespace BISC.Model.Global.Services
             catch (Exception e)
             {
                 biscProject = new BiscProject();
-                biscProject.MainSclModel=new SclModel();
+                biscProject.MainSclModel.Value=new SclModel();
             }
-            _biscProject.MainSclModel = biscProject.MainSclModel;
-            _biscProject.ChildModelElements.Add(biscProject.MainSclModel);
-            _biscProject.CustomElements = biscProject.CustomElements;
+            _biscProject.MainSclModel.Value = biscProject.MainSclModel.Value;
+            _biscProject.ChildModelElements.Add(biscProject.MainSclModel.Value);
+            _biscProject.CustomElements.Value = biscProject.CustomElements.Value;
         }
 
         public void SaveCurrentProject()

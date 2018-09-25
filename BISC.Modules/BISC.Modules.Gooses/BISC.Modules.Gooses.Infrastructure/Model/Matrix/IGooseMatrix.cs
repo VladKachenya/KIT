@@ -7,7 +7,7 @@ namespace BISC.Modules.Gooses.Infrastructure.Model.Matrix
     {
         string RelatedIedName { get; set; }
 
-        List<IGooseRow> GooseRows { get; }
+        ChildModelsList<IGooseRow> GooseRows { get; }
 
     }
 }

@@ -11,16 +11,16 @@ namespace BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates
     public interface IDataTypeTemplates:IModelElement
     {
 
-        List<ILNodeType> LNodeTypes { get; }
+        ChildModelsList<ILNodeType> LNodeTypes { get; }
 
 
-        List<IDoType> DoTypes { get; }
+        ChildModelsList<IDoType> DoTypes { get; }
 
 
-        List<IDaType> DaTypes { get; }
+        ChildModelsList<IDaType> DaTypes { get; }
 
 
-        List<IEnumType> EnumTypes { get; }
+        ChildModelsList<IEnumType> EnumTypes { get; }
 
       
 

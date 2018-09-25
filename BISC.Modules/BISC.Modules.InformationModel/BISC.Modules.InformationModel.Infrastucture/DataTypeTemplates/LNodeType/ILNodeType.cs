@@ -10,7 +10,7 @@ namespace BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.LNodeTyp
         string Id { get; set; }
         string LnClass { get; set; }
 
-        List<IDo> DoList { get; }
+        ChildModelsList<IDo> DoList { get; }
 
     }
 }

@@ -27,7 +27,6 @@ namespace BISC.Modules.Device.Model.Model
         public string Manufacturer { get; set; }
         public string Type { get; set; }
         public string Revision { get; set; }
-        public ISclModel ParentSclModel { get; set; }
 
         #endregion
     }
