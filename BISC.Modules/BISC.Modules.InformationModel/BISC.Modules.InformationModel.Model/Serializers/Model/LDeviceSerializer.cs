@@ -15,7 +15,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.Model
         public LDeviceSerializer()
         {
             RegisterProperty(nameof(ILDevice.Inst),"inst");
-            RegisterModelElementCollection(typeof(LogicalNode));
+            //RegisterModelElementCollection(typeof(LogicalNode));
             RegisterProperty(nameof(ILDevice.LogicalNodeZero),"LN0");
 
         }

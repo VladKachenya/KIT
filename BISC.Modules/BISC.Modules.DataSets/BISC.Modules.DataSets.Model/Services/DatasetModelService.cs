@@ -44,7 +44,7 @@ namespace BISC.Modules.DataSets.Model.Services
                     }));
                 }
 
-                lDevice.LogicalNodeZero.ChildModelElements.ForEach((element =>
+                lDevice.LogicalNodeZero.Value.ChildModelElements.ForEach((element =>
                 {
                     if (element is IDataSet dataSet)
                     {

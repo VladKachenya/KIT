@@ -15,7 +15,7 @@ namespace BISC.Model.Global.Serializators.Communication
     {
         public SubNetworkSerializer()
         {
-            RegisterModelElementCollection(typeof(ConnectedAccessPoint));
+            //RegisterModelElementCollection(typeof(ConnectedAccessPoint));
             RegisterProperty(nameof(ISubNetwork.Desc),"desc");
             RegisterProperty(nameof(ISubNetwork.Type), "type");
             RegisterProperty(nameof(ISubNetwork.Name), "name");

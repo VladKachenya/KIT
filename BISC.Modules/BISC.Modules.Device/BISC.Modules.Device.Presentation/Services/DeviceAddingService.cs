@@ -47,7 +47,7 @@ namespace BISC.Modules.Device.Presentation.Services
         {
             foreach (var device in devicesToAdd)
             {
-                var res = _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel, device,modelFrom);
+                var res = _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel.Value, device,modelFrom);
                 if (!res.IsSucceed)
                 {
                     _userNotificationService.NotifyUserGlobal(res.GetFirstError());

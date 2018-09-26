@@ -38,7 +38,7 @@ namespace BISC.Modules.Gooses.Model.Services
             {
                 if (lnName == "LLN0")
                 {
-                    ld.LogicalNodeZero.ChildModelElements.Add(gooseControl);
+                    ld.LogicalNodeZero.Value.ChildModelElements.Add(gooseControl);
                 }
                 else
                 {
@@ -54,7 +54,7 @@ namespace BISC.Modules.Gooses.Model.Services
             List<IGooseControl> gooseControls=new List<IGooseControl>();
             foreach (var lDevice in ldevices)
             {
-                foreach (var childModelElement in lDevice.LogicalNodeZero.ChildModelElements)
+                foreach (var childModelElement in lDevice.LogicalNodeZero.Value.ChildModelElements)
                 {
                     if (childModelElement is IGooseControl findedGooseControl)
                     {
@@ -85,7 +85,7 @@ namespace BISC.Modules.Gooses.Model.Services
             }
 
             IGooseMatrix gooseMatrix = null;
-            foreach (var customElement in _biscProject.CustomElements.ChildModelElements)
+            foreach (var customElement in _biscProject.CustomElements.Value.ChildModelElements)
             {
                 if (customElement is IGooseMatrix gooseMatrixInModel)
                 {
@@ -97,7 +97,7 @@ namespace BISC.Modules.Gooses.Model.Services
             }
             if (gooseMatrix != null)
             {
-                _biscProject.CustomElements.ChildModelElements.Remove(gooseMatrix);
+                _biscProject.CustomElements.Value.ChildModelElements.Remove(gooseMatrix);
             }
         }
 
@@ -146,7 +146,7 @@ namespace BISC.Modules.Gooses.Model.Services
                 var ldevices = _infoModelService.GetLDevicesFromDevices(device);
                 GooseInput gooseInput=new GooseInput();
                 gooseInput.ExternalGooseReferences.Add(extRef);
-                ldevices.First().LogicalNodeZero.ChildModelElements.Add(gooseInput);
+                ldevices.First().LogicalNodeZero.Value.ChildModelElements.Add(gooseInput);
             }
         }
 
@@ -177,7 +177,7 @@ namespace BISC.Modules.Gooses.Model.Services
         public void SetGooseMatrixForDevice(IDevice device, IGooseMatrix gooseMatrix)
         {
             IGooseMatrix existing = null;
-            foreach (var customElement in _biscProject.CustomElements.ChildModelElements)
+            foreach (var customElement in _biscProject.CustomElements.Value.ChildModelElements)
             {
                 if (customElement is IGooseMatrix gooseMatrixInModel)
                 {
@@ -196,13 +196,13 @@ namespace BISC.Modules.Gooses.Model.Services
             else
             {
                 gooseMatrix.RelatedIedName = device.Name;
-                _biscProject.CustomElements.ChildModelElements.Add(gooseMatrix);
+                _biscProject.CustomElements.Value.ChildModelElements.Add(gooseMatrix);
             }
         }
 
         public IGooseMatrix GetGooseMatrixForDevice(IDevice device)
         {
-            foreach (var customElement in _biscProject.CustomElements.ChildModelElements)
+            foreach (var customElement in _biscProject.CustomElements.Value.ChildModelElements)
             {
                 if (customElement is IGooseMatrix gooseMatrixInModel)
                 {
@@ -214,7 +214,7 @@ namespace BISC.Modules.Gooses.Model.Services
             }
             IGooseMatrix gooseMatrix=new GooseMatrix();
             gooseMatrix.RelatedIedName = device.Name;
-            _biscProject.CustomElements.ChildModelElements.Add(gooseMatrix);
+            _biscProject.CustomElements.Value.ChildModelElements.Add(gooseMatrix);
             return gooseMatrix;
         }
 
@@ -225,7 +225,7 @@ namespace BISC.Modules.Gooses.Model.Services
             List<IGooseInput> gooseInputs = new List<IGooseInput>();
             foreach (var lDevice in ldevices)
             {
-                foreach (var childModelElement in lDevice.LogicalNodeZero.ChildModelElements)
+                foreach (var childModelElement in lDevice.LogicalNodeZero.Value.ChildModelElements)
                 {
                     if (childModelElement is IGooseInput findedGooseInput)
                     {

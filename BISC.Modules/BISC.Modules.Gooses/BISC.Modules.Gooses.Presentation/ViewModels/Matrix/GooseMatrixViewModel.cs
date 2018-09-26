@@ -76,7 +76,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             var str = _resultFileParser.GetFileStringFromGooseModel(GooseControlBlockViewModels, _device).ToString();
             if (_device.Ip == null)
             {
-                _device.Ip =_sclCommunicationModelService.GetIpOfDevice(_device.Name, _biscProject.MainSclModel);
+                _device.Ip =_sclCommunicationModelService.GetIpOfDevice(_device.Name, _biscProject.MainSclModel.Value);
             }
 
             if (await _deviceFileWritingServices.WriteFileStringInDevice(_device.Ip, new List<string>() {str, proj},
@@ -100,7 +100,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 
         private void OnSave()
         {
-            var gooseControlBlocksSubscribed = _goosesModelService.GetGooseControlsSubscribed(_device, _biscProject.MainSclModel);
+            var gooseControlBlocksSubscribed = _goosesModelService.GetGooseControlsSubscribed(_device, _biscProject.MainSclModel.Value);
             IGooseMatrix gooseMatrix = _goosesModelService.GetGooseMatrixForDevice(_device);
             foreach (var gooseControlBlockSubscribed in gooseControlBlocksSubscribed)
             {
@@ -140,7 +140,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             _isInitialized = false;
             GooseControlBlockViewModels.Clear();
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
-            var gooseControlBlocksSubscribed = _goosesModelService.GetGooseControlsSubscribed(_device, _biscProject.MainSclModel);
+            var gooseControlBlocksSubscribed = _goosesModelService.GetGooseControlsSubscribed(_device, _biscProject.MainSclModel.Value);
             IGooseMatrix gooseMatrix = _goosesModelService.GetGooseMatrixForDevice(_device);
             foreach (var gooseControlBlockSubscribed in gooseControlBlocksSubscribed)
             {

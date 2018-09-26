@@ -17,7 +17,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
     {
         public DaTypeSerializer()
         {
-            RegisterModelElementCollection(typeof(Bda));
+            //RegisterModelElementCollection(typeof(Bda));
             RegisterProperty(nameof(IDaType.Id),"id");
         }
         public override IModelElement GetConcreteObject()

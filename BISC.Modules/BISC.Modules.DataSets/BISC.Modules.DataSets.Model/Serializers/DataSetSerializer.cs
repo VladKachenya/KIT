@@ -14,7 +14,7 @@ namespace BISC.Modules.DataSets.Model.Serializers
     {
         public DataSetSerializer()
         {
-            RegisterModelElementCollection(typeof(IFcda));
+            //RegisterModelElementCollection(typeof(IFcda));
             RegisterProperty(nameof(IDataSet.Name),"name");
         }
 

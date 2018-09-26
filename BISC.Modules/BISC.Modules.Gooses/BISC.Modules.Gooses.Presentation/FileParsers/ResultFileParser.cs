@@ -38,7 +38,7 @@ namespace BISC.Modules.Gooses.Presentation.FileParsers
 
         private void Write(ObservableCollection<GooseControlBlockViewModel> gooseControlBlockViewModels, TextWriter streamWriter,IDevice device)
         {
-            var goosesForDevice = _goosesModelService.GetGooseControlsSubscribed(device,_biscProject.MainSclModel);
+            var goosesForDevice = _goosesModelService.GetGooseControlsSubscribed(device,_biscProject.MainSclModel.Value);
 
             using (streamWriter)
             {
@@ -48,7 +48,7 @@ namespace BISC.Modules.Gooses.Presentation.FileParsers
                 {
                     var deviceForGoose =
                         goosesForDevice.First((tuple => tuple.Item2.AppId == gooseControlBlockViewModel.AppId)).Item1;
-                    var gses = _sclCommunicationModelService.GetGsesForDevice(deviceForGoose.Name, _biscProject.MainSclModel);
+                    var gses = _sclCommunicationModelService.GetGsesForDevice(deviceForGoose.Name, _biscProject.MainSclModel.Value);
                  
                     var mac = gses.FirstOrDefault((gse => gse.CbName == gooseControlBlockViewModel.Name))?.MacAddress;
                     if (mac != null)

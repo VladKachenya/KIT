@@ -14,7 +14,7 @@ namespace BISC.Modules.Gooses.Model.Serializers
     {
         public GooseInputSerializer()
         {
-            RegisterModelElementCollection(typeof(IExternalGooseRef));
+            //RegisterModelElementCollection(typeof(IExternalGooseRef));
         }
 
         #region Overrides of DefaultModelElementSerializer<IGooseInput>

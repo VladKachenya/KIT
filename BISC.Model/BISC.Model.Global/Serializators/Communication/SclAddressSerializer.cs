@@ -13,7 +13,7 @@ namespace BISC.Model.Global.Serializators.Communication
     {
         public SclAddressSerializer()
         {
-            RegisterModelElementCollection(typeof(AddressProperty));
+            //RegisterModelElementCollection(typeof(AddressProperty));
         }
         public override IModelElement GetConcreteObject()
         {

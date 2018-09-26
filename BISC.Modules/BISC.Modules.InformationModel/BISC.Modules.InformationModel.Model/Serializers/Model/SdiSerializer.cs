@@ -14,8 +14,8 @@ namespace BISC.Modules.InformationModel.Model.Serializers.Model
     {
         public SdiSerializer()
         {
-            RegisterModelElementCollection(typeof(Dai));
-            RegisterModelElementCollection(typeof(Sdi));
+            //RegisterModelElementCollection(typeof(Dai));
+            //RegisterModelElementCollection(typeof(Sdi));
             RegisterProperty(nameof(ISdi.Name),"name");
         }
         public override IModelElement GetConcreteObject()

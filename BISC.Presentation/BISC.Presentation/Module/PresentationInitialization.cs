@@ -49,7 +49,7 @@ namespace BISC.Presentation.Module
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.ToolBarMenuViewName,
                     KeysForNavigation.RegionNames.ToolBarMenuKey);
                 _projectService.OpenDefaultProject();
-                _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(_biscProject.MainSclModel,null,"SCL");
+                _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(_biscProject.MainSclModel.Value,null,"SCL");
                 _mainTreeViewModel.ChangeTracker.StartTracking();
             }));
 

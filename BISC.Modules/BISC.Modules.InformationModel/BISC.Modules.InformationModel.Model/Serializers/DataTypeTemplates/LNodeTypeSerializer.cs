@@ -18,7 +18,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
     {
         public LNodeTypeSerializer()
         {
-            RegisterModelElementCollection(typeof(Do));
+            //RegisterModelElementCollection(typeof(Do));
             RegisterProperty(nameof(ILNodeType.Id),"id");
             RegisterProperty(nameof(ILNodeType.LnClass), "lnClass");
 

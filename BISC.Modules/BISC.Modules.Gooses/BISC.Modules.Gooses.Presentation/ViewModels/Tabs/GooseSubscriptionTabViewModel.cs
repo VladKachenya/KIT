@@ -41,7 +41,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         private void OnSaveChanges()
         {
-            var allDevices=_deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel);
+            var allDevices=_deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel.Value);
           //  _gooseSubscriptionTable.AcceptChanges();
           var table = GooseSubscriptionTable.ToTable();
             for (int rowIndex = 0; rowIndex < table.Rows.Count; rowIndex++)
@@ -77,7 +77,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
 
-            var devicesInProject = _deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel);
+            var devicesInProject = _deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel.Value);
             _gooseSubscriptionTable.Columns.Add(new DataColumn("GooseControl", typeof(string)));
             _gooseSubscriptionTable.Columns[0].ReadOnly = true;
             foreach (var deviceInProject in devicesInProject)

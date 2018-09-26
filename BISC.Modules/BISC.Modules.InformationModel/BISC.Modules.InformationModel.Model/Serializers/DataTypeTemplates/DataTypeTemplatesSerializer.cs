@@ -21,10 +21,10 @@ namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
 
         public DataTypeTemplatesSerializer( )
         {
-            this.RegisterModelElementCollection(typeof(LNodeType));
-            this.RegisterModelElementCollection(typeof(DoType));
-            this.RegisterModelElementCollection(typeof(DaType));
-            this.RegisterModelElementCollection(typeof(EnumType));
+            //this.RegisterModelElementCollection(typeof(LNodeType));
+            //this.RegisterModelElementCollection(typeof(DoType));
+            //this.RegisterModelElementCollection(typeof(DaType));
+            //this.RegisterModelElementCollection(typeof(EnumType));
         }
         public override IModelElement GetConcreteObject()
         {

@@ -16,8 +16,8 @@ namespace BISC.Model.Global.Serializators.Communication
      
         public ConnectedAccessPointSerializer(IModelElementsRegistryService modelElementsRegistryService) : base(modelElementsRegistryService)
         {
-            RegisterModelElementCollection(typeof(SclAddress));
-            RegisterModelElementCollection(typeof(Gse));
+            //RegisterModelElementCollection(typeof(SclAddress));
+            //RegisterModelElementCollection(typeof(Gse));
             RegisterProperty(nameof(ConnectedAccessPoint.ApName), "apName");
             RegisterProperty(nameof(ConnectedAccessPoint.IedName), "iedName");
 

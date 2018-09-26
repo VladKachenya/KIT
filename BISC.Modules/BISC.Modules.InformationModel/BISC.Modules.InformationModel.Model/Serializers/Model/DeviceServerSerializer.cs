@@ -14,7 +14,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.Model
     {
         public DeviceServerSerializer()
         {
-            RegisterModelElementCollection(typeof(LDevice));
+            //RegisterModelElementCollection(typeof(LDevice));
         }
 
         public override IModelElement GetConcreteObject()

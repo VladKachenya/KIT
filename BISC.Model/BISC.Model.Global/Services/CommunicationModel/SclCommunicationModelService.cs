@@ -128,7 +128,7 @@ namespace BISC.Model.Global.Services.CommunicationModel
                 .FirstOrDefault((point => point.IedName == deviceName));
             if (connectedAp != null)
             {
-                return connectedAp.GseList;
+                return connectedAp.GseList.ToList();
             }
 
             return null;

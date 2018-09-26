@@ -27,17 +27,17 @@ namespace BISC.Modules.InformationModel.Model.Services
         public void AddOrReplaceLDevice(IDeviceAccessPoint deviceAccessPoint, ILDevice lDevice)
         {
             var existingLdevice =
-                deviceAccessPoint.DeviceServer.LDevicesCollection.FirstOrDefault((deviceExisting => deviceExisting.Inst == lDevice.Inst));
+                deviceAccessPoint.DeviceServer.Value.LDevicesCollection.FirstOrDefault((deviceExisting => deviceExisting.Inst == lDevice.Inst));
 
             if (existingLdevice != null)
             {
-                deviceAccessPoint.DeviceServer.LDevicesCollection.Remove(existingLdevice);
-                deviceAccessPoint.DeviceServer.ChildModelElements.Remove(existingLdevice);
+                deviceAccessPoint.DeviceServer.Value.LDevicesCollection.Remove(existingLdevice);
+                deviceAccessPoint.DeviceServer.Value.ChildModelElements.Remove(existingLdevice);
 
             }
 
-            deviceAccessPoint.DeviceServer.LDevicesCollection.Add(lDevice);
-            deviceAccessPoint.DeviceServer.ChildModelElements.Add(lDevice);
+            deviceAccessPoint.DeviceServer.Value.LDevicesCollection.Add(lDevice);
+            deviceAccessPoint.DeviceServer.Value.ChildModelElements.Add(lDevice);
 
         }
 
@@ -45,8 +45,8 @@ namespace BISC.Modules.InformationModel.Model.Services
         {
             IDeviceAccessPoint deviceAccessPoint = new DeviceAccessPoint();
             
-            deviceAccessPoint.DeviceServer = new DeviceServer();
-            deviceAccessPoint.ChildModelElements.Add(deviceAccessPoint.DeviceServer);
+            deviceAccessPoint.DeviceServer.Value = new DeviceServer();
+            deviceAccessPoint.ChildModelElements.Add(deviceAccessPoint.DeviceServer.Value);
             deviceAccessPoint.Name =
                 _sclCommunicationModelService.GetConnectedAccessPoint(sclModel, deviceName).ApName;
             device.ChildModelElements.Add(deviceAccessPoint);
@@ -56,7 +56,7 @@ namespace BISC.Modules.InformationModel.Model.Services
         public List<ILDevice> GetLDevicesFromDevices(IModelElement device)
         {
             return (device.ChildModelElements.First((element => element is DeviceAccessPoint)) as DeviceAccessPoint)
-                .DeviceServer.LDevicesCollection;
+                .DeviceServer.Value.LDevicesCollection.ToList();
         }
     }
 }

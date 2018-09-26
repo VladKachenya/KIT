@@ -18,7 +18,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.Model
             RegisterProperty(nameof(ILogicalNode.LnClass), "lnClass");
             RegisterProperty(nameof(ILogicalNode.LnType), "lnType");
             RegisterProperty(nameof(ILogicalNode.Prefix), "prefix");
-            RegisterModelElementCollection(typeof(Doi));
+            //RegisterModelElementCollection(typeof(Doi));
         }
         public override IModelElement GetConcreteObject()
         {

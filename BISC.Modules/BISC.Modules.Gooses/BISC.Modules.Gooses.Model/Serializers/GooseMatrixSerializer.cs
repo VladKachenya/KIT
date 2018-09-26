@@ -14,7 +14,7 @@ namespace BISC.Modules.Gooses.Model.Serializers
     {
         public GooseMatrixSerializer()
         {
-            RegisterModelElementCollection(typeof(IGooseRow));
+            //RegisterModelElementCollection(typeof(IGooseRow));
             RegisterProperty(nameof(IGooseMatrix.RelatedIedName),"RelatedIedName");
         }
         #region Overrides of DefaultModelElementSerializer<IGooseMatrix>

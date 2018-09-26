@@ -14,8 +14,8 @@ namespace BISC.Modules.InformationModel.Model.Serializers.Model
     {
         public DoiSerializer()
         {
-            RegisterModelElementCollection(typeof(Sdi));
-            RegisterModelElementCollection(typeof(Dai));
+            //RegisterModelElementCollection(typeof(Sdi));
+            //RegisterModelElementCollection(typeof(Dai));
             RegisterProperty(nameof(IDoi.Name),"name");
             RegisterProperty(nameof(IDoi.Description), "desc");
         }

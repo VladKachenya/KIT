@@ -81,7 +81,7 @@ namespace BISC.Modules.DataSets.Model.Services
                         ILogicalNode lnOfFcda = null;
                         if (fcdaParts[1] == "LLN0")
                         {
-                            lnOfFcda = ldOfFcda.LogicalNodeZero;
+                            lnOfFcda = ldOfFcda.LogicalNodeZero.Value;
                         }
                         else
                         {
@@ -144,7 +144,7 @@ namespace BISC.Modules.DataSets.Model.Services
                     var ldeviceOfDataset = ldevices.First((lDevice => lDevice.Inst == ldevice.Replace(device.Name,"")));
                     if (lnName == "LLN0")
                     {
-                        ldeviceOfDataset.LogicalNodeZero.ChildModelElements.Add(dataSet);
+                        ldeviceOfDataset.LogicalNodeZero.Value.ChildModelElements.Add(dataSet);
                     }
                     else
                     {

@@ -92,7 +92,7 @@ public ObservableCollection<GooseControlBlockAssignmentItem> GooseControlBlockAs
             GooseControlBlockAssignmentItems.Clear();
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
             var subscribedGooseControlsForCurrentDevice =
-                _goosesModelService.GetGooseControlsSubscribed(_device, _biscProject.MainSclModel);
+                _goosesModelService.GetGooseControlsSubscribed(_device, _biscProject.MainSclModel.Value);
         
 
             var existingGooseInputsOfDevice = _goosesModelService.GetGooseInputsOfDevice(_device);

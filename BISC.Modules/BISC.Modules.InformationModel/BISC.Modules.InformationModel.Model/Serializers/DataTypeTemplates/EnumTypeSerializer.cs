@@ -18,7 +18,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates
 
         public EnumTypeSerializer()
         {
-            RegisterModelElementCollection(typeof(EnumVal));
+            //RegisterModelElementCollection(typeof(EnumVal));
             RegisterProperty(nameof(IEnumType.Id),"id");
         }
 

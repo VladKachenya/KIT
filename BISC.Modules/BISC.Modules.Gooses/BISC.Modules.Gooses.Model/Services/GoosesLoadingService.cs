@@ -97,8 +97,8 @@ namespace BISC.Modules.Gooses.Model.Services
                             IGse gse=new Gse();
                             gse.CbName = gooseDto.CbName;
                             gse.LdInst = gooseDto.LdInst;
-                            gse.MaxTime=new DurationInMilliSec("MaxTime") {Multiplier = "m",Value = (int) gooseDto.MaxTime,Unit = "s"};
-                            gse.MinTime = new DurationInMilliSec("MinTime") { Multiplier = "m", Value = (int)gooseDto.MinTime, Unit = "s" };
+                            gse.MaxTime.Value =new DurationInMilliSec("MaxTime") {Multiplier = "m",Value = (int) gooseDto.MaxTime,Unit = "s"};
+                            gse.MinTime.Value = new DurationInMilliSec("MinTime") { Multiplier = "m", Value = (int)gooseDto.MinTime, Unit = "s" };
                             gse.MacAddress = gooseDto.MAC_Address;
                             gse.AppId = gooseDto.APPID.ToString("D4");
                             gse.VlanId = gooseDto.VLAN_ID.ToString();
