@@ -36,7 +36,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
 
         #region Overrides of TreeItemViewModelBase
 
-        protected override void SetModel(object value)
+        public new void SetModel(object value)
         {
             Header = value.ToString();
             _treeItemDetailsBuilder.Reset();

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace BISC.Model.Infrastructure.Elements
 {
-    public class ChildModelsList<T> : IList<T> where T:IModelElement
+    public class ChildModelsList<T> : IEnumerable<T> where T:IModelElement
     {
         private readonly IModelElement _parent;
         private readonly string _childElementName;
@@ -46,55 +46,70 @@ namespace BISC.Model.Infrastructure.Elements
           
         }
 
-        public bool Contains(T item)
-        {
-            throw new NotImplementedException();
-        }
+        //public bool Contains(T item)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
+        //public void CopyTo(T[] array, int arrayIndex)
+        //{
+        //    array[arrayIndex]=(T)_parent.ChildModelElements.Where((element =>
+        //        element.ElementName == _childElementName && element is T)).ToList()[arrayIndex];
+        //}
 
         public bool Remove(T item)
         {
-            throw new NotImplementedException();
+            var existing = _parent.ChildModelElements.FirstOrDefault((element =>
+                element.Equals(item)));
+            _parent.ChildModelElements.Remove(existing);
+            return true;
         }
 
         public int Count
         {
             get
             {
-                return 0;
-
+                return _parent.ChildModelElements.Where((element =>
+                    element.ElementName == _childElementName && element is T)).Count();
             }
         }
 
-        public bool IsReadOnly { get; }
 
-        #endregion
+        //public bool IsReadOnly => false;
 
-        #region Implementation of IList<T>
+        //#endregion
+
+        //#region Implementation of IList<T>
 
         public int IndexOf(T item)
         {
-            throw new NotImplementedException();
+            var existing = _parent.ChildModelElements.FirstOrDefault((element =>
+                element.Equals(item)));
+            return _parent.ChildModelElements.Where((element =>
+                element.ElementName == _childElementName && element is T)).ToList().IndexOf(existing);
         }
 
-        public void Insert(int index, T item)
-        {
-            throw new NotImplementedException();
-        }
+        //public void Insert(int index, T item)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void RemoveAt(int index)
-        {
-            throw new NotImplementedException();
-        }
+        //public void RemoveAt(int index)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public T this[int index]
         {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
+            get { return this.ToList()[index]; }
+            set
+            {
+               var existing= _parent.ChildModelElements.Where((element =>
+                    element.ElementName == _childElementName && element is T)).ToList()[index];
+                _parent.ChildModelElements.Insert(index, value);
+                _parent.ChildModelElements.Remove(existing);
+
+            }
         }
 
         public void  AddRange(IEnumerable<T> collection)
@@ -106,5 +121,16 @@ namespace BISC.Model.Infrastructure.Elements
         }
 
         #endregion
+
+        public void Insert(int i, T item)
+        {
+            var existingAtI = _parent.ChildModelElements.Where((element =>
+                element.ElementName == _childElementName && element is T)).ToList()[i];
+          var index=  _parent.ChildModelElements.IndexOf(existingAtI);
+
+            _parent.ChildModelElements.Insert(index, item);
+        }
+
+      
     }
 }

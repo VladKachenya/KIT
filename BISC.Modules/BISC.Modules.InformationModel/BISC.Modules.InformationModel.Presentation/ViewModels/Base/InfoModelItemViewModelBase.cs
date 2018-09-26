@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Presentation.Interfaces;
 using BISC.Modules.InformationModel.Presentation.Interfaces.InfoModelDetails;
 using BISC.Presentation.BaseItems.ViewModels;
@@ -13,7 +14,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.Base
 {
     public abstract class TreeItemViewModelBase : ComplexViewModelBase, IInfoModelItemWithDetails
     {
-        protected object _model;
+        protected IModelElement _model;
         private string _header;
         private int _level;
         private bool _isChecked;
@@ -31,7 +32,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.Base
         
         #region Implementation of IViewModel
 
-        public object Model
+        public IModelElement Model
         {
             get => GetModel();
             set => SetModel(value);
@@ -39,9 +40,9 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.Base
 
         protected virtual void SetModel(object value)
         {
-            _model = value;
+            _model = value as IModelElement;
         }
-        protected virtual object GetModel()
+        protected virtual IModelElement GetModel()
         {
             return _model;
         }

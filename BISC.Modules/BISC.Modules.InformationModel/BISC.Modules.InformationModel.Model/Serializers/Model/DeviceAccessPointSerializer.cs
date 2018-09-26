@@ -18,7 +18,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.Model
             RegisterProperty(nameof(IDeviceAccessPoint.Name),"name");
             RegisterProperty(nameof(IDeviceAccessPoint.Clock), "clock");
             RegisterProperty(nameof(IDeviceAccessPoint.Router), "router");
-            RegisterProperty(nameof(IDeviceAccessPoint.DeviceServer), "Server");
+       //     RegisterProperty(nameof(IDeviceAccessPoint.DeviceServer), "Server");
         }
 
         #region Overrides of DefaultModelElementSerializer<IDeviceAccessPoint>

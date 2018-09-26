@@ -16,7 +16,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.Model
         {
             RegisterProperty(nameof(IDai.Name),"name");
             RegisterProperty(nameof(IDai.Description), "desc");
-            RegisterProperty(nameof(IDai.Value), "Val");            
+         //   RegisterProperty(nameof(IDai.Value), "Val");            
         }
 
         public override IModelElement GetConcreteObject()

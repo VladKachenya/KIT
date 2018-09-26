@@ -91,7 +91,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                     foreach (var fc in fcs)
                     {
                         SetFcTreeItemViewModel fcTreeItemViewModel = _fcSetCreator();
-                        fcTreeItemViewModel.Model = fc;
+                        fcTreeItemViewModel.SetModel(fc);
                         GetChildListByFc(doi.DaiCollection.ToList(), doi.SdiCollection.ToList(), fc).ForEach((treeItem =>
                             fcTreeItemViewModel.ChildInfoModelItemViewModels.Add(treeItem)));
                         doiInfoModelItemViewModel.ChildInfoModelItemViewModels.Add(fcTreeItemViewModel);
@@ -223,9 +223,9 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                                                                                         IInfoModelItemViewModel>();
 
             LogicalNodeZeroInfoModelItemViewModel logicalNodeZeroInfoModelItemViewModel =
-                infoModelItemViewModels.FirstOrDefault((model => model.Model == lDevice.LogicalNodeZero)) as
+                infoModelItemViewModels.FirstOrDefault((model => model.Model == lDevice.LogicalNodeZero.Value)) as
                     LogicalNodeZeroInfoModelItemViewModel ?? _ln0ViewModelCreator();
-            logicalNodeZeroInfoModelItemViewModel.Model = lDevice.LogicalNodeZero;
+            logicalNodeZeroInfoModelItemViewModel.Model = lDevice.LogicalNodeZero.Value;
 
             if (!infoModelItemViewModels.Contains(logicalNodeZeroInfoModelItemViewModel))
                 infoModelItemViewModels.Add(logicalNodeZeroInfoModelItemViewModel);

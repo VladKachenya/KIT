@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using BISC.Model.Infrastructure.Elements;
 
 namespace BISC.Modules.InformationModel.Presentation.Interfaces
 {
     public interface IInfoModelItemViewModel
     {
         string Header { get; set; }
-        object Model { get; }
+        IModelElement Model { get; }
         int Level { get; set; }
         Action<bool?> Checked { get; set; }
         string TypeName { get; }

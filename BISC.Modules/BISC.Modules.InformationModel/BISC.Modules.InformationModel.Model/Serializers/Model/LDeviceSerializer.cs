@@ -16,7 +16,7 @@ namespace BISC.Modules.InformationModel.Model.Serializers.Model
         {
             RegisterProperty(nameof(ILDevice.Inst),"inst");
             //RegisterModelElementCollection(typeof(LogicalNode));
-            RegisterProperty(nameof(ILDevice.LogicalNodeZero),"LN0");
+            //RegisterProperty(nameof(ILDevice.LogicalNodeZero),"LN0");
 
         }
         public override IModelElement GetConcreteObject()

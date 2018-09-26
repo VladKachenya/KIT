@@ -16,9 +16,6 @@ namespace BISC.Model.Global.Serializators.Communication
       
         public GseSerializer( )
         {
-            RegisterProperty(nameof(IGse.MinTime), "MinTime");
-            RegisterProperty(nameof(IGse.MaxTime), "MaxTime");
-            RegisterProperty(nameof(IGse.SclAddress), "Address");
             RegisterProperty(nameof(IGse.LdInst), "ldInst");
             RegisterProperty(nameof(IGse.CbName), "cbName");
 
