@@ -54,6 +54,7 @@
     <Compile Include="Services\DataSetsUiHandlingService.cs" />
     <Compile Include="ViewModels\DataSetsDetailsViewModel.cs" />
     <Compile Include="ViewModels\DataSetsTreeItemViewModel.cs" />
+    <Compile Include="ViewModels\DataSetViewModel.cs" />
     <Compile Include="Views\DataSetsDetailsView.xaml.cs">
       <DependentUpon>DataSetsDetailsView.xaml</DependentUpon>
     </Compile>

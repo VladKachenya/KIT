@@ -1,4 +1,5 @@
 ﻿using BISC.Model.Infrastructure.Project;
+using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
@@ -8,6 +9,7 @@ using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +23,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         #region C-tor
 
-        public DataSetsDetailsViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService, 
+        public DataSetsDetailsViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService,
             IBiscProject biscProject, IDatasetModelService datasetModelService)
         {
             _datasetModelService = datasetModelService;
@@ -30,11 +32,18 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #endregion
 
 
+        #region public components
+
+        public ObservableCollection<IDataSet> DataSets { get; protected set; }
+        #endregion
+
+        #region override of NavigationViewModelBase
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
-            var resalt = _datasetModelService.GetAllDataSetOfDevice(_device);
+            DataSets = new ObservableCollection<IDataSet> (_datasetModelService.GetAllDataSetOfDevice(_device));
             base.OnNavigatedTo(navigationContext);
         }
+        #endregion
     }
 }
