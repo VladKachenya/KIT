@@ -7,23 +7,26 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <ListView
-            IsEnabled="{Binding IsChecked, ElementName=EnableListBox}"
-            ItemsSource="{Binding DataSets}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate >
-                    <Border 
-                        x:Name="Border"
-                        BorderThickness="1 0 0 1"
-                        BorderBrush="{DynamicResource MaterialDesignDivider}">
-                        <Expander HorizontalAlignment="Stretch">
-                            <Expander.Header>
-                                <TextBlock Text="{Binding Name}"/>
-                            </Expander.Header>
-                        </Expander>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ListView>
+        <ScrollViewer>
+            <ItemsControl
+                ItemsSource="{Binding DataSets}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border 
+                            x:Name="Border"
+                            BorderThickness="1 0 0 1"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}">
+                            <Grid Margin="0">
+                                <Expander HorizontalAlignment="Stretch" MinWidth="0">
+                                    <Expander.Header>
+                                        <TextBlock Text="{Binding Name}"/>
+                                    </Expander.Header>
+                                </Expander>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>

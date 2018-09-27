@@ -50,8 +50,10 @@
     <Compile Include="Model\IFcda.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IDatasetModelService.cs" />
+    <Compile Include="ViewModels\IDataSetViewModel.cs" />
     <Compile Include="ViewModels\Factorys\IDatasetViewModelFactory.cs" />
     <Compile Include="ViewModels\IDataSetsTreeItemViewModel.cs" />
+    <Compile Include="ViewModels\IFcdaViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
