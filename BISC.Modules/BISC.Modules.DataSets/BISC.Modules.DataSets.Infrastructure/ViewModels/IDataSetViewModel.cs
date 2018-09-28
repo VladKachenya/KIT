@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BISC.Modules.DataSets.Infrastructure.Model;
+using BISC.Modules.DataSets.Infrastructure.ViewModels.Base;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,10 +9,8 @@ using System.Threading.Tasks;
 
 namespace BISC.Modules.DataSets.Infrastructure.ViewModels
 {
-    public interface IDataSetViewModel
+    public interface IDataSetViewModel  : IDataSetElementBaseViewModel<IDataSet>
     {
-        string Name { get; set; }
-        string ElementName { get;}
         ObservableCollection<IFcdaViewModel> FcdaViewModels { get;}
     }
 }

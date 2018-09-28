@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -29,8 +30,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         }
         #endregion
 
-        public string Name
-        {
+        #region Implamentation of DataSetElementBaseViewModel
+        public string Name {
             get => _model.Name;
             set
             {
@@ -39,11 +40,26 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             }
         }
 
-        public string ElementName
+        public string ElementName => _model.ElementName;
+        public string FullName => _model.ParentModelElement.ElementName + "." + _model.ElementName + "." + _model.Name;
+
+        public Brush TypeColorBrush => Brushes.Tomato;
+
+        public IDataSet GetModel()
         {
-            get => _model.ElementName;
+            return _model;
         }
 
+        public void SetModel(IDataSet model)
+        {
+            _model = model;
+        }
+        #endregion
+
+        #region Implamentation of IDataSetViewModel
         public ObservableCollection<IFcdaViewModel> FcdaViewModels { get; }
+
+        
+        #endregion
     }
 }

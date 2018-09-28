@@ -23,7 +23,7 @@
                                             <Border Margin="2" Background="{Binding TypeColorBrush}" >
                                                 <TextBlock Margin="2"  Text="{Binding ElementName}"/>
                                             </Border>
-                                            <TextBlock Text="{Binding Name}" Margin="4"/>
+                                            <TextBlock Text="{Binding FullName}" Margin="4"/>
                                         </StackPanel>
                                     </Expander.Header>
                                     <ListBox
