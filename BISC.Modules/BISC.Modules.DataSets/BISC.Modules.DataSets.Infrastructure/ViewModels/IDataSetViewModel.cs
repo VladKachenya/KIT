@@ -10,6 +10,7 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
     public interface IDataSetViewModel
     {
         string Name { get; set; }
+        string ElementName { get;}
         ObservableCollection<IFcdaViewModel> FcdaViewModels { get;}
     }
 }

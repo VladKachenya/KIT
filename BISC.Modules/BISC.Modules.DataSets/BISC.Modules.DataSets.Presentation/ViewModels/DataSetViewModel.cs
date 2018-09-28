@@ -39,6 +39,11 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             }
         }
 
+        public string ElementName
+        {
+            get => _model.ElementName;
+        }
+
         public ObservableCollection<IFcdaViewModel> FcdaViewModels { get; }
     }
 }

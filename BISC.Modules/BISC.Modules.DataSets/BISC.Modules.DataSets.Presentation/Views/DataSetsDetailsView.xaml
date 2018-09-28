@@ -19,7 +19,12 @@
                             <Grid Margin="0">
                                 <Expander HorizontalAlignment="Stretch">
                                     <Expander.Header>
-                                        <TextBlock Text="{Binding Name}"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Margin="2" Background="{Binding TypeColorBrush}" >
+                                                <TextBlock Margin="2"  Text="{Binding ElementName}"/>
+                                            </Border>
+                                            <TextBlock Text="{Binding Name}" Margin="4"/>
+                                        </StackPanel>
                                     </Expander.Header>
                                     <ListBox
                                         ItemsSource="{Binding FcdaViewModels}">
