@@ -8,6 +8,6 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
 {
     public interface IFcdaViewModel
     {
-
+        string FullName { get; }
     }
 }

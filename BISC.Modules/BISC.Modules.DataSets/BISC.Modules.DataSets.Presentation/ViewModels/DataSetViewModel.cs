@@ -1,4 +1,6 @@
-﻿using BISC.Modules.DataSets.Infrastructure.ViewModels;
+﻿using BISC.Modules.DataSets.Infrastructure.Model;
+using BISC.Modules.DataSets.Infrastructure.ViewModels;
+using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Presentation.BaseItems.ViewModels;
 using System;
@@ -13,15 +15,17 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
     public class DataSetViewModel : ViewModelBase, IDataSetViewModel
     {
         #region private filds
-        private IDevice _model;
+        private IDataSet _model;
+        private IFcdaViewModelFactory _fcdaViewModelFactory;
 
         #endregion
 
         #region C-tor
-        public DataSetViewModel(IDevice model)
+        public DataSetViewModel(IDataSet model, IFcdaViewModelFactory fcdaViewModelFactory)
         {
-            if (model == null) throw new Exception("Null referens exeption!");
-            _model = model;
+            _model = model ?? throw new Exception("Null referens exeption!");
+            _fcdaViewModelFactory = fcdaViewModelFactory;
+            FcdaViewModels = _fcdaViewModelFactory.GetFcdaViewModelCollection(_model);
         }
         #endregion
 

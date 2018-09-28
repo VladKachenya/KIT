@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys
 {
-    public interface IDatasetViewModelFactory
+    public interface IFcdaViewModelFactory
     {
-        IDataSetViewModel GetDataSetViewModel(IDataSet dataSets);
-        ObservableCollection<IDataSetViewModel> GetDataSetsViewModel(List<IDataSet> dataSet);
-
+        ObservableCollection<IFcdaViewModel> GetFcdaViewModelCollection(IDataSet model);
+        IFcdaViewModel GetFcdaViewModelElement(IFcda model);
+   
     }
 }

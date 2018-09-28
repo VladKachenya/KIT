@@ -17,10 +17,19 @@
                             BorderThickness="1 0 0 1"
                             BorderBrush="{DynamicResource MaterialDesignDivider}">
                             <Grid Margin="0">
-                                <Expander HorizontalAlignment="Stretch" MinWidth="0">
+                                <Expander HorizontalAlignment="Stretch">
                                     <Expander.Header>
                                         <TextBlock Text="{Binding Name}"/>
                                     </Expander.Header>
+                                    <ListBox
+                                        ItemsSource="{Binding FcdaViewModels}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding FullName}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                        
+                                    </ListBox>
                                 </Expander>
                             </Grid>
                         </Border>
