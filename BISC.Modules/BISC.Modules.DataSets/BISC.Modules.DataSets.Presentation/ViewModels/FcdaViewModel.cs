@@ -42,9 +42,9 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             get
             {
                 if(_model.DaName == null)
-                    return string.Format("{0}/{1}{2}.{3}", _model.LnClass, _model.Prefix, _model.LdInst, _model.DoName);
+                    return string.Format("{0}/{1}{2}.{3}[{4}]", _model.LnClass, _model.Prefix, _model.LdInst, _model.DoName, _model.Fc);
                 else
-                    return string.Format("{0}/{1}{2}.{3}.{4}", _model.LnClass, _model.Prefix, _model.LdInst, _model.DoName, _model.DaName);
+                    return string.Format("{0}/{1}{2}.{3}.{4}[{5}]", _model.LnClass, _model.Prefix, _model.LdInst, _model.DoName, _model.DaName, _model.Fc);
             }
         }
         public Brush TypeColorBrush => new SolidColorBrush( Color.FromRgb(89, 89, 210));
