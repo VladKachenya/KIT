@@ -64,7 +64,6 @@ namespace BISC.Model.Global.Services
                 biscProject.MainSclModel.Value=new SclModel();
             }
             _biscProject.MainSclModel.Value = biscProject.MainSclModel.Value;
-            _biscProject.ChildModelElements.Add(biscProject.MainSclModel.Value);
             _biscProject.CustomElements.Value = biscProject.CustomElements.Value;
         }
 
