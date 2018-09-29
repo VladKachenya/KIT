@@ -21,6 +21,7 @@ namespace BISC.Modules.DataSets.Model.Model
 
         public ChildModelsList<IFcda> FcdaList =>new ChildModelsList<IFcda>(this,DatasetKeys.DatasetModelKeys.FcdaModelKey);
         public string Name { get; set; }
+        public bool IsDynamic { get; set; }
 
         #endregion
     }

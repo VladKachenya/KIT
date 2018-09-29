@@ -5,6 +5,7 @@ namespace BISC.Modules.DataSets.Infrastructure.Model
 {
     public interface IDataSet:IModelElement
     {
+        bool IsDynamic { get; set; }
         ChildModelsList<IFcda> FcdaList { get; }
         string Name { get; set; }
     }

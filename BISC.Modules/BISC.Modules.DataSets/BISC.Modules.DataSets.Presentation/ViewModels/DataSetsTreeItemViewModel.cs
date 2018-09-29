@@ -34,7 +34,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
             biscNavigationParameters.AddParameterByName("IED", _device);
-            _tabManagementService.NavigateToTab(DatasetKeys.DatasetViewModelKeys.DataSetsDetailsView, biscNavigationParameters, $"Data sets{_device.Name}", _dataSetDetailsIdentifier);
+            _tabManagementService.NavigateToTab(DatasetKeys.DatasetViewModelKeys.DataSetsDetailsView, biscNavigationParameters, $"Data sets {_device.Name}", _dataSetDetailsIdentifier);
         }
         #endregion
 
