@@ -18,6 +18,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #region private filds
         private IDataSet _model;
         private IFcdaViewModelFactory _fcdaViewModelFactory;
+        private bool _isExpanded = false;
 
         #endregion
 
@@ -43,7 +44,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public string ElementName => _model.ElementName;
         public string FullName => _model.ParentModelElement.ElementName + "." + _model.ElementName + "." + _model.Name;
 
-        public Brush TypeColorBrush => Brushes.Tomato;
+        public Brush TypeColorBrush => new SolidColorBrush(Color.FromRgb(126, 141, 240));
 
         public IDataSet GetModel()
         {
@@ -53,6 +54,12 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public void SetModel(IDataSet model)
         {
             _model = model;
+        }
+
+        public bool IsExpanded
+        {
+            get => _isExpanded;
+            set => SetProperty(ref _isExpanded, value);
         }
         #endregion
 

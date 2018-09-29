@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -31,15 +32,37 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             _datasetModelService = datasetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
+            DeployAllExpandersCommand = commandFactory.CreatePresentationCommand(OnDeployAllExpanders);
+            RollUpAllExpandersCommand = commandFactory.CreatePresentationCommand(OnRollUpAllExpanders);
+
         }
 
+        #endregion
+
+        #region privat methods
+        private void OnDeployAllExpanders()
+        {
+            foreach (var element in DataSets)
+                element.IsExpanded = true;
+        }
+
+        private void OnRollUpAllExpanders()
+        {
+            foreach (var element in DataSets)
+                element.IsExpanded = false;
+        }
         #endregion
 
 
         #region public components
 
         public ObservableCollection<IDataSetViewModel> DataSets { get; protected set; }
+
+        public ICommand DeployAllExpandersCommand { get; }
+        public ICommand RollUpAllExpandersCommand { get; }
+
         #endregion
+
 
         #region override of NavigationViewModelBase
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)

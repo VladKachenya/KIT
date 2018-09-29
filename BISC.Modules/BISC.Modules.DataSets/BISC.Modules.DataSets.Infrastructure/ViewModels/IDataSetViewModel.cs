@@ -11,6 +11,7 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
 {
     public interface IDataSetViewModel  : IDataSetElementBaseViewModel<IDataSet>
     {
+        bool IsExpanded { get; set; }
         ObservableCollection<IFcdaViewModel> FcdaViewModels { get;}
     }
 }

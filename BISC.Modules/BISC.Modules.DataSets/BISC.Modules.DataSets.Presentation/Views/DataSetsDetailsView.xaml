@@ -7,8 +7,16 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <ScrollViewer>
-            <ItemsControl
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Button Content="Свернуть всё" Command="{Binding RollUpAllExpandersCommand}" Margin="10,5"/>
+            <Button Content="Развернуть всё" Command="{Binding DeployAllExpandersCommand}" Margin="10,5"/>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl x:Name="ExpanderItemsControl"
                 ItemsSource="{Binding DataSets}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -17,23 +25,33 @@
                             BorderThickness="1 0 0 1"
                             BorderBrush="{DynamicResource MaterialDesignDivider}">
                             <Grid Margin="0">
-                                <Expander HorizontalAlignment="Stretch">
+                                <Expander HorizontalAlignment="Stretch" IsExpanded="{Binding IsExpanded}">
                                     <Expander.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <Border Margin="2" Background="{Binding TypeColorBrush}" >
-                                                <TextBlock Margin="2"  Text="{Binding ElementName}"/>
+                                                <TextBlock Margin="4"  Text="{Binding ElementName}"/>
                                             </Border>
                                             <TextBlock Text="{Binding FullName}" Margin="4"/>
                                         </StackPanel>
                                     </Expander.Header>
-                                    <ListBox
+                                    <ListBox PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                                         ItemsSource="{Binding FcdaViewModels}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding FullName}"/>
+                                                <Border
+                                                    Padding="30, 0, 0, 0"
+                                                    BorderThickness="0 0 0 0"
+                                                    BorderBrush="{DynamicResource MaterialDesignDivider}">
+                                                    <StackPanel Orientation="Horizontal" >
+                                                        <Border Margin="2"  Background="{Binding TypeColorBrush}" >
+                                                            <TextBlock Margin="3" Text="{Binding ElementName}"/>
+                                                        </Border>
+                                                        <TextBlock Margin="3" Text=" "/>
+                                                        <TextBlock Margin="3" Text="{Binding FullName}"/>
+                                                    </StackPanel>
+                                                </Border>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
-                                        
                                     </ListBox>
                                 </Expander>
                             </Grid>

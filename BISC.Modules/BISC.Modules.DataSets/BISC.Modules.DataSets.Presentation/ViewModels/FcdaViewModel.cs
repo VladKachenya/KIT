@@ -24,6 +24,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _model = model ?? throw new Exception("Null referens exeption!");
         }
         #endregion
+
+        #region Implementation of IFcdaViewModel
         public string Name
         {
             get => _model.DoName;
@@ -35,8 +37,17 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         }
 
         public string ElementName => _model.ElementName;
-        public string FullName => _model.ToString();
-        public Brush TypeColorBrush => Brushes.Tan;
+        public string FullName
+        {
+            get
+            {
+                if(_model.DaName == null)
+                    return string.Format("{0}/{1}{2}.{3}", _model.LnClass, _model.Prefix, _model.LdInst, _model.DoName);
+                else
+                    return string.Format("{0}/{1}{2}.{3}.{4}", _model.LnClass, _model.Prefix, _model.LdInst, _model.DoName, _model.DaName);
+            }
+        }
+        public Brush TypeColorBrush => new SolidColorBrush( Color.FromRgb(89, 89, 210));
 
         public IFcda GetModel()
         {
@@ -47,6 +58,9 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             _model = model;
         }
-       
+        #endregion
+
+
+
     }
 }
