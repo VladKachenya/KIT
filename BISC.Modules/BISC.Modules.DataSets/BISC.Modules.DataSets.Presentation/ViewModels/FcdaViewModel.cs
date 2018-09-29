@@ -22,31 +22,19 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #endregion
 
         #region C-tor
-        public FcdaViewModel(IFcda model, ICommandFactory commandFactory)
+        public FcdaViewModel( )
         {
-            _model = model ?? throw new Exception("Null referens exeption!");
-            DeleteFcdaCommand = commandFactory.CreatePresentationCommand(OnDeleteFcda);
-
         }
         #endregion
 
         #region private methods
-        private void OnDeleteFcda()
-        {
-           
-        }
-
+       
         #endregion
 
         #region Implementation of IFcdaViewModel
         public string Name
         {
             get => _model.DoName;
-            set
-            {
-                _model.DoName= value;
-                OnPropertyChanged();
-            }
         }
 
         public string ElementName => _model.ElementName;
@@ -69,7 +57,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public void SetModel(IFcda model)
         {
-            _model = model;
+            _model = model ?? throw new NullReferenceException();
         }
 
         public bool IsEditeble => (_model.ParentModelElement as IDataSet).IsDynamic;

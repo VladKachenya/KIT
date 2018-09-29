@@ -40,6 +40,8 @@ namespace BISC.Modules.DataSets.Presentation.Module
             _injectionContainer.RegisterType<IDatasetViewModelFactory, DatasetViewModelFactory>(true);
             _injectionContainer.RegisterType<DataSetsTreeItemViewModel>();
             _injectionContainer.RegisterType<DataSetsDetailsViewModel>();
+            _injectionContainer.RegisterType<IFcdaViewModel, FcdaViewModel>();
+            _injectionContainer.RegisterType<IDataSetViewModel, DataSetViewModel>();
 
         }
 

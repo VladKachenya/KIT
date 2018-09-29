@@ -25,30 +25,21 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #endregion
 
         #region C-tor
-        public DataSetViewModel(IDataSet model, IFcdaViewModelFactory fcdaViewModelFactory,ICommandFactory commandFactory)
+        public DataSetViewModel(IFcdaViewModelFactory fcdaViewModelFactory,ICommandFactory commandFactory)
         {
-            _model = model ?? throw new NullReferenceException();
             _fcdaViewModelFactory = fcdaViewModelFactory;
-            FcdaViewModels = _fcdaViewModelFactory.GetFcdaViewModelCollection(_model);
             DeleteFcdaCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteFcda);
         }
 
         private void OnDeleteFcda(object obj)
         {
-            throw new NotImplementedException();
+            FcdaViewModels.Remove(obj as IFcdaViewModel);
         }
 
         #endregion
 
         #region Implamentation of DataSetElementBaseViewModel
-        public string Name {
-            get => _model.Name;
-            set
-            {
-                _model.Name = value;
-                OnPropertyChanged();
-            }
-        }
+        public string Name => _model.Name;
 
         public string ElementName => _model.ElementName;
         public string FullName => _model.ParentModelElement.ElementName + "." + _model.ElementName + "." + _model.Name;
@@ -67,7 +58,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public void SetModel(IDataSet model)
         {
-            _model = model;
+            _model = model ?? throw new NullReferenceException();
+            FcdaViewModels = _fcdaViewModelFactory.GetFcdaViewModelCollection(_model);
         }
 
         public bool IsExpanded
@@ -80,7 +72,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #endregion
 
         #region Implamentation of IDataSetViewModel
-        public ObservableCollection<IFcdaViewModel> FcdaViewModels { get; }
+        public ObservableCollection<IFcdaViewModel> FcdaViewModels { get; protected set; }
         public ICommand DeleteFcdaCommand { get; }
 
         #endregion

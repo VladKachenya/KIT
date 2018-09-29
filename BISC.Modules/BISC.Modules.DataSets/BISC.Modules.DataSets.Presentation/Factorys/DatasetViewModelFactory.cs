@@ -9,18 +9,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Presentation.Infrastructure.Factories;
+using BISC.Infrastructure.Global.IoC;
 
 namespace BISC.Modules.DataSets.Presentation.Factorys
 {
     public class DatasetViewModelFactory : IDatasetViewModelFactory
     {
-        private IFcdaViewModelFactory _fcdaViewModelFactory;
-        private readonly ICommandFactory _commandFactory;
+        private readonly IInjectionContainer _injectionContainer;
 
-        public DatasetViewModelFactory(IFcdaViewModelFactory fcdaViewModelFactory,ICommandFactory commandFactory)
+        public DatasetViewModelFactory(IInjectionContainer injectionContainer)
         {
-            _fcdaViewModelFactory = fcdaViewModelFactory;
-            _commandFactory = commandFactory;
+            _injectionContainer = injectionContainer;
         }
         public ObservableCollection<IDataSetViewModel> GetDataSetsViewModel(List<IDataSet> dataSets)
         {
@@ -32,7 +31,8 @@ namespace BISC.Modules.DataSets.Presentation.Factorys
 
         public IDataSetViewModel GetDataSetViewModel(IDataSet dataSet)
         {
-            IDataSetViewModel result = new DataSetViewModel( dataSet, _fcdaViewModelFactory,_commandFactory);
+            IDataSetViewModel result = _injectionContainer.ResolveType<IDataSetViewModel>();
+            result.SetModel(dataSet);
             return result;
         }
     }

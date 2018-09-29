@@ -45,7 +45,7 @@ namespace BISC.Model.Infrastructure.Elements
         public void Clear()
         {
             _parent.ChildModelElements.Where((element =>
-                element.ElementName == _childElementName && element is T))
+                element.ElementName == _childElementName && element is T));
         }
 
         //public bool Contains(T item)

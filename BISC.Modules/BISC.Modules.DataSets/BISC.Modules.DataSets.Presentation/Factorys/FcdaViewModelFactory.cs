@@ -1,4 +1,5 @@
-﻿using BISC.Modules.DataSets.Infrastructure.Model;
+﻿using BISC.Infrastructure.Global.IoC;
+using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.ViewModels;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
 using BISC.Modules.DataSets.Presentation.ViewModels;
@@ -14,10 +15,10 @@ namespace BISC.Modules.DataSets.Presentation.Factorys
 {
     public class FcdaViewModelFactory : IFcdaViewModelFactory
     {
-        private ICommandFactory _commandFactory;
-        public FcdaViewModelFactory(ICommandFactory commandFactory)
+        IInjectionContainer _injectionContainer;
+        public FcdaViewModelFactory(IInjectionContainer injectionContainer)
         {
-            _commandFactory = commandFactory;
+            _injectionContainer = injectionContainer;
         }
         public ObservableCollection<IFcdaViewModel> GetFcdaViewModelCollection(IDataSet model)
         {
@@ -29,7 +30,9 @@ namespace BISC.Modules.DataSets.Presentation.Factorys
 
         public IFcdaViewModel GetFcdaViewModelElement(IFcda model)
         {
-            return new FcdaViewModel(model, _commandFactory);
+            var result = _injectionContainer.ResolveType<IFcdaViewModel>();
+            result.SetModel(model);
+            return result;
         }
     }
 }

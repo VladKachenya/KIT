@@ -87,8 +87,6 @@
                                                                 <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
                                                             </Button.Content>
                                                         </Button>
-                                                        <TextBlock Text="{Binding IsEditeble}" 
-                                                                 Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"/>
                                                     </StackPanel>
                                                 </Border>
                                             </DataTemplate>

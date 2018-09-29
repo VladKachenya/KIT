@@ -9,7 +9,7 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels.Base
 {
     public interface IDataSetElementBaseViewModel <T>
     {
-        string Name { get; set; }
+        string Name { get; }
 
         string FullName { get;}
 
