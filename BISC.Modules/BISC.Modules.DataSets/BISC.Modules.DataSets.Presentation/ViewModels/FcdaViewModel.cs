@@ -2,27 +2,40 @@
 using BISC.Modules.DataSets.Infrastructure.ViewModels;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Base;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Factories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
-    public class FcdaViewModel :ViewModelBase, IFcdaViewModel
+    public class FcdaViewModel :ComplexViewModelBase, IFcdaViewModel
     {
         #region private filds
         private IFcda _model;
 
+
         #endregion
 
         #region C-tor
-        public FcdaViewModel(IFcda model)
+        public FcdaViewModel(IFcda model, ICommandFactory commandFactory)
         {
             _model = model ?? throw new Exception("Null referens exeption!");
+            DeleteFcdaCommand = commandFactory.CreatePresentationCommand(OnDeleteFcda);
+
         }
+        #endregion
+
+        #region private methods
+        private void OnDeleteFcda()
+        {
+           
+        }
+
         #endregion
 
         #region Implementation of IFcdaViewModel
@@ -58,8 +71,14 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             _model = model;
         }
+
+        public bool IsEditeble => (_model.ParentModelElement as IDataSet).IsDynamic;
+
         #endregion
 
+        #region Implementation of IFcdaViewModel
+        public ICommand DeleteFcdaCommand { get; }
+        #endregion
 
 
     }
