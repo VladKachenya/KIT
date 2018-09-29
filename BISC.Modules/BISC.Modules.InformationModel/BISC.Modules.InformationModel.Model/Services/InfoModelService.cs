@@ -37,7 +37,6 @@ namespace BISC.Modules.InformationModel.Model.Services
             }
 
             deviceAccessPoint.DeviceServer.Value.LDevicesCollection.Add(lDevice);
-            deviceAccessPoint.DeviceServer.Value.ChildModelElements.Add(lDevice);
 
         }
 
@@ -46,7 +45,6 @@ namespace BISC.Modules.InformationModel.Model.Services
             IDeviceAccessPoint deviceAccessPoint = new DeviceAccessPoint();
             
             deviceAccessPoint.DeviceServer.Value = new DeviceServer();
-            deviceAccessPoint.ChildModelElements.Add(deviceAccessPoint.DeviceServer.Value);
             deviceAccessPoint.Name =
                 _sclCommunicationModelService.GetConnectedAccessPoint(sclModel, deviceName).ApName;
             device.ChildModelElements.Add(deviceAccessPoint);
