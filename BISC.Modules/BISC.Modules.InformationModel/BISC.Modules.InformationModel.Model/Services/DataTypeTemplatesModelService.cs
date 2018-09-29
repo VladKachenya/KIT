@@ -43,19 +43,42 @@ namespace BISC.Modules.InformationModel.Model.Services
             var dttFrom = GetDataTypeTemplates(sclModelFrom);
             foreach (var doType in dttFrom.DoTypes)
             {
-                AddDoType(doType, sclModelTo);
+               var resid= AddDoType(doType, sclModelTo);
+                if (resid != doType.Id)
+                {
+                    List<IDo> doList = new List<IDo>();
+                    dttFrom.GetAllChildrenOfType(ref doList);
+                    foreach (var node in doList.Where(node => node.Type == doType.Id))
+                    {
+                        node.Type = resid;
+                    }
+                    //var t = doList.Where(node => node.Type == doType.Id).ToList();
+                }
+
             }
             foreach (var daType in dttFrom.DaTypes)
             {
-                AddDaType(daType, sclModelTo);
+               var resId= AddDaType(daType, sclModelTo);
+                if (daType.Id != resId)
+                {
+
+                }
             }
             foreach (var lNodeType in dttFrom.LNodeTypes)
             {
-                AddLnodeType(lNodeType, sclModelTo);
+                var resId = AddLnodeType(lNodeType, sclModelTo);
+                if (lNodeType.Id != resId)
+                {
+
+                }
             }
             foreach (var enumType in dttFrom.EnumTypes)
             {
-                AddEnumType(enumType, sclModelTo);
+              var resId=  AddEnumType(enumType, sclModelTo);
+                if (enumType.Id != resId)
+                {
+
+                }
             }
 
 
@@ -282,6 +305,10 @@ namespace BISC.Modules.InformationModel.Model.Services
 
         public string AddDoType(IDoType dotype, ISclModel sclModel)
         {
+            if (dotype.Id == "MR771N139LD0.LLN0.NamPlt")
+            {
+
+            }
             IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
             if (dotype == null)
                 return null;

@@ -91,7 +91,7 @@ namespace BISC.Model.Iec61850Ed2.DataTypeTemplates.Base
         }
 
         public void SetAttributeByName(string propstr, object val)
-        {
+       {
             PropertyInfo prop = GetPropertyInfoForClass(propstr);
             if (prop != null)
             {
