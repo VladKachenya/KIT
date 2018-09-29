@@ -19,6 +19,9 @@
     <DataTemplate x:Key="ChevronDoubleDownIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ChevronDoubleDown" />
     </DataTemplate>
+    <DataTemplate x:Key="ChevronDoubleUpIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ChevronDoubleUp" />
+    </DataTemplate>
     <DataTemplate x:Key="AlertIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Alert" />
     </DataTemplate>
