@@ -221,9 +221,21 @@ namespace BISC.Model.Global.Serializators
                 {
                     propertyInfo?.SetValue(objectToSetProp, Convert.ToBoolean(value));
                 }
+                else if (propertyInfo.PropertyType == typeof(bool))
+                {
+                    propertyInfo?.SetValue(objectToSetProp, Convert.ToBoolean(value));
+                }
                 else
                 {
-                    propertyInfo?.SetValue(objectToSetProp, value);
+                    try
+                    {
+                        propertyInfo?.SetValue(objectToSetProp, value);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
 
                 }
             }

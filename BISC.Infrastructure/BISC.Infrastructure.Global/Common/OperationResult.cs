@@ -46,6 +46,12 @@ namespace BISC.Infrastructure.Global.Common
             Item = resultItem;
             ErrorList.Add(error);
         }
+        public OperationResult(T resultItem, List<string> errors,bool isSucceed = true)
+        {
+            IsSucceed = isSucceed;
+            Item = resultItem;
+            ErrorList.AddRange(errors);
+        }
         public OperationResult(string error) : base(error)
         {
         }

@@ -9,6 +9,7 @@ using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Presentation.Factories;
 using BISC.Modules.Gooses.Presentation.FileParsers;
 using BISC.Modules.Gooses.Presentation.Interfaces;
+using BISC.Modules.Gooses.Presentation.Interfaces.Factories;
 using BISC.Modules.Gooses.Presentation.Services;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities;
@@ -46,6 +47,7 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<GooseControlBlockViewModel>();
         //    _injectionContainer.RegisterType<ResultFileParser>();
             _injectionContainer.RegisterType<GooseMatrixViewModel>();
+            _injectionContainer.RegisterType<IGooseControlBlockViewModelFactory, GooseControlBlockViewModelFactory>();
 
             _injectionContainer.RegisterType<object,GooseGroupTreeItemView>(GooseKeys.GoosePresentationKeys.GooseGroupTreeItemViewKey);
             _injectionContainer.RegisterType<object, GooseSubscriptionTab>(GooseKeys.GoosePresentationKeys.GooseSubscriptionTabKey);
