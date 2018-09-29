@@ -25,22 +25,44 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <Button Command="{Binding RollUpAllExpandersCommand}" Margin="10,5" Height="20" Width="20"
-                    Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
-                    ToolTip="Свернуть всё">
-                <Button.Content>
-                    <ContentControl ContentTemplate="{DynamicResource ChevronDoubleUpIcon}"/>
-                </Button.Content>
-            </Button>
-            <Button Command="{Binding DeployAllExpandersCommand}" Margin="10,5" Height="20" Width="20"
-                    Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
-                    ToolTip="Развернуть всё">
-                <Button.Content>
-                    <ContentControl ContentTemplate="{DynamicResource ChevronDoubleDownIcon}"/>
-                </Button.Content>
-            </Button>
-        </StackPanel>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                <Button Margin="10,5" Height="20" Width="20"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                        ToolTip="Сохранить изменения в проект">
+                    <Button.Content>
+                        <ContentControl ContentTemplate="{DynamicResource SaveIcon}"/>
+                    </Button.Content>
+                </Button>
+                <Button  Margin="10,5" Height="20" Width="20" Visibility="Collapsed"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                        ToolTip="Записать в устройство">
+                    <Button.Content>
+                        <ContentControl ContentTemplate="{DynamicResource ChevronDoubleUpIcon}"/>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="10, 0">
+                <Button Command="{Binding RollUpAllExpandersCommand}" Margin="10,5" Height="20" Width="20"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                        ToolTip="Свернуть всё">
+                    <Button.Content>
+                        <ContentControl ContentTemplate="{DynamicResource ChevronDoubleUpIcon}"/>
+                    </Button.Content>
+                </Button>
+                <Button Command="{Binding DeployAllExpandersCommand}" Margin="10,5" Height="20" Width="20"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                        ToolTip="Развернуть всё">
+                    <Button.Content>
+                        <ContentControl ContentTemplate="{DynamicResource ChevronDoubleDownIcon}"/>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
         <ScrollViewer Grid.Row="1">
             <ItemsControl x:Name="ExpanderItemsControl"
                 ItemsSource="{Binding DataSets}">
@@ -67,28 +89,35 @@
                                     </Expander.Header>
                                     <ListBox PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Name="fcdaListBox"
                                         ItemsSource="{Binding FcdaViewModels}">
+                                        <ListBox.ItemContainerStyle>
+                                            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            </Style>
+                                        </ListBox.ItemContainerStyle>
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border
-                                                    Padding="30, 0, 0, 0"
-                                                    BorderThickness="0 0 0 0"
-                                                    BorderBrush="{DynamicResource MaterialDesignDivider}">
-                                                    <StackPanel Orientation="Horizontal" >
+                                            <DataTemplate >
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="40, 0">
                                                         <Border Margin="2"  Background="{Binding TypeColorBrush}" >
                                                             <TextBlock Margin="3" Text="{Binding ElementName}"/>
                                                         </Border>
                                                         <TextBlock Margin="3" Text="{Binding FullName}"/>
-                                                        <Button Margin="2" Padding="3" Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"
-                                                            Command="{Binding DataContext.DeleteFcdaCommand,Source={x:Reference fcdaListBox}}"
-                                                            CommandParameter="{Binding .}"
-                                                            Style="{DynamicResource StaticResource MaterialDesignRaisedButton}"
-                                                            Width="20" Height="20">
-                                                            <Button.Content>
-                                                                <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
-                                                            </Button.Content>
-                                                        </Button>
                                                     </StackPanel>
-                                                </Border>
+                                                    <Button Margin="2" Padding="3" Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                        Command="{Binding DataContext.DeleteFcdaCommand,Source={x:Reference fcdaListBox}}"
+                                                        CommandParameter="{Binding .}"
+                                                        Style="{DynamicResource MaterialDesignRaisedButton}"
+                                                        Width="20" Height="20"
+                                                        Grid.Column="1">
+                                                        <Button.Content>
+                                                            <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
+                                                        </Button.Content>
+                                                    </Button>
+                                                </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ListBox>
