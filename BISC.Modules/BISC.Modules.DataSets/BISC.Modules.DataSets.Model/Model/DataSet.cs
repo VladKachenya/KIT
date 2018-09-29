@@ -19,7 +19,7 @@ namespace BISC.Modules.DataSets.Model.Model
         }
         #region Implementation of IDataSet
 
-        public ChildModelsList<IFcda> FcdaList =>new ChildModelsList<IFcda>(this,DatasetKeys.DatasetModelKeys.FcdaModelKey);
+        public ChildModelsList<IFcda> FcdaList => new ChildModelsList<IFcda>(this,DatasetKeys.DatasetModelKeys.FcdaModelKey);
         public string Name { get; set; }
         public bool IsDynamic { get; set; }
 

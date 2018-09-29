@@ -61,6 +61,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             get => _isExpanded;
             set => SetProperty(ref _isExpanded, value);
         }
+
+        public bool IsEditeble => _model.IsDynamic;
         #endregion
 
         #region Implamentation of IDataSetViewModel

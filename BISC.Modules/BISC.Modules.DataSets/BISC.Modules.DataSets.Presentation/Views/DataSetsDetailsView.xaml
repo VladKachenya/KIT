@@ -6,6 +6,18 @@
              xmlns:local="clr-namespace:BISC.Modules.DataSets.Presentation.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key ="IsEditebleStyle" TargetType="ContentControl">
+            <Style.Triggers >
+                <DataTrigger Binding="{Binding IsEditeble}" Value="true">
+                    <Setter Property="ContentTemplate" Value="{DynamicResource PencilIcon}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsEditeble}" Value="false">
+                    <Setter Property="ContentTemplate" Value="{DynamicResource PencilLockIcon}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -44,6 +56,11 @@
                                                 <TextBlock Margin="4"  Text="{Binding ElementName}"/>
                                             </Border>
                                             <TextBlock Text="{Binding FullName}" Margin="4"/>
+                                            <Label>
+                                                <Label.Content>
+                                                    <ContentControl Width="20" Height="20" Style="{DynamicResource IsEditebleStyle}"/>
+                                                </Label.Content>
+                                            </Label>
                                         </StackPanel>
                                     </Expander.Header>
                                     <ListBox PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"

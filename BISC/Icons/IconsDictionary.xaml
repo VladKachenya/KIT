@@ -55,6 +55,9 @@
     <DataTemplate x:Key="PencilIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Pencil" />
     </DataTemplate>
+    <DataTemplate x:Key="PencilLockIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="PencilLock" />
+    </DataTemplate>
     <DataTemplate x:Key="LightbulbOn">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="LightbulbOn" />
     </DataTemplate>
