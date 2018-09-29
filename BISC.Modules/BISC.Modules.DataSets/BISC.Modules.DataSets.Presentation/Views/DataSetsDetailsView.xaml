@@ -46,7 +46,6 @@
                                                         <Border Margin="2"  Background="{Binding TypeColorBrush}" >
                                                             <TextBlock Margin="3" Text="{Binding ElementName}"/>
                                                         </Border>
-                                                        <TextBlock Margin="3" Text=" "/>
                                                         <TextBlock Margin="3" Text="{Binding FullName}"/>
                                                     </StackPanel>
                                                 </Border>
