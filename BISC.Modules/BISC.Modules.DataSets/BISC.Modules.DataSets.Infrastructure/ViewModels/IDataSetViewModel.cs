@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace BISC.Modules.DataSets.Infrastructure.ViewModels
 {
@@ -13,5 +14,6 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
     {
         bool IsExpanded { get; set; }
         ObservableCollection<IFcdaViewModel> FcdaViewModels { get;}
+        ICommand DeleteFcdaCommand { get; }
     }
 }

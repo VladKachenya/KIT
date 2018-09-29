@@ -34,7 +34,10 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _datasetViewModelFactory = datasetViewModelFactory;
             DeployAllExpandersCommand = commandFactory.CreatePresentationCommand(OnDeployAllExpanders);
             RollUpAllExpandersCommand = commandFactory.CreatePresentationCommand(OnRollUpAllExpanders);
-
+            foreach (var dataSetViewModel in DataSets)
+            {
+               dataSetViewModel.GetModel()
+            }
         }
 
         #endregion

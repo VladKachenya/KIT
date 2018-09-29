@@ -8,15 +8,19 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Presentation.Infrastructure.Factories;
 
 namespace BISC.Modules.DataSets.Presentation.Factorys
 {
     public class DatasetViewModelFactory : IDatasetViewModelFactory
     {
         private IFcdaViewModelFactory _fcdaViewModelFactory;
-        public DatasetViewModelFactory(IFcdaViewModelFactory fcdaViewModelFactory)
+        private readonly ICommandFactory _commandFactory;
+
+        public DatasetViewModelFactory(IFcdaViewModelFactory fcdaViewModelFactory,ICommandFactory commandFactory)
         {
             _fcdaViewModelFactory = fcdaViewModelFactory;
+            _commandFactory = commandFactory;
         }
         public ObservableCollection<IDataSetViewModel> GetDataSetsViewModel(List<IDataSet> dataSets)
         {
@@ -28,7 +32,7 @@ namespace BISC.Modules.DataSets.Presentation.Factorys
 
         public IDataSetViewModel GetDataSetViewModel(IDataSet dataSet)
         {
-            IDataSetViewModel result = new DataSetViewModel( dataSet, _fcdaViewModelFactory);
+            IDataSetViewModel result = new DataSetViewModel( dataSet, _fcdaViewModelFactory,_commandFactory);
             return result;
         }
     }

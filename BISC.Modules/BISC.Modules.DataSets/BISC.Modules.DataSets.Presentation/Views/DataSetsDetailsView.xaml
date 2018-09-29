@@ -65,7 +65,7 @@
                                             </Label>
                                         </StackPanel>
                                     </Expander.Header>
-                                    <ListBox PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                                    <ListBox PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Name="fcdaListBox"
                                         ItemsSource="{Binding FcdaViewModels}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
@@ -79,7 +79,8 @@
                                                         </Border>
                                                         <TextBlock Margin="3" Text="{Binding FullName}"/>
                                                         <Button Margin="2" Padding="3" Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"
-                                                            Command="{Binding DeleteFcdaCommand}"
+                                                            Command="{Binding DataContext.DeleteFcdaCommand,Source={x:Reference fcdaListBox}}"
+                                                            CommandParameter="{Binding .}"
                                                             Style="{DynamicResource StaticResource MaterialDesignRaisedButton}"
                                                             Width="20" Height="20">
                                                             <Button.Content>

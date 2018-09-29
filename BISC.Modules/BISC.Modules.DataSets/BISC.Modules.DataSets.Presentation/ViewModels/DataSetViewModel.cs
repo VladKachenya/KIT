@@ -9,7 +9,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media;
+using BISC.Presentation.Infrastructure.Factories;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -23,12 +25,19 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #endregion
 
         #region C-tor
-        public DataSetViewModel(IDataSet model, IFcdaViewModelFactory fcdaViewModelFactory)
+        public DataSetViewModel(IDataSet model, IFcdaViewModelFactory fcdaViewModelFactory,ICommandFactory commandFactory)
         {
-            _model = model ?? throw new Exception("Null referens exeption!");
+            _model = model ?? throw new NullReferenceException();
             _fcdaViewModelFactory = fcdaViewModelFactory;
             FcdaViewModels = _fcdaViewModelFactory.GetFcdaViewModelCollection(_model);
+            DeleteFcdaCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteFcda);
         }
+
+        private void OnDeleteFcda(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Implamentation of DataSetElementBaseViewModel
@@ -48,6 +57,11 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public IDataSet GetModel()
         {
+            _model.FcdaList.Clear();
+            foreach (var fcdaViewModel in FcdaViewModels)
+            {
+                _model.FcdaList.Add(fcdaViewModel.GetModel());
+            }
             return _model;
         }
 
@@ -67,8 +81,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         #region Implamentation of IDataSetViewModel
         public ObservableCollection<IFcdaViewModel> FcdaViewModels { get; }
+        public ICommand DeleteFcdaCommand { get; }
 
-        
         #endregion
     }
 }
