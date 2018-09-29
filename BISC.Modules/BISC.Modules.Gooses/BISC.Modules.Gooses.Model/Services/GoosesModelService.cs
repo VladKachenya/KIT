@@ -89,7 +89,7 @@ namespace BISC.Modules.Gooses.Model.Services
             {
                 if (customElement is IGooseMatrix gooseMatrixInModel)
                 {
-                    if (gooseMatrix.RelatedIedName == iedName)
+                    if (gooseMatrixInModel.RelatedIedName == iedName)
                     {
                         gooseMatrix = gooseMatrixInModel;
                     }

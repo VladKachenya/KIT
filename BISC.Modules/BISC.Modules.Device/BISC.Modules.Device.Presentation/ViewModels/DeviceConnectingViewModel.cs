@@ -35,6 +35,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly ITreeManagementService _treeManagementService;
         private readonly IBiscProject _biscProject;
         private readonly IDeviceLoadingService _deviceLoadingService;
+        private readonly IUserNotificationService _userNotificationService;
         private ILastIpAddressesViewModel _lastConnectedIps;
         private IIpAddressViewModel _selectedIpAddressViewModel;
         private bool _isDeviceConnectionFailed;
@@ -46,7 +47,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             IGlobalEventsService globalEventsService,
             ITreeManagementService treeManagementService ,
             IBiscProject biscProject,IDeviceLoadingService deviceLoadingService,
-            ILastIpAddressesViewModelFactory lastConnectedIpsFactoty)
+            ILastIpAddressesViewModelFactory lastConnectedIpsFactoty,IUserNotificationService userNotificationService)
         {
             _commandFactory = commandFactory;
             _deviceConnectionService = deviceConnectionService;
@@ -54,6 +55,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _treeManagementService = treeManagementService;
             _biscProject = biscProject;
             _deviceLoadingService = deviceLoadingService;
+            _userNotificationService = userNotificationService;
             ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDeviceExecute, ()=> !_isConnectionProcess);
             lastConnectedIpsFactoty.BuildLastConnectedIpAdresses(out _selectedIpAddressViewModel, out _lastConnectedIps);
             _failedSatatusHidingTimer = new Timer(FailStatusHide,null,Timeout.Infinite,Timeout.Infinite);
@@ -73,7 +75,14 @@ namespace BISC.Modules.Device.Presentation.ViewModels
                 var connectResult = await _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
                 if (connectResult.IsSucceed)
                 {
+                    try
+                    {
                     await _deviceLoadingService.LoadElements(new List<IDevice>() { connectResult.Item });
+                    }
+                    catch (Exception e)
+                    {
+                       _userNotificationService.NotifyUserGlobal("Ошибка чтения устройства");
+                    }
                 }
                 else
                 {

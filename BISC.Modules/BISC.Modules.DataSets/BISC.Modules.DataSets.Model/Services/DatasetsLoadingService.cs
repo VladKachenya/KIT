@@ -15,13 +15,15 @@ using BISC.Modules.InformationModel.Infrastucture.Services;
 
 namespace BISC.Modules.DataSets.Model.Services
 {
-   public class DatasetsLoadingService: IDeviceElementLoadingService
+    public class DatasetsLoadingService : IDeviceElementLoadingService
     {
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly IInfoModelService _infoModelService;
         private readonly IDatasetModelService _datasetModelService;
-        private Dictionary<string,List<string>> _ldDatasetDictionary=new Dictionary<string, List<string>>();
-        public DatasetsLoadingService(IConnectionPoolService connectionPoolService,IInfoModelService infoModelService,IDatasetModelService datasetModelService)
+        private Dictionary<string, List<string>> _ldDatasetDictionary = new Dictionary<string, List<string>>();
+
+        public DatasetsLoadingService(IConnectionPoolService connectionPoolService, IInfoModelService infoModelService,
+            IDatasetModelService datasetModelService)
         {
             _connectionPoolService = connectionPoolService;
             _infoModelService = infoModelService;
@@ -34,7 +36,7 @@ namespace BISC.Modules.DataSets.Model.Services
 
         public void Dispose()
         {
-           
+
         }
 
         #endregion
@@ -50,7 +52,7 @@ namespace BISC.Modules.DataSets.Model.Services
             foreach (var lDevice in ldevices)
             {
                 var datasets = await connection.MmsConnection.GetListDataSetsAsync(lDevice, true);
-                _ldDatasetDictionary.Add(lDevice,datasets.Item);
+                _ldDatasetDictionary.Add(lDevice, datasets.Item);
                 count += datasets.Item.Count;
             }
 
@@ -101,6 +103,7 @@ namespace BISC.Modules.DataSets.Model.Services
                                         ldOfFcda.Inst + "/" +
                                         lnOfFcda.Name + "." +
                                         doiOfFcda.Name, doiOfFcda.Name, null, fcdaParts[2]);
+
                                     dataSet.FcdaList.Add(fcda);
                                 }
 
@@ -135,25 +138,33 @@ namespace BISC.Modules.DataSets.Model.Services
 
 
                                 }
-                                
+
+
                             }
+
                         }
 
                     }
 
-                    var ldeviceOfDataset = ldevices.First((lDevice => lDevice.Inst == ldevice.Replace(device.Name,"")));
+                    var ldeviceOfDataset =
+                        ldevices.First((lDevice => lDevice.Inst == ldevice.Replace(device.Name, "")));
                     if (lnName == "LLN0")
                     {
                         ldeviceOfDataset.LogicalNodeZero.Value.ChildModelElements.Add(dataSet);
+                        dataSet.ParentModelElement = ldeviceOfDataset.LogicalNodeZero.Value;
                     }
                     else
                     {
-                    ldeviceOfDataset.LogicalNodes.First((node =>node.Name==lnName )).ChildModelElements.Add(dataSet);
+                        ldeviceOfDataset.LogicalNodes.First((node => node.Name == lnName)).ChildModelElements
+                            .Add(dataSet);
+                        dataSet.ParentModelElement = ldeviceOfDataset.LogicalNodes.First((node => node.Name == lnName));
                     }
+
                     deviceLoadingProgress?.Report(new object());
                 }
             }
         }
+
 
 
 

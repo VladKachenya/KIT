@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model.Communication;
+using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Project.Communication;
 using BISC.Model.Infrastructure.Services.Communication;
@@ -95,6 +96,7 @@ namespace BISC.Modules.Gooses.Model.Services
                             _goosesModelService.AddGseControl(goParts[0],ldevice.Replace(device.Name,""),device,gooseControl);
 
                             IGse gse=new Gse();
+                            gse.ChildModelElements.Add(new SclAddress());
                             gse.CbName = gooseDto.CbName;
                             gse.LdInst = gooseDto.LdInst;
                             gse.MaxTime.Value =new DurationInMilliSec("MaxTime") {Multiplier = "m",Value = (int) gooseDto.MaxTime,Unit = "s"};

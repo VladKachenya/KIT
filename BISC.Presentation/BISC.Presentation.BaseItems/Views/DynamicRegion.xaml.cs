@@ -73,6 +73,15 @@ namespace BISC.Presentation.BaseItems.Views
         {
             var navigationService = ServiceLocator.Current.GetInstance<INavigationService>();
             var regionName = RegionManager.GetRegionName(sender as FrameworkElement);
+
+            var dynamicRegionChildren = VisualTreeRecursiveHelper.FindVisualChildren<DynamicRegion>(this);
+            foreach (DynamicRegion dynamicRegionChild in dynamicRegionChildren)
+            {
+                navigationService.TryNavigateToWaitingRegion(dynamicRegionChild.GetValue(RegionKeyProperty).ToString());
+                navigationService.ActivateRegion(dynamicRegionChild.GetValue(RegionKeyProperty).ToString());
+            }
+
+
             navigationService.TryNavigateToWaitingRegion(this.GetValue(RegionKeyProperty) as string);
             navigationService.ActivateRegion(regionName);
         }
@@ -81,6 +90,12 @@ namespace BISC.Presentation.BaseItems.Views
         {
             var navigationService = ServiceLocator.Current.GetInstance<INavigationService>();
             var regionName = RegionManager.GetRegionName(sender as FrameworkElement);
+
+            var dynamicRegionChildren = VisualTreeRecursiveHelper.FindVisualChildren<DynamicRegion>(this);
+            foreach (DynamicRegion dynamicRegionChild in dynamicRegionChildren)
+            {
+                navigationService.DeactivateRegion(dynamicRegionChild.GetValue(RegionKeyProperty).ToString());
+            }
             navigationService.DeactivateRegion(regionName);
         }
 

@@ -36,23 +36,39 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
         {
             InitializeComponent();
             _globalEventsService = StaticContainer.CurrentContainer.ResolveType<IGlobalEventsService>();
-            this.Loaded += GooseGrid_Loaded;
-            this.Unloaded += GooseGrid_Unloaded; 
-            this.MouseEnter += GooseGrid_Loaded;
-            this.MouseLeave += GooseGrid_Unloaded; 
-
         }
+
+        public bool IsActive
+        {
+            get { return (bool)GetValue(IsActiveProperty); }
+            set { SetValue(IsActiveProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsActiveProperty =
+            DependencyProperty.Register("IsActive", typeof(bool), typeof(GooseGrid), new PropertyMetadata(false,OnActiveChanged));
+
+        private static void OnActiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d.GetValue(IsActiveProperty).Equals(true))
+            {
+                (d as GooseGrid).GooseGrid_Loaded(null,null);
+            }
+            else
+            {
+                (d as GooseGrid).GooseGrid_Unloaded(null, null);
+            }
+        }
+
 
         private void GooseGrid_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (_isInitialized)
-                _globalEventsService.Unsubscribe<SelectableBoxEventArgs>((OnSelectableBoxFocused));
+            if (_isInitialized)_globalEventsService.Unsubscribe<SelectableBoxEventArgs>((OnSelectableBoxFocused));
         }
 
         private void GooseGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!_isInitialized)
-                _globalEventsService.Subscribe<SelectableBoxEventArgs>((OnSelectableBoxFocused));
+            if (!_isInitialized) _globalEventsService.Subscribe<SelectableBoxEventArgs>((OnSelectableBoxFocused));
         }
 
         private void OnSelectableBoxFocused(SelectableBoxEventArgs selectableBoxEventArgs)
@@ -383,10 +399,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
         public void Dispose()
         {
-            this.Loaded -= GooseGrid_Loaded;
-            this.Unloaded -= GooseGrid_Unloaded;
-            this.MouseEnter -= GooseGrid_Loaded;
-            this.MouseLeave -= GooseGrid_Unloaded;
+            GooseGrid_Unloaded(null,null);
             this.mainGrid.Children.Clear();
         }
 

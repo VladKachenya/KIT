@@ -39,6 +39,7 @@ namespace BISC.Model.Infrastructure.Elements
             var lastIndex = _parent.ChildModelElements.Where((element =>
                 element.ElementName == _childElementName && element is T)).Count();
             _parent.ChildModelElements.Insert(lastIndex,item);
+            item.ParentModelElement = _parent;
         }
 
         public void Clear()

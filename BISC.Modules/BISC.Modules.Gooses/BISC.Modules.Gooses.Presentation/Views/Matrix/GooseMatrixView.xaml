@@ -45,6 +45,6 @@
                 <ContentControl ContentTemplate="{DynamicResource SaveIcon}"></ContentControl>
             </Button>
         </StackPanel>
-        <userControl:GooseGrid Grid.Row="1" x:Name="gooseGrid" GoInCount="64" GooseControlBlockViewModels="{Binding GooseControlBlockViewModels}"></userControl:GooseGrid>
+        <userControl:GooseGrid IsActive="{Binding IsActive}" Grid.Row="1" x:Name="gooseGrid" GoInCount="64" GooseControlBlockViewModels="{Binding GooseControlBlockViewModels}"></userControl:GooseGrid>
     </Grid>
 </UserControl>

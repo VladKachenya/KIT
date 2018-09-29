@@ -69,6 +69,13 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             SaveToDeviceCommand = commandFactory.CreatePresentationCommand(OnSaveToDevice);
         }
 
+        public bool IsActive
+        {
+            get => _isActive1;
+            set { SetProperty(ref _isActive1, value); }
+        }
+
+
         private async void OnSaveToDevice()
         {
 
@@ -313,6 +320,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             new Dictionary<int, List<ISelectableValueViewModel>>();
 
         private bool _isSynchronizedWithDevice;
+        private bool _isActive1;
 
         public void Validate(ISelectableValueViewModel initiatorSelectableValueViewModel = null)
         {
@@ -470,12 +478,14 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 
         public override void OnActivate()
         {
+            IsActive = true;
             _globalEventsService.Subscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
             base.OnActivate();
         }
 
         public override void OnDeactivate()
         {
+            IsActive = false;
             _globalEventsService.Unsubscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
             base.OnDeactivate();
         }

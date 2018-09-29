@@ -12,9 +12,7 @@
             <i:InvokeCommandAction Command="{Binding NavigateToDetailsCommand}" ></i:InvokeCommandAction>
         </i:EventTrigger>
     </i:Interaction.Triggers>-->
-    <Grid>
-
-
+    <Grid Background="Transparent">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
