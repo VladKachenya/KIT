@@ -21,18 +21,24 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         private string _deviceName;
         private IDevice _device;
+        private string _deviceIp;
 
         public string DeviceName
         {
             get => _deviceName;
             set { SetProperty(ref _deviceName, value); }
         }
-
+      public string DeviceIp
+        {
+            get => _deviceIp;
+            set { SetProperty(ref _deviceIp, value); }
+        }
 
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             DeviceName = _device.Name;
+            DeviceIp = _device.Ip;
             base.OnNavigatedTo(navigationContext);
         }
     }

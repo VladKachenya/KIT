@@ -11,6 +11,7 @@ using BISC.Infrastructure.Global.Services;
 using BISC.Interfaces;
 using BISC.Presentation.BaseItems.Events;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Events;
 using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Services;
 using Prism.Commands;
@@ -24,20 +25,40 @@ namespace BISC.ViewModel
         private readonly INavigationService _navigationService;
         private readonly IProjectService _projectService;
         private readonly ISaveCheckingService _saveCheckingService;
+        private readonly IGlobalEventsService _globalEventsService;
         private bool _isLeftMenuEnabled;
         private string _applicationTitle;
+        private bool _isNotificationExpanded;
 
         public ShellViewModel(IEventAggregator eventAggregator,INavigationService navigationService,
-            IProjectService projectService, ISaveCheckingService saveCheckingService)
+            IProjectService projectService, ISaveCheckingService saveCheckingService,IGlobalEventsService globalEventsService)
         {
            
                _eventAggregator = eventAggregator;
             _navigationService = navigationService;
             _projectService = projectService;
             _saveCheckingService = saveCheckingService;
+            _globalEventsService = globalEventsService;
             ShellLoadedCommand = new DelegateCommand(OnShellLoaded);
             ShellClosingCommand=new DelegateCommand<object>(OnShellClosing);
+            _globalEventsService.Subscribe<NotificationBarClosingEvent>(OnNotificationBarClosing);
         }
+
+        private void OnNotificationBarClosing(NotificationBarClosingEvent obj)
+        {
+            IsNotificationExpanded = false;
+        }
+
+        public bool IsNotificationExpanded
+        {
+            get => _isNotificationExpanded;
+            set
+            {
+                SetProperty(ref _isNotificationExpanded,value);
+                OnPropertyChanged(nameof(IsNotificationExpanded));
+            }
+        }
+
 
         private async void OnShellClosing(object obj)
         {

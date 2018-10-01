@@ -7,6 +7,17 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-            <TextBlock Text="{Binding DeviceName}"></TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock Margin="10" Text="{Binding DeviceName}"></TextBlock>
+       <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <TextBlock Margin="10,20,10,10" Text="IP"></TextBlock>
+            <TextBox Margin="5" Width="80" IsReadOnly="True" Text="{Binding DeviceIp}">
+            </TextBox>
+       </StackPanel>
+
     </Grid>
 </UserControl>

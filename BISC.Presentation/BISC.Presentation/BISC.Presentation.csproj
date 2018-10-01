@@ -102,6 +102,7 @@
     <Compile Include="UiFromModel\UiFromModelElementRegistryService.cs" />
     <Compile Include="ViewModels\DynamicRegionViewModel.cs" />
     <Compile Include="ViewModels\HamburgerMenuViewModel.cs" />
+    <Compile Include="ViewModels\NotificationBarViewModel.cs" />
     <Compile Include="ViewModels\SaveChangesViewModel.cs" />
     <Compile Include="ViewModels\ToolBarMenuViewModel.cs" />
     <Compile Include="ViewModels\Tree\MainTreeViewModel.cs" />
@@ -114,6 +115,9 @@
     </Compile>
     <Compile Include="Views\MainTree.xaml.cs">
       <DependentUpon>MainTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NotificationBarView.xaml.cs">
+      <DependentUpon>NotificationBarView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SaveChangesView.xaml.cs">
       <DependentUpon>SaveChangesView.xaml</DependentUpon>
@@ -143,6 +147,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainTree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NotificationBarView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

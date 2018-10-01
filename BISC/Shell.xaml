@@ -15,6 +15,7 @@
         xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         xmlns:views="clr-namespace:BISC.Presentation.BaseItems.Views;assembly=BISC.Presentation.BaseItems"
+        xmlns:behaviors1="clr-namespace:BISC.Behaviors"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -58,8 +59,10 @@
                 </materialDesign:ColorZone>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition behaviors1:ExpandableRowBehavior.IsExpanded="{Binding IsNotificationExpanded}" Name="RowDefinition" Height="Auto"></RowDefinition>
+
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -71,9 +74,9 @@
 
                     <GridSplitter Grid.Column="1" ShowsPreview="True" Width="3"
                                   HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-
-                    <materialDesign:Snackbar Grid.ColumnSpan="3" MessageQueue="{materialDesign:MessageQueue}" x:Name="MainSnackbar"
-                                             Grid.Row="1" />
+                    <GridSplitter Grid.ColumnSpan="3" Grid.Row="1" ShowsPreview="True"  Height="3"
+                                  HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                    <!--<ContentControl  interactivity:RegionManager.RegionName="{x:Static keys:KeysForNavigation+RegionNames.NotificationBarKey}" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"></ContentControl>-->
                 </Grid>
             </DockPanel>
         </materialDesign:DrawerHost>

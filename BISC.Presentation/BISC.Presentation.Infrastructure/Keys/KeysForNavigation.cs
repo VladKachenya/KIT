@@ -9,6 +9,7 @@
             public static string GlobalDialogRegionKey = "GlobalDialogRegion";
             public static string HamburgerMenuKey = "HamburgerMenuRegion";
             public static string ToolBarMenuKey = "ToolBarMenuRegion";
+            public static string NotificationBarKey = "NotificationBarRegion";
 
         }
 
@@ -19,6 +20,7 @@
             public static string HamburgerMenuViewName = "HamburgerMenu";
             public static string ToolBarMenuViewName = "ToolBarMenu";
             public static string SaveChangesViewName = "SaveChangesView";
+            public static string NotificationBarViewName = "NotificationBarView";
 
         }
 

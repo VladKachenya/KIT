@@ -22,15 +22,16 @@ namespace BISC.Model.Infrastructure.Elements
             get
             {
                 var val= _parentModelElement.ChildModelElements.FirstOrDefault((element =>
-                    element.ElementName == _elementName && element is T));
+                    element?.ElementName == _elementName && element is T));
                 if (val != null) return (T) val;
                 return default(T);
             }
 
             set
             {
+                if(value==null)return;
                 var val = _parentModelElement.ChildModelElements.FirstOrDefault((element =>
-                    element.ElementName == _elementName && element is T));
+                    element?.ElementName == _elementName && element is T));
                 if (val != null)
                 {
                     _parentModelElement.ChildModelElements.Remove(val);

@@ -17,6 +17,7 @@ namespace BISC.Model.Global.Project
         public BiscProject()
         {
             ElementName = ModelKeys.BiscProjectKey;
+
         }
        
         #region Implementation of IBiscProject

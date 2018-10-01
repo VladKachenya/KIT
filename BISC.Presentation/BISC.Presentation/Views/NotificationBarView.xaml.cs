@@ -12,20 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using BISC.Interfaces;
-using MaterialDesignThemes.Wpf;
+using BISC.Presentation.ViewModels;
 
-namespace BISC
+namespace BISC.Presentation.Views
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Interaction logic for NotificationBarView.xaml
     /// </summary>
-    public partial class Shell :Window
+    public partial class NotificationBarView : UserControl
     {
-        public Shell(IShellViewModel shellViewModel)
+        public NotificationBarView(NotificationBarViewModel notificationBarViewModel)
         {
             InitializeComponent();
-            DataContext = shellViewModel;
+            DataContext = notificationBarViewModel;
         }
     }
 }

@@ -48,6 +48,8 @@ namespace BISC.Presentation.Module
                     KeysForNavigation.RegionNames.HamburgerMenuKey);
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.ToolBarMenuViewName,
                     KeysForNavigation.RegionNames.ToolBarMenuKey);
+                _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.NotificationBarViewName,
+                    KeysForNavigation.RegionNames.NotificationBarKey);
                 _projectService.OpenDefaultProject();
                 _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(_biscProject.MainSclModel.Value,null,"SCL");
                 _mainTreeViewModel.ChangeTracker.StartTracking();

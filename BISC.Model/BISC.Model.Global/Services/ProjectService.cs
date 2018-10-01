@@ -41,28 +41,37 @@ namespace BISC.Model.Global.Services
 
                 path = _configurationService.LastProjectPath;
             }
+            IBiscProject biscProject;
 
             _currentProjectPath = path;
             FileInfo fileInfo = new FileInfo(_currentProjectPath);
             if (!fileInfo.Exists)
             {
+                biscProject = new BiscProject();
+                biscProject.MainSclModel.Value = new SclModel();
+                biscProject.CustomElements.Value = new ModelElement(){ElementName = "CustomElements"};
                 var stream = File.Create(path);
                 stream.Close();
                 _currentProjectPath = path;
                 SaveCurrentProject();
             }
-
-            IBiscProject biscProject;
-            try
+            else
             {
-                biscProject = _modelElementsRegistryService.DeserializeModelElement<IBiscProject>(XElement.Load(_currentProjectPath));
+                try
+                {
+                    biscProject =
+                        _modelElementsRegistryService.DeserializeModelElement<IBiscProject>(
+                            XElement.Load(_currentProjectPath));
 
+                }
+                catch (Exception e)
+                {
+                    biscProject = new BiscProject();
+                    biscProject.MainSclModel.Value = new SclModel();
+                    biscProject.CustomElements.Value = new ModelElement() { ElementName = "CustomElements" };
+                }
             }
-            catch (Exception e)
-            {
-                biscProject = new BiscProject();
-                biscProject.MainSclModel.Value=new SclModel();
-            }
+
             _biscProject.MainSclModel.Value = biscProject.MainSclModel.Value;
             _biscProject.CustomElements.Value = biscProject.CustomElements.Value;
         }
