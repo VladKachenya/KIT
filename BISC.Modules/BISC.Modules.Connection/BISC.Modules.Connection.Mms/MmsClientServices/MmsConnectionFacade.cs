@@ -43,6 +43,10 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
         {
             var identResult = await (new InitService(_state)).SendIdentifyAsync();
             var listIdent = new List<string>();
+            if (identResult == null)
+            {
+                return new OperationResult<List<string>>("");
+            }
             if (!identResult.isRejectPDUSelected())
             {
                 if (identResult?.Confirmed_ResponsePDU.Service.Identify != null)

@@ -67,7 +67,6 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _device = _navigationContext.BiscNavigationParameters
                 .GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             DeviceName = _device.Name;
-            _globalEventsService.Subscribe<DeviceLoadingEvent>(OnDeviceLoadingEvent) ;
             IsIntermetiateProgress = true;
             base.OnNavigatedTo(navigationContext);
         }
@@ -75,6 +74,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private void OnDeviceLoadingEvent(DeviceLoadingEvent deviceLoadingEvent)
         {
             IsIntermetiateProgress = false;
+           if(deviceLoadingEvent.Ip!=_device.Ip)return;
             if (deviceLoadingEvent.TotalProgressCount != null)
             {
                 TotalProgress = deviceLoadingEvent.TotalProgressCount.Value;
@@ -89,11 +89,28 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             }
         }
 
+        #region Overrides of NavigationViewModelBase
+
+        public override void OnDeactivate()
+        {
+            _globalEventsService.Unsubscribe<DeviceLoadingEvent>(OnDeviceLoadingEvent);
+            base.OnDeactivate();
+        }
+
+        public override void OnActivate()
+        {
+            _globalEventsService.Subscribe<DeviceLoadingEvent>(OnDeviceLoadingEvent);
+            base.OnActivate();
+        }
+
+        #endregion
+
+
         #region Overrides of ViewModelBase
 
         protected override void OnDisposing()
         {
-            _globalEventsService.Unsubscribe<DeviceLoadingEvent>(OnDeviceLoadingEvent);
+         
             base.OnDisposing();
         }
 

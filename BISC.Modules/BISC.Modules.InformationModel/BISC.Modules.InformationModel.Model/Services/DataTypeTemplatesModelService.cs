@@ -61,7 +61,13 @@ namespace BISC.Modules.InformationModel.Model.Services
                var resId= AddDaType(daType, sclModelTo);
                 if (daType.Id != resId)
                 {
-
+                    List<IDa> daList = new List<IDa>();
+                    dttFrom.GetAllChildrenOfType(ref daList);
+                    foreach (var node in daList.Where(node => node.Type == daType.Id))
+                    {
+                        node.Type = resId;
+                    }
+                    //var t = daList.Where(node => node.Type == daType.Id).ToList();
                 }
             }
             foreach (var lNodeType in dttFrom.LNodeTypes)
@@ -69,7 +75,13 @@ namespace BISC.Modules.InformationModel.Model.Services
                 var resId = AddLnodeType(lNodeType, sclModelTo);
                 if (lNodeType.Id != resId)
                 {
-
+                    List<ILogicalNode> lnList = new List<ILogicalNode>();
+                    sclModelFrom.GetAllChildrenOfType(ref lnList);
+                    foreach (var node in lnList.Where(node => node.LnType == lNodeType.Id))
+                    {
+                        node.LnType = resId;
+                    }
+                    //var t = lnList.Where(node => node.LnClass == lNodeType.Id).ToList();
                 }
             }
             foreach (var enumType in dttFrom.EnumTypes)
@@ -80,9 +92,6 @@ namespace BISC.Modules.InformationModel.Model.Services
 
                 }
             }
-
-
-
         }
 
         public void FilterDataTypeTemplates(IDataTypeTemplates dataTypeTemplates, List<ILDevice> lDevicesToExclude,

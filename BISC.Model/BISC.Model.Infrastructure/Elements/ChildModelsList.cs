@@ -44,8 +44,12 @@ namespace BISC.Model.Infrastructure.Elements
 
         public void Clear()
         {
-            _parent.ChildModelElements.Where((element =>
+          var elementsToRemove=  _parent.ChildModelElements.Where((element =>
                 element.ElementName == _childElementName && element is T));
+            foreach (var element in elementsToRemove)
+            {
+                _parent.ChildModelElements.Remove(element);
+            }
         }
 
         //public bool Contains(T item)
