@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Project;
+using BISC.Model.Infrastructure.Services.Communication;
+using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Presentation.Interfaces;
@@ -13,9 +16,15 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 {
    public class DeviceDetailsViewModel:NavigationViewModelBase,IDeviceDetailsViewModel
     {
-        public DeviceDetailsViewModel()
+        private readonly ISclCommunicationModelService _sclCommunicationModel;
+        private readonly IConnectionPoolService _connectionPoolService;
+        private readonly IBiscProject _biscProject;
+
+        public DeviceDetailsViewModel(ISclCommunicationModelService sclCommunicationModel,IConnectionPoolService connectionPoolService,IBiscProject biscProject)
         {
-            
+            _sclCommunicationModel = sclCommunicationModel;
+            _connectionPoolService = connectionPoolService;
+            _biscProject = biscProject;
         }
 
 
@@ -38,7 +47,14 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             DeviceName = _device.Name;
-            DeviceIp = _device.Ip;
+            if (_device.Ip != null)
+            {
+                DeviceIp = _device.Ip;
+            }
+            else
+            {
+                DeviceIp = _sclCommunicationModel.GetIpOfDevice(_device.Name, _biscProject.MainSclModel.Value);
+            }
             base.OnNavigatedTo(navigationContext);
         }
     }

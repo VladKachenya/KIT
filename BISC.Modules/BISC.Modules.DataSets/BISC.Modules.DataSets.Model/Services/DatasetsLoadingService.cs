@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Loading;
@@ -59,7 +60,7 @@ namespace BISC.Modules.DataSets.Model.Services
             return count;
         }
 
-        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel)
+        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel,CancellationToken cancellationToken)
         {
             var connection = _connectionPoolService.GetConnection(device.Ip);
             foreach (var ldevice in _ldDatasetDictionary.Keys)

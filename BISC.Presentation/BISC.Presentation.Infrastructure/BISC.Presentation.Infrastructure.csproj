@@ -64,7 +64,7 @@
     <Compile Include="Commands\IAsyncCommand.cs" />
     <Compile Include="Commands\IPresentationCommand.cs" />
     <Compile Include="Commands\ITrackableCommand.cs" />
-    <Compile Include="Events\NotificationBarClosingEvent.cs" />
+    <Compile Include="Events\NotificationBarExpandEvent.cs" />
     <Compile Include="Events\RegionDisposingEvent.cs" />
     <Compile Include="Factories\ICommandFactory.cs" />
     <Compile Include="Keys\KeysForNavigation.cs" />

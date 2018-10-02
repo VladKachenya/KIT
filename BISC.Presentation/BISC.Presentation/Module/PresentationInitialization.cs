@@ -1,4 +1,5 @@
-﻿using BISC.Infrastructure.Global.Services;
+﻿using BISC.Infrastructure.Global.Logging;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Presentation.BaseItems.Events;
 using BISC.Presentation.Infrastructure.Factories;
@@ -20,12 +21,12 @@ namespace BISC.Presentation.Module
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private readonly ICommandFactory _commandFactory;
         private readonly IMainTreeViewModel _mainTreeViewModel;
-        private readonly IUserNotificationService _userNotificationService;
+        private readonly ILoggingService _loggingService;
 
         public PresentationInitialization(IEventAggregator eventAggregator, 
             INavigationService navigationService,IProjectService projectService
             ,IUiFromModelElementRegistryService uiFromModelElementRegistryService,IBiscProject biscProject
-            ,IUserInterfaceComposingService userInterfaceComposingService,ICommandFactory commandFactory,IMainTreeViewModel mainTreeViewModel,IUserNotificationService userNotificationService)
+            ,IUserInterfaceComposingService userInterfaceComposingService,ICommandFactory commandFactory,IMainTreeViewModel mainTreeViewModel,ILoggingService loggingService )
         {
 
             _eventAggregator = eventAggregator;
@@ -36,7 +37,7 @@ namespace BISC.Presentation.Module
             _userInterfaceComposingService = userInterfaceComposingService;
             _commandFactory = commandFactory;
             _mainTreeViewModel = mainTreeViewModel;
-            _userNotificationService = userNotificationService;
+            _loggingService = loggingService;
             _eventAggregator.GetEvent<ShellLoadedEvent>().Subscribe((args =>
             {
                 _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject),"Сохранить проект",IconsKeys.SaveIconKey);
@@ -60,7 +61,7 @@ namespace BISC.Presentation.Module
         private void OnSaveProject()
         {
             _projectService.SaveCurrentProject();
-            _userNotificationService.NotifyUserGlobal($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}");
+            _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}",SeverityEnum.Info);
         }
 
     }

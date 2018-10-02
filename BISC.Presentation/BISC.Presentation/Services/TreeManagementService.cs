@@ -12,18 +12,18 @@ using BISC.Presentation.ViewModels.Tree;
 
 namespace BISC.Presentation.Services
 {
-   public class TreeManagementService: ITreeManagementService
+    public class TreeManagementService : ITreeManagementService
     {
-       
+
 
         private readonly IMainTreeViewModel _mainTreeViewModel;
         private readonly INavigationService _navigationService;
         private Dictionary<Guid, Tuple<TreeItemIdentifier, ITreeItemViewModel>> _mainTreeViewModels
-            =new Dictionary<Guid, Tuple<TreeItemIdentifier, ITreeItemViewModel>>();
-    
+            = new Dictionary<Guid, Tuple<TreeItemIdentifier, ITreeItemViewModel>>();
 
-    
-        public TreeManagementService(IMainTreeViewModel mainTreeViewModel,INavigationService navigationService)
+
+
+        public TreeManagementService(IMainTreeViewModel mainTreeViewModel, INavigationService navigationService)
         {
             _mainTreeViewModel = mainTreeViewModel;
             _navigationService = navigationService;
@@ -33,10 +33,10 @@ namespace BISC.Presentation.Services
         {
             var newTreeItemGuid = Guid.NewGuid();
             TreeItemIdentifier treeItemIdentifier = new TreeItemIdentifier(parentId, newTreeItemGuid);
-            TreeItemViewModel newItemViewModel=new TreeItemViewModel();
+            TreeItemViewModel newItemViewModel = new TreeItemViewModel();
             newItemViewModel.DynamicRegionId = newTreeItemGuid;
 
-            parameters.AddParameterByName(TreeItemIdentifier.Key,treeItemIdentifier);
+            parameters.AddParameterByName(TreeItemIdentifier.Key, treeItemIdentifier);
             if (parentId != null)
             {
                 if (_mainTreeViewModels.ContainsKey(parentId.Value))
@@ -48,14 +48,15 @@ namespace BISC.Presentation.Services
             {
                 _mainTreeViewModel.ChildItemViewModels.Add(newItemViewModel);
             }
-            _mainTreeViewModels.Add(newTreeItemGuid,new Tuple<TreeItemIdentifier, ITreeItemViewModel>(treeItemIdentifier,newItemViewModel));
+            _mainTreeViewModels.Add(newTreeItemGuid, new Tuple<TreeItemIdentifier, ITreeItemViewModel>(treeItemIdentifier, newItemViewModel));
             _navigationService.NavigateViewToRegion(viewName, newTreeItemGuid.ToString(), parameters);
             return treeItemIdentifier;
         }
 
         public void DeleteTreeItem(TreeItemIdentifier treeItemId)
         {
-            if(treeItemId.ItemId==null)return;
+            if (treeItemId.ItemId == null) return;
+            if (!_mainTreeViewModels.ContainsKey(treeItemId.ItemId.Value)) return;
             if (treeItemId.ParentId == null)
             {
                 _mainTreeViewModel.ChildItemViewModels.Remove(_mainTreeViewModels[treeItemId.ItemId.Value].Item2);

@@ -28,7 +28,8 @@ namespace BISC.ViewModel
         private readonly IGlobalEventsService _globalEventsService;
         private bool _isLeftMenuEnabled;
         private string _applicationTitle;
-        private bool _isNotificationExpanded;
+        private GridLength _expanderRowHeight;
+        private bool _isNotificationsExpanded;
 
         public ShellViewModel(IEventAggregator eventAggregator,INavigationService navigationService,
             IProjectService projectService, ISaveCheckingService saveCheckingService,IGlobalEventsService globalEventsService)
@@ -41,21 +42,27 @@ namespace BISC.ViewModel
             _globalEventsService = globalEventsService;
             ShellLoadedCommand = new DelegateCommand(OnShellLoaded);
             ShellClosingCommand=new DelegateCommand<object>(OnShellClosing);
-            _globalEventsService.Subscribe<NotificationBarClosingEvent>(OnNotificationBarClosing);
+            _globalEventsService.Subscribe<NotificationBarExpandEvent>(OnNotificationBarClosing);
         }
 
-        private void OnNotificationBarClosing(NotificationBarClosingEvent obj)
+        private void OnNotificationBarClosing(NotificationBarExpandEvent obj)
         {
-            IsNotificationExpanded = false;
+            ExpanderRowHeight = GridLength.Auto;
+            IsNotificationsExpanded = obj.IsExpanded;
         }
 
-        public bool IsNotificationExpanded
+        public bool IsNotificationsExpanded
         {
-            get => _isNotificationExpanded;
+            get => _isNotificationsExpanded;
+            set { SetProperty(ref _isNotificationsExpanded,value); }
+        }
+
+        public GridLength ExpanderRowHeight
+        {
+            get => _expanderRowHeight;
             set
             {
-                SetProperty(ref _isNotificationExpanded,value);
-                OnPropertyChanged(nameof(IsNotificationExpanded));
+                SetProperty(ref _expanderRowHeight, value);
             }
         }
 

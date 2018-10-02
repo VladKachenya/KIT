@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model.Communication;
 using BISC.Model.Infrastructure.Common;
@@ -74,7 +75,7 @@ namespace BISC.Modules.Gooses.Model.Services
             return count;
         }
 
-        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel)
+        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel,CancellationToken cancellationToken)
         {
             var connection = _connectionPoolService.GetConnection(device.Ip);
             if (_ldGoosesDictionary.Values.Any())

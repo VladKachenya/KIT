@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Elements;
@@ -21,18 +22,18 @@ namespace BISC.Modules.Device.Presentation.Services
     {
         private readonly INavigationService _navigationService;
         private readonly IDeviceModelService _deviceModelService;
-        private readonly IUserNotificationService _userNotificationService;
+        private readonly ILoggingService _loggingService;
         private readonly IBiscProject _biscProject;
         private readonly ITreeManagementService _treeManagementService;
         private readonly IUiFromModelElementRegistryService _uiFromModelElementRegistryService;
 
         public DeviceAddingService(INavigationService navigationService, IDeviceModelService deviceModelService,
-            IUserNotificationService userNotificationService, IBiscProject biscProject, ITreeManagementService
+            ILoggingService loggingService, IBiscProject biscProject, ITreeManagementService
                 treeManagementService, IUiFromModelElementRegistryService uiFromModelElementRegistryService)
         {
             _navigationService = navigationService;
             _deviceModelService = deviceModelService;
-            _userNotificationService = userNotificationService;
+            _loggingService = loggingService;
             _biscProject = biscProject;
             _treeManagementService = treeManagementService;
             _uiFromModelElementRegistryService = uiFromModelElementRegistryService;
@@ -50,7 +51,7 @@ namespace BISC.Modules.Device.Presentation.Services
                 var res = _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel.Value, device,modelFrom);
                 if (!res.IsSucceed)
                 {
-                    _userNotificationService.NotifyUserGlobal(res.GetFirstError());
+                    _loggingService.LogMessage(res.GetFirstError(),SeverityEnum.Warning);
                 }
                 else
                 {

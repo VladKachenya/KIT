@@ -17,6 +17,7 @@ using BISC.Modules.Gooses.Model.Module;
 using BISC.Modules.Gooses.Presentation.Module;
 using BISC.Modules.InformationModel.Model.Module;
 using BISC.Modules.InformationModel.Presentation.Module;
+using BISC.Modules.Logging.Infrastructure.Module;
 using BISC.Presentation.BaseItems.Module;
 using BISC.Presentation.Module;
 using Microsoft.Practices.ObjectBuilder2;
@@ -68,7 +69,7 @@ namespace BISC.Infrastructure.CompositionRoot.Bootstraper
             Container.RegisterType(typeof(IAppModule), typeof(ConnectionMmsModule), nameof(ConnectionMmsModule));
             Container.RegisterType(typeof(IAppModule), typeof(GoosesModelModule), nameof(GoosesModelModule));
             Container.RegisterType(typeof(IAppModule), typeof(GoosesPresentationModule), nameof(GoosesPresentationModule));
- 
+             Container.RegisterType(typeof(IAppModule), typeof(LoggingModule), nameof(LoggingModule));
             Container.RegisterType(typeof(IAppModule), typeof(DatasetsModelModule), nameof(DatasetsModelModule));
             Container.RegisterType(typeof(IAppModule), typeof(DatasetsPresentationModule), nameof(DatasetsPresentationModule));
         }

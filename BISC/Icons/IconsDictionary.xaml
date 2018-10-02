@@ -76,6 +76,13 @@
     <DataTemplate x:Key="OpenInAppIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="OpenInApp" />
     </DataTemplate>
+    <DataTemplate x:Key="CancelIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Cancel" />
+    </DataTemplate>
+    <DataTemplate x:Key="InformationVariantIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="InformationVariant" />
+    </DataTemplate>
+
     <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
         <!--<Style.Resources >
             <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#44111121" />

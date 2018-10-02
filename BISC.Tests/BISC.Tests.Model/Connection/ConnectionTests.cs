@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Model.Global.Model;
@@ -102,7 +103,7 @@ namespace BISC.Tests.Model.Connection
             ILogicalDeviceLoadingService logicalDeviceLoadingService = StaticContainer.CurrentContainer.ResolveType<ILogicalDeviceLoadingService>();
             await logicalDeviceLoadingService.PrepareProgressData("127.0.0.1");
             var result = await logicalDeviceLoadingService.GetLDeviceFromConnection(new Progress<LogicalNodeLoadingEvent>((event1 => { })),
-                   sclModel, "MR771N123");
+                   sclModel, "MR771N123",new CancellationToken());
 
             IDataTypeTemplates dataTypeTemplates = sclModel.ChildModelElements.First((element => element is IDataTypeTemplates)) as IDataTypeTemplates;
             foreach (var lNodeType in dataTypeTemplates.LNodeTypes)
@@ -185,7 +186,7 @@ namespace BISC.Tests.Model.Connection
             ILogicalDeviceLoadingService logicalDeviceLoadingService = StaticContainer.CurrentContainer.ResolveType<ILogicalDeviceLoadingService>();
             await logicalDeviceLoadingService.PrepareProgressData("127.0.0.1");
             var result = await logicalDeviceLoadingService.GetLDeviceFromConnection(new Progress<LogicalNodeLoadingEvent>((event1 => { })),
-                sclModel, "MR771N123");
+                sclModel, "MR771N123",new CancellationToken());
 
             IDataTypeTemplates dataTypeTemplates = sclModel.ChildModelElements.First((element => element is IDataTypeTemplates)) as IDataTypeTemplates;
             IDataTypeTemplatesModelService dataTypeTemplatesModelService =

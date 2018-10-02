@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
@@ -37,12 +38,12 @@ namespace BISC.Modules.InformationModel.Presentation.Services
             return _logicalDeviceLoadingService.GetLogicalNodeCount();
         }
 
-        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress,ISclModel sclModel)
+        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress,ISclModel sclModel,CancellationToken cancellationToken)
         {
             int loadedLns = 0;
             var devices = await _logicalDeviceLoadingService.GetLDeviceFromConnection(
                  new Progress<LogicalNodeLoadingEvent>(loadingEvent =>
-                     deviceLoadingProgress.Report(new object())),sclModel,device.Name);
+                     deviceLoadingProgress.Report(new object())),sclModel,device.Name,cancellationToken);
             _infoModelService.InitializeInfoModel(device,device.Name,sclModel);
             foreach (var ldevice in devices)
             {

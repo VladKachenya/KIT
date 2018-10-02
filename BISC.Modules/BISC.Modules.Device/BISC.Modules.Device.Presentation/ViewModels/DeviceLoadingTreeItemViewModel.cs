@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Keys;
@@ -12,6 +14,7 @@ using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 
@@ -22,21 +25,34 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IDeviceModelService _deviceModelService;
         private readonly IBiscProject _biscProject;
         private readonly IGlobalEventsService _globalEventsService;
+        private readonly ITreeManagementService _treeManagementService;
         private string _deviceName;
         private BiscNavigationContext _navigationContext;
         private int _currentProgress;
         private int _totalProgress;
         private bool _isIntermetiateProgress;
         private IDevice _device;
+        private CancellationTokenSource _cts;
 
         public DeviceLoadingTreeItemViewModel(IDeviceModelService deviceModelService, IBiscProject biscProject,
-            IGlobalEventsService globalEventsService)
+            IGlobalEventsService globalEventsService,ICommandFactory commandFactory,ITreeManagementService treeManagementService)
         {
             _deviceModelService = deviceModelService;
             _biscProject = biscProject;
             _globalEventsService = globalEventsService;
+            _treeManagementService = treeManagementService;
+            CancelLoadingCommand = commandFactory.CreatePresentationCommand(OnCancelLoading);
         }
 
+        private void OnCancelLoading()
+        {
+            _cts.Cancel();
+            _treeManagementService.DeleteTreeItem(
+                _navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier
+                    .Key));
+        }
+
+        public ICommand CancelLoadingCommand { get; }
         public string DeviceName
         {
             get => _deviceName;
@@ -67,6 +83,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _device = _navigationContext.BiscNavigationParameters
                 .GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             DeviceName = _device.Name;
+            _cts = _navigationContext.BiscNavigationParameters.GetParameterByName<CancellationTokenSource>("cts");
             IsIntermetiateProgress = true;
             base.OnNavigatedTo(navigationContext);
         }

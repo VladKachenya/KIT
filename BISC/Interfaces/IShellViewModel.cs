@@ -1,10 +1,12 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace BISC.Interfaces
 {
     public interface IShellViewModel
     {
-        bool IsNotificationExpanded { get; set; }
+        bool IsNotificationsExpanded { get; set; }
+        GridLength ExpanderRowHeight { get; set; }
         string ApplicationTitle { get; set; }
     }
 }

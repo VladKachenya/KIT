@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Project;
@@ -33,6 +34,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         private readonly IBiscProject _biscProject;
 
         private readonly IGlobalEventsService _globalEventsService;
+        private readonly ILoggingService _loggingService;
         private readonly IUserNotificationService _userNotificationService;
         private readonly IDeviceFileWritingServices _deviceFileWritingServices;
         private readonly ResultFileParser _resultFileParser;
@@ -48,7 +50,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 
         public GooseMatrixViewModel(IGoosesModelService goosesModelService, IBiscProject biscProject,
           
-            IGlobalEventsService globalEventsService, IUserNotificationService userNotificationService, ICommandFactory commandFactory,
+            IGlobalEventsService globalEventsService, ILoggingService loggingService, ICommandFactory commandFactory,
             IDeviceFileWritingServices deviceFileWritingServices
            , ResultFileParser resultFileParser, IModelElementsRegistryService modelElementsRegistryService,
             ISclCommunicationModelService sclCommunicationModelService, IGooseControlBlockViewModelFactory gooseControlBlockViewModelFactory
@@ -57,7 +59,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             _goosesModelService = goosesModelService;
             _biscProject = biscProject;
             _globalEventsService = globalEventsService;
-            _userNotificationService = userNotificationService;
+            _loggingService = loggingService;
             _deviceFileWritingServices = deviceFileWritingServices;
             _resultFileParser = resultFileParser;
             _modelElementsRegistryService = modelElementsRegistryService;
@@ -89,11 +91,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             if (await _deviceFileWritingServices.WriteFileStringInDevice(_device.Ip, new List<string>() {str, proj},
                 new List<string>() {"GOOSERE.CFG", "PROJECT.ZIP"}))
             {
-                _userNotificationService.NotifyUserGlobal("Goose матрица успешно записана в устройство");
+                _loggingService.LogMessage("Goose матрица успешно записана в устройство",SeverityEnum.Info);
             }
             else
             {
-                _userNotificationService.NotifyUserGlobal("Запись Goose матрицы прошла с ошибками");
+                _loggingService.LogMessage("Запись Goose матрицы прошла с ошибками", SeverityEnum.Info);
 
             }
 

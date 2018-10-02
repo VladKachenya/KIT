@@ -49,6 +49,8 @@
     <Compile Include="Constants\Constants.cs" />
     <Compile Include="IoC\IInjectionContainer.cs" />
     <Compile Include="IoC\StaticContainer.cs" />
+    <Compile Include="Logging\ILoggableMessage.cs" />
+    <Compile Include="Logging\SeverityEnum.cs" />
     <Compile Include="Modularity\IAppModule.cs" />
     <Compile Include="Modularity\IGlobalCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

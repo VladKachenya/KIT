@@ -116,7 +116,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Behaviors\ExpandableRowBehavior.cs" />
+    <Compile Include="Converters\RowHeightToIsExpandedConverter.cs" />
     <Compile Include="GlobalServices\ConfigurationService.cs" />
     <Compile Include="GlobalServices\UserInterfaceComposingService.cs" />
     <Compile Include="Interfaces\IShellViewModel.cs" />
@@ -193,6 +193,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="NetWork.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Behaviors\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

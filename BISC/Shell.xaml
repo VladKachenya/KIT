@@ -15,7 +15,7 @@
         xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         xmlns:views="clr-namespace:BISC.Presentation.BaseItems.Views;assembly=BISC.Presentation.BaseItems"
-        xmlns:behaviors1="clr-namespace:BISC.Behaviors"
+        xmlns:converters="clr-namespace:BISC.Converters"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -25,6 +25,10 @@
         Background="{DynamicResource MaterialDesignPaper}"
         WindowState="Maximized"
         Title="{Binding ApplicationTitle}" Height="500" Width="800">
+    <Window.Resources>
+        <converters:RowHeightToIsExpandedConverter x:Key="RowHeightToIsExpandedConverter"></converters:RowHeightToIsExpandedConverter>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
+    </Window.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing" >
             <command:EventToCommand  PassEventArgsToCommand="True"   Command="{Binding ShellClosingCommand}" />
@@ -38,7 +42,7 @@
                 <DockPanel MinWidth="212">
                     <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
                                   DockPanel.Dock="Top"
-                                  HorizontalAlignment="Right" Margin="16"
+                                  HorizontalAlignment="Right" Margin="10"
                                   IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
                     <Grid>
                         <views:DynamicRegion HorizontalAlignment="Stretch" RegionKey="{x:Static keys:KeysForNavigation+RegionNames.HamburgerMenuKey}" />
@@ -61,7 +65,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition behaviors1:ExpandableRowBehavior.IsExpanded="{Binding IsNotificationExpanded}" Name="RowDefinition" Height="Auto"></RowDefinition>
+                        <RowDefinition Height="{Binding ExpanderRowHeight,Mode=TwoWay}" MinHeight="22" Name="RowDefinition" ></RowDefinition>
 
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -74,9 +78,9 @@
 
                     <GridSplitter Grid.Column="1" ShowsPreview="True" Width="3"
                                   HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-                    <GridSplitter Grid.ColumnSpan="3" Grid.Row="1" ShowsPreview="True"  Height="3"
+                    <GridSplitter Visibility="{Binding IsNotificationsExpanded,Converter={StaticResource booleanToVisibilityConverter}}" Grid.ColumnSpan="3" Grid.Row="1" ShowsPreview="True"  Height="3"
                                   HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-                    <!--<ContentControl  interactivity:RegionManager.RegionName="{x:Static keys:KeysForNavigation+RegionNames.NotificationBarKey}" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"></ContentControl>-->
+                    <ContentControl VerticalAlignment="Stretch" interactivity:RegionManager.RegionName="{x:Static keys:KeysForNavigation+RegionNames.NotificationBarKey}" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"></ContentControl>
                 </Grid>
             </DockPanel>
         </materialDesign:DrawerHost>

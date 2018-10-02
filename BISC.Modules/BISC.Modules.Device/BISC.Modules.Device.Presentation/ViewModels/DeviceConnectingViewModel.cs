@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Constants;
+using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Services;
@@ -35,7 +36,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly ITreeManagementService _treeManagementService;
         private readonly IBiscProject _biscProject;
         private readonly IDeviceLoadingService _deviceLoadingService;
-        private readonly IUserNotificationService _userNotificationService;
+        private readonly ILoggingService _loggingService;
         private ILastIpAddressesViewModel _lastConnectedIps;
         private IIpAddressViewModel _selectedIpAddressViewModel;
         private bool _isDeviceConnectionFailed;
@@ -45,9 +46,9 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         public DeviceConnectingViewModel(ICommandFactory commandFactory,
             IDeviceConnectionService deviceConnectionService,
             IGlobalEventsService globalEventsService,
-            ITreeManagementService treeManagementService ,
-            IBiscProject biscProject,IDeviceLoadingService deviceLoadingService,
-            ILastIpAddressesViewModelFactory lastConnectedIpsFactoty,IUserNotificationService userNotificationService)
+            ITreeManagementService treeManagementService,
+            IBiscProject biscProject, IDeviceLoadingService deviceLoadingService,
+            ILastIpAddressesViewModelFactory lastConnectedIpsFactoty, ILoggingService loggingService )
         {
             _commandFactory = commandFactory;
             _deviceConnectionService = deviceConnectionService;
@@ -55,10 +56,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _treeManagementService = treeManagementService;
             _biscProject = biscProject;
             _deviceLoadingService = deviceLoadingService;
-            _userNotificationService = userNotificationService;
-            ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDeviceExecute, ()=> !_isConnectionProcess);
+            _loggingService = loggingService;
+            ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDeviceExecute, () => !_isConnectionProcess);
             lastConnectedIpsFactoty.BuildLastConnectedIpAdresses(out _selectedIpAddressViewModel, out _lastConnectedIps);
-            _failedSatatusHidingTimer = new Timer(FailStatusHide,null,Timeout.Infinite,Timeout.Infinite);
+            _failedSatatusHidingTimer = new Timer(FailStatusHide, null, Timeout.Infinite, Timeout.Infinite);
             IsConnectionProcess = false;
         }
 
@@ -75,13 +76,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels
                 var connectResult = await _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
                 if (connectResult.IsSucceed)
                 {
-                    try
+                   
+                      var res=  await _deviceLoadingService.LoadElements(connectResult.Item);
+                    if (!res.IsSucceed)
                     {
-                    await _deviceLoadingService.LoadElements(new List<IDevice>() { connectResult.Item });
-                    }
-                    catch (Exception e)
-                    {
-                       _userNotificationService.NotifyUserGlobal("Ошибка чтения устройства");
+                        _loggingService.LogMessage(res.GetFirstError(),SeverityEnum.Warning);
                     }
                 }
                 else
@@ -148,7 +147,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         public bool IsConnectionProcess
         {
             get => _isConnectionProcess;
-            set => SetProperty(ref _isConnectionProcess, value); 
+            set => SetProperty(ref _isConnectionProcess, value);
         }
         #endregion
     }
