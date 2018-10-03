@@ -20,12 +20,12 @@ namespace BISC.Modules.Logging.Infrastructure.Services
 
         public void LogUserAction(string actionName)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public void LogMessage(string message, SeverityEnum severity)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         #endregion

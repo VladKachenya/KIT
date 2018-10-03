@@ -26,7 +26,8 @@ namespace BISC.Presentation.Module
         public PresentationInitialization(IEventAggregator eventAggregator, 
             INavigationService navigationService,IProjectService projectService
             ,IUiFromModelElementRegistryService uiFromModelElementRegistryService,IBiscProject biscProject
-            ,IUserInterfaceComposingService userInterfaceComposingService,ICommandFactory commandFactory,IMainTreeViewModel mainTreeViewModel,ILoggingService loggingService )
+            ,IUserInterfaceComposingService userInterfaceComposingService,ICommandFactory commandFactory,
+            IMainTreeViewModel mainTreeViewModel,ILoggingService loggingService )
         {
 
             _eventAggregator = eventAggregator;

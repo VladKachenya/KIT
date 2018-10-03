@@ -22,6 +22,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
     public class DataSetsDetailsViewModel : NavigationViewModelBase
     {
         private IDevice _device;
+        private List<IDataSet> _dataSets;
         private IDatasetModelService _datasetModelService;
         private IDatasetViewModelFactory _datasetViewModelFactory;
 
@@ -34,6 +35,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _datasetViewModelFactory = datasetViewModelFactory;
             DeployAllExpandersCommand = commandFactory.CreatePresentationCommand(OnDeployAllExpanders);
             RollUpAllExpandersCommand = commandFactory.CreatePresentationCommand(OnRollUpAllExpanders);
+            SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhanges);
         }
 
         #endregion
@@ -50,6 +52,15 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             foreach (var element in DataSets)
                 element.IsExpanded = false;
         }
+
+        private void OnSaveСhanges()
+        {
+            _dataSets.Clear();
+            foreach (var dataSetVM in DataSets)
+            {
+                _dataSets.Add(dataSetVM.GetModel());
+            }
+        }
         #endregion
 
 
@@ -59,6 +70,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public ICommand DeployAllExpandersCommand { get; }
         public ICommand RollUpAllExpandersCommand { get; }
+        public ICommand SaveСhangesCommand { get; }
+
 
         #endregion
 
@@ -67,7 +80,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
-            DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_datasetModelService.GetAllDataSetOfDevice(_device));
+            _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
+            DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
             base.OnNavigatedTo(navigationContext);
         }
         #endregion

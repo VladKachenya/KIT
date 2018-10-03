@@ -44,8 +44,9 @@ namespace BISC.Model.Infrastructure.Elements
 
         public void Clear()
         {
-          var elementsToRemove=  _parent.ChildModelElements.Where((element =>
+          var elementsToBeRemove=  _parent.ChildModelElements.Where((element =>
                 element.ElementName == _childElementName && element is T));
+            var elementsToRemove = new List<IModelElement>(elementsToBeRemove);
             foreach (var element in elementsToRemove)
             {
                 _parent.ChildModelElements.Remove(element);

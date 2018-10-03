@@ -55,6 +55,8 @@ namespace BISC.Infrastructure.CompositionRoot.Bootstraper
             
             Container.RegisterType(typeof(IAppModule), typeof(GlobalModelModule),nameof(GlobalModelModule));
             Container.RegisterType(typeof(IAppModule), typeof(PresentationBaseItemsModule),nameof(PresentationBaseItemsModule));
+            Container.RegisterType(typeof(IAppModule), typeof(LoggingModule), nameof(LoggingModule));
+
             Container.RegisterType(typeof(IAppModule), typeof(GlobalPresentationModule),nameof(GlobalPresentationModule));
             Container.RegisterType(typeof(IAppModule), typeof(InformationModelModule),nameof(InformationModelModule));
             Container.RegisterType(typeof(IAppModule), typeof(InformationModelPresentationModule),nameof(InformationModelPresentationModule));
@@ -69,7 +71,6 @@ namespace BISC.Infrastructure.CompositionRoot.Bootstraper
             Container.RegisterType(typeof(IAppModule), typeof(ConnectionMmsModule), nameof(ConnectionMmsModule));
             Container.RegisterType(typeof(IAppModule), typeof(GoosesModelModule), nameof(GoosesModelModule));
             Container.RegisterType(typeof(IAppModule), typeof(GoosesPresentationModule), nameof(GoosesPresentationModule));
-             Container.RegisterType(typeof(IAppModule), typeof(LoggingModule), nameof(LoggingModule));
             Container.RegisterType(typeof(IAppModule), typeof(DatasetsModelModule), nameof(DatasetsModelModule));
             Container.RegisterType(typeof(IAppModule), typeof(DatasetsPresentationModule), nameof(DatasetsPresentationModule));
         }

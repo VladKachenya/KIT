@@ -31,7 +31,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Column="0">
-                <Button Margin="10,5" Height="20" Width="20"
+                <Button Command="{Binding SaveСhangesCommand}" Visibility="Visible" Margin="10,5" Height="20" Width="20"
                         Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
                         ToolTip="Сохранить изменения в проект">
                     <Button.Content>
