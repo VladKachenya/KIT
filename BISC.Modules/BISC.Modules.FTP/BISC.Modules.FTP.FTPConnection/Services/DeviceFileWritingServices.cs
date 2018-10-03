@@ -38,8 +38,6 @@ namespace BISC.Modules.FTP.FTPConnection.Services
 
             }
             return true;
-
-            // }
         }
 
         public async Task ResetDevice()

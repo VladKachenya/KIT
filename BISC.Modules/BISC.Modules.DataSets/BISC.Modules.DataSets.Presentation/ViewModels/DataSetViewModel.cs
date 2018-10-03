@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using BISC.Presentation.Infrastructure.Factories;
+using BISC.Modules.DataSets.Infrastructure.ViewModels.Services;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -21,21 +22,31 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private IDataSet _model;
         private IFcdaViewModelFactory _fcdaViewModelFactory;
         private bool _isExpanded = false;
+        private IFcdaAdderViewModelService _fcdaAdderViewModelService;
 
         #endregion
 
         #region C-tor
-        public DataSetViewModel(IFcdaViewModelFactory fcdaViewModelFactory,ICommandFactory commandFactory)
+        public DataSetViewModel(IFcdaViewModelFactory fcdaViewModelFactory,ICommandFactory commandFactory, 
+            IFcdaAdderViewModelService fcdaAdderViewModelService)
         {
             _fcdaViewModelFactory = fcdaViewModelFactory;
             DeleteFcdaCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteFcda);
+            AddFcdaToDataset = commandFactory.CreatePresentationCommand(OnAddFcdaTpDataset, () => IsEditeble);
+            _fcdaAdderViewModelService = fcdaAdderViewModelService;
         }
+        #endregion
 
+        #region private methods
         private void OnDeleteFcda(object obj)
         {
             FcdaViewModels.Remove(obj as IFcdaViewModel);
         }
 
+        private void OnAddFcdaTpDataset()
+        {
+            _fcdaAdderViewModelService.OpenFcdaAdderView();
+        }
         #endregion
 
         #region Implamentation of DataSetElementBaseViewModel
@@ -74,6 +85,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #region Implamentation of IDataSetViewModel
         public ObservableCollection<IFcdaViewModel> FcdaViewModels { get; protected set; }
         public ICommand DeleteFcdaCommand { get; }
+        public ICommand AddFcdaToDataset { get; }
+
 
         #endregion
     }

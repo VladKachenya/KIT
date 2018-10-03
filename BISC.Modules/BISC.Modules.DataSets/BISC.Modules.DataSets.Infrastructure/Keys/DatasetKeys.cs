@@ -19,7 +19,7 @@ namespace BISC.Modules.DataSets.Infrastructure.Keys
         {
             public const string DataSetsTreeItemView = "DataSetsTreeItemView";
             public const string DataSetsDetailsView = "DataSetsDetailsView";
-
+            public const string FcdaAdderViewModel = "FcdaAdderViewModel";
         }
     }
 }

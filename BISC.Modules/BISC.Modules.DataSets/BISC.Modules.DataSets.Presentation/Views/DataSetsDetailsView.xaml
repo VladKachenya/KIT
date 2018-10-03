@@ -12,7 +12,7 @@
         <Style x:Key ="IsEditebleStyle" TargetType="ContentControl">
             <Style.Triggers >
                 <DataTrigger Binding="{Binding IsEditeble}" Value="true">
-                    <Setter Property="ContentTemplate" Value="{DynamicResource PencilIcon}"/>
+                    <Setter Property="ContentTemplate" Value="{DynamicResource BookmarkPlusIcon}"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsEditeble}" Value="false">
                     <Setter Property="ContentTemplate" Value="{DynamicResource PencilLockIcon}"/>
@@ -80,11 +80,12 @@
                                                 <TextBlock Margin="4"  Text="{Binding ElementName}"/>
                                             </Border>
                                             <TextBlock Text="{Binding FullName}" Margin="4"/>
-                                            <Label>
-                                                <Label.Content>
-                                                    <ContentControl Width="20" Height="20" Style="{DynamicResource IsEditebleStyle}"/>
-                                                </Label.Content>
-                                            </Label>
+                                            <Button Command="{Binding AddFcdaToDataset}" Margin="10, 5"  Height="20" Width="20"
+                                                    Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}">
+                                                <Button.Content>
+                                                    <ContentControl Style="{DynamicResource IsEditebleStyle}"/>
+                                                </Button.Content>
+                                            </Button>
                                         </StackPanel>
                                     </Expander.Header>
                                     <ListBox PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Name="fcdaListBox"

@@ -54,15 +54,20 @@
     <Compile Include="Module\DatasetsPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DataSetsUiHandlingService.cs" />
+    <Compile Include="Services\FcdaAdderViewModelService.cs" />
     <Compile Include="ViewModels\DataSetsDetailsViewModel.cs" />
     <Compile Include="ViewModels\DataSetsTreeItemViewModel.cs" />
     <Compile Include="ViewModels\DataSetViewModel.cs" />
+    <Compile Include="ViewModels\FcdaAdderViewModel.cs" />
     <Compile Include="ViewModels\FcdaViewModel.cs" />
     <Compile Include="Views\DataSetsDetailsView.xaml.cs">
       <DependentUpon>DataSetsDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DataSetsTreeItemView.xaml.cs">
       <DependentUpon>DataSetsTreeItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FcdaAdderView.xaml.cs">
+      <DependentUpon>FcdaAdderView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +76,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DataSetsTreeItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FcdaAdderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -25,12 +25,14 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private List<IDataSet> _dataSets;
         private IDatasetModelService _datasetModelService;
         private IDatasetViewModelFactory _datasetViewModelFactory;
+        private IBiscProject _biscProject;
 
         #region C-tor
 
         public DataSetsDetailsViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService,
             IBiscProject biscProject, IDatasetModelService datasetModelService, IDatasetViewModelFactory datasetViewModelFactory)
         {
+            _biscProject = biscProject;
             _datasetModelService = datasetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
             DeployAllExpandersCommand = commandFactory.CreatePresentationCommand(OnDeployAllExpanders);
@@ -71,7 +73,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public ICommand DeployAllExpandersCommand { get; }
         public ICommand RollUpAllExpandersCommand { get; }
         public ICommand SaveСhangesCommand { get; }
-
 
         #endregion
 

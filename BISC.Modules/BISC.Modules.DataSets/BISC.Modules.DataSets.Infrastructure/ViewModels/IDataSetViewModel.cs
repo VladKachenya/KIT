@@ -15,5 +15,7 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
         bool IsExpanded { get; set; }
         ObservableCollection<IFcdaViewModel> FcdaViewModels { get;}
         ICommand DeleteFcdaCommand { get; }
+        ICommand AddFcdaToDataset { get; }
+
     }
 }

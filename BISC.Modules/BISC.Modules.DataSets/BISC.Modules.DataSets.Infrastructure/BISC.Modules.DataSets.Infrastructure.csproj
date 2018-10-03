@@ -56,7 +56,9 @@
     <Compile Include="ViewModels\IDataSetViewModel.cs" />
     <Compile Include="ViewModels\Factorys\IDatasetViewModelFactory.cs" />
     <Compile Include="ViewModels\IDataSetsTreeItemViewModel.cs" />
+    <Compile Include="ViewModels\IFcdaAdderViewModel.cs" />
     <Compile Include="ViewModels\IFcdaViewModel.cs" />
+    <Compile Include="ViewModels\Services\IFcdaAdderViewModelService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">

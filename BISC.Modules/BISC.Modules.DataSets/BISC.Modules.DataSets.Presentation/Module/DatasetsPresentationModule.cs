@@ -8,6 +8,7 @@ using BISC.Infrastructure.Global.Modularity;
 using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.ViewModels;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
+using BISC.Modules.DataSets.Infrastructure.ViewModels.Services;
 using BISC.Modules.DataSets.Presentation.Factorys;
 using BISC.Modules.DataSets.Presentation.Services;
 using BISC.Modules.DataSets.Presentation.ViewModels;
@@ -35,13 +36,16 @@ namespace BISC.Modules.DataSets.Presentation.Module
 
             _injectionContainer.RegisterType<object, DataSetsTreeItemView>(DatasetKeys.DatasetViewModelKeys.DataSetsTreeItemView);
             _injectionContainer.RegisterType<object, DataSetsDetailsView>(DatasetKeys.DatasetViewModelKeys.DataSetsDetailsView);
+            _injectionContainer.RegisterType<object, FcdaAdderView>(DatasetKeys.DatasetViewModelKeys.FcdaAdderViewModel);
 
+            _injectionContainer.RegisterType<IFcdaAdderViewModelService, FcdaAdderViewModelService>();
             _injectionContainer.RegisterType<IFcdaViewModelFactory, FcdaViewModelFactory>(true);
             _injectionContainer.RegisterType<IDatasetViewModelFactory, DatasetViewModelFactory>(true);
             _injectionContainer.RegisterType<DataSetsTreeItemViewModel>();
             _injectionContainer.RegisterType<DataSetsDetailsViewModel>();
             _injectionContainer.RegisterType<IFcdaViewModel, FcdaViewModel>();
             _injectionContainer.RegisterType<IDataSetViewModel, DataSetViewModel>();
+            _injectionContainer.RegisterType<IFcdaAdderViewModel, FcdaAdderViewModel>();
 
         }
 
