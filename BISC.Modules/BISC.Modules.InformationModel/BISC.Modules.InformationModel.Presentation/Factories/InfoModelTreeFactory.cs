@@ -46,8 +46,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
 
 
         public ObservableCollection<IInfoModelItemViewModel> CreateFullInfoModelTree(List<ILDevice> lDevices,
-            bool isFcSortingEnabled,
-            ObservableCollection<IInfoModelItemViewModel> existingInfoModelItemViewModels = null)
+            bool isFcSortingEnabled, ObservableCollection<IInfoModelItemViewModel> existingInfoModelItemViewModels = null)
         {
             ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels =
                 existingInfoModelItemViewModels ?? new ObservableCollection<IInfoModelItemViewModel>();
@@ -122,7 +121,6 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             List<string> fcList = new List<string>();
             foreach (var dai in dais)
             {
-
                 var da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel.Value);
                 if (da == null)
                 {

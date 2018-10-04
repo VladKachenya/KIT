@@ -1,4 +1,6 @@
-﻿using BISC.Model.Infrastructure.Project;
+﻿using BISC.Model.Iec61850Ed2;
+using BISC.Model.Iec61850Ed2.DataTypeTemplates;
+using BISC.Model.Infrastructure.Project;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.ViewModels;
@@ -6,15 +8,21 @@ using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Modules.InformationModel.Model.Elements;
+using BISC.Modules.InformationModel.Presentation.ViewModels.Base;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
+using GongSolutions.Wpf.DragDrop;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
@@ -86,5 +94,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             base.OnNavigatedTo(navigationContext);
         }
         #endregion
+
     }
 }

@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BISC.Modules.DataSets.Presentation.Views"
              xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
+             xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" Name="DataSetsDitailsViewModel">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
         <Style x:Key ="IsEditebleStyle" TargetType="ContentControl">
@@ -89,7 +90,10 @@
                                         </StackPanel>
                                     </Expander.Header>
                                     <ListBox PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Name="fcdaListBox"
-                                        ItemsSource="{Binding FcdaViewModels}">
+                                        ItemsSource="{Binding FcdaViewModels}"
+                                        dd:DragDrop.IsDragSource="True" 
+                                        dd:DragDrop.IsDropTarget="True"
+                                        dd:DragDrop.DropHandler="{Binding .}">
                                         <ListBox.ItemContainerStyle>
                                             <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

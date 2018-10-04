@@ -13,23 +13,35 @@ using System.Windows.Input;
 using System.Windows.Media;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Services;
+using BISC.Modules.InformationModel.Presentation.ViewModels.Base;
+using GongSolutions.Wpf.DragDrop;
+using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
+using BISC.Modules.InformationModel.Infrastucture;
+using BISC.Model.Infrastructure.Project;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
-    public class DataSetViewModel : ViewModelBase, IDataSetViewModel
+    public class DataSetViewModel : ViewModelBase, IDataSetViewModel, GongSolutions.Wpf.DragDrop.IDropTarget
     {
         #region private filds
         private IDataSet _model;
         private IFcdaViewModelFactory _fcdaViewModelFactory;
         private bool _isExpanded = false;
         private IFcdaAdderViewModelService _fcdaAdderViewModelService;
+        private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
+        private readonly IBiscProject _biscProject;
 
         #endregion
 
         #region C-tor
         public DataSetViewModel(IFcdaViewModelFactory fcdaViewModelFactory,ICommandFactory commandFactory, 
-            IFcdaAdderViewModelService fcdaAdderViewModelService)
+            IFcdaAdderViewModelService fcdaAdderViewModelService, IDataTypeTemplatesModelService dataTypeTemplatesModelService
+            , IBiscProject biscProject)
         {
+            _biscProject = biscProject;
+            _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
             _fcdaViewModelFactory = fcdaViewModelFactory;
             DeleteFcdaCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteFcda);
             AddFcdaToDataset = commandFactory.CreatePresentationCommand(OnAddFcdaTpDataset, () => IsEditeble);
@@ -87,6 +99,37 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public ICommand DeleteFcdaCommand { get; }
         public ICommand AddFcdaToDataset { get; }
 
+
+        #endregion
+
+        #region override of NavigationViewModelBase
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;
+            TreeItemViewModelBase targetItem = dropInfo.TargetItem as TreeItemViewModelBase;
+
+            if (sourceItem != null && sourceItem.TypeName == InfoModelKeys.ModelKeys.DaiKey)
+            {
+                IDa Da = _dataTypeTemplatesModelService.GetDaOfDai(sourceItem.Model as IDai, _biscProject.MainSclModel.Value);
+                if(Da.Fc == "ST" || Da.Fc == "MX")
+                {
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+                    dropInfo.Effects = System.Windows.DragDropEffects.Move;
+                }
+            }
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;
+            TreeItemViewModelBase targetItem = dropInfo.TargetItem as TreeItemViewModelBase;
+        }
+
+        private bool CheckFc(object model)
+        {
+            return false;
+        }
 
         #endregion
     }

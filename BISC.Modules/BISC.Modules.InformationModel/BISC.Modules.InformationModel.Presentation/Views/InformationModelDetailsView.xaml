@@ -8,10 +8,12 @@
              xmlns:converters="clr-namespace:BISC.Modules.InformationModel.Presentation.Converters"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:infoModelDetails="clr-namespace:BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelDetails"
+             xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              mc:Ignorable="d" >
 
     <UserControl.Resources>
         <converters:LevelToMarginConverter x:Key="LevelToMarginConverter" />
+        <converters:TypeNameToIsDragSourceConverter x:Key="TypeToIsDragSourceConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
         <converters:IsGroupedToMarginConverter x:Key="GroupedToMarginConverter"></converters:IsGroupedToMarginConverter>
@@ -45,6 +47,8 @@
             Width="auto"
             HorizontalAlignment="Stretch"
             ItemsSource="{Binding Path=AllIecTreeItems}"
+            dd:DragDrop.IsDragSource="True" 
+            dd:DragDrop.IsDropTarget="False"    
             SelectedItem="{Binding SelectedTreeItem}">
                 <i:Interaction.Behaviors>
                     <behaviors:TreeGridBehavior />

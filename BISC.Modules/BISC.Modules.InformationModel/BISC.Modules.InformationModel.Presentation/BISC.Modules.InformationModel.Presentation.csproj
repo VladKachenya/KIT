@@ -47,6 +47,9 @@
     <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\MvvmLightLibs.5.4.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
     </Reference>
+    <Reference Include="GongSolutions.Wpf.DragDrop, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\gong-wpf-dragdrop.1.1.0\lib\net45\GongSolutions.Wpf.DragDrop.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -69,6 +72,7 @@
     <Compile Include="Behaviors\TreeViewToggleButtonBehavior.cs" />
     <Compile Include="Converters\IsGroupedToMarginConverter.cs" />
     <Compile Include="Converters\LevelToMarginConverter.cs" />
+    <Compile Include="Converters\TypeNameToIsDragSourceConverter.cs" />
     <Compile Include="Factories\InfoModelTreeFactory.cs" />
     <Compile Include="Helpers\TreeItemDetailsBuilder.cs" />
     <Compile Include="Interfaces\Factories\IInfoModelTreeFactory.cs" />
