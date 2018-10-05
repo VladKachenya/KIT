@@ -20,6 +20,7 @@ using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
+using BISC.Modules.DataSets.Infrastructure.Factorys;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -32,14 +33,16 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private IFcdaAdderViewModelService _fcdaAdderViewModelService;
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
         private readonly IBiscProject _biscProject;
+        private IFcdaFactory _fcdaFactory;
 
         #endregion
 
         #region C-tor
         public DataSetViewModel(IFcdaViewModelFactory fcdaViewModelFactory,ICommandFactory commandFactory, 
-            IFcdaAdderViewModelService fcdaAdderViewModelService, IDataTypeTemplatesModelService dataTypeTemplatesModelService
-            , IBiscProject biscProject)
+            IFcdaAdderViewModelService fcdaAdderViewModelService, IDataTypeTemplatesModelService dataTypeTemplatesModelService,
+            IBiscProject biscProject, IFcdaFactory fcdaFactory)
         {
+            _fcdaFactory = fcdaFactory;
             _biscProject = biscProject;
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
             _fcdaViewModelFactory = fcdaViewModelFactory;
@@ -123,7 +126,14 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public void Drop(IDropInfo dropInfo)
         {
             TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;
-            TreeItemViewModelBase targetItem = dropInfo.TargetItem as TreeItemViewModelBase;
+            //TreeItemViewModelBase targetItem = dropInfo.TargetItem as TreeItemViewModelBase;
+            var elementModel = sourceItem.Model;
+            IFcda fcdaModel = null;
+            if (elementModel is IDai)
+                fcdaModel = _fcdaFactory.GetFcda((elementModel as IDai));
+
+            if (fcdaModel != null)
+                FcdaViewModels.Add(_fcdaViewModelFactory.GetFcdaViewModelElement(fcdaModel));
         }
 
         private bool CheckFc(object model)

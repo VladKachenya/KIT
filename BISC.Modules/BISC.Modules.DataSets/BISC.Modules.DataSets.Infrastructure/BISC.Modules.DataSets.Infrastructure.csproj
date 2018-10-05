@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Factorys\IFcdaFactory.cs" />
     <Compile Include="Keys\DatasetKeys.cs" />
     <Compile Include="Model\IDataSet.cs" />
     <Compile Include="Model\IFcda.cs" />
@@ -64,6 +65,10 @@
     <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
       <Name>BISC.Model.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Infrastucture\BISC.Modules.InformationModel.Infrastucture.csproj">
+      <Project>{1642183D-562D-4E50-B8F7-22205D731E45}</Project>
+      <Name>BISC.Modules.InformationModel.Infrastucture</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

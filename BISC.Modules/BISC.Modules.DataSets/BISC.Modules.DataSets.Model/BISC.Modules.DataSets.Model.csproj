@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Factorys\FcdaFactory.cs" />
     <Compile Include="Model\DataSet.cs" />
     <Compile Include="Model\Fcda.cs" />
     <Compile Include="Module\DatasetsModelModule.cs" />
