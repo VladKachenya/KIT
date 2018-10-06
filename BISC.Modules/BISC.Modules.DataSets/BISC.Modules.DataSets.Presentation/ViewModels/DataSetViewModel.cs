@@ -21,6 +21,7 @@ using BISC.Model.Infrastructure.Project;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 using BISC.Modules.DataSets.Infrastructure.Factorys;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -34,15 +35,18 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
         private readonly IBiscProject _biscProject;
         private IFcdaFactory _fcdaFactory;
+        private readonly ISaveCheckingService _saveCheckingService;
+        private ObservableCollection<IFcdaViewModel> _fcdaViewModels;
 
         #endregion
 
         #region C-tor
         public DataSetViewModel(IFcdaViewModelFactory fcdaViewModelFactory,ICommandFactory commandFactory, 
             IFcdaAdderViewModelService fcdaAdderViewModelService, IDataTypeTemplatesModelService dataTypeTemplatesModelService,
-            IBiscProject biscProject, IFcdaFactory fcdaFactory)
+            IBiscProject biscProject, IFcdaFactory fcdaFactory,ISaveCheckingService saveCheckingService)
         {
             _fcdaFactory = fcdaFactory;
+            _saveCheckingService = saveCheckingService;
             _biscProject = biscProject;
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
             _fcdaViewModelFactory = fcdaViewModelFactory;
@@ -91,14 +95,20 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public bool IsExpanded
         {
             get => _isExpanded;
-            set => SetProperty(ref _isExpanded, value);
+            set => SetProperty(ref _isExpanded, value,true);
         }
 
         public bool IsEditeble => _model.IsDynamic;
         #endregion
 
         #region Implamentation of IDataSetViewModel
-        public ObservableCollection<IFcdaViewModel> FcdaViewModels { get; protected set; }
+
+        public ObservableCollection<IFcdaViewModel> FcdaViewModels
+        {
+            get => _fcdaViewModels;
+            protected set { SetProperty(ref _fcdaViewModels , value); }
+        }
+
         public ICommand DeleteFcdaCommand { get; }
         public ICommand AddFcdaToDataset { get; }
 
@@ -106,6 +116,10 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #endregion
 
         #region override of NavigationViewModelBase
+
+
+        
+
 
         public void DragOver(IDropInfo dropInfo)
         {
@@ -117,7 +131,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 IDa Da = _dataTypeTemplatesModelService.GetDaOfDai(sourceItem.Model as IDai, _biscProject.MainSclModel.Value);
                 if(Da.Fc == "ST" || Da.Fc == "MX")
                 {
-                    dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
                     dropInfo.Effects = System.Windows.DragDropEffects.Move;
                 }
             }

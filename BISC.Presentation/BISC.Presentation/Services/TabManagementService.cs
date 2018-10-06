@@ -40,7 +40,7 @@ namespace BISC.Presentation.Services
                 _tabHostViewModel.ActiveTabViewModel = newTab;
             }
 
-            navigationParameters.AddParameterByName(TreeItemIdentifier.Key, owner);
+            navigationParameters.AddParameterByName(TreeItemIdentifier.Key, new TreeItemIdentifier(newTabId,owner));
 
             _tabHostViewModel.TabViewModels.Insert(0,newTab);
             _navigationService.NavigateViewToRegion(viewName,newTabId.ToString(),navigationParameters);

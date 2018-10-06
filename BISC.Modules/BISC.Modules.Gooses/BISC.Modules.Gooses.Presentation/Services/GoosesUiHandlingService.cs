@@ -28,7 +28,7 @@ namespace BISC.Modules.Gooses.Presentation.Services
             }
             var treeItemId = _treeManagementService.AddTreeItem(
                 new BiscNavigationParameters() { new BiscNavigationParameter("IED", modelElement) },
-                GooseKeys.GoosePresentationKeys.GooseGroupTreeItemViewKey, uiParentId.ItemId);
+                GooseKeys.GoosePresentationKeys.GooseGroupTreeItemViewKey, uiParentId);
          
         }
     }

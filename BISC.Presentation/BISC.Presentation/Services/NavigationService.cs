@@ -12,6 +12,7 @@ using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Views;
+using CommonServiceLocator;
 using Prism;
 using Prism.Regions;
 
@@ -22,7 +23,7 @@ namespace BISC.Presentation.Services
         private readonly IRegionManager _regionManager;
         private readonly IUserNotificationService _userNotificationService;
         private readonly IInjectionContainer _injectionContainer;
-        private Dictionary<string, Tuple<string, BiscNavigationParameters>> _waitingRegionsdictionary = 
+        private Dictionary<string, Tuple<string, BiscNavigationParameters>> _waitingRegionsdictionary =
             new Dictionary<string, Tuple<string, BiscNavigationParameters>>();
 
 
@@ -57,16 +58,16 @@ namespace BISC.Presentation.Services
             }
             Application.Current.Dispatcher.Invoke(() =>
             {
-               
-                _regionManager.RequestNavigate(regionName, new Uri(viewName, UriKind.Relative),(result =>
-                {
-                    if (result.Error != null)
-                    {
 
-                    }
-                }), navigationParameters?.ToNavigationParameters());
+                _regionManager.RequestNavigate(regionName, new Uri(viewName, UriKind.Relative), (result =>
+                 {
+                     if (result.Error != null)
+                     {
 
-      
+                     }
+                 }), navigationParameters?.ToNavigationParameters());
+
+
             });
         }
 
@@ -74,14 +75,14 @@ namespace BISC.Presentation.Services
         {
             if (_regionManager.Regions.ContainsRegionWithName(regionName))
             {
-              var reg=  _regionManager.Regions[regionName];
+                var reg = _regionManager.Regions[regionName];
                 foreach (var view in reg.Views)
                 {
                     if (view is FrameworkElement frameworkElement)
                     {
                         if (frameworkElement.DataContext is IActiveAware activeAware)
                         {
-                            activeAware.IsActive=false;
+                            activeAware.IsActive = false;
                         }
                     }
                 }
@@ -99,17 +100,36 @@ namespace BISC.Presentation.Services
                     {
                         if (frameworkElement.DataContext is IActiveAware activeAware)
                         {
-                            activeAware.IsActive=true;
+                            activeAware.IsActive = true;
                         }
                     }
                 }
             }
         }
 
+        public void DisposeRegionViewModel(string regionName)
+        {
+            if (_regionManager.Regions.ContainsRegionWithName(regionName))
+            {
+                var reg = _regionManager.Regions[regionName];
+                foreach (var view in reg.Views)
+                {
+                    if (view is FrameworkElement frameworkElement)
+                    {
+                        if (frameworkElement.DataContext is IDisposable disposable)
+                        {
+                            disposable.Dispose();
+                        }
+                    }
+                }
+                _regionManager.Regions.Remove(regionName);
+            }
+        }
+
         public async Task NavigateViewToGlobalRegion(string viewName, BiscNavigationParameters navigationParameters = null)
         {
             var content = _injectionContainer.ResolveType<object>(viewName);
-            var r = new BiscNavigationContext() {BiscNavigationParameters = navigationParameters}.ToNavigationContext();
+            var r = new BiscNavigationContext() { BiscNavigationParameters = navigationParameters }.ToNavigationContext();
             ((content as FrameworkElement).DataContext as INavigationAware)?.OnNavigatedTo(new BiscNavigationContext() { BiscNavigationParameters = navigationParameters }.ToNavigationContext());
             try
             {

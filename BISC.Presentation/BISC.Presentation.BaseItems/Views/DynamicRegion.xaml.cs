@@ -124,11 +124,16 @@ namespace BISC.Presentation.BaseItems.Views
             var globalEventsService = ServiceLocator.Current.GetInstance<IGlobalEventsService>();
             globalEventsService.Unsubscribe<RegionDisposingEvent>(action: (DisposeRegion));
             DynamicRegionBehavior_Unloaded(this, null);
-            var regionManager = ServiceLocator.Current.GetInstance<IRegionManager>();
-            if (regionManager.Regions.ContainsRegionWithName(this.GetValue(RegionKeyProperty) as string))
+         
+            var navigationService = ServiceLocator.Current.GetInstance<INavigationService>();
+            var regionName = this.GetValue(RegionKeyProperty) as string;
+
+            var dynamicRegionChildren = VisualTreeRecursiveHelper.FindVisualChildren<DynamicRegion>(this);
+            foreach (DynamicRegion dynamicRegionChild in dynamicRegionChildren)
             {
-                regionManager.Regions.Remove(this.GetValue(RegionKeyProperty) as string);
+                navigationService.DisposeRegionViewModel(dynamicRegionChild.GetValue(RegionKeyProperty).ToString());
             }
+            navigationService.DisposeRegionViewModel(regionName);
         }
 
         #endregion

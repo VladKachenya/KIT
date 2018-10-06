@@ -33,7 +33,7 @@ namespace BISC.Modules.InformationModel.Presentation.Services
             }
             var treeItemId = _treeManagementService.AddTreeItem(
                    new BiscNavigationParameters() { new BiscNavigationParameter("IED", modelElement) },
-                   InfoModelKeys.InfoModelTreeItemViewKey, uiParentId.ItemId);
+                   InfoModelKeys.InfoModelTreeItemViewKey, uiParentId);
             _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(modelElement, treeItemId,
                 InfoModelKeys.ModelKeys.LDeviceKey);
 

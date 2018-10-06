@@ -6,18 +6,20 @@ namespace BISC.Presentation.Infrastructure.Services
 {
     public class SaveCheckingEntity
     {
-        public SaveCheckingEntity(IObjectWithChangeTracker objectToTrack, string entityFriendlyName, ICommand saveCommand)
+        public SaveCheckingEntity(IChangeTracker changeTracker, string entityFriendlyName, ICommand saveCommand, string regionName=null)
         {
 
-            ObjectToTrack = objectToTrack;
+            ChangeTracker = changeTracker;
             EntityFriendlyName = entityFriendlyName;
             SaveCommand = saveCommand;
+            RegionName = regionName;
         }
 
         public static string NavigationKey = "SaveCheckingEntity";
-        public IObjectWithChangeTracker ObjectToTrack { get; }
+        public IChangeTracker ChangeTracker { get; }
         public string EntityFriendlyName { get; }
         public ICommand SaveCommand { get; }
+        public string RegionName { get; }
     }
 
     public class SaveResult
@@ -28,7 +30,7 @@ namespace BISC.Presentation.Infrastructure.Services
     }
     public interface ISaveCheckingService
     {
-
+        Task<bool> GetIsRegionCanBeClosed(string regionName);
         void AddSaveCheckingEntity(SaveCheckingEntity saveCheckingEntity);
         void RemoveSaveCheckingEntityByOwner(IObjectWithChangeTracker objectWithChangeTracker);
         Task<SaveResult> SaveAllUnsavedEntities();

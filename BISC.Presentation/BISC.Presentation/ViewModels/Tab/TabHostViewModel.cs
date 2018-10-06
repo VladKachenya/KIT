@@ -52,5 +52,7 @@ namespace BISC.Presentation.ViewModels.Tab
                 OnPropertyChanged();
             }
         }
+
+       
     }
 }

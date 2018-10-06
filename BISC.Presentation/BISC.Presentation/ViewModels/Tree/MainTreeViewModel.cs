@@ -23,8 +23,8 @@ namespace BISC.Presentation.ViewModels.Tree
         {
             _saveCheckingService = saveCheckingService;
             _projectService = projectService;
-            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(this,"Основное дерево проекта",commandFactory.CreatePresentationCommand(OnSaveCommand)));
-            SetProperty(ref _childItemViewModels, new ObservableCollection<ITreeItemViewModel>(),nameof(ChildItemViewModels));
+            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,"Основное дерево проекта",commandFactory.CreatePresentationCommand(OnSaveCommand)));
+            SetProperty(ref _childItemViewModels, new ObservableCollection<ITreeItemViewModel>(),false,nameof(ChildItemViewModels));
         }
 
         private void OnSaveCommand()

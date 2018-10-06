@@ -44,13 +44,16 @@ namespace BISC.Presentation.BaseItems.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] String propertyName = null)
+        protected bool SetProperty<T>(ref T storage, T value,bool isExludeFromTracking=false, [CallerMemberName] String propertyName = null)
         {
             if (Equals(storage, value))
             {
                 return false;
             }
-            ChangeTracker.SetValue(propertyName,value);
+            if (!isExludeFromTracking)
+            {
+                  ChangeTracker.SetValue(propertyName,value);
+            }
             storage = value;
             this.OnPropertyChanged(propertyName);
             return true;

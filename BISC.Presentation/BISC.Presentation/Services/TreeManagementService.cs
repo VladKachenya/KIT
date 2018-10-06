@@ -29,19 +29,19 @@ namespace BISC.Presentation.Services
             _navigationService = navigationService;
         }
 
-        public TreeItemIdentifier AddTreeItem(BiscNavigationParameters parameters, string viewName, Guid? parentId)
+        public TreeItemIdentifier AddTreeItem(BiscNavigationParameters parameters, string viewName, TreeItemIdentifier parentTreeItemIdentifier)
         {
             var newTreeItemGuid = Guid.NewGuid();
-            TreeItemIdentifier treeItemIdentifier = new TreeItemIdentifier(parentId, newTreeItemGuid);
+            TreeItemIdentifier treeItemIdentifier = new TreeItemIdentifier(newTreeItemGuid, parentTreeItemIdentifier);
             TreeItemViewModel newItemViewModel = new TreeItemViewModel();
             newItemViewModel.DynamicRegionId = newTreeItemGuid;
 
             parameters.AddParameterByName(TreeItemIdentifier.Key, treeItemIdentifier);
-            if (parentId != null)
+            if (parentTreeItemIdentifier != null&& parentTreeItemIdentifier.ItemId.HasValue)
             {
-                if (_mainTreeViewModels.ContainsKey(parentId.Value))
+                if (_mainTreeViewModels.ContainsKey(parentTreeItemIdentifier.ItemId.Value))
                 {
-                    _mainTreeViewModels[parentId.Value].Item2.ChildItemViewModels.Add(newItemViewModel);
+                    _mainTreeViewModels[parentTreeItemIdentifier.ItemId.Value].Item2.ChildItemViewModels.Add(newItemViewModel);
                 }
             }
             else
@@ -57,13 +57,13 @@ namespace BISC.Presentation.Services
         {
             if (treeItemId.ItemId == null) return;
             if (!_mainTreeViewModels.ContainsKey(treeItemId.ItemId.Value)) return;
-            if (treeItemId.ParentId == null)
+            if (treeItemId.ParenTreeItemIdentifier?.ItemId == null)
             {
                 _mainTreeViewModel.ChildItemViewModels.Remove(_mainTreeViewModels[treeItemId.ItemId.Value].Item2);
             }
             else
             {
-                _mainTreeViewModels[treeItemId.ParentId.Value].Item2.ChildItemViewModels
+                _mainTreeViewModels[treeItemId.ParenTreeItemIdentifier.ItemId.Value].Item2.ChildItemViewModels
                     .Remove(_mainTreeViewModels[treeItemId.ItemId.Value].Item2);
             }
         }

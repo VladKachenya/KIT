@@ -18,6 +18,7 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance tab:TabHostViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
         <converters:ActiveDocumentConverter x:Key="ActiveDocumentConverter"></converters:ActiveDocumentConverter>
     </UserControl.Resources>
     <xcad:DockingManager
@@ -33,13 +34,19 @@
             DocumentHeaderTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
             DocumentTitleTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
             DocumentsSource="{Binding TabViewModels}">
+
         <xcad:DockingManager.DocumentPaneMenuItemHeaderTemplate>
             <DataTemplate>
                 <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
                     <TextBlock
                         Margin="0"
                         VerticalAlignment="Center"
                         Text="{Binding Content.TabHeader}" />
+                    <ContentControl Grid.Column="1" Width="15" Height="15" Visibility="{Binding Content.IsHaveChanges,Converter={StaticResource booleanToVisibilityConverter}}"  ContentTemplate="{DynamicResource SaveIcon}"></ContentControl>
                 </Grid>
             </DataTemplate>
         </xcad:DockingManager.DocumentPaneMenuItemHeaderTemplate>
@@ -126,7 +133,7 @@
                                 <Binding Path="Model.FragmentTitle" />
                             </Setter.Value>
                         </Setter>
-                        <Setter Property="CloseCommand" Value="{Binding Model.CloseFragmentCommand}" />
+                        <Setter Property="CloseCommand" Value="{Binding Model.CloseFragmentCommand}"  />
                     </Style>
                 </docking:PanesStyleSelector.FragmentsPaneStyle>
             </docking:PanesStyleSelector>

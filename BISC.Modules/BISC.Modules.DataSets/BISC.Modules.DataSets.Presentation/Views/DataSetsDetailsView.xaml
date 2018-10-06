@@ -91,6 +91,7 @@
                                     </Expander.Header>
                                     <ListBox PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Name="fcdaListBox"
                                         ItemsSource="{Binding FcdaViewModels}"
+                                          
                                         dd:DragDrop.IsDragSource="True" 
                                         dd:DragDrop.IsDropTarget="True"
                                         dd:DragDrop.DropHandler="{Binding .}">

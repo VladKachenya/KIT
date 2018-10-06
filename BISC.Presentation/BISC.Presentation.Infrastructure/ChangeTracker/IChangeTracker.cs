@@ -8,5 +8,6 @@ namespace BISC.Presentation.Infrastructure.ChangeTracker
         void StartTracking();
         void AcceptChanges();
         bool GetIsModifiedRecursive();
+        Action ChangeTrackerStateChanged { get; set; }
     }
 }

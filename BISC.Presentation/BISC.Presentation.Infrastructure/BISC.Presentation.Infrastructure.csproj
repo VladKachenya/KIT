@@ -66,6 +66,7 @@
     <Compile Include="Commands\ITrackableCommand.cs" />
     <Compile Include="Events\NotificationBarExpandEvent.cs" />
     <Compile Include="Events\RegionDisposingEvent.cs" />
+    <Compile Include="Events\SaveCheckEvent.cs" />
     <Compile Include="Factories\ICommandFactory.cs" />
     <Compile Include="Keys\KeysForNavigation.cs" />
     <Compile Include="Navigation\BiscNavigationContext.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="UiFromModel\IUiFromModelElementService.cs" />
     <Compile Include="Tab\IDraggableTab.cs" />
     <Compile Include="Tree\TreeCommands\ITreeCommand.cs" />
+    <Compile Include="ViewModel\ICheckBeforeClosingViewModel.cs" />
     <Compile Include="ViewModel\IEditableViewModel.cs" />
     <Compile Include="ViewModel\ISelectableViewModel.cs" />
   </ItemGroup>

@@ -24,6 +24,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using BISC.Presentation.Infrastructure.ChangeTracker;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -33,16 +35,19 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private List<IDataSet> _dataSets;
         private IDatasetModelService _datasetModelService;
         private IDatasetViewModelFactory _datasetViewModelFactory;
+        private readonly ISaveCheckingService _saveCheckingService;
         private IBiscProject _biscProject;
+        private ObservableCollection<IDataSetViewModel> _dataSets1;
 
         #region C-tor
 
         public DataSetsDetailsViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService,
-            IBiscProject biscProject, IDatasetModelService datasetModelService, IDatasetViewModelFactory datasetViewModelFactory)
+            IBiscProject biscProject, IDatasetModelService datasetModelService, IDatasetViewModelFactory datasetViewModelFactory,ISaveCheckingService saveCheckingService)
         {
             _biscProject = biscProject;
             _datasetModelService = datasetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
+            _saveCheckingService = saveCheckingService;
             DeployAllExpandersCommand = commandFactory.CreatePresentationCommand(OnDeployAllExpanders);
             RollUpAllExpandersCommand = commandFactory.CreatePresentationCommand(OnRollUpAllExpanders);
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhanges);
@@ -70,13 +75,18 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             {
                 _dataSets.Add(dataSetVM.GetModel());
             }
+            ChangeTracker.AcceptChanges();
         }
         #endregion
 
 
         #region public components
 
-        public ObservableCollection<IDataSetViewModel> DataSets { get; protected set; }
+        public ObservableCollection<IDataSetViewModel> DataSets
+        {
+            get => _dataSets1;
+            protected set { SetProperty(ref _dataSets1 ,value); }
+        }
 
         public ICommand DeployAllExpandersCommand { get; }
         public ICommand RollUpAllExpandersCommand { get; }
@@ -91,8 +101,19 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
             DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
+            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker, $"DataSets устройства {_device.Name}",SaveСhangesCommand, navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString()));
+            ChangeTracker.StartTracking();
             base.OnNavigatedTo(navigationContext);
         }
+
+      
+        protected override void OnDisposing()
+        {
+          
+            base.OnDisposing();
+        }
+
+
         #endregion
 
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using BISC.Presentation.Infrastructure.ViewModel;
 
 namespace BISC.Presentation.Interfaces
 {

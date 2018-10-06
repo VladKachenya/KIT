@@ -52,7 +52,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             var treeItemIdentifier =
                 navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(
                     TreeItemIdentifier.Key);
-            _dataSetDetailsIdentifier = new TreeItemIdentifier(treeItemIdentifier.ItemId, Guid.NewGuid());
+            _dataSetDetailsIdentifier = new TreeItemIdentifier(Guid.NewGuid(),treeItemIdentifier);
 
             base.OnNavigatedTo(navigationContext);
         }

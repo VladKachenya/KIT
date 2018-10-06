@@ -39,7 +39,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         public IInfoModelItemViewModel SelectedTreeItem
         {
             get => _selectedTreeItem;
-            set { SetProperty(ref _selectedTreeItem, value); }
+            set { SetProperty(ref _selectedTreeItem, value,true); }
         }
 
         bool IsLocalValuesShowing

@@ -33,7 +33,7 @@ namespace BISC.Modules.InformationModel.Presentation.Services
                 BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
                 biscNavigationParameters.AddParameterByName(InfoModelKeys.ModelKeys.LDeviceKey, lDevice);
                 var treeItemId = _treeManagementService.AddTreeItem(biscNavigationParameters,
-                    InfoModelKeys.LdeviceTreeItemViewKey, uiParentId.ItemId);
+                    InfoModelKeys.LdeviceTreeItemViewKey, uiParentId);
             }
           
         }

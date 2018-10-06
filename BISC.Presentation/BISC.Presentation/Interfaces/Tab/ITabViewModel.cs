@@ -8,6 +8,8 @@ namespace BISC.Presentation.Interfaces
     {
         string TabRegionName { get; set; }
         string TabHeader { get; set; }
+        bool IsHaveChanges { get; set; }
+
         ICommand CloseFragmentCommand { get; }
     }
 }

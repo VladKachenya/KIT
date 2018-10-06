@@ -7,19 +7,19 @@ namespace BISC.Presentation.Infrastructure.Services
     public class TreeItemIdentifier
     {
         public static string Key = "TreeItemIdentifier";
-        public TreeItemIdentifier(Guid? parentId, Guid? itemId)
+        public TreeItemIdentifier(Guid? itemId, TreeItemIdentifier parenTreeItemIdentifier = null)
         {
-            ParentId = parentId;
+            ParenTreeItemIdentifier = parenTreeItemIdentifier;
             ItemId = itemId;
         }
 
-        public Guid? ParentId { get; }
+        public TreeItemIdentifier ParenTreeItemIdentifier { get; }
         public Guid? ItemId { get; }
     }
   
     public interface ITreeManagementService
     {
-        TreeItemIdentifier AddTreeItem(BiscNavigationParameters parameters,string viewName,Guid? parentId);
+        TreeItemIdentifier AddTreeItem(BiscNavigationParameters parameters,string viewName, TreeItemIdentifier parentTreeItemIdentifier);
         void DeleteTreeItem(TreeItemIdentifier treeItemId);
 
     }

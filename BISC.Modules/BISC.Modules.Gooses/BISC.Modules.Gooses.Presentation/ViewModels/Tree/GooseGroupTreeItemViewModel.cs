@@ -57,9 +57,9 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
             var treeItemIdentifier =
                 navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(
                     TreeItemIdentifier.Key);
-            _subscriptionIdentifier=new TreeItemIdentifier(treeItemIdentifier.ItemId,Guid.NewGuid());
-            _matrixIdentifier = new TreeItemIdentifier(treeItemIdentifier.ItemId, Guid.NewGuid());
-            _gooseEditIdentifier = new TreeItemIdentifier(treeItemIdentifier.ItemId, Guid.NewGuid());
+            _subscriptionIdentifier=new TreeItemIdentifier(Guid.NewGuid(),treeItemIdentifier);
+            _matrixIdentifier = new TreeItemIdentifier(Guid.NewGuid(), treeItemIdentifier);
+            _gooseEditIdentifier = new TreeItemIdentifier(Guid.NewGuid(), treeItemIdentifier);
 
             base.OnNavigatedTo(navigationContext);
         }

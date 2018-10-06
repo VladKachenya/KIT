@@ -27,7 +27,7 @@ namespace BISC.Modules.DataSets.Presentation.Services
             }
             var treeItemId = _treeManagementService.AddTreeItem(
                 new BiscNavigationParameters() { new BiscNavigationParameter("IED", modelElement) },
-                DatasetKeys.DatasetViewModelKeys.DataSetsTreeItemView, uiParentId.ItemId);
+                DatasetKeys.DatasetViewModelKeys.DataSetsTreeItemView, uiParentId);
         }
     }
 }

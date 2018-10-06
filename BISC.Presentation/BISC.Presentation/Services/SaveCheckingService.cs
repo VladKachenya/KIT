@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Services;
 using BISC.Presentation.Infrastructure.ChangeTracker;
+using BISC.Presentation.Infrastructure.Events;
 using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
@@ -13,24 +15,70 @@ namespace BISC.Presentation.Services
     public class SaveCheckingService : ISaveCheckingService
     {
         private readonly INavigationService _navigationService;
+        private readonly IGlobalEventsService _globalEventsService;
         private List<SaveCheckingEntity> _saveCheckingEntities = new List<SaveCheckingEntity>();
 
-        public SaveCheckingService(INavigationService navigationService)
+        public SaveCheckingService(INavigationService navigationService,IGlobalEventsService globalEventsService)
         {
             _navigationService = navigationService;
+            _globalEventsService = globalEventsService;
         }
-        public void AddSaveCheckingEntity(SaveCheckingEntity saveCheckingEntity)
+
+        public async Task<bool> GetIsRegionCanBeClosed(string regionName)
         {
-            if (!_saveCheckingEntities.Any((entity => entity.ObjectToTrack == saveCheckingEntity.ObjectToTrack)))
+            if (_saveCheckingEntities.Any((entity => entity.RegionName == regionName)))
             {
-                _saveCheckingEntities.Add(saveCheckingEntity);
+
+                SaveResult saveResultEnum = new SaveResult();
+                var modifiedEntities = _saveCheckingEntities.Where((entity =>
+                    entity.RegionName==regionName)).ToList();
+                if (modifiedEntities.Any()&&modifiedEntities.First().ChangeTracker.GetIsModifiedRecursive())
+                {
+                    BiscNavigationParameters navigationParameters = new BiscNavigationParameters();
+                    navigationParameters.AddParameterByName(SaveCheckingEntity.NavigationKey, modifiedEntities).AddParameterByName(nameof(SaveResult), saveResultEnum);
+                    await _navigationService.NavigateViewToGlobalRegion(KeysForNavigation.ViewNames.SaveChangesViewName, navigationParameters);
+                }
+
+                if (saveResultEnum.IsSaved)
+                {
+                    modifiedEntities.ForEach((entity =>
+                    {
+                        entity.SaveCommand?.Execute(null);
+                    }));
+                }
+                return !saveResultEnum.IsCancelled;
+            }
+            else
+            {
+                return true;
             }
         }
+
+        public void AddSaveCheckingEntity(SaveCheckingEntity saveCheckingEntity)
+        {
+            if (!_saveCheckingEntities.Any((entity => entity.ChangeTracker == saveCheckingEntity.ChangeTracker)))
+            {
+                _saveCheckingEntities.Add(saveCheckingEntity);
+                TrySubscribeOnChangeTrackerChanged(saveCheckingEntity);
+            }
+        }
+
+        private void TrySubscribeOnChangeTrackerChanged(SaveCheckingEntity saveCheckingEntity)
+        {
+            if(saveCheckingEntity.RegionName==null)return;
+            saveCheckingEntity.ChangeTracker.ChangeTrackerStateChanged += () =>
+            {
+                _globalEventsService.SendMessage(new SaveCheckEvent(saveCheckingEntity.RegionName,saveCheckingEntity.ChangeTracker.GetIsModifiedRecursive()));
+            };
+        }
+     
+        
+
 
         public void RemoveSaveCheckingEntityByOwner(IObjectWithChangeTracker objectWithChangeTracker)
         {
             var entityFinded =
-                _saveCheckingEntities.FirstOrDefault((entity => entity.ObjectToTrack == objectWithChangeTracker));
+                _saveCheckingEntities.FirstOrDefault((entity => entity.ChangeTracker == objectWithChangeTracker.ChangeTracker));
 
             if (entityFinded != null)
             {
@@ -42,7 +90,7 @@ namespace BISC.Presentation.Services
         {
             SaveResult saveResultEnum = new SaveResult();
             var modifiedEntities = _saveCheckingEntities.Where((entity =>
-                entity.ObjectToTrack.ChangeTracker.GetIsModifiedRecursive())).ToList();
+                entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
             if (modifiedEntities.Any())
             {
                 BiscNavigationParameters navigationParameters=new BiscNavigationParameters();
