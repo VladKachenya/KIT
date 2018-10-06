@@ -85,7 +85,9 @@
     <DataTemplate x:Key="InformationVariantIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="InformationVariant" />
     </DataTemplate>
-
+    <DataTemplate x:Key="ContentSaveAllIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ContentSaveAll" />
+    </DataTemplate>
     <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
         <!--<Style.Resources >
             <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#44111121" />

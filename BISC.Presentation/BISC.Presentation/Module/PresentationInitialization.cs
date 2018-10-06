@@ -12,9 +12,10 @@ using Prism.Events;
 
 namespace BISC.Presentation.Module
 {
-   public class PresentationInitialization
+    public class PresentationInitialization
     {
         private readonly IInjectionContainer _injectionContainer;
+        private readonly ISaveCheckingService _saveCheckingService;
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
         private readonly IProjectService _projectService;
@@ -25,13 +26,14 @@ namespace BISC.Presentation.Module
         private readonly IMainTreeViewModel _mainTreeViewModel;
         private readonly ILoggingService _loggingService;
 
-        public PresentationInitialization(IEventAggregator eventAggregator, 
-            INavigationService navigationService,IProjectService projectService
-            ,IUiFromModelElementRegistryService uiFromModelElementRegistryService,IBiscProject biscProject
-            ,IUserInterfaceComposingService userInterfaceComposingService,ICommandFactory commandFactory,
-            IMainTreeViewModel mainTreeViewModel,ILoggingService loggingService, IInjectionContainer injectionContainer)
+        public PresentationInitialization(IEventAggregator eventAggregator,
+            INavigationService navigationService, IProjectService projectService
+            , IUiFromModelElementRegistryService uiFromModelElementRegistryService, IBiscProject biscProject
+            , IUserInterfaceComposingService userInterfaceComposingService, ICommandFactory commandFactory,
+            IMainTreeViewModel mainTreeViewModel, ILoggingService loggingService, IInjectionContainer injectionContainer, ISaveCheckingService saveCheckingService)
         {
             _injectionContainer = injectionContainer;
+            _saveCheckingService = saveCheckingService;
             _eventAggregator = eventAggregator;
             _navigationService = navigationService;
             _projectService = projectService;
@@ -43,8 +45,8 @@ namespace BISC.Presentation.Module
             _loggingService = loggingService;
             _eventAggregator.GetEvent<ShellLoadedEvent>().Subscribe((args =>
             {
-                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject),"Сохранить проект",IconsKeys.SaveIconKey);
-                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки");
+                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject), "Сохранить все изменения в проект", IconsKeys.ContentSaveAllKey,true,true);
+                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки",null,true,false);
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTreeViewName,
                     KeysForNavigation.RegionNames.MainTreeRegionKey);
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTabHostViewName,
@@ -56,16 +58,17 @@ namespace BISC.Presentation.Module
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.NotificationBarViewName,
                     KeysForNavigation.RegionNames.NotificationBarKey);
                 _projectService.OpenDefaultProject();
-                _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(_biscProject.MainSclModel.Value,null,"SCL");
-                _mainTreeViewModel.ChangeTracker.StartTracking();
+                _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(_biscProject.MainSclModel.Value, null, "SCL");
+                _mainTreeViewModel.ChangeTracker.SetTrackingEnabled(true);
             }));
 
         }
 
-        private void OnSaveProject()
+        private async void OnSaveProject()
         {
             _projectService.SaveCurrentProject();
-            _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}",SeverityEnum.Info);
+            await _saveCheckingService.SaveAllUnsavedEntities();
+            _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
         }
 
         private void OnApplicatoinSettingsAdding()

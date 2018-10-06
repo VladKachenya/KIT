@@ -5,7 +5,7 @@ namespace BISC.Presentation.Infrastructure.ChangeTracker
     public interface IChangeTracker:IDisposable
     {
         void SetValue(string key, object value);
-        void StartTracking();
+        void SetTrackingEnabled(bool isTrackingEnabled);
         void AcceptChanges();
         bool GetIsModifiedRecursive();
     }

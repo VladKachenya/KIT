@@ -24,6 +24,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using BISC.Infrastructure.Global.Services;
 using BISC.Presentation.Infrastructure.ChangeTracker;
 using BISC.Presentation.Infrastructure.Services;
 
@@ -36,14 +37,16 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private IDatasetModelService _datasetModelService;
         private IDatasetViewModelFactory _datasetViewModelFactory;
         private readonly ISaveCheckingService _saveCheckingService;
+        private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private IBiscProject _biscProject;
         private ObservableCollection<IDataSetViewModel> _dataSets1;
 
         #region C-tor
 
-        public DataSetsDetailsViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService,
+        public DataSetsDetailsViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService,IUserInterfaceComposingService userInterfaceComposingService,
             IBiscProject biscProject, IDatasetModelService datasetModelService, IDatasetViewModelFactory datasetViewModelFactory,ISaveCheckingService saveCheckingService)
         {
+            _userInterfaceComposingService = userInterfaceComposingService;
             _biscProject = biscProject;
             _datasetModelService = datasetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
@@ -102,11 +105,27 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
             DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker, $"DataSets устройства {_device.Name}",SaveСhangesCommand, navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString()));
-            ChangeTracker.StartTracking();
+            ChangeTracker.SetTrackingEnabled(true);
+          
             base.OnNavigatedTo(navigationContext);
         }
 
-      
+  
+
+        public override void OnActivate()
+        {
+            _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}");
+            base.OnActivate();
+        }
+
+        public override void OnDeactivate()
+        {
+            _userInterfaceComposingService.ClearCurrentSaveCommand();
+            base.OnDeactivate();
+        }
+
+    
+
         protected override void OnDisposing()
         {
           

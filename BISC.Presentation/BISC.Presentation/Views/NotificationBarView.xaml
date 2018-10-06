@@ -16,17 +16,19 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="22"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Visibility="{Binding IsNotificationsExpanded,Converter={StaticResource booleanToVisibilityConverter}}" VerticalAlignment="Stretch" MinHeight="100"></Grid>
+        <Grid Visibility="{Binding IsNotificationsExpanded,Converter={StaticResource booleanToVisibilityConverter}}" VerticalAlignment="Stretch" MinHeight="100">
+
+        </Grid>
         <Border Grid.Row="1"  Height="22"  Background="#4FFF4500">
             <StackPanel Orientation="Horizontal">
-                
+
                 <Button Padding="1" Width="22" Height="22" Command="{Binding ExpandedChangeCommand}" Style="{DynamicResource MaterialDesignFlatButton}">
                     <Grid>
                         <ContentControl Visibility="{Binding IsNotificationsExpanded,Converter={StaticResource booleanToVisibilityConverter}}" ContentTemplate="{DynamicResource ChevronDoubleDownIcon}"></ContentControl>
                         <ContentControl Visibility="{Binding IsNotificationsExpanded,Converter={StaticResource boolToInVisConverter}}" ContentTemplate="{DynamicResource ChevronDoubleUpIcon}"></ContentControl>
                     </Grid>
                 </Button>
-
+               
             </StackPanel>
         </Border>
         <!--<Expander IsExpanded="{Binding IsNotificationsExpanded}"  ExpandDirection="Down">

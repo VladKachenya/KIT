@@ -26,11 +26,25 @@ namespace BISC.Presentation.BaseItems.ViewModels
                 OnPropertyChanged();
                 if (value)
                 {
-                    OnActivate();
+                    try
+                    {
+                        OnActivate();
+                    }
+                    catch (Exception e)
+                    {
+                        // ignored
+                    }
                 }
                 else
                 {
-                    OnDeactivate();
+                    try
+                    {
+                        OnDeactivate();
+                    }
+                    catch (Exception e)
+                    {
+                        // ignored
+                    }
                 }
                 if (Dispatcher.CurrentDispatcher == Application.Current.Dispatcher)
                 {

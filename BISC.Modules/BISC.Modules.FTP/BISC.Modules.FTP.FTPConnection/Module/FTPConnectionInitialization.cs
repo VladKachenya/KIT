@@ -18,7 +18,7 @@ namespace BISC.Modules.FTP.FTPConnection.Module
             ICommandFactory commandFactory, IInjectionContainer injectionContainer)
         {
             _injectionContainer = injectionContainer;
-            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(OnAddingFTPService, null), "FTP Сервис");
+            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(OnAddingFTPService, null), "FTP Сервис",null,true,false);
         }
 
         private void OnAddingFTPService()

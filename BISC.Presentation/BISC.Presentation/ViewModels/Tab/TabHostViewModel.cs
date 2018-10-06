@@ -18,13 +18,13 @@ using Prism.Regions;
 
 namespace BISC.Presentation.ViewModels.Tab
 {
-    public class TabHostViewModel :ViewModelBase, ITabHostViewModel
+    public class TabHostViewModel : ViewModelBase, ITabHostViewModel
     {
         private readonly INavigationService _navigationService;
         private readonly IGlobalEventsService _globalEventsService;
         private ITabViewModel _activeTabViewModel;
 
-        public TabHostViewModel(INavigationService navigationService,IGlobalEventsService globalEventsService)
+        public TabHostViewModel(INavigationService navigationService, IGlobalEventsService globalEventsService)
         {
             _navigationService = navigationService;
             _globalEventsService = globalEventsService;
@@ -48,11 +48,15 @@ namespace BISC.Presentation.ViewModels.Tab
             get => _activeTabViewModel;
             set
             {
+                if(_activeTabViewModel!=null)
+                _navigationService.DeactivateRegion(_activeTabViewModel.TabRegionName);
                 _activeTabViewModel = value;
+
+                _navigationService.ActivateRegion(value.TabRegionName);
                 OnPropertyChanged();
             }
         }
 
-       
+
     }
 }

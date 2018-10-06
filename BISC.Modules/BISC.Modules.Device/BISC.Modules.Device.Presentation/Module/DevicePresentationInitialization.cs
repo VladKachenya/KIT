@@ -26,7 +26,7 @@ namespace BISC.Modules.Device.Presentation.Module
         {
             _injectionContainer = injectionContainer;
             _uiFromModelElementRegistryService = uiFromModelElementRegistryService;
-            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(OnDeviceAdding, null), "Добавить устройство", IconsKeys.ServerPlusIconKey);
+            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(OnDeviceAdding, null), "Добавить устройство", IconsKeys.ServerPlusIconKey,true,true);
             _uiFromModelElementRegistryService.RegisterModelElement(injectionContainer.ResolveType<IDeviceAddingService>(), ModelKeys.SclModelKey);
         }
 

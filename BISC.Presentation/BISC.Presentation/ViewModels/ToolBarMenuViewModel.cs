@@ -18,7 +18,7 @@ namespace BISC.Presentation.ViewModels
         public ToolBarMenuViewModel(IUserInterfaceComposingService userInterfaceComposingService)
         {
             _userInterfaceComposingService = userInterfaceComposingService;
-            GlobalCommands = _userInterfaceComposingService.GetCommandsWithIcons();
+            GlobalCommands = _userInterfaceComposingService.GetToolBarCommands();
         }
         public ObservableCollection<IGlobalCommand> GlobalCommands { get; }
     }

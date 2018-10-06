@@ -17,7 +17,7 @@ namespace BISC.Presentation.ViewModels
         public HamburgerMenuViewModel(IUserInterfaceComposingService userInterfaceComposingService)
         {
             _userInterfaceComposingService = userInterfaceComposingService;
-            GlobalCommands = _userInterfaceComposingService.GetAllCommands();
+            GlobalCommands = _userInterfaceComposingService.GetMenuCommands();
         }
         public ObservableCollection<IGlobalCommand> GlobalCommands { get; }
     }

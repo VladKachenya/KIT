@@ -78,14 +78,13 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
             }
         }
 
-        public void StartTracking()
+        public void SetTrackingEnabled(bool isTrackingEnabled)
         {
-            ChangeTrackerState = ChangeTrackerState.Unchanged;
             foreach (var value in _valuesDictionary)
             {
                 if (value.Value is IObjectWithChangeTracker objectWithChangeTracker)
                 {
-                    objectWithChangeTracker.ChangeTracker.StartTracking();
+                    objectWithChangeTracker.ChangeTracker.SetTrackingEnabled(isTrackingEnabled);
                 }
 
                 if (value.Value is IEnumerable enumerable)
@@ -94,17 +93,16 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
                     {
                         if (eVal is IObjectWithChangeTracker eValWithChangeTracker)
                         {
-                            eValWithChangeTracker.ChangeTracker.StartTracking();
+                            eValWithChangeTracker.ChangeTracker.SetTrackingEnabled(isTrackingEnabled);
                         }
                     }
                 }
             }
-            _isTrackingEnabled = true;
+            _isTrackingEnabled = isTrackingEnabled;
         }
 
         public void AcceptChanges()
         {
-            _isTrackingEnabled = false;
             foreach (var value in _valuesDictionary)
             {
                 if (value.Value is IObjectWithChangeTracker objectWithChangeTracker)
