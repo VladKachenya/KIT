@@ -60,11 +60,19 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _model = model ?? throw new NullReferenceException();
         }
 
-        public bool IsEditeble => (_model.ParentModelElement as IDataSet).IsDynamic;
+        public bool IsEditeble
+        {
+            get
+            {
+                if(_model.ParentModelElement != null)
+                    return (_model.ParentModelElement as IDataSet).IsDynamic;
+                return true;
+            }
+        }
 
         #endregion
 
-        #region Implementation of IFcdaViewModel
+            #region Implementation of IFcdaViewModel
         public ICommand DeleteFcdaCommand { get; }
         #endregion
 

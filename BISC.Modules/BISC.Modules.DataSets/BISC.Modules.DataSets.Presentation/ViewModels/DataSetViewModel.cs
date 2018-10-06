@@ -116,11 +116,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #endregion
 
         #region override of NavigationViewModelBase
-
-
-        
-
-
         public void DragOver(IDropInfo dropInfo)
         {
             TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;

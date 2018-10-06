@@ -39,6 +39,19 @@
                         <ContentControl ContentTemplate="{DynamicResource SaveIcon}"/>
                     </Button.Content>
                 </Button>
+                <Button  Command="{Binding AddNewDataSetCommand}" Visibility="Visible" Margin="10,5" Height="20" Width="20"
+                         Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                        ToolTip="Добавить DataSet">
+                    <Button.Content>
+                        <ContentControl ContentTemplate="{DynamicResource PlusOutlineIcon}"/>
+                    </Button.Content>
+                </Button>
+                <!--<Button  Margin="10,5" Height="20" Width="20"  Visibility="Visible"
+                        
+                        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                        ToolTip="">
+                    
+                </Button>-->
                 <Button  Margin="10,5" Height="20" Width="20" Visibility="Collapsed"
                         Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
                         ToolTip="Записать в устройство">
@@ -89,44 +102,46 @@
                                             </Button>
                                         </StackPanel>
                                     </Expander.Header>
-                                    <ListBox PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Name="fcdaListBox"
-                                        ItemsSource="{Binding FcdaViewModels}"
-                                          
-                                        dd:DragDrop.IsDragSource="True" 
-                                        dd:DragDrop.IsDropTarget="True"
-                                        dd:DragDrop.DropHandler="{Binding .}">
-                                        <ListBox.ItemContainerStyle>
-                                            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                            </Style>
-                                        </ListBox.ItemContainerStyle>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate >
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="40, 0">
-                                                        <Border Margin="2"  Background="{Binding TypeColorBrush}" >
-                                                            <TextBlock Margin="3" Text="{Binding ElementName}"/>
-                                                        </Border>
-                                                        <TextBlock Margin="3" Text="{Binding FullName}"/>
-                                                    </StackPanel>
-                                                    <Button Margin="2" Padding="3" Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"
-                                                        Command="{Binding DataContext.DeleteFcdaCommand,Source={x:Reference fcdaListBox}}"
-                                                        CommandParameter="{Binding .}"
-                                                        Style="{DynamicResource MaterialDesignRaisedButton}"
-                                                        Width="20" Height="20"
-                                                        Grid.Column="1">
-                                                        <Button.Content>
-                                                            <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
-                                                        </Button.Content>
-                                                    </Button>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ListBox>
+                                    <Border BorderThickness="1" Background="#FFE0E0E0">
+                                        <ListBox PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Name="fcdaListBox"
+                                            MinHeight="50"
+                                            ItemsSource="{Binding FcdaViewModels}"  
+                                            dd:DragDrop.IsDragSource="True" 
+                                            dd:DragDrop.IsDropTarget="{Binding IsEditeble}"
+                                            dd:DragDrop.DropHandler="{Binding .}">
+                                            <ListBox.ItemContainerStyle>
+                                                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                </Style>
+                                            </ListBox.ItemContainerStyle>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate >
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="40, 0">
+                                                            <Border Margin="2"  Background="{Binding TypeColorBrush}" >
+                                                                <TextBlock Margin="3" Text="{Binding ElementName}"/>
+                                                            </Border>
+                                                            <TextBlock Margin="3" Text="{Binding FullName}"/>
+                                                        </StackPanel>
+                                                        <Button Margin="2" Padding="3" Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                            Command="{Binding DataContext.DeleteFcdaCommand,Source={x:Reference fcdaListBox}}"
+                                                            CommandParameter="{Binding .}"
+                                                            Style="{DynamicResource MaterialDesignRaisedButton}"
+                                                            Width="20" Height="20"
+                                                            Grid.Column="1">
+                                                            <Button.Content>
+                                                                <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
+                                                            </Button.Content>
+                                                        </Button>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ListBox>
+                                    </Border>
                                 </Expander>
                             </Grid>
                         </Border>
