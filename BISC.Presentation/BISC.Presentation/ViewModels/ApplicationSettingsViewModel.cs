@@ -5,6 +5,7 @@ using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Interfaces.Menu;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,8 @@ namespace BISC.Presentation.ViewModels
         IConfigurationService _configurationService;
         bool _isAutoEnabledValidityInGooseReceiving;
         bool _isAutoEnabledQualityInGooseReceiving;
+        int _mmsQueryDelay;
+        bool _isVisibleValidadionError;
         #endregion
 
         #region C-tor
@@ -35,8 +38,9 @@ namespace BISC.Presentation.ViewModels
                 SaveChanges();
             }));
             IsAutoEnabledValidityInGooseReceiving = _configurationService.IsAutoEnabledValidityInGooseReceiving;
-            IsAutoEnabledQualityInGooseReceiving= _configurationService.IsAutoEnabledQualityInGooseReceiving;
-
+            IsAutoEnabledQualityInGooseReceiving = _configurationService.IsAutoEnabledQualityInGooseReceiving;
+            _mmsQueryDelay = _configurationService.MmsQueryDelay;
+            IsVisibleValidadionError = false;
         }
         #endregion
 
@@ -45,6 +49,7 @@ namespace BISC.Presentation.ViewModels
         {
             _configurationService.IsAutoEnabledValidityInGooseReceiving = IsAutoEnabledValidityInGooseReceiving;
             _configurationService.IsAutoEnabledQualityInGooseReceiving = IsAutoEnabledQualityInGooseReceiving;
+            _configurationService.MmsQueryDelay = _mmsQueryDelay;
 
         }
         #endregion
@@ -62,11 +67,43 @@ namespace BISC.Presentation.ViewModels
             set => SetProperty(ref _isAutoEnabledQualityInGooseReceiving, value);
         }
 
+        public string MmsQueryDelay
+        {
+            get => _mmsQueryDelay.ToString();
+            set
+            {
+                int buf = 0;
+                bool res = true;
+                if (value != string.Empty)
+                    res = Int32.TryParse(value, out buf);
+                if (!res || buf < 0 || buf > 100)
+                {
+                    IsVisibleValidadionError = true;
+                    return;
+                }
+                else 
+                { 
+                    IsVisibleValidadionError = false;
+                    _mmsQueryDelay = buf;
+                    OnPropertyChanged();
+                }
+
+            }
+        }
+
+        public bool IsVisibleValidadionError
+        {
+            get => _isVisibleValidadionError;
+            set => SetProperty(ref _isVisibleValidadionError, value);
+        }
+
+
         public ICommand CloseCommand { get; }
         public ICommand ConfirmCommand { get; }
 
         #endregion
 
+     
         #region Overrides of ViewModelBase
 
         protected override void OnDisposing()

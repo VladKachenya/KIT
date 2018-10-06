@@ -110,7 +110,17 @@ namespace BISC.GlobalServices
             }
         }
 
-        public List<string> GetIpsCollection(string key)
+        public int MmsQueryDelay
+        {
+            get => Settings.Default.MmsQueryDelay;
+            set
+            {
+                Settings.Default.MmsQueryDelay = value;
+                Settings.Default.Save();
+            }
+        }
+
+    public List<string> GetIpsCollection(string key)
         {
             if (key == Constants.ConfigurationServiceConstants.LastConnectedIpAddresses)
                 return LastConnectedIpAddresses;

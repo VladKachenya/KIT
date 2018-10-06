@@ -15,5 +15,8 @@ namespace BISC.Presentation.Interfaces.Menu
 
         bool IsAutoEnabledValidityInGooseReceiving { get; set; }
         bool IsAutoEnabledQualityInGooseReceiving { get; set; }
+        string MmsQueryDelay { get; set; }
+        bool IsVisibleValidadionError { get; set; }
+
     }
 }

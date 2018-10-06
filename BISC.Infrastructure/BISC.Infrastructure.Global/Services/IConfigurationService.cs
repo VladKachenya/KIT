@@ -15,6 +15,8 @@ namespace BISC.Infrastructure.Global.Services
 
         bool IsAutoEnabledValidityInGooseReceiving { get; set; }
         bool IsAutoEnabledQualityInGooseReceiving { get; set; }
+        int MmsQueryDelay { get; set; }
+
 
     }
 }
