@@ -1,4 +1,5 @@
-﻿using BISC.Infrastructure.Global.Logging;
+﻿using BISC.Infrastructure.Global.IoC;
+using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Presentation.BaseItems.Events;
@@ -13,6 +14,7 @@ namespace BISC.Presentation.Module
 {
    public class PresentationInitialization
     {
+        private readonly IInjectionContainer _injectionContainer;
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
         private readonly IProjectService _projectService;
@@ -27,9 +29,9 @@ namespace BISC.Presentation.Module
             INavigationService navigationService,IProjectService projectService
             ,IUiFromModelElementRegistryService uiFromModelElementRegistryService,IBiscProject biscProject
             ,IUserInterfaceComposingService userInterfaceComposingService,ICommandFactory commandFactory,
-            IMainTreeViewModel mainTreeViewModel,ILoggingService loggingService )
+            IMainTreeViewModel mainTreeViewModel,ILoggingService loggingService, IInjectionContainer injectionContainer)
         {
-
+            _injectionContainer = injectionContainer;
             _eventAggregator = eventAggregator;
             _navigationService = navigationService;
             _projectService = projectService;
@@ -42,6 +44,7 @@ namespace BISC.Presentation.Module
             _eventAggregator.GetEvent<ShellLoadedEvent>().Subscribe((args =>
             {
                 _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject),"Сохранить проект",IconsKeys.SaveIconKey);
+                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки");
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTreeViewName,
                     KeysForNavigation.RegionNames.MainTreeRegionKey);
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTabHostViewName,
@@ -65,5 +68,9 @@ namespace BISC.Presentation.Module
             _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}",SeverityEnum.Info);
         }
 
+        private void OnApplicatoinSettingsAdding()
+        {
+            _injectionContainer.ResolveType<IApplicationSettingsAddingService>().OpenApplicatoinSettingsView();
+        }
     }
 }

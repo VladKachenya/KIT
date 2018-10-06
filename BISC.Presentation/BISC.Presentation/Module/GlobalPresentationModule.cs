@@ -42,6 +42,8 @@ namespace BISC.Presentation.Module
             _injectionContainer.RegisterType<ISaveCheckingService, SaveCheckingService>(true);
             _injectionContainer.RegisterType<SaveChangesViewModel>();
             _injectionContainer.RegisterType<NotificationBarViewModel>();
+            _injectionContainer.RegisterType<IApplicationSettingsViewModel, ApplicationSettingsViewModel>();
+            _injectionContainer.RegisterType<IApplicationSettingsAddingService, ApplicationSettingsAddingService>(true);
 
             _injectionContainer.RegisterType<object,TabHostView>(KeysForNavigation.ViewNames.MainTabHostViewName);
             _injectionContainer.RegisterType<object, MainTreeView>(KeysForNavigation.ViewNames.MainTreeViewName);
@@ -49,6 +51,8 @@ namespace BISC.Presentation.Module
             _injectionContainer.RegisterType<object, ToolBarMenuView>(KeysForNavigation.ViewNames.ToolBarMenuViewName);
             _injectionContainer.RegisterType<object, SaveChangesView>(KeysForNavigation.ViewNames.SaveChangesViewName);
             _injectionContainer.RegisterType<object, NotificationBarView>(KeysForNavigation.ViewNames.NotificationBarViewName);
+            _injectionContainer.RegisterType<object, ApplicationSettingsView>(KeysForNavigation.ViewNames.ApplicationSettingsViewName);
+
 
             _injectionContainer.RegisterType<PresentationInitialization>(true);
 
