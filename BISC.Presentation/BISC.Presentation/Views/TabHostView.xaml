@@ -53,10 +53,15 @@
         <xcad:DockingManager.Resources>
             <DataTemplate x:Key="DockingWindowTitleDataTemplate" DataType="xcad:LayoutContent">
                 <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
                     <TextBlock
-                            Margin="0"
-                            VerticalAlignment="Center"
-                            Text="{Binding Content.TabHeader}" />
+                        Margin="0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Content.TabHeader}" />
+                    <ContentControl Grid.Column="1" Margin="2,4,2,2" Width="15" Height="15" Visibility="{Binding Content.IsHaveChanges,Converter={StaticResource booleanToVisibilityConverter}}"  ContentTemplate="{DynamicResource SaveIcon}"></ContentControl>
                 </Grid>
             </DataTemplate>
 

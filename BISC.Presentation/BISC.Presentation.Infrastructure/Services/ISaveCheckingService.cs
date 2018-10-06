@@ -34,5 +34,7 @@ namespace BISC.Presentation.Infrastructure.Services
         void AddSaveCheckingEntity(SaveCheckingEntity saveCheckingEntity);
         void RemoveSaveCheckingEntityByOwner(IObjectWithChangeTracker objectWithChangeTracker);
         Task<SaveResult> SaveAllUnsavedEntities();
+        Task<bool> GetIsRegionSaved(string regionName);
+
     }
 }

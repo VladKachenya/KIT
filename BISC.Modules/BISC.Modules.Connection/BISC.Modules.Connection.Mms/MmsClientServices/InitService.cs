@@ -145,13 +145,12 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             {
                 await TcpRw.StartClientAsync(_state);
                 await _state.iso.SendCOTPSessionInitAsync(_state);
+                return await SendInitiateAsync(_state);
             }
             catch (Exception e)
             {
                 return false;
             }
-
-            return await SendInitiateAsync(_state);
         }
 
         public InitService(Iec61850State state) : base(state)

@@ -59,19 +59,9 @@ namespace BISC.Presentation.Services
             if (!_saveCheckingEntities.Any((entity => entity.ChangeTracker == saveCheckingEntity.ChangeTracker)))
             {
                 _saveCheckingEntities.Add(saveCheckingEntity);
-                TrySubscribeOnChangeTrackerChanged(saveCheckingEntity);
             }
         }
 
-        private void TrySubscribeOnChangeTrackerChanged(SaveCheckingEntity saveCheckingEntity)
-        {
-            if(saveCheckingEntity.RegionName==null)return;
-            saveCheckingEntity.ChangeTracker.ChangeTrackerStateChanged += () =>
-            {
-                _globalEventsService.SendMessage(new SaveCheckEvent(saveCheckingEntity.RegionName,saveCheckingEntity.ChangeTracker.GetIsModifiedRecursive()));
-            };
-        }
-     
         
 
 
@@ -106,6 +96,18 @@ namespace BISC.Presentation.Services
                 } ));
             }
             return saveResultEnum;
+        }
+
+        public async Task<bool> GetIsRegionSaved(string regionName)
+        {
+            var modifiedEntities = _saveCheckingEntities.Where((entity =>
+                entity.RegionName == regionName)).ToList();
+            if (modifiedEntities.Any() && modifiedEntities.First().ChangeTracker.GetIsModifiedRecursive())
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

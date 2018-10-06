@@ -12,7 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BISC.Infrastructure.Global.Services;
 using BISC.Interfaces;
+using BISC.Presentation.Infrastructure.Events;
 using MaterialDesignThemes.Wpf;
 
 namespace BISC
@@ -22,10 +24,20 @@ namespace BISC
     /// </summary>
     public partial class Shell :Window
     {
+     //   private readonly IGlobalEventsService _globalEventsService;
+
         public Shell(IShellViewModel shellViewModel)
         {
+          //  _globalEventsService = globalEventsService;
             InitializeComponent();
             DataContext = shellViewModel;
+           // Binding.AddSourceUpdatedHandler(this,OnSourceUpdated);
         }
+      //  private void OnSourceUpdated(object o,DataTransferEventArgs dataTransferEventArgs)
+      //  { 
+      //      _globalEventsService.SendMessage(new SaveCheckEvent());
+      //  }
+
+
     }
 }

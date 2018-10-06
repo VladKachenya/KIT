@@ -8,12 +8,10 @@ namespace BISC.Presentation.Infrastructure.Events
 {
    public class SaveCheckEvent
     {
-        public SaveCheckEvent(string regionName, bool isHaveChanges)
+        public SaveCheckEvent()
         {
-            RegionName = regionName;
-            IsHaveChanges = isHaveChanges;
+            
         }
-        public string RegionName { get; }
-        public bool IsHaveChanges { get; }
+      
     }
 }

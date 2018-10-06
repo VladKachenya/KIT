@@ -6,8 +6,11 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.IoC;
+using BISC.Infrastructure.Global.Services;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.ChangeTracker;
+using BISC.Presentation.Infrastructure.Events;
 
 namespace BISC.Presentation.BaseItems.ChangeTracker
 {
@@ -22,12 +25,6 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
         private bool _isTrackingEnabled = false;
         private Dictionary<string, object> _valuesDictionary = new Dictionary<string, object>();
         private ChangeTrackerState _changeTrackerState = ChangeTrackerState.Unchanged;
-        private IChangeTracker _parentChangeTracker;
-        public ChangeTracker()
-        {
-            
-        }
-
 
         public void SetValue(string key, object value)
         {
@@ -134,12 +131,13 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
             get => _changeTrackerState;
             set
             {
+                if(_changeTrackerState==value)return;
                 _changeTrackerState = value;
-                ChangeTrackerStateChanged?.Invoke();
+                StaticContainer.CurrentContainer.ResolveType<IGlobalEventsService>().SendMessage(new SaveCheckEvent());
             }
         }
+        
 
-        public Action ChangeTrackerStateChanged { get; set; }
 
         public bool GetIsModifiedRecursive()
         {
@@ -178,7 +176,6 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
             {
                 TryUnSubscribeOnCollectionChanged(value);
             }
-            ChangeTrackerStateChanged = null;
         }
     }
 }

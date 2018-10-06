@@ -14,20 +14,22 @@ using BISC.Presentation.Interfaces;
 
 namespace BISC.Presentation.ViewModels.Tab
 {
-   public class TabViewModel:ViewModelBase, ITabViewModel
+    public class TabViewModel : ViewModelBase, ITabViewModel
     {
         private readonly ITabManagementService _tabManagementService;
+        private readonly ISaveCheckingService _saveCheckingService;
         private readonly IGlobalEventsService _globalEventsService;
         private string _tabRegionName;
         private string _tabHeader;
         private bool _isHaveChanges;
 
 
-        public TabViewModel(ICommandFactory commandFactory,ITabManagementService tabManagementService,ISaveCheckingService saveCheckingService,IGlobalEventsService globalEventsService)
+        public TabViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService, ISaveCheckingService saveCheckingService, IGlobalEventsService globalEventsService)
         {
             _tabManagementService = tabManagementService;
+            _saveCheckingService = saveCheckingService;
             _globalEventsService = globalEventsService;
-            CloseFragmentCommand = commandFactory.CreatePresentationCommand((async() =>
+            CloseFragmentCommand = commandFactory.CreatePresentationCommand((async () =>
             {
                 if (await saveCheckingService.GetIsRegionCanBeClosed(_tabRegionName))
                 {
@@ -37,12 +39,9 @@ namespace BISC.Presentation.ViewModels.Tab
             _globalEventsService.Subscribe<SaveCheckEvent>(OnSaveCheck);
         }
 
-        private void OnSaveCheck(SaveCheckEvent saveCheckEvent)
+        private async void OnSaveCheck(SaveCheckEvent saveCheckEvent)
         {
-            if (saveCheckEvent.RegionName == TabRegionName)
-            {
-                IsHaveChanges = saveCheckEvent.IsHaveChanges;
-            }
+            IsHaveChanges = !await _saveCheckingService.GetIsRegionSaved(TabRegionName);
         }
 
         #region Implementation of ITabViewModel
@@ -50,19 +49,19 @@ namespace BISC.Presentation.ViewModels.Tab
         public string TabRegionName
         {
             get => _tabRegionName;
-            set => SetProperty(ref _tabRegionName,value,true);
+            set => SetProperty(ref _tabRegionName, value, true);
         }
 
         public string TabHeader
         {
             get => _tabHeader;
-            set => SetProperty(ref _tabHeader,value,true);
+            set => SetProperty(ref _tabHeader, value, true);
         }
 
         public bool IsHaveChanges
         {
             get => _isHaveChanges;
-            set { SetProperty(ref _isHaveChanges , value,true); }
+            set { SetProperty(ref _isHaveChanges, value, true); }
         }
 
         public ICommand CloseFragmentCommand { get; }
