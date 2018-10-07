@@ -23,6 +23,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.IoC;
+using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Connection.MMS.MMS_ASN1_Model;
 
 namespace BISC.Modules.Connection.MMS
@@ -152,6 +154,7 @@ namespace BISC.Modules.Connection.MMS
         public static async Task<MMSpdu> GetMmsPduAsync(TcpState tcps)
         {
             if (tcps.workSocket == null) return null;
+            await Task.Delay(StaticContainer.CurrentContainer.ResolveType<IConfigurationService>().MmsQueryDelay);
             try
             {
 
