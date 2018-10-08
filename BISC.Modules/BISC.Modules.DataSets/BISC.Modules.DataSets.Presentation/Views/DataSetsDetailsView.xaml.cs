@@ -1,4 +1,5 @@
-﻿using BISC.Modules.DataSets.Presentation.ViewModels;
+﻿using BISC.Modules.DataSets.Infrastructure.ViewModels;
+using BISC.Modules.DataSets.Presentation.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

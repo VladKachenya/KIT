@@ -88,7 +88,9 @@
     <DataTemplate x:Key="PlusOutlineIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="PlusOutline" />
     </DataTemplate>
-
+    <DataTemplate x:Key="PinIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Pin" />
+    </DataTemplate>
     <DataTemplate x:Key="ContentSaveAllIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ContentSaveAll" />
     </DataTemplate>

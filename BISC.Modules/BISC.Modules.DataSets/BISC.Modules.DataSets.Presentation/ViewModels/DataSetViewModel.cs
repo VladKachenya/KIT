@@ -37,6 +37,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private IFcdaFactory _fcdaFactory;
         private readonly ISaveCheckingService _saveCheckingService;
         private ObservableCollection<IFcdaViewModel> _fcdaViewModels;
+        private string _name;
 
         #endregion
 
@@ -53,6 +54,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             DeleteFcdaCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteFcda);
             AddFcdaToDataset = commandFactory.CreatePresentationCommand(OnAddFcdaTpDataset, () => IsEditeble);
             _fcdaAdderViewModelService = fcdaAdderViewModelService;
+
         }
         #endregion
 
@@ -69,15 +71,20 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #endregion
 
         #region Implamentation of DataSetElementBaseViewModel
-        public string Name => _model.Name;
+        public string Name
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
 
         public string ElementName => _model.ElementName;
-        public string FullName => _model.ParentModelElement.ElementName + "." + _model.ElementName + "." + _model.Name;
+        public string FullName => _model.ParentModelElement.ElementName + "." + _model.ElementName + "." ;
 
         public Brush TypeColorBrush => new SolidColorBrush(Color.FromRgb(126, 141, 240));
 
         public IDataSet GetModel()
         {
+            _model.Name = Name;
             _model.FcdaList.Clear();
             foreach (var fcdaViewModel in FcdaViewModels)
             {
@@ -90,6 +97,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             _model = model ?? throw new NullReferenceException();
             FcdaViewModels = _fcdaViewModelFactory.GetFcdaViewModelCollection(_model);
+            Name = model.Name;
         }
 
         public bool IsExpanded

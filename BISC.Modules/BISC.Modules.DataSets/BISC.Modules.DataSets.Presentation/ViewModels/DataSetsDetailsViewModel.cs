@@ -59,11 +59,16 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             RollUpAllExpandersCommand = commandFactory.CreatePresentationCommand(OnRollUpAllExpanders);
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhanges);
             AddNewDataSetCommand = commandFactory.CreatePresentationCommand(OnAddNewDataSet);
+            DeleteDataSetViewModelCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteDataSetViewModel);
         }
 
         #endregion
 
         #region privat methods
+        private void OnDeleteDataSetViewModel(object dataSetViewModel)
+        {
+            DataSets.Remove(dataSetViewModel as IDataSetViewModel);
+        }
         private void OnAddNewDataSet()
         {
             IDataSet newDataSet = _dataSetFactory.GetDataSet(_dataSets[0].ParentModelElement, GetUniqueNameOfDataSet());
@@ -142,6 +147,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public ICommand RollUpAllExpandersCommand { get; }
         public ICommand SaveСhangesCommand { get; }
         public ICommand AddNewDataSetCommand { get; }
+        public ICommand DeleteDataSetViewModelCommand { get; }
         #endregion
 
 

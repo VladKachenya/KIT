@@ -88,19 +88,39 @@
                             BorderBrush="{DynamicResource MaterialDesignDivider}">
                             <Grid Margin="0">
                                 <Expander HorizontalAlignment="Stretch" IsExpanded="{Binding IsExpanded}">
-                                    <Expander.Header>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Border Margin="2" Background="{Binding TypeColorBrush}" >
-                                                <TextBlock Margin="4"  Text="{Binding ElementName}"/>
-                                            </Border>
-                                            <TextBlock Text="{Binding FullName}" Margin="4"/>
-                                            <Button Command="{Binding AddFcdaToDataset}" Margin="10, 5"  Height="20" Width="20"
-                                                    Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}">
-                                                <Button.Content>
-                                                    <ContentControl Style="{DynamicResource IsEditebleStyle}"/>
-                                                </Button.Content>
-                                            </Button>
-                                        </StackPanel>
+                                    <Expander.Header >
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                                <Border Margin="2" Background="{Binding TypeColorBrush}" >
+                                                    <TextBlock Margin="4"  Text="{Binding ElementName}"/>
+                                                </Border>
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding FullName}" Margin="4"/>
+                                                <TextBox VerticalAlignment="Center" Text="{Binding Name}" Margin="0" 
+                                                     IsEnabled="{Binding ElementName = EditToggleButton, Path= IsChecked}" />
+                                            </StackPanel>
+                                            <StackPanel  Grid.Column="1" Orientation="Horizontal">
+                                                <Button Margin="5" Padding="3" Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                            Command="{Binding DataContext.DeleteDataSetViewModelCommand,Source={x:Reference ExpanderItemsControl}}"
+                                                            CommandParameter="{Binding .}"
+                                                            IsEnabled="{Binding ElementName = EditToggleButton, Path= IsChecked}"
+                                                            Style="{DynamicResource MaterialDesignRaisedButton}"
+                                                            Width="20" Height="20"
+                                                            Grid.Column="1">
+                                                    <Button.Content>
+                                                        <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
+                                                    </Button.Content>
+                                                </Button>
+                                                <ToggleButton x:Name="EditToggleButton" IsChecked="False" 
+                                                      IsEnabled="{Binding IsEditeble}"
+                                                      Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                                      ToolTip="Разрешить редактирование датасета"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        
                                     </Expander.Header>
                                     <Border BorderThickness="1" Background="#FFE0E0E0">
                                         <ListBox PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Name="fcdaListBox"
