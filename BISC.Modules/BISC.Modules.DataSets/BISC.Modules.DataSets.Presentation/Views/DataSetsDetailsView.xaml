@@ -32,13 +32,13 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Column="0">
-                <Button Command="{Binding SaveСhangesCommand}" Visibility="Visible" Margin="10,5" Height="20" Width="20"
+                <!--<Button Command="{Binding SaveСhangesCommand}" Visibility="Visible" Margin="10,5" Height="20" Width="20"
                         Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
                         ToolTip="Сохранить изменения в проект">
                     <Button.Content>
                         <ContentControl ContentTemplate="{DynamicResource SaveIcon}"/>
                     </Button.Content>
-                </Button>
+                </Button>-->
                 <Button  Command="{Binding AddNewDataSetCommand}" Visibility="Visible" Margin="10,5" Height="20" Width="20"
                          Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
                         ToolTip="Добавить DataSet">

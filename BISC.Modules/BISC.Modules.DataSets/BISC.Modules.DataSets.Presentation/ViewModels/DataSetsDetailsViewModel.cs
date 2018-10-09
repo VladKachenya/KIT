@@ -41,6 +41,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private IBiscProject _biscProject;
         private ObservableCollection<IDataSetViewModel> _dataSets1;
+        private List<IDataSet> _dataSetsDeletsElements;
         private IDataSetFactory _dataSetFactory;
 
         #region C-tor
@@ -60,6 +61,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhanges);
             AddNewDataSetCommand = commandFactory.CreatePresentationCommand(OnAddNewDataSet);
             DeleteDataSetViewModelCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteDataSetViewModel);
+            _dataSetsDeletsElements = new List<IDataSet>();
         }
 
         #endregion
@@ -67,11 +69,14 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #region privat methods
         private void OnDeleteDataSetViewModel(object dataSetViewModel)
         {
-            DataSets.Remove(dataSetViewModel as IDataSetViewModel);
+            var element = dataSetViewModel as IDataSetViewModel;
+            DataSets.Remove(element);
+            _dataSetsDeletsElements.Add(element.GetModel());
         }
         private void OnAddNewDataSet()
         {
-            IDataSet newDataSet = _dataSetFactory.GetDataSet(_dataSets[0].ParentModelElement, GetUniqueNameOfDataSet());
+            var parient = _dataSets[0]?.ParentModelElement;
+            IDataSet newDataSet = _dataSetFactory.GetDataSet(parient, GetUniqueNameOfDataSet());
             DataSets.Add(_datasetViewModelFactory.GetDataSetViewModel(newDataSet));
         }
         private void OnDeployAllExpanders()
@@ -86,13 +91,34 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 element.IsExpanded = false;
         }
 
-        private void OnSaveСhanges()
+        private void ResetAllDataSetCollections()
         {
             _dataSets.Clear();
+            _dataSetsDeletsElements.Clear();
+            DataSets.Clear();
+        }
+
+        private void OnSaveСhanges()
+        {
+            foreach(var deletedDataSet in _dataSetsDeletsElements)
+            {
+                if (deletedDataSet.ParentModelElement != null)
+                    _datasetModelService.DeleteDatasetFromDevice(deletedDataSet, _device);
+                else
+                    _datasetModelService.DeleteDatasetFromDevice(deletedDataSet, _device, "LD0", "LLN0");
+            }
             foreach (var dataSetVM in DataSets)
             {
-                _dataSets.Add(dataSetVM.GetModel());
+                var model = dataSetVM.GetModel();
+                if(model.ParentModelElement != null)
+                    _datasetModelService.AddDatasetToDevice(dataSetVM.GetModel(), _device);
+                else
+                    _datasetModelService.AddDatasetToDevice(dataSetVM.GetModel(), _device, "LD0", "LLN0");
             }
+            ResetAllDataSetCollections();
+            _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
+            SortDataSetsByIsDynamic();
+            DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
             ChangeTracker.AcceptChanges();
         }
 

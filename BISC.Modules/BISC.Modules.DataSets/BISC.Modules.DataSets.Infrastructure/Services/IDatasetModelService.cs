@@ -6,7 +6,9 @@ namespace BISC.Modules.DataSets.Infrastructure.Services
 {
     public interface IDatasetModelService
     {
-        void AddDatasetToDevice(IModelElement device, string ldName, string lnName);
+        void AddDatasetToDevice(IDataSet dataSet, IModelElement device, string ldName = null, string lnName = null);
+        void DeleteDatasetFromDevice(IDataSet dataSet, IModelElement device, string ldName = null, string lnName = null);
+
         List<IDataSet> GetAllDataSetOfDevice(IModelElement device);
     }
 }

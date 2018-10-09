@@ -86,6 +86,10 @@
       <Project>{1642183D-562D-4E50-B8F7-22205D731E45}</Project>
       <Name>BISC.Modules.InformationModel.Infrastucture</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Model\BISC.Modules.InformationModel.Model.csproj">
+      <Project>{346395B5-8238-45AE-B002-C22B816AC135}</Project>
+      <Name>BISC.Modules.InformationModel.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BISC.Modules.DataSets.Infrastructure\BISC.Modules.DataSets.Infrastructure.csproj">
       <Project>{B2BF5767-508B-469C-B196-A991678867AE}</Project>
       <Name>BISC.Modules.DataSets.Infrastructure</Name>

@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
+using BISC.Modules.InformationModel.Model.Elements;
 
 namespace BISC.Modules.DataSets.Model.Services
 {
@@ -19,12 +21,72 @@ namespace BISC.Modules.DataSets.Model.Services
             _infoModelService = infoModelService;
         }
 
+        #region private methods
+
+        private ILogicalNode TryFindLn(IDataSet dataSet, IModelElement device, string ldName = null, string lnName = null)
+        {
+            // первое приближение 
+            if (ldName == null || lnName == null)
+            {
+                ldName = (dataSet.ParentModelElement.ParentModelElement as ILDevice)?.Inst;
+                lnName = (dataSet.ParentModelElement as ILogicalNode)?.Name;
+            }
+            ILogicalNode logicalNode = null;
+            List<ILDevice> lDevices = _infoModelService.GetLDevicesFromDevices(device);
+            foreach (var lDevice in lDevices)
+            {
+                if (lDevice.Inst == ldName)
+                {
+                    if (lDevice.LogicalNodeZero.Value.Name == lnName)
+                        logicalNode = lDevice.LogicalNodeZero.Value;
+                    if (logicalNode == null)
+                    {
+                        foreach (ILogicalNode ln in lDevice.LogicalNodes)
+                            if (ln.Name == ldName)
+                            {
+                                logicalNode = ln;
+                                break;
+                            }
+                    }
+                    if (logicalNode != null)
+                        break;
+                }
+            }
+            return logicalNode;
+        }
+        #endregion
+
 
         #region Implementation of IDatasetModelService
-
-        public void AddDatasetToDevice(IModelElement device, string ldName, string lnName)
+        public void DeleteDatasetFromDevice(IDataSet dataSet, IModelElement device, string ldName = null, string lnName = null)
         {
-            throw new NotImplementedException();
+            string dsName = dataSet.Name;
+            ILogicalNode logicalNode = TryFindLn(dataSet, device, ldName, lnName);
+            if (logicalNode != null)
+            {
+                List<IModelElement> NodeDataSets = new List<IModelElement>(logicalNode.ChildModelElements);
+                foreach (var ds in NodeDataSets)
+                    if (ds is IDataSet)
+                        if ((ds as IDataSet).Name == dsName)
+                            logicalNode.ChildModelElements.Remove(ds);
+            }
+        }
+
+        public void AddDatasetToDevice(IDataSet dataSet, IModelElement device, string ldName = null, string lnName = null)
+        {
+            // первое приближение 
+            string dsName = dataSet.Name;
+            ILogicalNode logicalNode = TryFindLn(dataSet, device, ldName, lnName);
+            if (logicalNode != null)
+            {
+                foreach (var ds in logicalNode.ChildModelElements)
+                    if (ds is IDataSet)
+                        if ((ds as IDataSet).Name == dsName)
+                            return;
+                dataSet.ParentModelElement = logicalNode;
+                logicalNode.ChildModelElements.Add(dataSet);
+                return;
+            }
         }
 
         public List<IDataSet> GetAllDataSetOfDevice(IModelElement device)
