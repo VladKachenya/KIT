@@ -23,5 +23,16 @@ namespace BISC.Modules.Gooses.Model.Model
         public string DeviceName { get; set; }
 
         #endregion
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is ISubscriberDevice)) return -1;
+            var element = obj as ISubscriberDevice;
+            if (element.LdInst != LdInst) return -1;
+            if (element.ApRef != ApRef) return -1;
+            if (element.LnClass != LnClass) return -1;
+            if (element.DeviceName != DeviceName) return -1;
+            return 1;
+        }
     }
 }

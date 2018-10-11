@@ -93,7 +93,21 @@ namespace BISC.Modules.DataSets.Model.Model
         public string DoName { get; set; }
         public string DaName { get; set; }
         public string Fc { get; set; }
-
         #endregion
+
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is IFcda)) return -1;
+            var element = obj as IFcda;
+            if (element.LdInst != LdInst) return -1;
+            if (element.Prefix != Prefix) return -1;
+            if (element.LnClass != LnClass) return -1;
+            if (element.LnInst != LnInst) return -1;
+            if (element.DoName != DoName) return -1;
+            if (element.DaName != DaName) return -1;
+            if (element.Fc != Fc) return -1;
+            return 1;
+        }
     }
 }

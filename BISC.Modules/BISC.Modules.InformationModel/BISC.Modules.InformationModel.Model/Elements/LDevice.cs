@@ -19,5 +19,15 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public string Inst { get; set; }
         public ChildModelProperty<ILogicalNodeZero> LogicalNodeZero =>new ChildModelProperty<ILogicalNodeZero>(this, InfoModelKeys.ModelKeys.LogicalNodeZeroKey);
         public ChildModelsList<ILogicalNode> LogicalNodes =>new ChildModelsList<ILogicalNode>(this, InfoModelKeys.ModelKeys.LogicalNodeKey);
+
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is ILDevice)) return -1;
+            var element = obj as ILDevice;
+            if (element.Inst != Inst) return -1;
+            return 1;
+        }
+
     }
 }

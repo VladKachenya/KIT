@@ -44,5 +44,14 @@ namespace BISC.Model.Global.Model.Communication
             }
             return null;
         }
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is ISclAddress)) return -1;
+            var element = obj as ISclAddress;
+            return 1;
+        }
+
+
     }
 }

@@ -16,5 +16,14 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType
         }
         public int Ord { get; set; }
         public string Value { get; set; }
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is IEnumVal)) return -1;
+            var element = obj as IEnumVal;
+            if (element.Ord != Ord) return -1;
+            if (element.Value != Value) return -1;
+            return 1;
+        }
     }
 }

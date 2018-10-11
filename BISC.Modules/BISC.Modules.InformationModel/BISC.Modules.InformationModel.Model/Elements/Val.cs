@@ -16,5 +16,13 @@ namespace BISC.Modules.InformationModel.Model.Elements
             ElementName = InfoModelKeys.ModelKeys.ValKey;
         }
         public string Value { get; set; }
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is IVal)) return -1;
+            var element = obj as IVal;
+            if (element.Value != Value) return -1;
+            return 1;
+        }
     }
 }

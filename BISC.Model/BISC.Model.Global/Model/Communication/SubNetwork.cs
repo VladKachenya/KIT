@@ -19,5 +19,15 @@ namespace BISC.Model.Global.Model.Communication
         public string Desc { get; set; }
         public string Type { get; set; }
         public ChildModelsList<IConnectedAccessPoint> ConnectedAccessPoints=>new ChildModelsList<IConnectedAccessPoint>(this, ModelKeys.ConnectedAccessPointKey);
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is ISubNetwork)) return -1;
+            var element = obj as ISubNetwork;
+            if (element.Name != Name) return -1;
+            if (element.Desc != Desc) return -1;
+            if (element.Type != Type) return -1;
+            return 1;
+        }
     }
 }

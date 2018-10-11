@@ -55,5 +55,18 @@ namespace BISC.Modules.Gooses.Model.Model.Matrix
         public int NumberOfFcdaInDataSetOfGoose { get; set; }
 
         public List<bool> ValueList { get; set; }
+
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is IGooseRow)) return -1;
+            var element = obj as IGooseRow;
+            if (element.Signature != Signature) return -1;
+            if (element.ReferencePath != ReferencePath) return -1;
+            if (element.GooseRowType != GooseRowType) return -1;
+            if (element.ValuesString != ValuesString) return -1;
+            if (element.NumberOfFcdaInDataSetOfGoose != NumberOfFcdaInDataSetOfGoose) return -1;
+            return 1;
+        }
     }
 }

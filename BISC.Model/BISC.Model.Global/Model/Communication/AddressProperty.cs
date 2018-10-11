@@ -16,6 +16,16 @@ namespace BISC.Model.Global.Model.Communication
         }
         public string Type { get; set; }
         public string Value { get; set; }
+
+        public override int CompareTo(object obj)
+        {
+            if(base.CompareTo(obj) == -1) return -1;
+            if (!(obj is IAddressProperty)) return -1;
+            var element = obj as IAddressProperty;
+            if (element.Type != Type) return -1;
+            if (element.Value != Type) return -1;
+            return 1;
+        }
     }
 
 

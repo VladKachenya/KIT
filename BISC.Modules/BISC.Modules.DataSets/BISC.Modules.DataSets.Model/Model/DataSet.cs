@@ -22,7 +22,16 @@ namespace BISC.Modules.DataSets.Model.Model
         public ChildModelsList<IFcda> FcdaList => new ChildModelsList<IFcda>(this,DatasetKeys.DatasetModelKeys.FcdaModelKey);
         public string Name { get; set; }
         public bool IsDynamic { get; set; }
-
         #endregion
+
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is IDataSet)) return -1;
+            var element = obj as IDataSet;
+            if (element.Name != Name) return -1;
+            if (element.IsDynamic != IsDynamic) return -1;
+            return 1;
+        }
     }
 }

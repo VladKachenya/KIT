@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 namespace BISC.Model.Infrastructure.Elements
 {
-    public interface IModelElement 
+    public interface IModelElement : IComparable
     {
        
         string Namespace { get; set; }

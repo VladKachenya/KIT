@@ -29,5 +29,19 @@ namespace BISC.Modules.Device.Model.Model
         public string Revision { get; set; }
 
         #endregion
+
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is IDevice)) return -1;
+            var element = obj as IDevice;
+            if (element.Name != Name) return -1;
+            if (element.Ip != Ip) return -1;
+            if (element.Description != Description) return -1;
+            if (element.Manufacturer != Manufacturer) return -1;
+            if (element.Type != Type) return -1;
+            if (element.Revision != Revision) return -1;
+            return 1;
+        }
     }
 }

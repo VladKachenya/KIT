@@ -17,5 +17,13 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType
         }
         public string Id { get; set; }
         public ChildModelsList<IEnumVal> EnumValList =>new ChildModelsList<IEnumVal>(this, "EnumVal");
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is IEnumType)) return -1;
+            var element = obj as IEnumType;
+            if (element.Id != Id) return -1;
+            return 1;
+        }
     }
 }

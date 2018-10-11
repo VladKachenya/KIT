@@ -18,5 +18,15 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DaType
         public string Name { get; set; }
         public string BType { get; set; }
         public string Type { get; set; }
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is IBda)) return -1;
+            var element = obj as IBda;
+            if (element.Name != Name) return -1;
+            if (element.BType != BType) return -1;
+            if (element.Type != Type) return -1;
+            return 1;
+        }
     }
 }

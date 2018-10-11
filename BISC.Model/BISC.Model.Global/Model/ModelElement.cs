@@ -21,6 +21,15 @@ namespace BISC.Model.Global.Model
         public string Namespace { get; set; }
         public List<IModelElement> ChildModelElements { get;}
         public List<XAttribute> ModelElementAttributes { get; }
+
+        public virtual int CompareTo(object obj)
+        {
+            if (!(obj is IModelElement)) return -1;
+            var element = obj as IModelElement;
+            if (element.ElementName != ElementName) return -1;
+            if (element.Namespace != Namespace) return -1;
+            return 1;
+        }
     }
 
    

@@ -23,8 +23,17 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public bool? Router { get; set; }
         public bool? Clock { get; set; }
         public ChildModelProperty<IDeviceServer> DeviceServer =>new ChildModelProperty<IDeviceServer>(this, InfoModelKeys.ModelKeys.ServerKey);
-        
+        #endregion
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is IDeviceAccessPoint)) return -1;
+            var element = obj as IDeviceAccessPoint;
+            if (element.Name != Name) return -1;
+            if (element.Router != Router) return -1;
+            if (element.Clock != Clock) return -1;
 
-    #endregion
+            return 1;
+        }
     }
 }

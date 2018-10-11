@@ -17,5 +17,6 @@ namespace BISC.Model.Global.Model.Communication
             ElementName = ModelKeys.CommunicationModelKey;
         }
         public ChildModelsList<ISubNetwork> SubNetworks =>new ChildModelsList<ISubNetwork>(this, ModelKeys.SubNetworkKey);
+
     }
 }

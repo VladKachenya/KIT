@@ -66,6 +66,7 @@
     <Compile Include="Project\ISclModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Communication\ISclCommunicationModelService.cs" />
+    <Compile Include="Services\IModelsComparingServise.cs" />
     <Compile Include="Services\IModelComposingService.cs" />
     <Compile Include="Services\IModelTypesResolvingService.cs" />
   </ItemGroup>

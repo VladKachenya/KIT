@@ -33,5 +33,13 @@ namespace BISC.Modules.Gooses.Model.Model
         }
 
         #endregion
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is IExternalGooseRef)) return -1;
+            var element = obj as IExternalGooseRef;
+            if (element.AsString() != AsString()) return -1;
+            return 1;
+        }
     }
 }

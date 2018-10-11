@@ -21,5 +21,15 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public string Description { get; set; }
         public ChildModelsList<ISdi> SdiCollection =>new ChildModelsList<ISdi>(this, InfoModelKeys.ModelKeys.SdiKey);
         public ChildModelsList<IDai> DaiCollection => new ChildModelsList<IDai>(this, InfoModelKeys.ModelKeys.DaiKey);
+
+        public override int CompareTo(object obj)
+        {
+            if (base.CompareTo(obj) == -1) return -1;
+            if (!(obj is IDoi)) return -1;
+            var element = obj as IDoi;
+            if (element.Name != Name) return -1;
+            if (element.Description != Description) return -1;
+            return 1;
+        }
     }
 }
