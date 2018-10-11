@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace BISC.Model.Infrastructure.Elements
 {
-    public interface IModelElement : IComparable
+    public interface IModelElement 
     {
        
         string Namespace { get; set; }

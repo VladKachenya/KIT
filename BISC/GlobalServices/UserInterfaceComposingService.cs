@@ -23,7 +23,7 @@ namespace BISC.GlobalServices
             _shellViewModel = shellViewModel;
             _globalCommandFactory = globalCommandFactory;
         }
-        public void AddGlobalCommand(ICommand command, string name, string iconId,bool isAddToMenu=false, bool isAddToToolBar = false)
+        public void AddGlobalCommand(ICommand command, string name, string iconId, bool isAddToMenu = false, bool isAddToToolBar = false)
         {
             IGlobalCommand globalCommand = _globalCommandFactory();
             globalCommand.Command = command;
@@ -39,20 +39,30 @@ namespace BISC.GlobalServices
             }
         }
 
-        public void SetCurrentSaveCommand(ICommand command, string name)
+        public void SetCurrentSaveCommand(ICommand command, string name, bool isToDevice)
         {
             ClearCurrentSaveCommand();
             IGlobalCommand globalCommand = _globalCommandFactory();
             globalCommand.Command = command;
             globalCommand.CommandName = name;
-            globalCommand.IconId = IconsKeys.SaveIconKey;
+            if (isToDevice)
+            {
+                globalCommand.IconId = IconsKeys.UploadNetworkKey;
+
+            }
+            else
+            {
+                globalCommand.IconId = IconsKeys.SaveIconKey;
+
+            }
+
             _globalToolbarCommands.Add(globalCommand);
         }
 
         public void ClearCurrentSaveCommand()
         {
             var existingSaveCommand =
-                _globalToolbarCommands.FirstOrDefault(globalCommandFinded => globalCommandFinded.IconId == IconsKeys.SaveIconKey);
+                _globalToolbarCommands.FirstOrDefault(globalCommandFinded => globalCommandFinded.IconId == IconsKeys.SaveIconKey|| globalCommandFinded.IconId == IconsKeys.UploadNetworkKey);
             if (existingSaveCommand != null)
             {
                 _globalToolbarCommands.Remove(existingSaveCommand);

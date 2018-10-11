@@ -25,6 +25,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Services;
+using BISC.Modules.Connection.Infrastructure.Events;
+using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.ChangeTracker;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.Factorys;
@@ -39,6 +41,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private IDatasetViewModelFactory _datasetViewModelFactory;
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
+        private readonly IConnectionPoolService _connectionPoolService;
+        private readonly IGlobalEventsService _globalEventsService;
         private IBiscProject _biscProject;
         private ObservableCollection<IDataSetViewModel> _dataSets1;
         private List<IDataSet> _dataSetsDeletsElements;
@@ -49,9 +53,12 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public DataSetsDetailsViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService,
             IBiscProject biscProject, IDatasetModelService datasetModelService, IDatasetViewModelFactory datasetViewModelFactory,
-            ISaveCheckingService saveCheckingService, IDataSetFactory dataSetFactory, IUserInterfaceComposingService userInterfaceComposingService)
+            ISaveCheckingService saveCheckingService, IDataSetFactory dataSetFactory, IUserInterfaceComposingService userInterfaceComposingService,
+            IConnectionPoolService connectionPoolService,IGlobalEventsService globalEventsService)
         {
             _userInterfaceComposingService = userInterfaceComposingService;
+            _connectionPoolService = connectionPoolService;
+            _globalEventsService = globalEventsService;
             _biscProject = biscProject;
             _datasetModelService = datasetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
@@ -173,6 +180,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public ICommand DeployAllExpandersCommand { get; }
         public ICommand RollUpAllExpandersCommand { get; }
         public ICommand SaveСhangesCommand { get; }
+
         public ICommand AddNewDataSetCommand { get; }
         public ICommand DeleteDataSetViewModelCommand { get; }
         #endregion
@@ -197,13 +205,28 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public override void OnActivate()
         {
-            _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}");
+            
+                _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
+
             base.OnActivate();
+
+        }
+
+        private void OnConnectionChanged(ConnectionEvent connectionEvent)
+        {
+            if (connectionEvent.Ip == _device.Ip)
+            {
+                _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+
+            }
         }
 
         public override void OnDeactivate()
         {
             _userInterfaceComposingService.ClearCurrentSaveCommand();
+            _globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
+
             base.OnDeactivate();
         }
 

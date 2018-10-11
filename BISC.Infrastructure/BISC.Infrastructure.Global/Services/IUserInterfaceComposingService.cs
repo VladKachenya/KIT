@@ -9,13 +9,14 @@ namespace BISC.Infrastructure.Global.Services
         public const string ServerPlusIconKey = "ServerPlusIcon";
         public const string SaveIconKey = "SaveIcon";
         public const string ContentSaveAllKey = "ContentSaveAllIcon";
+        public const string UploadNetworkKey = "UploadNetworkIcon";
 
     }
 
     public interface IUserInterfaceComposingService
     {
         void AddGlobalCommand(ICommand command,string name,string iconId=null, bool isAddToMenu = false, bool isAddToToolBar = false);
-        void SetCurrentSaveCommand(ICommand command, string name);
+        void SetCurrentSaveCommand(ICommand command, string name,bool isToDevice);
         void ClearCurrentSaveCommand();
 
         ObservableCollection<IGlobalCommand> GetToolBarCommands();
