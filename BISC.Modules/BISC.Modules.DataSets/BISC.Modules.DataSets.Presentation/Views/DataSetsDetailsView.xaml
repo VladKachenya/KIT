@@ -98,8 +98,8 @@
                                                 <Border Margin="2" Background="{Binding TypeColorBrush}" >
                                                     <TextBlock Margin="4"  Text="{Binding ElementName}"/>
                                                 </Border>
-                                                <TextBlock VerticalAlignment="Center" Text="{Binding FullName}" Margin="4"/>
-                                                <TextBox VerticalAlignment="Center" Text="{Binding Name}" Margin="0" 
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding FixedNamePart}" Margin="4"/>
+                                                <TextBox VerticalAlignment="Center" Text="{Binding EditableNamePart,UpdateSourceTrigger=PropertyChanged}" Margin="0" 
                                                      IsEnabled="{Binding ElementName = EditToggleButton, Path= IsChecked}" />
                                             </StackPanel>
                                             <StackPanel  Grid.Column="1" Orientation="Horizontal">

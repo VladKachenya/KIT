@@ -21,7 +21,6 @@ namespace BISC.ViewModel
 {
    public class ShellViewModel:ViewModelBase, IShellViewModel
     {
-        private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
         private readonly IProjectService _projectService;
         private readonly ISaveCheckingService _saveCheckingService;
@@ -31,11 +30,9 @@ namespace BISC.ViewModel
         private GridLength _expanderRowHeight;
         private bool _isNotificationsExpanded;
 
-        public ShellViewModel(IEventAggregator eventAggregator,INavigationService navigationService,
+        public ShellViewModel(INavigationService navigationService,
             IProjectService projectService, ISaveCheckingService saveCheckingService,IGlobalEventsService globalEventsService)
         {
-           
-               _eventAggregator = eventAggregator;
             _navigationService = navigationService;
             _projectService = projectService;
             _saveCheckingService = saveCheckingService;
@@ -84,7 +81,7 @@ namespace BISC.ViewModel
 
         private void OnShellLoaded()
         {
-            _eventAggregator.GetEvent<ShellLoadedEvent>().Publish(new ShellLoadedEventArgs());
+            _globalEventsService.SendMessage(new ShellLoadedEvent());
             ApplicationTitle = $"Bemn Intellectual Substation Control (Текущий проект: {_projectService.GetCurrentProjectPath(false)})";
 
         }

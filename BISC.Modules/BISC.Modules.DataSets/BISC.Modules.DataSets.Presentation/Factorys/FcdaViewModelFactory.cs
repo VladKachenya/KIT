@@ -20,15 +20,15 @@ namespace BISC.Modules.DataSets.Presentation.Factorys
         {
             _injectionContainer = injectionContainer;
         }
-        public ObservableCollection<IFcdaViewModel> GetFcdaViewModelCollection(IDataSet model)
+        public ObservableCollection<IFcdaViewModel> CreateFcdaViewModelCollection(IDataSet model)
         {
             ObservableCollection<IFcdaViewModel> result = new ObservableCollection<IFcdaViewModel>();
             foreach (IFcda element in model.ChildModelElements)
-                result.Add(GetFcdaViewModelElement(element));
+                result.Add(CreateFcdaViewModelElement(element));
             return result;
         }
 
-        public IFcdaViewModel GetFcdaViewModelElement(IFcda model)
+        public IFcdaViewModel CreateFcdaViewModelElement(IFcda model)
         {
             var result = _injectionContainer.ResolveType<IFcdaViewModel>();
             result.SetModel(model);

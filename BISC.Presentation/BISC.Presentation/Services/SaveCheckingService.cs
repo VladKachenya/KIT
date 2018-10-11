@@ -65,10 +65,10 @@ namespace BISC.Presentation.Services
         
 
 
-        public void RemoveSaveCheckingEntityByOwner(IObjectWithChangeTracker objectWithChangeTracker)
+        public void RemoveSaveCheckingEntityByOwner(string regionName)
         {
             var entityFinded =
-                _saveCheckingEntities.FirstOrDefault((entity => entity.ChangeTracker == objectWithChangeTracker.ChangeTracker));
+                _saveCheckingEntities.FirstOrDefault((entity => entity.RegionName == regionName));
 
             if (entityFinded != null)
             {

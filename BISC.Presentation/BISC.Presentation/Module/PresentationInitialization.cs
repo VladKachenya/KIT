@@ -14,9 +14,9 @@ namespace BISC.Presentation.Module
 {
     public class PresentationInitialization
     {
+        private readonly IGlobalEventsService _globalEventsService;
         private readonly IInjectionContainer _injectionContainer;
         private readonly ISaveCheckingService _saveCheckingService;
-        private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
         private readonly IProjectService _projectService;
         private readonly IUiFromModelElementRegistryService _uiFromModelElementRegistryService;
@@ -26,15 +26,15 @@ namespace BISC.Presentation.Module
         private readonly IMainTreeViewModel _mainTreeViewModel;
         private readonly ILoggingService _loggingService;
 
-        public PresentationInitialization(IEventAggregator eventAggregator,
+        public PresentationInitialization(IGlobalEventsService globalEventsService,
             INavigationService navigationService, IProjectService projectService
             , IUiFromModelElementRegistryService uiFromModelElementRegistryService, IBiscProject biscProject
             , IUserInterfaceComposingService userInterfaceComposingService, ICommandFactory commandFactory,
             IMainTreeViewModel mainTreeViewModel, ILoggingService loggingService, IInjectionContainer injectionContainer, ISaveCheckingService saveCheckingService)
         {
+            _globalEventsService = globalEventsService;
             _injectionContainer = injectionContainer;
             _saveCheckingService = saveCheckingService;
-            _eventAggregator = eventAggregator;
             _navigationService = navigationService;
             _projectService = projectService;
             _uiFromModelElementRegistryService = uiFromModelElementRegistryService;
@@ -43,7 +43,7 @@ namespace BISC.Presentation.Module
             _commandFactory = commandFactory;
             _mainTreeViewModel = mainTreeViewModel;
             _loggingService = loggingService;
-            _eventAggregator.GetEvent<ShellLoadedEvent>().Subscribe((args =>
+            _globalEventsService.Subscribe<ShellLoadedEvent>((args =>
             {
                 _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject), "Сохранить все изменения в проект", IconsKeys.ContentSaveAllKey,true,true);
                 _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки",null,true,false);
@@ -55,8 +55,6 @@ namespace BISC.Presentation.Module
                     KeysForNavigation.RegionNames.HamburgerMenuKey);
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.ToolBarMenuViewName,
                     KeysForNavigation.RegionNames.ToolBarMenuKey);
-                _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.NotificationBarViewName,
-                    KeysForNavigation.RegionNames.NotificationBarKey);
                 _projectService.OpenDefaultProject();
                 _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(_biscProject.MainSclModel.Value, null, "SCL");
                 _mainTreeViewModel.ChangeTracker.SetTrackingEnabled(true);

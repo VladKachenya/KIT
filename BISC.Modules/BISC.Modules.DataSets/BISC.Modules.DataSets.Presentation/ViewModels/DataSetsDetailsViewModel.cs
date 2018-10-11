@@ -43,6 +43,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private ObservableCollection<IDataSetViewModel> _dataSets1;
         private List<IDataSet> _dataSetsDeletsElements;
         private IDataSetFactory _dataSetFactory;
+        private string _regionName;
 
         #region C-tor
 
@@ -135,7 +136,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 isFind = false;
                 foreach (var element in DataSets)
                 {
-                    if(result == element.Name)
+                    if(result == element.FixedNamePart+element.EditableNamePart)
                         isFind = true;
                 }
             } while (isFind);
@@ -184,9 +185,11 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
             SortDataSetsByIsDynamic();
             DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
-            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker, $"DataSets устройства {_device.Name}",SaveСhangesCommand, navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString()));
+            _regionName = navigationContext.BiscNavigationParameters
+                .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
+            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker, $"DataSets устройства {_device.Name}",SaveСhangesCommand,_regionName ));
             ChangeTracker.SetTrackingEnabled(true);
-          
+       
             base.OnNavigatedTo(navigationContext);
         }
 
@@ -208,7 +211,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         protected override void OnDisposing()
         {
-          
+          _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             base.OnDisposing();
         }
 

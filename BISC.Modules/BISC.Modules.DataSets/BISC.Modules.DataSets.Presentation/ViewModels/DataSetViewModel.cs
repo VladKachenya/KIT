@@ -38,6 +38,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private readonly ISaveCheckingService _saveCheckingService;
         private ObservableCollection<IFcdaViewModel> _fcdaViewModels;
         private string _name;
+        private string _editableNamePart;
 
         #endregion
 
@@ -78,7 +79,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         }
 
         public string ElementName => _model.ElementName;
-        public string FullName => _model.ParentModelElement.ElementName + "." + _model.ElementName + "." ;
 
         public Brush TypeColorBrush => new SolidColorBrush(Color.FromRgb(126, 141, 240));
 
@@ -96,7 +96,9 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public void SetModel(IDataSet model)
         {
             _model = model ?? throw new NullReferenceException();
-            FcdaViewModels = _fcdaViewModelFactory.GetFcdaViewModelCollection(_model);
+            FcdaViewModels = _fcdaViewModelFactory.CreateFcdaViewModelCollection(_model);
+            FixedNamePart = (_model.ParentModelElement as ILogicalNode).Name + "." + _model.Name + ".";
+            EditableNamePart = _model.Name;
             Name = model.Name;
         }
 
@@ -120,6 +122,13 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public ICommand DeleteFcdaCommand { get; }
         public ICommand AddFcdaToDataset { get; }
 
+        public string EditableNamePart
+        {
+            get => _editableNamePart;
+            set { SetProperty(ref _editableNamePart , value); }
+        }
+
+        public string FixedNamePart { get; private set; }
 
         #endregion
 
@@ -150,7 +159,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 fcdaModel = _fcdaFactory.GetFcda((elementModel as IDai));
 
             if (fcdaModel != null)
-                FcdaViewModels.Add(_fcdaViewModelFactory.GetFcdaViewModelElement(fcdaModel));
+                FcdaViewModels.Add(_fcdaViewModelFactory.CreateFcdaViewModelElement(fcdaModel));
         }
 
         private bool CheckFc(object model)

@@ -9,14 +9,8 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels.Base
 {
     public interface IDataSetElementBaseViewModel <T>
     {
-        string Name { get; }
-
-        string FullName { get;}
-
         string ElementName { get;}
-
         void SetModel(T model);
-
         T GetModel();
         bool IsEditeble { get; }
         Brush TypeColorBrush { get; }

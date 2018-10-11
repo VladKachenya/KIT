@@ -1,8 +1,12 @@
-﻿namespace BISC.Infrastructure.Global.Logging
+﻿using System;
+
+namespace BISC.Infrastructure.Global.Logging
 {
     public interface ILoggableMessage
     {
         string Message { get; set; }
         SeverityEnum Severity { get; set; }
+        DateTime MessageDateTime { get; set; }
+
     }
 }

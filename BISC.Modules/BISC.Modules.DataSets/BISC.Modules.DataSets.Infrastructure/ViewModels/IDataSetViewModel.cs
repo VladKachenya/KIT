@@ -16,6 +16,7 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
         ObservableCollection<IFcdaViewModel> FcdaViewModels { get;}
         ICommand DeleteFcdaCommand { get; }
         ICommand AddFcdaToDataset { get; }
-
+        string EditableNamePart { get; set; }
+        string FixedNamePart { get; }
     }
 }

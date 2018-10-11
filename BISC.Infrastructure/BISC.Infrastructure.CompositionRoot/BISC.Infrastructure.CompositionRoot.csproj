@@ -140,7 +140,7 @@
       <Project>{749492EB-2EFC-4D03-BB60-E26BBAF25DD8}</Project>
       <Name>BISC.Modules.InformationModel.Presentation</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Logging\BISC.Modules.Logging.Infrastructure\BISC.Modules.Logging.csproj">
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Logging\BISC.Modules.Logging\BISC.Modules.Logging.csproj">
       <Project>{F8DB343C-6F66-40EA-9462-015F84832894}</Project>
       <Name>BISC.Modules.Logging</Name>
     </ProjectReference>

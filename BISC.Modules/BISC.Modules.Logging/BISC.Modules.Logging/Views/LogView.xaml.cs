@@ -12,19 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using BISC.Presentation.ViewModels;
 
-namespace BISC.Presentation.Views
+namespace BISC.Modules.Logging.Infrastructure.Views
 {
     /// <summary>
-    /// Interaction logic for NotificationBarView.xaml
+    /// Логика взаимодействия для LogView.xaml
     /// </summary>
-    public partial class NotificationBarView : UserControl
+    public partial class LogView : UserControl
     {
-        public NotificationBarView(NotificationBarViewModel notificationBarViewModel)
+        public LogView()
         {
             InitializeComponent();
-            DataContext = notificationBarViewModel;
         }
     }
 }

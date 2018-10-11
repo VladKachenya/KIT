@@ -10,8 +10,8 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys
 {
     public interface IFcdaViewModelFactory
     {
-        ObservableCollection<IFcdaViewModel> GetFcdaViewModelCollection(IDataSet model);
-        IFcdaViewModel GetFcdaViewModelElement(IFcda model);
+        ObservableCollection<IFcdaViewModel> CreateFcdaViewModelCollection(IDataSet model);
+        IFcdaViewModel CreateFcdaViewModelElement(IFcda model);
    
     }
 }
