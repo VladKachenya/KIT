@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.EnumType;
 
 namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType
@@ -16,14 +17,14 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType
         }
         public int Ord { get; set; }
         public string Value { get; set; }
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IEnumVal)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IEnumVal)) return false;
             var element = obj as IEnumVal;
-            if (element.Ord != Ord) return -1;
-            if (element.Value != Value) return -1;
-            return 1;
+            if (element.Ord != Ord) return false;
+            if (element.Value != Value) return false;
+            return true;
         }
     }
 }

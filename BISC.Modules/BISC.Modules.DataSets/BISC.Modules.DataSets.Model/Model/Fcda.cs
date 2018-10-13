@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
 using BISC.Model.Iec61850Ed2;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
 
@@ -95,19 +96,19 @@ namespace BISC.Modules.DataSets.Model.Model
         public string Fc { get; set; }
         #endregion
 
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IFcda)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IFcda)) return false;
             var element = obj as IFcda;
-            if (element.LdInst != LdInst) return -1;
-            if (element.Prefix != Prefix) return -1;
-            if (element.LnClass != LnClass) return -1;
-            if (element.LnInst != LnInst) return -1;
-            if (element.DoName != DoName) return -1;
-            if (element.DaName != DaName) return -1;
-            if (element.Fc != Fc) return -1;
-            return 1;
+            if (element.LdInst != LdInst) return false;
+            if (element.Prefix != Prefix) return false;
+            if (element.LnClass != LnClass) return false;
+            if (element.LnInst != LnInst) return false;
+            if (element.DoName != DoName) return false;
+            if (element.DaName != DaName) return false;
+            if (element.Fc != Fc) return false;
+            return true;
         }
     }
 }

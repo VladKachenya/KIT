@@ -17,13 +17,13 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DaType
         }
         public string Id { get; set; }
         public ChildModelsList<IBda> Bdas =>new ChildModelsList<IBda>(this, "BDA");
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IDaType)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IDaType)) return false;
             var element = obj as IDaType;
-            if (element.Id != Id) return -1;
-            return 1;
+            if (element.Id != Id) return false;
+            return true;
         }
     }
 }

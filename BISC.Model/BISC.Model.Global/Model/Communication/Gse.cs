@@ -42,19 +42,19 @@ namespace BISC.Model.Global.Model.Communication
         public ChildModelProperty<IDurationInMilliSec> MinTime =>new ChildModelProperty<IDurationInMilliSec>(this, "MinTime");
         public ChildModelProperty<IDurationInMilliSec> MaxTime => new ChildModelProperty<IDurationInMilliSec>(this, "MaxTime");
         public ChildModelProperty<ISclAddress> SclAddress => new ChildModelProperty<ISclAddress>(this, ModelKeys.SclAddressKey);
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IGse)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IGse)) return false;
             var element = obj as IGse;
-            if (element.VlanId != VlanId) return -1;
-            if (element.MacAddress != MacAddress) return -1;
-            if (element.VlanId != VlanId) return -1;
-            if (element.VlanPriority != VlanPriority) return -1;
-            if (element.AppId != AppId) return -1;
-            if (element.LdInst != LdInst) return -1;
-            if (element.CbName != CbName) return -1;
-            return 1;
+            if (element.VlanId != VlanId) return false;
+            if (element.MacAddress != MacAddress) return false;
+            if (element.VlanId != VlanId) return false;
+            if (element.VlanPriority != VlanPriority) return false;
+            if (element.AppId != AppId) return false;
+            if (element.LdInst != LdInst) return false;
+            if (element.CbName != CbName) return false;
+            return true;
         }
     }
 }

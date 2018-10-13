@@ -1,4 +1,5 @@
 ﻿using BISC.Model.Global.Model;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using System;
 using System.Collections.Generic;
@@ -56,17 +57,17 @@ namespace BISC.Modules.Gooses.Model.Model.Matrix
 
         public List<bool> ValueList { get; set; }
 
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IGooseRow)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IGooseRow)) return false;
             var element = obj as IGooseRow;
-            if (element.Signature != Signature) return -1;
-            if (element.ReferencePath != ReferencePath) return -1;
-            if (element.GooseRowType != GooseRowType) return -1;
-            if (element.ValuesString != ValuesString) return -1;
-            if (element.NumberOfFcdaInDataSetOfGoose != NumberOfFcdaInDataSetOfGoose) return -1;
-            return 1;
+            if (element.Signature != Signature) return false;
+            if (element.ReferencePath != ReferencePath) return false;
+            if (element.GooseRowType != GooseRowType) return false;
+            if (element.ValuesString != ValuesString) return false;
+            if (element.NumberOfFcdaInDataSetOfGoose != NumberOfFcdaInDataSetOfGoose) return false;
+            return true;
         }
     }
 }

@@ -9,7 +9,7 @@ using BISC.Model.Infrastructure.Project.Communication;
 
 namespace BISC.Model.Global.Model.Communication
 {
-   public class ConnectedAccessPoint:ModelElement,IConnectedAccessPoint
+   public class ConnectedAccessPoint : ModelElement,IConnectedAccessPoint
     {
         
         public ConnectedAccessPoint()
@@ -21,14 +21,14 @@ namespace BISC.Model.Global.Model.Communication
         public string ApName { get; set; }
         public ChildModelsList<ISclAddress> SclAddresses=>new ChildModelsList<ISclAddress>(this,ModelKeys.SclAddressKey);
         public ChildModelsList<IGse> GseList=>new ChildModelsList<IGse>(this,ModelKeys.GseKey);
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IConnectedAccessPoint)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IConnectedAccessPoint)) return false;
             var element = obj as IConnectedAccessPoint;
-            if (element.IedName != IedName) return -1;
-            if (element.ApName != ApName) return -1;
-            return 1;
+            if (element.IedName != IedName) return false;
+            if (element.ApName != ApName) return false;
+            return true;
         }
     }
 }

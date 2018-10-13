@@ -20,14 +20,14 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.LNodeType
         public string LnClass { get; set; }
 
         public ChildModelsList<IDo> DoList =>new ChildModelsList<IDo>(this, "DO");
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is ILNodeType)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is ILNodeType)) return false;
             var element = obj as ILNodeType;
-            if (element.Id != Id) return -1;
-            if (element.LnClass != LnClass) return -1;
-            return 1;
+            if (element.Id != Id) return false;
+            if (element.LnClass != LnClass) return false;
+            return true;
         }
     }
 }

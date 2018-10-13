@@ -51,6 +51,7 @@
     <Compile Include="Elements\ChildModelProperty.cs" />
     <Compile Include="Elements\ChildModelsList.cs" />
     <Compile Include="Elements\IModelElement.cs" />
+    <Compile Include="Elements\IModelElementComparable.cs" />
     <Compile Include="IModelElementSerializer.cs" />
     <Compile Include="IModelElementsRegistryService.cs" />
     <Compile Include="Keys\ModelKeys.cs" />

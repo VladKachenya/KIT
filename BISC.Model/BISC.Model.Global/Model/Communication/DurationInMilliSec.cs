@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project.Communication;
 
 namespace BISC.Model.Global.Model.Communication
@@ -22,15 +23,15 @@ namespace BISC.Model.Global.Model.Communication
         public string Unit { get; set; }
         public string Multiplier { get; set; }
         public int Value { get; set; }
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IDurationInMilliSec)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IDurationInMilliSec)) return false;
             var element = obj as IDurationInMilliSec;
-            if (element.Unit != Unit) return -1;
-            if (element.Multiplier != Multiplier) return -1;
-            if (element.Value != Value) return -1;
-            return 1;
+            if (element.Unit != Unit) return false;
+            if (element.Multiplier != Multiplier) return false;
+            if (element.Value != Value) return false;
+            return true;
         }
     }
 }

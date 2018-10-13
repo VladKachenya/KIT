@@ -19,14 +19,14 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public string Name { get; set; }
         public string Description { get; set; }
         public ChildModelProperty<IVal> Value =>new ChildModelProperty<IVal>(this, InfoModelKeys.ModelKeys.ValKey);
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IDai)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IDai)) return false;
             var element = obj as IDai;
-            if (element.Name != Name) return -1;
-            if (element.Description != Description) return -1;
-            return 1;
+            if (element.Name != Name) return false;
+            if (element.Description != Description) return false;
+            return true;
         }
     }
 }

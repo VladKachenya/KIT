@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Infrastructure.Model;
 
@@ -33,13 +34,13 @@ namespace BISC.Modules.Gooses.Model.Model
         }
 
         #endregion
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IExternalGooseRef)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IExternalGooseRef)) return false;
             var element = obj as IExternalGooseRef;
-            if (element.AsString() != AsString()) return -1;
-            return 1;
+            if (element.AsString() != AsString()) return false;
+            return true;
         }
     }
 }

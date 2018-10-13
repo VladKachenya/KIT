@@ -87,6 +87,7 @@
     <Compile Include="Model.Global\Serializers\DeviceAccessPointSerializerTest.cs" />
     <Compile Include="Model.Global\Serializers\DeviceServerSerializerTest.cs" />
     <Compile Include="Model.Global\Serializers\SclModelSerializerTest.cs" />
+    <Compile Include="Model.Global\Services\ModelsComparingServiseTest.cs" />
     <Compile Include="Model.InfoModel\Serializers\LDeviceSerializerTest.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

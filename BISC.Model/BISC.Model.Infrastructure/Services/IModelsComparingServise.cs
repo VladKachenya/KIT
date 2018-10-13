@@ -14,5 +14,6 @@ namespace BISC.Model.Infrastructure.Services
 
     public interface IMismatch
     {
+        string MismatchType { get;}
     }
 }

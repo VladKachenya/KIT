@@ -30,18 +30,18 @@ namespace BISC.Modules.Device.Model.Model
 
         #endregion
 
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IDevice)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IDevice)) return false;
             var element = obj as IDevice;
-            if (element.Name != Name) return -1;
-            if (element.Ip != Ip) return -1;
-            if (element.Description != Description) return -1;
-            if (element.Manufacturer != Manufacturer) return -1;
-            if (element.Type != Type) return -1;
-            if (element.Revision != Revision) return -1;
-            return 1;
+            if (element.Name != Name) return false;
+            if (element.Ip != Ip) return false;
+            if (element.Description != Description) return false;
+            if (element.Manufacturer != Manufacturer) return false;
+            if (element.Type != Type) return false;
+            if (element.Revision != Revision) return false;
+            return true;
         }
     }
 }

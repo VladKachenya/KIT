@@ -27,16 +27,16 @@ namespace BISC.Modules.Gooses.Model.Model
         public ChildModelsList<ISubscriberDevice> SubscriberDevice=>new ChildModelsList<ISubscriberDevice>(this, GooseKeys.GooseModelKeys.SubscriberDeviceKey);
         #endregion
 
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IGooseControl)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IGooseControl)) return false;
             var element = obj as IGooseControl;
-            if (element.Name != Name) return -1;
-            if (element.DataSet != DataSet) return -1;
-            if (element.ConfRev != ConfRev) return -1;
-            if (element.AppId != AppId) return -1;
-            return 1;
+            if (element.Name != Name) return false;
+            if (element.DataSet != DataSet) return false;
+            if (element.ConfRev != ConfRev) return false;
+            if (element.AppId != AppId) return false;
+            return true;
         }
     }
 }

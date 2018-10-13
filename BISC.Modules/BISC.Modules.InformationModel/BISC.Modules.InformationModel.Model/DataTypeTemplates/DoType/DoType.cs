@@ -21,14 +21,14 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType
         public string Cdc { get; set; }
         public ChildModelsList<IDa> DaList => new ChildModelsList<IDa>(this, "DA");
         public ChildModelsList<ISdo> SdoList=>new ChildModelsList<ISdo>(this,"SDO");
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IDoType)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IDoType)) return false;
             var element = obj as IDoType;
-            if (element.Id != Id) return -1;
-            if (element.Cdc != Cdc) return -1;
-            return 1;
+            if (element.Id != Id) return false;
+            if (element.Cdc != Cdc) return false;
+            return true;
         }
     }
 }

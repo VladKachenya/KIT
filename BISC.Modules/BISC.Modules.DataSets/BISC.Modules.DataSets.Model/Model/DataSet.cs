@@ -24,14 +24,14 @@ namespace BISC.Modules.DataSets.Model.Model
         public bool IsDynamic { get; set; }
         #endregion
 
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IDataSet)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IDataSet)) return false;
             var element = obj as IDataSet;
-            if (element.Name != Name) return -1;
-            if (element.IsDynamic != IsDynamic) return -1;
-            return 1;
+            if (element.Name != Name) return false;
+            if (element.IsDynamic != IsDynamic) return false;
+            return true;
         }
     }
 }

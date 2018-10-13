@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Infrastructure.Model;
 
@@ -23,16 +24,16 @@ namespace BISC.Modules.Gooses.Model.Model
         public string DeviceName { get; set; }
 
         #endregion
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is ISubscriberDevice)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is ISubscriberDevice)) return false;
             var element = obj as ISubscriberDevice;
-            if (element.LdInst != LdInst) return -1;
-            if (element.ApRef != ApRef) return -1;
-            if (element.LnClass != LnClass) return -1;
-            if (element.DeviceName != DeviceName) return -1;
-            return 1;
+            if (element.LdInst != LdInst) return false;
+            if (element.ApRef != ApRef) return false;
+            if (element.LnClass != LnClass) return false;
+            if (element.DeviceName != DeviceName) return false;
+            return true;
         }
     }
 }

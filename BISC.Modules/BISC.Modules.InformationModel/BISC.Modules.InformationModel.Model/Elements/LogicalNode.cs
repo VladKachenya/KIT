@@ -22,14 +22,14 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public ChildModelsList<IDoi> DoiCollection=>new ChildModelsList<IDoi>(this, InfoModelKeys.ModelKeys.DoiKey);
         public string Prefix { get; set; }
         public string Name => Prefix + LnClass + Inst;
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is ILogicalNode)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is ILogicalNode)) return false;
             var element = obj as ILogicalNode;
-            if (element.Name != Name) return -1;
-            if (element.LnType != LnType) return -1;
-            return 1;
+            if (element.Name != Name) return false;
+            if (element.LnType != LnType) return false;
+            return true;
         }
     }
 }

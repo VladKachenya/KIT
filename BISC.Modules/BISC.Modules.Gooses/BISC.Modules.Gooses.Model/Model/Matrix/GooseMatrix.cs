@@ -23,13 +23,13 @@ namespace BISC.Modules.Gooses.Model.Model.Matrix
         public ChildModelsList<IGooseRow> GooseRows =>new ChildModelsList<IGooseRow>(this, "GooseRow");
 
         #endregion
-        public override int CompareTo(object obj)
+        public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.CompareTo(obj) == -1) return -1;
-            if (!(obj is IGooseMatrix)) return -1;
+            if (base.Equals(obj)) return false;
+            if (!(obj is IGooseMatrix)) return false;
             var element = obj as IGooseMatrix;
-            if (element.RelatedIedName != RelatedIedName) return -1;
-            return 1;
+            if (element.RelatedIedName != RelatedIedName) return false;
+            return true;
         }
     }
 

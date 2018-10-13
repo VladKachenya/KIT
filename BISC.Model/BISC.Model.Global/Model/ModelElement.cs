@@ -9,7 +9,7 @@ namespace BISC.Model.Global.Model
 {
     [DebuggerDisplay("{ElementName} , Children [{ChildModelElements.Count}] ,Attributes [{ModelElementAttributes.Count}]")]
 
-    public class ModelElement:IModelElement
+    public class ModelElement: IModelElement
     {
         public ModelElement()
         {
@@ -22,13 +22,12 @@ namespace BISC.Model.Global.Model
         public List<IModelElement> ChildModelElements { get;}
         public List<XAttribute> ModelElementAttributes { get; }
 
-        public virtual int CompareTo(object obj)
+        public virtual bool ModelElementCompareTo(IModelElement obj)
         {
-            if (!(obj is IModelElement)) return -1;
-            var element = obj as IModelElement;
-            if (element.ElementName != ElementName) return -1;
-            if (element.Namespace != Namespace) return -1;
-            return 1;
+            if (obj == null) return false;
+            if (obj.ElementName != ElementName) return false;
+            if (obj.Namespace != Namespace) return false;
+            return true;
         }
     }
 
