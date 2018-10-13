@@ -12,7 +12,13 @@ namespace BISC.Model.Global.Services
     {
         public List<IMismatch> CompareBranches(IModelElement branch1, IModelElement branch2)
         {
-            return new List<IMismatch>();
+            var result = new List<IMismatch>();
+            if (branch1.ModelElementCompareTo(branch2))
+            {
+
+            }
+            //result.Add(null);
+            return result;
         }
     }
 
