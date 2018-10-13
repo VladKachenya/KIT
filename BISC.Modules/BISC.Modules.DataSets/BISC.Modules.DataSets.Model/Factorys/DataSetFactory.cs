@@ -12,9 +12,12 @@ namespace BISC.Modules.DataSets.Model.Factorys
 {
     public class DataSetFactory : IDataSetFactory
     {
-        public IDataSet GetDataSet(IModelElement parient, string name = "New DataSet")
+        public IDataSet CreateDataSet(IModelElement parent, string name, List<IFcda> fcdas)
         {
-            return new DataSet() { Name = name , ParentModelElement = parient, IsDynamic = true};
+            var dataSet = new DataSet() {Name = name, ParentModelElement = parent, IsDynamic = true};
+            dataSet.FcdaList.AddRange(fcdas);
+            parent.ChildModelElements.Add(dataSet);
+            return dataSet;
         }
     }
 }

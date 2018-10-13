@@ -19,6 +19,15 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public string Inst { get; set; }
         public ChildModelProperty<ILogicalNodeZero> LogicalNodeZero =>new ChildModelProperty<ILogicalNodeZero>(this, InfoModelKeys.ModelKeys.LogicalNodeZeroKey);
         public ChildModelsList<ILogicalNode> LogicalNodes =>new ChildModelsList<ILogicalNode>(this, InfoModelKeys.ModelKeys.LogicalNodeKey);
+        public List<ILogicalNode> AlLogicalNodes
+        {
+            get
+            {
+                var all=new List<ILogicalNode>(LogicalNodes.ToList());
+                all.Add(LogicalNodeZero.Value);
+                return all;
+            }
+        }
 
         public override bool ModelElementCompareTo(IModelElement obj)
         {

@@ -72,7 +72,7 @@ namespace BISC.ViewModel
 
         private async Task OnClosing()
         {
-            var result =await _saveCheckingService.SaveAllUnsavedEntities();
+            var result =await _saveCheckingService.SaveAllUnsavedEntities(true);
             if (!result.IsCancelled)
             {
                Application.Current.Shutdown();

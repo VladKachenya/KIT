@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Infrastructure.Global.Services;
@@ -55,8 +56,10 @@ namespace BISC.GlobalServices
                 globalCommand.IconId = IconsKeys.SaveIconKey;
 
             }
-
-            _globalToolbarCommands.Add(globalCommand);
+            Application.Current.Dispatcher.Invoke(() => {
+                _globalToolbarCommands.Add(globalCommand);
+            });
+           
         }
 
         public void ClearCurrentSaveCommand()
@@ -65,7 +68,9 @@ namespace BISC.GlobalServices
                 _globalToolbarCommands.FirstOrDefault(globalCommandFinded => globalCommandFinded.IconId == IconsKeys.SaveIconKey|| globalCommandFinded.IconId == IconsKeys.UploadNetworkKey);
             if (existingSaveCommand != null)
             {
-                _globalToolbarCommands.Remove(existingSaveCommand);
+                Application.Current.Dispatcher.Invoke(() => {
+                    _globalToolbarCommands.Remove(existingSaveCommand);
+                });
             }
         }
 

@@ -11,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
+using BISC.Model.Infrastructure.Common;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Services;
 using BISC.Modules.InformationModel.Presentation.ViewModels.Base;
@@ -21,6 +23,8 @@ using BISC.Model.Infrastructure.Project;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 using BISC.Modules.DataSets.Infrastructure.Factorys;
+using BISC.Modules.InformationModel.Infrastucture.Services;
+using BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType;
 using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
@@ -36,26 +40,36 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private readonly IBiscProject _biscProject;
         private IFcdaFactory _fcdaFactory;
         private readonly ISaveCheckingService _saveCheckingService;
+        private readonly IInfoModelService _infoModelService;
         private ObservableCollection<IFcdaViewModel> _fcdaViewModels;
         private string _name;
         private string _editableNamePart;
+        private string _selectedParentLd;
+        private string _selectedParentLn;
+        private List<string> _parentLdList;
+        private List<string> _parentLnList;
+        private bool _isEditing;
+        private bool _isEditeble;
+        private IModelElement _device;
 
         #endregion
 
         #region C-tor
         public DataSetViewModel(IFcdaViewModelFactory fcdaViewModelFactory,ICommandFactory commandFactory, 
             IFcdaAdderViewModelService fcdaAdderViewModelService, IDataTypeTemplatesModelService dataTypeTemplatesModelService,
-            IBiscProject biscProject, IFcdaFactory fcdaFactory,ISaveCheckingService saveCheckingService)
+            IBiscProject biscProject, IFcdaFactory fcdaFactory,ISaveCheckingService saveCheckingService,IInfoModelService infoModelService
+            )
         {
             _fcdaFactory = fcdaFactory;
             _saveCheckingService = saveCheckingService;
+            _infoModelService = infoModelService;
             _biscProject = biscProject;
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
             _fcdaViewModelFactory = fcdaViewModelFactory;
             DeleteFcdaCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteFcda);
             AddFcdaToDataset = commandFactory.CreatePresentationCommand(OnAddFcdaTpDataset, () => IsEditeble);
             _fcdaAdderViewModelService = fcdaAdderViewModelService;
-
+            FcdaViewModels=new ObservableCollection<IFcdaViewModel>();
         }
         #endregion
 
@@ -78,28 +92,51 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             set => SetProperty(ref _name, value);
         }
 
-        public string ElementName => _model.ElementName;
+        public string ElementName =>"DataSet";
 
         public Brush TypeColorBrush => new SolidColorBrush(Color.FromRgb(126, 141, 240));
 
-        public IDataSet GetModel()
-        {
-            _model.Name = Name;
-            _model.FcdaList.Clear();
-            foreach (var fcdaViewModel in FcdaViewModels)
-            {
-                _model.FcdaList.Add(fcdaViewModel.GetModel());
-            }
-            return _model;
-        }
-
+   
         public void SetModel(IDataSet model)
         {
             _model = model ?? throw new NullReferenceException();
             FcdaViewModels = _fcdaViewModelFactory.CreateFcdaViewModelCollection(_model);
-            FixedNamePart = (_model.ParentModelElement as ILogicalNode).Name + "." + _model.Name + ".";
+            SelectedParentLn = (_model.ParentModelElement as ILogicalNode).Name;
+
+            _device = model.GetFirstParentOfType<IDevice>();
+            ParentLdList = _infoModelService.GetLDevicesFromDevices(_device)
+                .Select((device => device.Inst)).ToList();
+
+            SelectedParentLd =
+                ParentLdList.FirstOrDefault((s => s == ((_model.ParentModelElement as ILogicalNode).ParentModelElement as ILDevice).Inst));
+            IsEditeble = model.IsDynamic;
+            
             EditableNamePart = _model.Name;
             Name = model.Name;
+        }
+
+
+        private void FillParentLnList()
+        {
+            var ldevice = _infoModelService.GetLDevicesFromDevices(_device)
+                .FirstOrDefault((device => device.Inst == SelectedParentLd));
+            if (ldevice != null)
+            {
+                var parentLnList = ldevice.LogicalNodes.Select((node => node.Name))
+                    .ToList();
+                parentLnList.Add(ldevice.LogicalNodeZero.Value.Name);
+                ParentLnList = parentLnList;
+                if (!ParentLnList.Contains(SelectedParentLn))
+                {
+                    SelectedParentLn = ParentLnList.FirstOrDefault((s => s=="LLN0"));
+                }
+                else
+                {
+                    SelectedParentLn = ParentLnList.First((s => s == SelectedParentLn));
+                }
+            }
+           
+
         }
 
         public bool IsExpanded
@@ -108,7 +145,18 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             set => SetProperty(ref _isExpanded, value,true);
         }
 
-        public bool IsEditeble => _model.IsDynamic;
+        public bool IsEditing
+        {
+            get => _isEditing;
+            set { SetProperty(ref _isEditing ,value,true); }
+        }
+
+        public bool IsEditeble
+        {
+            get => _isEditeble;
+            set { SetProperty(ref _isEditeble , value,true); }
+        }
+
         #endregion
 
         #region Implamentation of IDataSetViewModel
@@ -128,11 +176,43 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             set { SetProperty(ref _editableNamePart , value); }
         }
 
-        public string FixedNamePart { get; private set; }
+        public string SelectedParentLd
+        {
+            get => _selectedParentLd;
+            set
+            {
+                SetProperty(ref _selectedParentLd, value);
+                FillParentLnList();
+            }
+        }
+
+        public string SelectedParentLn
+        {
+            get => _selectedParentLn;
+            set { SetProperty(ref _selectedParentLn, value); }
+        }
+
+        public List<string> ParentLdList
+        {
+            get => _parentLdList;
+            set { SetProperty(ref _parentLdList , value,true); }
+        }
+
+        public List<string> ParentLnList
+        {
+            get => _parentLnList;
+            set { SetProperty(ref _parentLnList, value, true); }
+        }
+
+        public void SetParentDevice(IModelElement device)
+        {
+            _device = device;
+        }
 
         #endregion
 
         #region override of NavigationViewModelBase
+
         public void DragOver(IDropInfo dropInfo)
         {
             TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;
@@ -140,8 +220,10 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
             if (sourceItem != null && sourceItem.TypeName == InfoModelKeys.ModelKeys.DaiKey)
             {
-                IDa Da = _dataTypeTemplatesModelService.GetDaOfDai(sourceItem.Model as IDai, _biscProject.MainSclModel.Value);
-                if(Da.Fc == "ST" || Da.Fc == "MX")
+                if ((sourceItem.Model as IDai).GetFirstParentOfType<IDevice>() != _device) return;
+                IDa Da = _dataTypeTemplatesModelService.GetDaOfDai(sourceItem.Model as IDai,
+                    _biscProject.MainSclModel.Value);
+                if (Da.Fc == "ST" || Da.Fc == "MX")
                 {
                     dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
                     dropInfo.Effects = System.Windows.DragDropEffects.Move;

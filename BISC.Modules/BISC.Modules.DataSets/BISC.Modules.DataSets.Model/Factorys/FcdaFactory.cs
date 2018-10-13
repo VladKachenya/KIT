@@ -8,23 +8,16 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Common;
 
 namespace BISC.Modules.DataSets.Model.Factorys
 {
-    static class LnInfo
-    {
-        public const string classInfo = "classInfo";
-        public const string instInfo = "instInfo";
-    }
-    static class DaInfo
-    {
-        public const string daName = "daName";
-        public const string daFc = "daFc";
-    }
+ 
     public class FcdaFactory : IFcdaFactory
     {
         IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
@@ -44,78 +37,53 @@ namespace BISC.Modules.DataSets.Model.Factorys
             //string daName = da.Name;
             //string fc = da.Fc;
             IFcda result = new Fcda();
-            result.LdInst = GetLdInst(dai);
-            result.LnClass = GetLnInfo(dai, LnInfo.classInfo);
-            result.LnInst= GetLnInfo(dai, LnInfo.instInfo);
-            result.DoName = GetDoiName(dai);
-            result.DaName = GetDaInfo(dai, DaInfo.daName);
-            result.Fc = GetDaInfo(dai, DaInfo.daFc);
+            result.LdInst = dai.GetFirstParentOfType<ILDevice>().Inst;
+            var ln = dai.GetFirstParentOfType<ILogicalNode>();
+            result.LnClass = ln.LnClass;
+            result.LnInst = ln.Inst;
+            result.DoName = dai.GetFirstParentOfType<IDoi>().Name;
+            result.DaName = GetDaiRecursive(dai, String.Empty);
+            result.Fc = GetDaFc(dai);
             return result;
         }
 
 
+
+
+
+
         #region privats methods
-        private string GetDaInfo(IDai dai, string daInfoType)
+
+
+
+        private string GetDaiRecursive(IModelElement modelElement,string daName)
+        {
+            if (modelElement.ParentModelElement is IDoi)
+            {
+                return daName;
+            }
+           
+            if (modelElement is IDai dai)
+            {
+                daName += dai.Name;
+            }
+            if (modelElement is ISdi sdi)
+            {
+                daName = sdi.Name+"."+daName;
+            }
+            return GetDaiRecursive(modelElement.ParentModelElement, daName);
+        }
+
+
+        private string GetDaFc(IDai dai)
         {
             IDa da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel.Value);
-            if(daInfoType == DaInfo.daName)
-                return da.Name;
-            if (daInfoType == DaInfo.daFc)
                 return da.Fc;
-            return string.Empty;
         }
 
-        private string GetLnInfo(IModelElement modelElement, string lnInfoType)
-        {
-            if (modelElement == null)
-            {
-                return string.Empty;
-            }
-            else if (modelElement.ElementName == InfoModelKeys.ModelKeys.LogicalNodeKey)
-            {
-                if (lnInfoType == LnInfo.classInfo)
-                    return (modelElement as ILogicalNode).LnClass;
-                if (lnInfoType == LnInfo.instInfo)
-                    return (modelElement as ILogicalNode).Inst;
-                return string.Empty;
-            }
-            else
-            {
-                return GetLdInst(modelElement.ParentModelElement);
-            }
-        }
+       
 
-        private string GetLdInst(IModelElement modelElement)
-        {
-            if (modelElement == null)
-            {
-                return string.Empty;
-            }
-            else if (modelElement.ElementName == InfoModelKeys.ModelKeys.LDeviceKey)
-            {
-                return (modelElement as ILDevice).Inst;
-            }
-            else
-            {
-                return GetLdInst(modelElement.ParentModelElement);
-            }
-        }
-
-        private string GetDoiName(IModelElement modelElement)
-        {
-            if (modelElement == null)
-            {
-                return string.Empty;
-            }
-            else if (modelElement.ElementName == InfoModelKeys.ModelKeys.DoiKey)
-            {
-                return (modelElement as IDoi).Name;
-            }
-            else
-            {
-                return GetLdInst(modelElement.ParentModelElement);
-            }
-        }
+       
         #endregion
     }
 }

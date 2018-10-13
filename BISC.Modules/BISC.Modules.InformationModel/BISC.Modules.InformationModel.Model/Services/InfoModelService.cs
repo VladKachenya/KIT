@@ -45,10 +45,11 @@ namespace BISC.Modules.InformationModel.Model.Services
             IDeviceAccessPoint deviceAccessPoint = new DeviceAccessPoint();
             
             deviceAccessPoint.DeviceServer.Value = new DeviceServer();
+            
             deviceAccessPoint.Name =
                 _sclCommunicationModelService.GetConnectedAccessPoint(sclModel, deviceName).ApName;
             device.ChildModelElements.Add(deviceAccessPoint);
-
+            deviceAccessPoint.ParentModelElement = device;
         }
 
         public List<ILDevice> GetLDevicesFromDevices(IModelElement device)

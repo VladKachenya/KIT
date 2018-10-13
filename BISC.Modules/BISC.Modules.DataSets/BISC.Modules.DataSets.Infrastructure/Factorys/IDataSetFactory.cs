@@ -10,6 +10,7 @@ namespace BISC.Modules.DataSets.Infrastructure.Factorys
 {
     public interface IDataSetFactory
     {
-        IDataSet GetDataSet(IModelElement parient, string name);
+        IDataSet CreateDataSet(IModelElement parent, string name,List<IFcda> fcdas);
+
     }
 }

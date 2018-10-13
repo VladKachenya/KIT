@@ -76,12 +76,12 @@ namespace BISC.Presentation.Services
             }
         }
 
-        public async Task<SaveResult> SaveAllUnsavedEntities()
+        public async Task<SaveResult> SaveAllUnsavedEntities(bool isNeedToAsk)
         {
             SaveResult saveResultEnum = new SaveResult();
             var modifiedEntities = _saveCheckingEntities.Where((entity =>
                 entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
-            if (modifiedEntities.Any())
+            if (modifiedEntities.Any()&&isNeedToAsk)
             {
                 BiscNavigationParameters navigationParameters=new BiscNavigationParameters();
                 navigationParameters.AddParameterByName(SaveCheckingEntity.NavigationKey,modifiedEntities).AddParameterByName(nameof(SaveResult),saveResultEnum);

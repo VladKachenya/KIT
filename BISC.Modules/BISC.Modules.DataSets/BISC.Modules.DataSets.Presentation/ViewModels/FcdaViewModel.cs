@@ -49,12 +49,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             }
         }
         public Brush TypeColorBrush => new SolidColorBrush( Color.FromRgb(89, 89, 210));
-
-        public IFcda GetModel()
-        {
-            return _model;
-        }
-
+   
         public void SetModel(IFcda model)
         {
             _model = model ?? throw new NullReferenceException();
@@ -68,12 +63,21 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                     return (_model.ParentModelElement as IDataSet).IsDynamic;
                 return true;
             }
+            set
+            {
+
+            }
         }
 
         #endregion
 
             #region Implementation of IFcdaViewModel
         public ICommand DeleteFcdaCommand { get; }
+        public IFcda GetFcda()
+        {
+            return _model;
+        }
+
         #endregion
 
 

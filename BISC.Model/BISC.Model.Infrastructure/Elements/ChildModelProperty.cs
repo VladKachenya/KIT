@@ -37,6 +37,7 @@ namespace BISC.Model.Infrastructure.Elements
                     _parentModelElement.ChildModelElements.Remove(val);
                 }
                 _parentModelElement.ChildModelElements.Add(value);
+                value.ParentModelElement = _parentModelElement;
             }
         }
 

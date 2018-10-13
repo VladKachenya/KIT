@@ -11,6 +11,7 @@ using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Services;
 using BISC.Modules.DataSets.Presentation.Factorys;
 using BISC.Modules.DataSets.Presentation.Services;
+using BISC.Modules.DataSets.Presentation.Services.Interfaces;
 using BISC.Modules.DataSets.Presentation.ViewModels;
 using BISC.Modules.DataSets.Presentation.Views;
 using BISC.Presentation.Infrastructure.UiFromModel;
@@ -46,6 +47,7 @@ namespace BISC.Modules.DataSets.Presentation.Module
             _injectionContainer.RegisterType<IFcdaViewModel, FcdaViewModel>();
             _injectionContainer.RegisterType<IDataSetViewModel, DataSetViewModel>();
             _injectionContainer.RegisterType<IFcdaAdderViewModel, FcdaAdderViewModel>();
+            _injectionContainer.RegisterType<IDataSetSavingService, DataSetSavingService>();
 
         }
 

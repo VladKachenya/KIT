@@ -7,16 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Model.Infrastructure.Elements;
+using BISC.Presentation.Infrastructure.ChangeTracker;
 
 namespace BISC.Modules.DataSets.Infrastructure.ViewModels
 {
-    public interface IDataSetViewModel  : IDataSetElementBaseViewModel<IDataSet>
+    public interface IDataSetViewModel  : IDataSetElementBaseViewModel<IDataSet>,IObjectWithChangeTracker
     {
         bool IsExpanded { get; set; }
         ObservableCollection<IFcdaViewModel> FcdaViewModels { get;}
         ICommand DeleteFcdaCommand { get; }
         ICommand AddFcdaToDataset { get; }
         string EditableNamePart { get; set; }
-        string FixedNamePart { get; }
+        string SelectedParentLd { get; set; }
+        string SelectedParentLn { get; set; }
+        List<string> ParentLdList { get; set; }
+        List<string> ParentLnList { get; set; }
+        void SetParentDevice(IModelElement device);
     }
 }

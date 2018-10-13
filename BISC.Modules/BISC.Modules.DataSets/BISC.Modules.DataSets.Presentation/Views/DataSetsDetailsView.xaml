@@ -6,9 +6,11 @@
              xmlns:local="clr-namespace:BISC.Modules.DataSets.Presentation.Views"
              xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+             xmlns:viewModels="clr-namespace:BISC.Modules.DataSets.Presentation.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Name="DataSetsDitailsViewModel">
     <UserControl.Resources>
+        <converters:InverseConverter x:Key="inverseConverter"></converters:InverseConverter>
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
         <Style x:Key ="IsEditebleStyle" TargetType="ContentControl">
             <Style.Triggers >
@@ -81,7 +83,7 @@
             <ItemsControl x:Name="ExpanderItemsControl"
                 ItemsSource="{Binding DataSets}">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate DataType="viewModels:DataSetViewModel">
                         <Border 
                             x:Name="Border"
                             BorderThickness="1 0 0 1"
@@ -94,14 +96,51 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                                <Border Margin="2" Background="{Binding TypeColorBrush}" >
-                                                    <TextBlock Margin="4"  Text="{Binding ElementName}"/>
-                                                </Border>
-                                                <TextBlock VerticalAlignment="Center" Text="{Binding FixedNamePart}" Margin="4"/>
-                                                <TextBox VerticalAlignment="Center" Text="{Binding EditableNamePart,UpdateSourceTrigger=PropertyChanged}" Margin="0" 
-                                                     IsEnabled="{Binding ElementName = EditToggleButton, Path= IsChecked}" />
-                                            </StackPanel>
+                                            <ContentControl Content="{Binding .}">
+
+                                                <ContentControl.Style>
+                                                    <Style TargetType="ContentControl">
+
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                                                <Setter Property="ContentTemplate">
+                                                                    <Setter.Value>
+                                                                        <DataTemplate>
+                                                                            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                                                                <Border Margin="2" Background="{Binding TypeColorBrush}" >
+                                                                                    <TextBlock Margin="4"  Text="{Binding ElementName}"/>
+                                                                                </Border>
+                                                                                <ComboBox VerticalAlignment="Center" Margin="4,0,0,4" SelectedItem="{Binding SelectedParentLd}" ItemsSource="{Binding ParentLdList}" MinWidth="100"></ComboBox>
+                                                                                <ComboBox VerticalAlignment="Center" Margin="4,0,0,4" SelectedItem="{Binding SelectedParentLn}" ItemsSource="{Binding ParentLnList}" MinWidth="100"></ComboBox>
+                                                                                <TextBox VerticalAlignment="Center" Margin="4,0,0,4"  Text="{Binding EditableNamePart,UpdateSourceTrigger=PropertyChanged}" />
+                                                                            </StackPanel>
+                                                                        </DataTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding IsEditing}" Value="False">
+                                                                <Setter Property="ContentTemplate">
+                                                                    <Setter.Value>
+                                                                        <DataTemplate>
+                                                                            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                                                                <Border Margin="2" Background="{Binding TypeColorBrush}" >
+                                                                                    <TextBlock Margin="4"  Text="{Binding ElementName}"/>
+                                                                                </Border>
+                                                                                <TextBlock VerticalAlignment="Center" Text="{Binding SelectedParentLd}"></TextBlock>
+                                                                                <TextBlock VerticalAlignment="Center" Text="."></TextBlock>
+                                                                                <TextBlock VerticalAlignment="Center"  Text="{Binding SelectedParentLn}"></TextBlock>
+                                                                                <TextBlock VerticalAlignment="Center" Text="."></TextBlock>
+                                                                                <TextBlock VerticalAlignment="Center" Text="{Binding EditableNamePart,UpdateSourceTrigger=PropertyChanged}"  />
+                                                                            </StackPanel>
+                                                                        </DataTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ContentControl.Style>
+                                            </ContentControl>
+
                                             <StackPanel  Grid.Column="1" Orientation="Horizontal">
                                                 <Button Margin="5" Padding="3" Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"
                                                             Command="{Binding DataContext.DeleteDataSetViewModelCommand,Source={x:Reference ExpanderItemsControl}}"
@@ -114,13 +153,14 @@
                                                         <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
                                                     </Button.Content>
                                                 </Button>
-                                                <ToggleButton x:Name="EditToggleButton" IsChecked="False" 
+                                                <ToggleButton x:Name="EditToggleButton" IsChecked="{Binding IsEditing}" 
                                                       IsEnabled="{Binding IsEditeble}"
+                                                              
                                                       Style="{StaticResource MaterialDesignSwitchToggleButton}"
                                                       ToolTip="Разрешить редактирование датасета"/>
                                             </StackPanel>
                                         </Grid>
-                                        
+
                                     </Expander.Header>
                                     <Border BorderThickness="1" Background="#FFE0E0E0">
                                         <ListBox PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Name="fcdaListBox"

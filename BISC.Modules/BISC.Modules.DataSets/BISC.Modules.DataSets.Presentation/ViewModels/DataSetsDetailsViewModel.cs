@@ -30,6 +30,7 @@ using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.ChangeTracker;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.Factorys;
+using BISC.Modules.DataSets.Presentation.Services.Interfaces;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -43,33 +44,31 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly IGlobalEventsService _globalEventsService;
+        private readonly IDataSetSavingService _dataSetSavingService;
         private IBiscProject _biscProject;
         private ObservableCollection<IDataSetViewModel> _dataSets1;
-        private List<IDataSet> _dataSetsDeletsElements;
-        private IDataSetFactory _dataSetFactory;
         private string _regionName;
 
         #region C-tor
 
         public DataSetsDetailsViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService,
             IBiscProject biscProject, IDatasetModelService datasetModelService, IDatasetViewModelFactory datasetViewModelFactory,
-            ISaveCheckingService saveCheckingService, IDataSetFactory dataSetFactory, IUserInterfaceComposingService userInterfaceComposingService,
-            IConnectionPoolService connectionPoolService,IGlobalEventsService globalEventsService)
+            ISaveCheckingService saveCheckingService, IUserInterfaceComposingService userInterfaceComposingService,
+            IConnectionPoolService connectionPoolService,IGlobalEventsService globalEventsService,IDataSetSavingService dataSetSavingService)
         {
             _userInterfaceComposingService = userInterfaceComposingService;
             _connectionPoolService = connectionPoolService;
             _globalEventsService = globalEventsService;
+            _dataSetSavingService = dataSetSavingService;
             _biscProject = biscProject;
             _datasetModelService = datasetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
             _saveCheckingService = saveCheckingService;
-            _dataSetFactory = dataSetFactory;
             DeployAllExpandersCommand = commandFactory.CreatePresentationCommand(OnDeployAllExpanders);
             RollUpAllExpandersCommand = commandFactory.CreatePresentationCommand(OnRollUpAllExpanders);
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhanges);
             AddNewDataSetCommand = commandFactory.CreatePresentationCommand(OnAddNewDataSet);
             DeleteDataSetViewModelCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteDataSetViewModel);
-            _dataSetsDeletsElements = new List<IDataSet>();
         }
 
         #endregion
@@ -79,13 +78,10 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             var element = dataSetViewModel as IDataSetViewModel;
             DataSets.Remove(element);
-            _dataSetsDeletsElements.Add(element.GetModel());
         }
         private void OnAddNewDataSet()
         {
-            var parient = _dataSets[0]?.ParentModelElement;
-            IDataSet newDataSet = _dataSetFactory.GetDataSet(parient, GetUniqueNameOfDataSet());
-            DataSets.Add(_datasetViewModelFactory.GetDataSetViewModel(newDataSet));
+            DataSets.Add(_datasetViewModelFactory.CreateDataSetViewModel(DataSets.Select((model =>model.EditableNamePart )).ToList(),_device));
         }
         private void OnDeployAllExpanders()
         {
@@ -102,27 +98,14 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private void ResetAllDataSetCollections()
         {
             _dataSets.Clear();
-            _dataSetsDeletsElements.Clear();
             DataSets.Clear();
         }
 
         private void OnSaveСhanges()
         {
-            foreach(var deletedDataSet in _dataSetsDeletsElements)
-            {
-                if (deletedDataSet.ParentModelElement != null)
-                    _datasetModelService.DeleteDatasetFromDevice(deletedDataSet, _device);
-                else
-                    _datasetModelService.DeleteDatasetFromDevice(deletedDataSet, _device, "LD0", "LLN0");
-            }
-            foreach (var dataSetVM in DataSets)
-            {
-                var model = dataSetVM.GetModel();
-                if(model.ParentModelElement != null)
-                    _datasetModelService.AddDatasetToDevice(dataSetVM.GetModel(), _device);
-                else
-                    _datasetModelService.AddDatasetToDevice(dataSetVM.GetModel(), _device, "LD0", "LLN0");
-            }
+           
+                _dataSetSavingService.SaveDataSets(DataSets.ToList(),_device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            
             ResetAllDataSetCollections();
             _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
             SortDataSetsByIsDynamic();
@@ -130,26 +113,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             ChangeTracker.AcceptChanges();
         }
 
-        private string GetUniqueNameOfDataSet()
-        {
-            string nameBody = "NewDataSet";
-            string result;
-            int i = 0;
-            bool isFind ;
-            do
-            {
-                i++;
-                result = nameBody + i.ToString();
-                isFind = false;
-                foreach (var element in DataSets)
-                {
-                    if(result == element.FixedNamePart+element.EditableNamePart)
-                        isFind = true;
-                }
-            } while (isFind);
-
-            return result;
-        }
+  
 
         private void SortDataSetsByIsDynamic()
         {

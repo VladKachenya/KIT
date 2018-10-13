@@ -65,7 +65,7 @@ namespace BISC.Presentation.Module
         private async void OnSaveProject()
         {
             _projectService.SaveCurrentProject();
-            await _saveCheckingService.SaveAllUnsavedEntities();
+            await _saveCheckingService.SaveAllUnsavedEntities(false);
             _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
         }
 

@@ -33,7 +33,7 @@ namespace BISC.Presentation.Infrastructure.Services
         Task<bool> GetIsRegionCanBeClosed(string regionName);
         void AddSaveCheckingEntity(SaveCheckingEntity saveCheckingEntity);
         void RemoveSaveCheckingEntityByOwner(string regionName);
-        Task<SaveResult> SaveAllUnsavedEntities();
+        Task<SaveResult> SaveAllUnsavedEntities(bool isNeedToAsk);
         Task<bool> GetIsRegionSaved(string regionName);
 
     }

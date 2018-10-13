@@ -12,5 +12,6 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
     public interface IFcdaViewModel: IDataSetElementBaseViewModel<IFcda>
     {
         ICommand DeleteFcdaCommand { get; }
+        IFcda GetFcda();
     }
 }

@@ -54,10 +54,20 @@
   <ItemGroup>
     <Compile Include="Factorys\DatasetViewModelFactory.cs" />
     <Compile Include="Factorys\FcdaViewModelFactory.cs" />
+    <Compile Include="Interfaces\ViewModels\Base\IDataSetElementBaseViewModel.cs" />
+    <Compile Include="Interfaces\ViewModels\Factorys\IDatasetViewModelFactory.cs" />
+    <Compile Include="Interfaces\ViewModels\Factorys\IFcdaViewModelFactory.cs" />
+    <Compile Include="Interfaces\ViewModels\IDataSetsTreeItemViewModel.cs" />
+    <Compile Include="Interfaces\ViewModels\IDataSetViewModel.cs" />
+    <Compile Include="Interfaces\ViewModels\IFcdaAdderViewModel.cs" />
+    <Compile Include="Interfaces\ViewModels\IFcdaViewModel.cs" />
+    <Compile Include="Interfaces\ViewModels\Services\IFcdaAdderViewModelService.cs" />
     <Compile Include="Module\DatasetsPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\DataSetSavingService.cs" />
     <Compile Include="Services\DataSetsUiHandlingService.cs" />
     <Compile Include="Services\FcdaAdderViewModelService.cs" />
+    <Compile Include="Interfaces\IDataSetSavingService.cs" />
     <Compile Include="ViewModels\DataSetsDetailsViewModel.cs" />
     <Compile Include="ViewModels\DataSetsTreeItemViewModel.cs" />
     <Compile Include="ViewModels\DataSetViewModel.cs" />
@@ -135,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Converters\" />
+    <Folder Include="TemplateSelectors\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

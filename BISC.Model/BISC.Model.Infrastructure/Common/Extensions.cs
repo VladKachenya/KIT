@@ -29,6 +29,21 @@ namespace BISC.Model.Infrastructure.Common
             return false;
         }
 
+        public static T GetFirstParentOfType<T>(this IModelElement modelElement, string elementName = null)
+        {
+            if (modelElement.ParentModelElement == null) return default(T);
+            var currentModelElement = modelElement.ParentModelElement;
+            if (!(currentModelElement is T))
+            {
+                return currentModelElement.GetFirstParentOfType<T>(elementName);
+            }
+            if (elementName != null&&currentModelElement.ElementName!=elementName)
+            {
+                return currentModelElement.GetFirstParentOfType<T>(elementName);
+            }
+
+            return (T)currentModelElement;
+        }
 
         public static void GetAllChildrenOfType<T>(this IModelElement modelElement, ref List<T> findedChild)
         {

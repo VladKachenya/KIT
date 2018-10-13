@@ -5,7 +5,11 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using BISC.Bootstrapper;
+using BISC.Infrastructure.Global.IoC;
+using BISC.Infrastructure.Global.Logging;
+using BISC.Infrastructure.Global.Services;
 
 namespace BISC
 {
@@ -16,9 +20,20 @@ namespace BISC
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            ShellBootstrapper shellBootstrapper=new ShellBootstrapper();
+            ShellBootstrapper shellBootstrapper = new ShellBootstrapper();
             shellBootstrapper.Run(true);
             base.OnStartup(e);
         }
+
+        private void App_OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            StaticContainer.CurrentContainer.ResolveType<ILoggingService>()?.LogMessage(
+                e.Exception.Message + Environment.NewLine + Environment.NewLine + e.Exception.StackTrace,
+                SeverityEnum.Critical);
+            MessageBox.Show(e.Exception.Message + Environment.NewLine + Environment.NewLine + e.Exception.StackTrace,
+                "Ошибка приложения",MessageBoxButton.OK,MessageBoxImage.Error);
+            e.Handled = true;
+        }
+
     }
 }

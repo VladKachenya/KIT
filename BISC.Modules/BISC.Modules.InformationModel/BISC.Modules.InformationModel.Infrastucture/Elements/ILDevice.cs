@@ -8,5 +8,6 @@ namespace BISC.Modules.InformationModel.Infrastucture.Elements
         string Inst { get; set; }
         ChildModelProperty<ILogicalNodeZero> LogicalNodeZero{get; }
         ChildModelsList<ILogicalNode> LogicalNodes { get; }
+        List<ILogicalNode> AlLogicalNodes { get; }
     }
 }
