@@ -19,9 +19,9 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType
         public string Type { get; set; }
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
-            if (!(obj is IDa)) return false;
-            var element = obj as IDa;
+            if (!base.ModelElementCompareTo(obj)) return false;
+            if (!(obj is Sdo)) return false;
+            var element = obj as Sdo;
             if (element.Name != Name) return false;
             if (element.Type != Type) return false;
             return true;

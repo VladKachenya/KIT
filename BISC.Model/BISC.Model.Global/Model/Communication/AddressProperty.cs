@@ -24,7 +24,7 @@ namespace BISC.Model.Global.Model.Communication
             if (!(obj is IAddressProperty)) return false;
             var element = obj as IAddressProperty;
             if (element.Type != Type) return false;
-            if (element.Value != Type) return false;
+            if (element.Value != Value) return false;
             return true;
         }
     }

@@ -21,7 +21,7 @@ namespace BISC.Model.Global.Model.Communication
         public ChildModelsList<IConnectedAccessPoint> ConnectedAccessPoints=>new ChildModelsList<IConnectedAccessPoint>(this, ModelKeys.ConnectedAccessPointKey);
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.ModelElementCompareTo(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is ISubNetwork)) return false;
             var element = obj as ISubNetwork;
             if (element.Name != Name) return false;

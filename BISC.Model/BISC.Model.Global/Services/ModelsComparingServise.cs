@@ -10,17 +10,69 @@ namespace BISC.Model.Global.Services
 {
     public class ModelsComparingServise : IModelsComparingServise
     {
+        List<IMismatch> result = new List<IMismatch>();
         public List<IMismatch> CompareBranches(IModelElement branch1, IModelElement branch2)
         {
-            var result = new List<IMismatch>();
+            result.Clear();
+            if (branch1 == null || branch2 == null) return null;
+            if (InequalityCompare(branch1, branch2))
+            {
+                RecursiveComparer(branch1.ChildModelElements, branch2.ChildModelElements);
+            }
+            return new List<IMismatch>(result);
+        }
+
+        private bool RecursiveComparer(List<IModelElement> ChildOfbranch1, List<IModelElement> ChildOfbranch2)
+        {
+            // тут необходимо помимо сравнения количества элементов сравнить элементы между собой.
+            if (!MissingCompare(ChildOfbranch1, ChildOfbranch2)) return false;
+            for (int i = 0; i < ChildOfbranch1.Count; i++)
+            {
+                if(!InequalityCompare(ChildOfbranch1[i], ChildOfbranch2[i])) return false;
+            }
+            for (int i = 0; i < ChildOfbranch1.Count; i++)
+            {
+                if(!RecursiveComparer(ChildOfbranch1[i].ChildModelElements, ChildOfbranch2[i].ChildModelElements)) return false;
+            }
+            return true;
+        }
+
+        private bool InequalityCompare(IModelElement branch1, IModelElement branch2)
+        {
             if (branch1.ModelElementCompareTo(branch2))
             {
-
+                return true;
             }
-            //result.Add(null);
-            return result;
+            else
+            {
+                result.Add(new InequalityMismatch(branch1, branch2, 0));
+                return false;
+            }
+        }
+        private bool MissingCompare(List<IModelElement> ChildOfbranch1, List<IModelElement> ChildOfbranch2)
+        {
+            int countBranch1, countBranch2;
+            countBranch1 = ChildOfbranch1.Count;
+            countBranch2 = ChildOfbranch2.Count;
+            if (countBranch1 == countBranch2)
+            {
+                return true;
+            }
+            else if (countBranch1 > countBranch2)
+            {
+                for(int i = (countBranch2 - 1); i < countBranch1; i++)
+                    result.Add(new MissingMismatch(ChildOfbranch2[i]));
+                return false;
+            }
+            else
+            {
+                for (int i = (countBranch1 - 1); i < countBranch2; i++)
+                    result.Add(new MissingMismatch(ChildOfbranch1[i]));
+                return false;
+            }
         }
     }
+
 
     public abstract class Mismatch : IMismatch
     {

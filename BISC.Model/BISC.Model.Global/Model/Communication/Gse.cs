@@ -47,11 +47,10 @@ namespace BISC.Model.Global.Model.Communication
             if (base.Equals(obj)) return false;
             if (!(obj is IGse)) return false;
             var element = obj as IGse;
-            if (element.VlanId != VlanId) return false;
-            if (element.MacAddress != MacAddress) return false;
-            if (element.VlanId != VlanId) return false;
-            if (element.VlanPriority != VlanPriority) return false;
-            if (element.AppId != AppId) return false;
+            //if (element.VlanId != VlanId) return false;
+            //if (element.MacAddress != MacAddress) return false;
+            //if (element.VlanPriority != VlanPriority) return false;
+            //if (element.AppId != AppId) return false;
             if (element.LdInst != LdInst) return false;
             if (element.CbName != CbName) return false;
             return true;
