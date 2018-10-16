@@ -1,8 +1,10 @@
-﻿using BISC.Model.Global.Model;
+﻿using BISC.Model.Global.Factorys;
+using BISC.Model.Global.Model;
 using BISC.Model.Global.Model.Communication;
 using BISC.Model.Global.Project;
 using BISC.Model.Global.Services;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Model.Infrastructure.Factorys;
 using BISC.Modules.DataSets.Model.Model;
 using BISC.Modules.Device.Model.Model;
 using BISC.Modules.Gooses.Model.Model;
@@ -26,18 +28,62 @@ namespace BISC.Tests.Model.Model.Global.Services
     [TestClass]
     public class ModelsComparingServiseTest
     {
+        ModelsComparingServise modelsComparingServise;
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            modelsComparingServise = new ModelsComparingServise(new TestMismuchFactory()); 
+        }
 
-        #region CompareBranches NotNullResult
+        #region Tests
 
         [TestMethod]
         public void CompareBranches_TestBransh1CompareTestBransh1_NullListOfIMismatch()
         {
-            ModelsComparingServise modelsComparingServise = new ModelsComparingServise();
             IModelElement testBransh1 = TestBransh1();
             IModelElement testBransh2 = TestBransh1();
             var result = modelsComparingServise.CompareBranches(testBransh1, testBransh2);
             Assert.AreEqual(result.Count, 0);
         }
+
+        [TestMethod]
+        public void CompareBranches_TestBransh2CompareTestBransh3_9ValuesOfMissingMismatch()
+        {
+            IModelElement testBransh1 = TestBransh2();
+            IModelElement testBransh2 = TestBransh3();
+            var result = modelsComparingServise.CompareBranches(testBransh1, testBransh2);
+            Assert.AreEqual(result.Count, 9);
+            foreach (var element in result)
+                Assert.AreEqual(element.MismatchType, "MissingMismatch", "Mismatch type does not match MissingMismatch");
+        }
+
+        [TestMethod]
+        public void CompareBranches_TestBransh1CompareTestBransh1Mod_3ValuesOfInequalityMismatch()
+        {
+            IModelElement testBransh1 = new ModelElement() { ElementName = "T1", Namespace = "T2" };
+            IModelElement testBransh2 = new ModelElement() { ElementName = "T1", Namespace = "T2" };
+            testBransh1.ChildModelElements.Add(new ModelElement() { ElementName = "T1", Namespace = "T2" });
+            testBransh1.ChildModelElements.Add(new ModelElement() { ElementName = "T1", Namespace = "T2" });
+            testBransh1.ChildModelElements.Add(new ModelElement() { ElementName = "T1", Namespace = "T2" });
+            testBransh1.ChildModelElements.Add(new ModelElement() { ElementName = "T1", Namespace = "T2" });
+            testBransh1.ChildModelElements.Add(new ModelElement() { ElementName = "T1", Namespace = "T2" });
+            testBransh1.ChildModelElements.Add(new ModelElement() { ElementName = "T1", Namespace = "T2" });
+            testBransh2.ChildModelElements.Add(new ModelElement() { ElementName = "T1", Namespace = "T1" });
+            testBransh2.ChildModelElements.Add(new ModelElement() { ElementName = "T2", Namespace = "T2" });
+            testBransh2.ChildModelElements.Add(new ModelElement() { ElementName = "T1", Namespace = "T2" });
+            testBransh2.ChildModelElements.Add(new ModelElement() { ElementName = "T1", Namespace = "T2" });
+            testBransh2.ChildModelElements.Add(new ModelElement() { ElementName = "T2", Namespace = "T2" });
+            testBransh2.ChildModelElements.Add(new ModelElement() { ElementName = "T1", Namespace = "T2" });
+            var result = modelsComparingServise.CompareBranches(testBransh1, testBransh2);
+            Assert.AreEqual(result.Count, 3);
+            foreach (var element in result)
+                Assert.AreEqual(element.MismatchType, "InequalityMismatch", "Mismatch type does not match InequalityMismatch");
+        }
+
+
+        #endregion
+
+        #region Servise
 
         private IModelElement TestBransh1()
         {
@@ -51,6 +97,21 @@ namespace BISC.Tests.Model.Model.Global.Services
             return result;
         }
 
+        private IModelElement TestBransh2()
+        {
+            IModelElement result = new ModelElement() { ElementName = "ModelElementElementName", Namespace = "ModelElementNamespace" };
+            BISC_Modules_InformationModel_Model_Path1(result);
+            BISC_Modules_InformationModel_Model_Path1(result.ChildModelElements[0]);
+            return result;
+        }
+
+        private IModelElement TestBransh3()
+        {
+            IModelElement result = new ModelElement() { ElementName = "ModelElementElementName", Namespace = "ModelElementNamespace" };
+            BISC_Modules_InformationModel_Model_Path1(result);
+            return result;
+        }
+
         private void BISC_Model_Global(IModelElement element)
         {
             IModelElement[] childrens =
@@ -59,7 +120,7 @@ namespace BISC.Tests.Model.Model.Global.Services
                     new SubNetwork{ ElementName = "SubNetworkElementName", Namespace = "SubNetworkNamespace", Name = "Name1", Desc = "SubNetworkDesc", Type = "SubNetworkType" },
                     new DurationInMilliSec{ ElementName = "DurationInMilliSecElementName", Namespace = "DurationInMilliSecNamespace", Unit = "DurationInMilliSec"},
                     new ConnectedAccessPoint{ElementName = "ConnectedAccessPointElementName", Namespace = "ConnectedAccessPointNamespace", IedName = "ConnectedAccessPointIedName", ApName = "ConnectedAccessPointApName"},
-                    new Gse{ ElementName = "GseElementName", Namespace = "GseNamespace", LdInst = "GseMacAddress", CbName = "GseMacAddress"},
+                    //new Gse{ ElementName = "GseElementName", Namespace = "GseNamespace", LdInst = "GseMacAddress", CbName = "GseMacAddress"},
                     new AddressProperty{ ElementName = "AddressProperty", Namespace = "AddressProperty", Type = "AddressPropertyType", Value ="AddressPropertyValue"},
                     new BiscProject{ ElementName = "BiscProjectElementName", Namespace = "BiscProjectNamespace"},
                     new SclAddress() { ElementName = "SclAddressElementName", Namespace = "SclAddressElementName" },
@@ -140,5 +201,11 @@ namespace BISC.Tests.Model.Model.Global.Services
             element.ChildModelElements.AddRange(childrens);
         }
         #endregion
+    }
+
+
+    public class TestMismuchFactory : MismatchFactory
+    {
+
     }
 }

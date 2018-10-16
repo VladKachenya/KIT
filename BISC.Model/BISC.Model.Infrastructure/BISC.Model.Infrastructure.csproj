@@ -52,6 +52,7 @@
     <Compile Include="Elements\ChildModelsList.cs" />
     <Compile Include="Elements\IModelElement.cs" />
     <Compile Include="Elements\IModelElementComparable.cs" />
+    <Compile Include="Factorys\IMismatchFactory.cs" />
     <Compile Include="IModelElementSerializer.cs" />
     <Compile Include="IModelElementsRegistryService.cs" />
     <Compile Include="Keys\ModelKeys.cs" />

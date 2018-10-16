@@ -1,4 +1,5 @@
 ﻿using BISC.Model.Infrastructure.Elements;
+using BISC.Model.Infrastructure.Factorys;
 using BISC.Model.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,17 @@ namespace BISC.Model.Global.Services
 {
     public class ModelsComparingServise : IModelsComparingServise
     {
+        IMismatchFactory _mismatchFactory;
         List<IMismatch> result = new List<IMismatch>();
+        public ModelsComparingServise(IMismatchFactory mismatchFactory)
+        {
+            _mismatchFactory = mismatchFactory; 
+        }
         public List<IMismatch> CompareBranches(IModelElement branch1, IModelElement branch2)
         {
             result.Clear();
             if (branch1 == null || branch2 == null) return null;
-            if (InequalityCompare(branch1, branch2))
+            if (branch1.ModelElementCompareTo(branch2))
             {
                 RecursiveComparer(branch1.ChildModelElements, branch2.ChildModelElements);
             }
@@ -26,10 +32,7 @@ namespace BISC.Model.Global.Services
         {
             // тут необходимо помимо сравнения количества элементов сравнить элементы между собой.
             if (!MissingCompare(ChildOfbranch1, ChildOfbranch2)) return false;
-            for (int i = 0; i < ChildOfbranch1.Count; i++)
-            {
-                if(!InequalityCompare(ChildOfbranch1[i], ChildOfbranch2[i])) return false;
-            }
+            if (!InequalityCompare(ChildOfbranch1, ChildOfbranch2)) return false;
             for (int i = 0; i < ChildOfbranch1.Count; i++)
             {
                 if(!RecursiveComparer(ChildOfbranch1[i].ChildModelElements, ChildOfbranch2[i].ChildModelElements)) return false;
@@ -37,17 +40,18 @@ namespace BISC.Model.Global.Services
             return true;
         }
 
-        private bool InequalityCompare(IModelElement branch1, IModelElement branch2)
+        private bool InequalityCompare(List<IModelElement> ChildOfbranch1, List<IModelElement> ChildOfbranch2)
         {
-            if (branch1.ModelElementCompareTo(branch2))
+            bool IsItCame = true;
+            for (int i = 0; i < ChildOfbranch1.Count; i++)
             {
-                return true;
+                if (!ChildOfbranch1[i].ModelElementCompareTo(ChildOfbranch2[i]))
+                {
+                    result.Add(_mismatchFactory.GetInequalityMismatch(ChildOfbranch1[i], ChildOfbranch2[i], 0));
+                    IsItCame = false;
+                }
             }
-            else
-            {
-                result.Add(new InequalityMismatch(branch1, branch2, 0));
-                return false;
-            }
+            return IsItCame;
         }
         private bool MissingCompare(List<IModelElement> ChildOfbranch1, List<IModelElement> ChildOfbranch2)
         {
@@ -60,14 +64,14 @@ namespace BISC.Model.Global.Services
             }
             else if (countBranch1 > countBranch2)
             {
-                for(int i = (countBranch2 - 1); i < countBranch1; i++)
-                    result.Add(new MissingMismatch(ChildOfbranch2[i]));
+                for(int i = (countBranch2); i < countBranch1; i++)
+                    result.Add(_mismatchFactory.GetMissingMismatch(ChildOfbranch1[i]));
                 return false;
             }
             else
             {
-                for (int i = (countBranch1 - 1); i < countBranch2; i++)
-                    result.Add(new MissingMismatch(ChildOfbranch1[i]));
+                for (int i = (countBranch1); i < countBranch2; i++)
+                    result.Add(_mismatchFactory.GetMissingMismatch(ChildOfbranch2[i]));
                 return false;
             }
         }
@@ -83,7 +87,7 @@ namespace BISC.Model.Global.Services
         public string MismatchType { get;}
     }
 
-    public class InequalityMismatch: Mismatch
+    public class InequalityMismatch: Mismatch , IInequalityMismatch
     {
         public InequalityMismatch(IModelElement item1, IModelElement item2, int childPosition)
             : base("InequalityMismatch")
@@ -99,7 +103,7 @@ namespace BISC.Model.Global.Services
 
     }
 
-    public class MissingMismatch : Mismatch
+    public class MissingMismatch : Mismatch, IMissingMismatch
     {
         public MissingMismatch(IModelElement missingItem)
             : base("MissingMismatch")

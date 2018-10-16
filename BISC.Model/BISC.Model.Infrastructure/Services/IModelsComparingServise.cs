@@ -16,4 +16,16 @@ namespace BISC.Model.Infrastructure.Services
     {
         string MismatchType { get;}
     }
+
+    public interface IInequalityMismatch
+    {
+        int ChildPosition { get; }
+        IModelElement Item1 { get; }
+        IModelElement Item2 { get; }
+    }
+
+    public interface IMissingMismatch
+    {
+        IModelElement MissingItem { get; }
+    }
 }
