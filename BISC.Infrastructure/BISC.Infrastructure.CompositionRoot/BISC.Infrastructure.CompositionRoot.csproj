@@ -144,6 +144,10 @@
       <Project>{F8DB343C-6F66-40EA-9462-015F84832894}</Project>
       <Name>BISC.Modules.Logging</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Reports\BISC.Modules.Reports.Presentation\BISC.Modules.Reports.Presentation.csproj">
+      <Project>{3C289F6C-8390-4C3D-8037-4067F4288A49}</Project>
+      <Name>BISC.Modules.Reports.Presentation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BISC.Presentation\BISC.Presentation.BaseItems\BISC.Presentation.BaseItems.csproj">
       <Project>{02377DCB-BF54-4343-A7C2-15B9AF8E5605}</Project>
       <Name>BISC.Presentation.BaseItems</Name>
