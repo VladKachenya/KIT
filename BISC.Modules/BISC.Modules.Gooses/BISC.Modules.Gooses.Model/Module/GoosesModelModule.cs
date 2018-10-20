@@ -38,6 +38,7 @@ namespace BISC.Modules.Gooses.Model.Module
 
             _injectionContainer.RegisterType<IDeviceElementLoadingService, GoosesLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IGoosesModelService, GoosesModelService>();
+            _injectionContainer.RegisterType<IFtpGooseModelService, FtpGooseModelService>();
 
         }
 

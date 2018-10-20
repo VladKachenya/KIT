@@ -24,6 +24,7 @@ namespace BISC.Modules.Gooses.Model.Model
         public string DataSet { get; set; }
         public int ConfRev { get; set; }
         public string AppId { get; set; }
+        public bool IsDynamic { get; set; }
         public ChildModelsList<ISubscriberDevice> SubscriberDevice=>new ChildModelsList<ISubscriberDevice>(this, GooseKeys.GooseModelKeys.SubscriberDeviceKey);
         #endregion
 
@@ -36,6 +37,8 @@ namespace BISC.Modules.Gooses.Model.Model
             if (element.DataSet != DataSet) return false;
             if (element.ConfRev != ConfRev) return false;
             if (element.AppId != AppId) return false;
+            if (element.IsDynamic != IsDynamic) return false;
+
             return true;
         }
     }

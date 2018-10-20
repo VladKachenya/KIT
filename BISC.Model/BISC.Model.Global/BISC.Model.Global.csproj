@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Extesions.cs" />
+    <Compile Include="Constants\StringConstants.cs" />
     <Compile Include="Factorys\MismatchFactory.cs" />
     <Compile Include="Model\Communication\AddressProperty.cs" />
     <Compile Include="Model\Communication\ConnectedAccessPoint.cs" />

@@ -1,0 +1,107 @@
+﻿<UserControl x:Class="BISC.Modules.Gooses.Presentation.Views.Tabs.GooseControlsTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BISC.Modules.Gooses.Presentation.Views.Tabs"
+             xmlns:gooseControls="clr-namespace:BISC.Modules.Gooses.Presentation.ViewModels.GooseControls"
+             xmlns:constants="clr-namespace:BISC.Model.Global.Constants;assembly=BISC.Model.Global"
+             xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:InverseConverter x:Key="inverseConverter"></converters:InverseConverter>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+
+        <TabControl BorderThickness="0" Margin="10" Name="goosesTabControl" TabStripPlacement="Left" ItemsSource="{Binding GooseControlViewModels}">
+            <TabControl.ContentTemplate >
+                <DataTemplate DataType="gooseControls:GooseControlViewModel">
+                    <GroupBox Margin="10" Header="Goose Control Block">
+                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="15">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <StackPanel>
+                                <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.GOOSEName}" Columns="2">
+                                    <TextBlock Margin="4" Text="Название" HorizontalAlignment="Stretch"></TextBlock>
+                                    <TextBox MinWidth="200" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Margin="2" Text="{Binding Name,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                                </UniformGrid>
+                                <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.GseType}" Columns="2">
+                                    <TextBlock Margin="4" Text="GseType" HorizontalAlignment="Stretch"></TextBlock>
+                                    <TextBlock  Margin="2" Text="{Binding GseType}" HorizontalAlignment="Stretch"></TextBlock>
+                                </UniformGrid>
+                                <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.GoID}" Columns="2">
+                                    <TextBlock Margin="4" Text="GoId" HorizontalAlignment="Stretch"></TextBlock>
+                                    <TextBox  Margin="2" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Text="{Binding GoId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                                </UniformGrid>
+                                <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.DataSet}" Columns="2">
+                                    <TextBlock Margin="4" Text="DataSet"></TextBlock>
+                                    <ComboBox Margin="2" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" SelectedItem="{Binding SelectedDataset}" ItemsSource="{Binding AvailableDatasets}"></ComboBox>
+                                </UniformGrid>
+                                <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.MinTime}" Columns="2">
+                                    <TextBlock Margin="4" Text="MinTime" HorizontalAlignment="Stretch"></TextBlock>
+                                    <TextBox  Margin="2" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Text="{Binding MinTime,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                                </UniformGrid>
+                                <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.MaxTime}" Columns="2">
+                                    <TextBlock Margin="4" Text="MaxTime"></TextBlock>
+                                    <TextBox  Margin="2" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Text="{Binding MaxTime,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                                </UniformGrid>
+                                <!--<UniformGrid Columns="2">
+                                    <TextBlock Margin="4" Text="ConfRev" HorizontalAlignment="Stretch"></TextBlock>
+                                    <TextBox  Margin="2" Text="{Binding ConfRev,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                                </UniformGrid>-->
+                                <!--<UniformGrid Columns="2">
+                                    <TextBlock Margin="4" Text="FixedOffs" HorizontalAlignment="Stretch"></TextBlock>
+                                    <CheckBox Margin="2" IsChecked="{Binding FixedOffs}"></CheckBox>
+                                </UniformGrid>-->
+                                <GroupBox>
+                                    <GroupBox.Header>
+                                        <TextBlock Foreground="White" ToolTip="{x:Static constants:StringConstants+GooseDescriptions.DstAddress}"> DstAddress</TextBlock>
+                                    </GroupBox.Header>
+                                    <StackPanel>
+                                        <UniformGrid  ToolTip="{x:Static constants:StringConstants+GooseDescriptions.Addr}" Columns="2">
+                                            <TextBlock Margin="4" Text="Addr"></TextBlock>
+                                            <TextBox  IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Margin="2" Text="{Binding MacAddress,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                                        </UniformGrid>
+                                        <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.Priority}" Columns="2">
+                                            <TextBlock Margin="4" Text="VlanPriority"></TextBlock>
+                                            <TextBox  IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Margin="2" Text="{Binding VlanPriority,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                                        </UniformGrid>
+                                        <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.VID}" Columns="2">
+                                            <TextBlock Margin="4" Text="VlanId"></TextBlock>
+                                            <TextBox  IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Margin="2" Text="{Binding VlanId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                                        </UniformGrid>
+                                        <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.APPID}" Columns="2">
+                                            <TextBlock Margin="4" Text="AppId"></TextBlock>
+                                            <TextBox IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}"  Margin="2" Text="{Binding AppId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                                        </UniformGrid>
+
+                                    </StackPanel>
+                                </GroupBox>
+
+                            </StackPanel>
+
+                        </Grid>
+                    </GroupBox>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="gooseControls:GooseControlViewModel">
+                    <TextBlock MinWidth="200" FontSize="18" Text="{Binding Name}">
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Удалить" IsEnabled="{Binding IsDynamic}" Command="{Binding DataContext.DeleteGooseCommand,Source={x:Reference Name=goosesTabControl}}" CommandParameter="{Binding .}">
+                                </MenuItem>
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                    </TextBlock>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </TabControl>
+    </Grid>
+</UserControl>

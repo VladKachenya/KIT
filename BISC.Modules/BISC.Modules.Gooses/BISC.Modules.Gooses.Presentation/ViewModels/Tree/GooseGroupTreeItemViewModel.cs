@@ -22,7 +22,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
         public GooseGroupTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService)
         {
             _tabManagementService = tabManagementService;
-            NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetails);
+            NavigateToGooseControlsCommand = commandFactory.CreatePresentationCommand(NavigateToGooseControls);
             NavigateToSubscriptionCommand = commandFactory.CreatePresentationCommand(OnNavigateToSubscription);
             NavigateToMatrixCommand = commandFactory.CreatePresentationCommand(OnNavigateToMatrix);
 
@@ -42,12 +42,14 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
             _tabManagementService.NavigateToTab(GooseKeys.GoosePresentationKeys.GooseSubscriptionTabKey, biscNavigationParameters, $"Подписка {_device.Name}", _subscriptionIdentifier);
         }
 
-        private void OnNavigateToDetails()
+        private void NavigateToGooseControls()
         {
-
+            BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
+            biscNavigationParameters.AddParameterByName("IED", _device);
+            _tabManagementService.NavigateToTab(GooseKeys.GoosePresentationKeys.GooseControlsTabKey, biscNavigationParameters, $"Блоки управления GOOSE {_device.Name}", _gooseEditIdentifier);
         }
 
-        public ICommand NavigateToDetailsCommand { get; }
+        public ICommand NavigateToGooseControlsCommand { get; }
         public ICommand NavigateToSubscriptionCommand { get; }
         public ICommand NavigateToMatrixCommand { get; }
 

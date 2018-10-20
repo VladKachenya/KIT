@@ -12,17 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BISC.Modules.Gooses.Presentation.ViewModels.Tabs;
 
 namespace BISC.Modules.Gooses.Presentation.Views.Tabs
 {
     /// <summary>
     /// Логика взаимодействия для GooseEditingTab.xaml
     /// </summary>
-    public partial class GooseEditingTab : System.Windows.Controls.UserControl
+    public partial class GooseControlsTab : System.Windows.Controls.UserControl
     {
-        public GooseEditingTab()
+        public GooseControlsTab(GooseControlsTabViewModel gooseControlsTabViewModel)
         {
             InitializeComponent();
+            DataContext = gooseControlsTabViewModel;
         }
     }
 }

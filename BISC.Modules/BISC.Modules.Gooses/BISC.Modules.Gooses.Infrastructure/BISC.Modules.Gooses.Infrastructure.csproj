@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Keys\GooseKeys.cs" />
+    <Compile Include="Model\FTP\GooseFtpDto.cs" />
     <Compile Include="Model\IExternalGooseRef.cs" />
     <Compile Include="Model\IGooseControl.cs" />
     <Compile Include="Model\IGooseInput.cs" />
@@ -53,9 +54,14 @@
     <Compile Include="Model\Matrix\IGooseMatrix.cs" />
     <Compile Include="Model\Matrix\IGooseRow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IFtpGooseModelService.cs" />
     <Compile Include="Services\IGoosesModelService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
+      <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
+      <Name>BISC.Infrastructure.Global</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
       <Name>BISC.Model.Infrastructure</Name>

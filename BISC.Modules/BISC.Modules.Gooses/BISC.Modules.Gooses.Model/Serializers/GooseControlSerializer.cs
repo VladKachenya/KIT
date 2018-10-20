@@ -18,6 +18,8 @@ namespace BISC.Modules.Gooses.Model.Serializers
             RegisterProperty(nameof(IGooseControl.Name), "name");
             RegisterProperty(nameof(IGooseControl.DataSet), "datSet");
             RegisterProperty(nameof(IGooseControl.ConfRev), "confRev");
+            RegisterProperty(nameof(IGooseControl.IsDynamic), "isDynamic");
+
             //RegisterModelElementCollection(typeof(ISubscriberDevice));
         }
 

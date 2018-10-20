@@ -9,6 +9,7 @@ namespace BISC.Modules.Gooses.Infrastructure.Model
         string DataSet { get; set; }
         int ConfRev { get; set; }
         string AppId { get; set; }
+        bool IsDynamic { get; set; }
         ChildModelsList<ISubscriberDevice> SubscriberDevice { get;}
     }
 }

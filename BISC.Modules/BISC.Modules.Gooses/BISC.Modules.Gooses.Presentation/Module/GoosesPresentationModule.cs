@@ -40,7 +40,7 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<GooseGroupTreeItemViewModel>();
             _injectionContainer.RegisterType<GooseSubscriptionTabViewModel>();
             _injectionContainer.RegisterType<GooseMatrixTabViewModel>();
-            _injectionContainer.RegisterType<GooseEditingTabViewModel>();
+            _injectionContainer.RegisterType<GooseControlsTabViewModel>();
             _injectionContainer.RegisterType<GooseControlAssignmentViewModel>();
             _injectionContainer.RegisterType<ISelectableValueViewModel, SelectableValueViewModel>();
             _injectionContainer.RegisterType<GooseRowViewModelFactory>();
@@ -48,10 +48,11 @@ namespace BISC.Modules.Gooses.Presentation.Module
         //    _injectionContainer.RegisterType<ResultFileParser>();
             _injectionContainer.RegisterType<GooseMatrixViewModel>();
             _injectionContainer.RegisterType<IGooseControlBlockViewModelFactory, GooseControlBlockViewModelFactory>();
+            _injectionContainer.RegisterType<GooseControlSavingService>();
 
             _injectionContainer.RegisterType<object,GooseGroupTreeItemView>(GooseKeys.GoosePresentationKeys.GooseGroupTreeItemViewKey);
             _injectionContainer.RegisterType<object, GooseSubscriptionTab>(GooseKeys.GoosePresentationKeys.GooseSubscriptionTabKey);
-            _injectionContainer.RegisterType<object, GooseEditingTab>(GooseKeys.GoosePresentationKeys.GooseEditingTabKey);
+            _injectionContainer.RegisterType<object, GooseControlsTab>(GooseKeys.GoosePresentationKeys.GooseControlsTabKey);
             _injectionContainer.RegisterType<object, GooseMatrixTab>(GooseKeys.GoosePresentationKeys.GooseMatrixTabKey);
             _injectionContainer.RegisterType<object, GooseMatrixView>(GooseKeys.GoosePresentationKeys.GooseMatrixViewKey);
             _injectionContainer.RegisterType<object, GooseControlAssignmentView>(GooseKeys.GoosePresentationKeys.GooseControlAssignmentViewKey);

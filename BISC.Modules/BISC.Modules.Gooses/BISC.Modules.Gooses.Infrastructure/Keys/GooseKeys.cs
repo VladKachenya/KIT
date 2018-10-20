@@ -24,7 +24,7 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
   
             public static string GooseGroupTreeItemViewKey => "GooseGroupTreeItemView";
             public static string GooseSubscriptionTabKey => "GooseSubscriptionTab";
-            public static string GooseEditingTabKey => "GooseEditingTab";
+            public static string GooseControlsTabKey => "GooseControlsTab";
             public static string GooseMatrixTabKey => "GooseMatrixTab";
             public static string GooseMatrixTabFieldKey => "GooseMatrixTabField";
             public static string GooseControlAssignmentViewKey => "GooseControlAssignmentView";

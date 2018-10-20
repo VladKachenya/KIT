@@ -57,6 +57,7 @@
     <Compile Include="Events\GooseControlBlockEnableChangedEventArgs.cs" />
     <Compile Include="Events\SelectableBoxEventArgs.cs" />
     <Compile Include="Factories\GooseControlBlockViewModelFactory.cs" />
+    <Compile Include="Factories\GooseControlViewModelFactory.cs" />
     <Compile Include="Factories\GooseRowViewModelFactory.cs" />
     <Compile Include="FileParsers\ResultFileParser.cs" />
     <Compile Include="Interfaces\Factories\IGooseControlBlockViewModelFactory.cs" />
@@ -64,7 +65,9 @@
     <Compile Include="Interfaces\ISelectableValueViewModel.cs" />
     <Compile Include="Module\GoosesPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\GooseControlSavingService.cs" />
     <Compile Include="Services\GoosesUiHandlingService.cs" />
+    <Compile Include="ViewModels\GooseControls\GooseControlViewModel.cs" />
     <Compile Include="ViewModels\Matrix\Entities\GooseControlBlockAssignmentItem.cs" />
     <Compile Include="ViewModels\Matrix\Entities\SelectableValueViewModel.cs" />
     <Compile Include="ViewModels\Matrix\GooseControlAssignmentViewModel.cs" />
@@ -73,7 +76,7 @@
     <Compile Include="ViewModels\Matrix\Rows\GooseRowViewModelBase.cs" />
     <Compile Include="ViewModels\Matrix\SelectableValueViewModel.cs" />
     <Compile Include="ViewModels\Subscription\GooseSubscriptionViewModel.cs" />
-    <Compile Include="ViewModels\Tabs\GooseEditingTabViewModel.cs" />
+    <Compile Include="ViewModels\Tabs\GooseControlsTabViewModel.cs" />
     <Compile Include="ViewModels\Tabs\GooseMatrixTabViewModel.cs" />
     <Compile Include="ViewModels\Tabs\GooseSubscriptionTabViewModel.cs" />
     <Compile Include="Views\Matrix\GooseControlAssignmentView.xaml.cs">
@@ -82,8 +85,8 @@
     <Compile Include="Views\Matrix\GooseMatrixView.xaml.cs">
       <DependentUpon>GooseMatrixView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Tabs\GooseEditingTab.xaml.cs">
-      <DependentUpon>GooseEditingTab.xaml</DependentUpon>
+    <Compile Include="Views\Tabs\GooseControlsTab.xaml.cs">
+      <DependentUpon>GooseControlsTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Tabs\GooseMatrixTab.xaml.cs">
       <DependentUpon>GooseMatrixTab.xaml</DependentUpon>
@@ -115,7 +118,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Tabs\GooseEditingTab.xaml">
+    <Page Include="Views\Tabs\GooseControlsTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
