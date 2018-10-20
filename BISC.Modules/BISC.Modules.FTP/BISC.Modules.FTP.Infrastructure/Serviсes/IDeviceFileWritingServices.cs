@@ -9,6 +9,7 @@ namespace BISC.Modules.FTP.Infrastructure.Serviсes
     public interface IDeviceFileWritingServices
     {
         Task<bool> WriteFileStringInDevice(string ip, List<string> filesStrings, List<string> fileNamesWithExt);
+        Task<string> ReadFileStringFromDevice(string ip, string dirPath, string fileNamesWithExt);
         Task ResetDevice();
     }
 }

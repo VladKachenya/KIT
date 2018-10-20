@@ -40,6 +40,31 @@ namespace BISC.Modules.FTP.FTPConnection.Services
             return true;
         }
 
+        public async Task<string> ReadFileStringFromDevice(string ip, string dirPath, string fileNamesWithExt)
+        {
+            //string dirPath = path;
+            //string fileNamesWithExt;
+            string file;
+            try
+            {
+                await _ftpClientWrapper.Connect(ip);
+                file = await _ftpClientWrapper.DownloadFileString(dirPath, fileNamesWithExt);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+            finally
+            {
+                await _ftpClientWrapper.Disconnect();
+
+            }
+            return file;
+        }
+        
+
+
+
         public async Task ResetDevice()
         {
             try

@@ -1,0 +1,27 @@
+﻿using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.InformationModel.Infrastucture.Services;
+using BISC.Modules.Reports.Infrastructure.Model;
+using BISC.Modules.Reports.Infrastructure.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BISC.Modules.Reports.Model.Services
+{
+    public class ReportsModelService : IReportsModelService
+    {
+        private readonly IInfoModelService _infoModelService;
+
+        public ReportsModelService(IInfoModelService infoModelService)
+        {
+            _infoModelService = infoModelService;
+        }
+
+        public List<IReportControl> GetAllReportControlsOfDevice(IModelElement device)
+        {
+            return null;
+        }
+    }
+}
