@@ -109,6 +109,15 @@ namespace BISC.GlobalServices
                 Settings.Default.Save();
             }
         }
+        public bool IsUserLoggingEnabled
+        {
+            get => Settings.Default.IsUserLoggingEnabled;
+            set
+            {
+                Settings.Default.IsUserLoggingEnabled = value;
+                Settings.Default.Save();
+            }
+        }
 
         public int MmsQueryDelay
         {
@@ -137,6 +146,7 @@ namespace BISC.GlobalServices
             else if (key == Constants.ConfigurationServiceConstants.LastIpAddresses)
                 LastIpAddresses = setCollection;
         }
+
         #endregion
     }
 }

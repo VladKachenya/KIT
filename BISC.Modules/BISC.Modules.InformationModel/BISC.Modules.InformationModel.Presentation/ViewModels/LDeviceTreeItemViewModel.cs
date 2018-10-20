@@ -32,7 +32,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
        {
            _tabManagementService.NavigateToTab(InfoModelKeys.InfoModelTreeItemDetailsViewKey,
                _navigationContext.BiscNavigationParameters,
-               $"Logical Device {LDeviceName}",
+               $"Logical Device {LDeviceName} устройства {_lDevice.Inst}",
                _navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier
                    .Key));
         }

@@ -58,7 +58,7 @@ namespace BISC.Modules.DataSets.Model.Factorys
 
         private string GetDaiRecursive(IModelElement modelElement,string daName)
         {
-            if (modelElement.ParentModelElement is IDoi)
+            if (modelElement is IDoi)
             {
                 return daName;
             }

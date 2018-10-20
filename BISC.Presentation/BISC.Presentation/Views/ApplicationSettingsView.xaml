@@ -46,6 +46,7 @@
             </StackPanel>
         </GroupBox>
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="5">
+            <CheckBox Margin="5" Content="Выводить лог действий пользователя"  IsChecked="{Binding IsUserLoggingEnabled}"></CheckBox>
             <StackPanel Orientation="Horizontal">
                 <TextBox x:Name="MmsQueryDelay" FontSize="17" MinWidth="50" Margin="5"
                      Text="{Binding MmsQueryDelay,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>

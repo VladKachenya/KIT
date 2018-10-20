@@ -168,6 +168,12 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
             
             return false;
         }
+
+        public void SetNew()
+        {
+            ChangeTrackerState = ChangeTrackerState.Modified;
+        }
+
         public void Dispose()
         {
             foreach (var value in _valuesDictionary)

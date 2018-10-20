@@ -102,7 +102,9 @@ namespace BISC.Modules.DataSets.Presentation.Services
                         {
                             if (isSavingInDevice)
                             {
-                             //   _connectionPoolService.GetConnection(_sclCommunicationModelService.GetIpOfDevice((device as IDevice).Name,_biscProject.MainSclModel.Value)).MmsConnection.DeleteDataSet
+                                //_connectionPoolService
+                                //    .GetConnection(_sclCommunicationModelService.GetIpOfDevice((device as IDevice).Name,
+                                //        _biscProject.MainSclModel.Value)).MmsConnection.DeleteDataSet();
                             }
                             ln.ChildModelElements.Remove(dataSetsExisting.First((set =>
                                 set.Name == dataSetToSave.EditableNamePart)));

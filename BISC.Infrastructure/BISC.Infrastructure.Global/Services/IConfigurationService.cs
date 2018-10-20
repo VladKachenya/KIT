@@ -12,6 +12,7 @@ namespace BISC.Infrastructure.Global.Services
         void SetIpsCollection(string key, List<string> setCollection);
 
         string LastProjectPath { get; set; }
+        bool IsUserLoggingEnabled { get; set; }
 
         bool IsAutoEnabledValidityInGooseReceiving { get; set; }
         bool IsAutoEnabledQualityInGooseReceiving { get; set; }

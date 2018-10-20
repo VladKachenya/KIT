@@ -6,6 +6,8 @@
              xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
              xmlns:viewModels="clr-namespace:BISC.Modules.Logging.Infrastructure.ViewModels"
              xmlns:converters1="clr-namespace:BISC.Modules.Logging.Infrastructure.Converters"
+             xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" VerticalAlignment="Stretch">
     <UserControl.Resources>
@@ -19,34 +21,39 @@
             <RowDefinition Height="22"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Visibility="{Binding IsNotificationsExpanded,Converter={StaticResource booleanToVisibilityConverter}}" VerticalAlignment="Stretch" MinHeight="100">
-            <ListBox ItemsSource="{Binding LogMessages}">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        <Setter Property="Padding" Value="3"></Setter>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Auto">
+                <ListBox ItemsSource="{Binding LogMessages}">
+                    <i:Interaction.Behaviors>
+                        <behaviors:ScrollableListBoxBehavior />
+                    </i:Interaction.Behaviors>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="3"></Setter>
 
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="viewModels:LogMessageViewModel">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="viewModels:LogMessageViewModel">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
 
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Image
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Image
                                 Width="15"
                                 Height="15" Margin="0,0,3,0"
                                 Source="{Binding Severity, Converter={StaticResource serverityToImageConverter}}" />
-                            <TextBlock FontSize="12" Grid.Column="1" Text="{Binding MessageDateTime}"></TextBlock>
+                                <TextBlock FontSize="12" Grid.Column="1" Text="{Binding MessageDateTime}"></TextBlock>
 
-                            <TextBlock FontSize="12" Grid.Column="2" Text="{Binding Message}"></TextBlock>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                                <TextBlock FontSize="12" Grid.Column="2" Text="{Binding Message}"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
         </Grid>
         <Border Grid.Row="1"  Height="22"  Background="#4FFF4500">
             <StackPanel Orientation="Horizontal">

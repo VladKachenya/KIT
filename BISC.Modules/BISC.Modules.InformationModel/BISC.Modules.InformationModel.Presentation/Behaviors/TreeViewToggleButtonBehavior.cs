@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Interactivity;
+using BISC.Infrastructure.Global.IoC;
+using BISC.Infrastructure.Global.Services;
 using BISC.Modules.InformationModel.Presentation.Interfaces;
 
 namespace BISC.Modules.InformationModel.Presentation.Behaviors
@@ -149,12 +151,16 @@ namespace BISC.Modules.InformationModel.Presentation.Behaviors
             ObservableCollection<IInfoModelItemViewModel> allItems =
                 (sender as ToggleButton).Tag as ObservableCollection<IInfoModelItemViewModel>;
             if (allItems == null) return;
-
+             
 
 
 
 
             IInfoModelItemViewModel oldItem = ((sender as ToggleButton).DataContext as IInfoModelItemViewModel);
+            if (!oldItem.ChildInfoModelItemViewModels.Any()) return;
+
+            StaticContainer.CurrentContainer.ResolveType<ILoggingService>().LogUserAction($"Пользователь свернул узел {oldItem.Header}");
+
             if (oldItem == null) return;
             oldItem.IsChecked = false;
             DeleteTreeGridItem(allItems, oldItem, false);
@@ -163,6 +169,8 @@ namespace BISC.Modules.InformationModel.Presentation.Behaviors
         private void TreeViewToggleButtonBehavior_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
             IInfoModelItemViewModel oldItem = ((sender as ToggleButton).DataContext as IInfoModelItemViewModel);
+            if(!oldItem.ChildInfoModelItemViewModels.Any())return;
+            StaticContainer.CurrentContainer.ResolveType<ILoggingService>().LogUserAction($"Пользователь развернул узел {oldItem.Header}");
             if (oldItem == null) return;
             oldItem.IsChecked = true;
             ObservableCollection<IInfoModelItemViewModel> treeGridItems = ((sender as ToggleButton)?.Tag as ObservableCollection<IInfoModelItemViewModel>);

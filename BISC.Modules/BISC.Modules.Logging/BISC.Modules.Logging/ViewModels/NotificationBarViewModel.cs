@@ -44,7 +44,7 @@ namespace BISC.Modules.Logging
         private void OnLogEvent(LogEvent logEvent)
         {
             LastMessage = logEvent.Message.Message;
-            _lastMessageHidingTimer.Change(5000, Timeout.Infinite);
+            _lastMessageHidingTimer.Change(15000, Timeout.Infinite);
             LogMessages.Insert(0,new LogMessageViewModel(logEvent.Message));
         }
 

@@ -44,7 +44,16 @@ namespace BISC.ViewModel
 
         private void OnNotificationBarClosing(NotificationBarExpandEvent obj)
         {
-            ExpanderRowHeight = GridLength.Auto;
+            if (obj.IsExpanded)
+            {
+                ExpanderRowHeight = new GridLength(200);
+
+            }
+            else
+            {
+                ExpanderRowHeight = GridLength.Auto;
+
+            }
             IsNotificationsExpanded = obj.IsExpanded;
         }
 

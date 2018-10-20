@@ -12,6 +12,7 @@ namespace BISC.Presentation.Interfaces.Menu
 
         ICommand CloseCommand { get; }
         ICommand ConfirmCommand { get; }
+        bool IsUserLoggingEnabled { get; set; }
 
         bool IsAutoEnabledValidityInGooseReceiving { get; set; }
         bool IsAutoEnabledQualityInGooseReceiving { get; set; }

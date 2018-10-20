@@ -23,7 +23,20 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="2*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition>
+                <RowDefinition.Style>
+                    <Style TargetType="RowDefinition">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=expanderBottom,Path=IsExpanded}" Value="True">
+                                <Setter Property="Height" Value="*"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=expanderBottom,Path=IsExpanded}" Value="False">
+                                <Setter Property="Height" Value="Auto"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </RowDefinition.Style>
+            </RowDefinition>
         </Grid.RowDefinitions>
         <CheckBox HorizontalAlignment="Left" Content="Сортировать по FC" IsChecked="{Binding IsFcSortChecked}"></CheckBox>
         <Grid Grid.Row="1">
@@ -118,7 +131,7 @@
             </ListView>
         </Grid>
         <Grid HorizontalAlignment="Stretch" Grid.Row="2" DataContext="{Binding SelectedTreeItem}">
-            <Expander IsExpanded="True" Header="Выбранный элемент">
+            <Expander Name="expanderBottom" IsExpanded="True" Header="Выбранный элемент">
                 <ListView  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" AlternationCount="2"  Margin="0" ItemsSource="{Binding TreeItemDetails}">
                 <ItemsControl.Resources>
                     <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">

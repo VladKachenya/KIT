@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
+using BISC.Infrastructure.Global.Logging;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Presentation.Infrastructure.Factories;
@@ -26,6 +27,7 @@ using BISC.Modules.DataSets.Infrastructure.Factorys;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType;
 using BISC.Presentation.Infrastructure.Services;
+using BISC.Infrastructure.Global.Services;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -41,6 +43,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private IFcdaFactory _fcdaFactory;
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IInfoModelService _infoModelService;
+        private readonly ILoggingService _loggingService;
         private ObservableCollection<IFcdaViewModel> _fcdaViewModels;
         private string _name;
         private string _editableNamePart;
@@ -57,12 +60,13 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #region C-tor
         public DataSetViewModel(IFcdaViewModelFactory fcdaViewModelFactory,ICommandFactory commandFactory, 
             IFcdaAdderViewModelService fcdaAdderViewModelService, IDataTypeTemplatesModelService dataTypeTemplatesModelService,
-            IBiscProject biscProject, IFcdaFactory fcdaFactory,ISaveCheckingService saveCheckingService,IInfoModelService infoModelService
-            )
+            IBiscProject biscProject, IFcdaFactory fcdaFactory,ISaveCheckingService saveCheckingService,IInfoModelService infoModelService,
+            ILoggingService loggingService)
         {
             _fcdaFactory = fcdaFactory;
             _saveCheckingService = saveCheckingService;
             _infoModelService = infoModelService;
+            _loggingService = loggingService;
             _biscProject = biscProject;
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
             _fcdaViewModelFactory = fcdaViewModelFactory;
@@ -77,6 +81,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private void OnDeleteFcda(object obj)
         {
             FcdaViewModels.Remove(obj as IFcdaViewModel);
+            _loggingService.LogUserAction($"Пользователь удалил FCDA {(obj as IFcdaViewModel).FullName} (устройство {(_device as IDevice)?.Name})");
         }
 
         private void OnAddFcdaTpDataset()
@@ -241,7 +246,19 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 fcdaModel = _fcdaFactory.GetFcda((elementModel as IDai));
 
             if (fcdaModel != null)
-                FcdaViewModels.Add(_fcdaViewModelFactory.CreateFcdaViewModelElement(fcdaModel));
+            {
+                var existing =
+                    FcdaViewModels.FirstOrDefault((model => model.GetFcda().ModelElementCompareTo(fcdaModel)));
+                if (existing!=null)
+                {
+                    _loggingService.LogMessage($"FCDA {existing.FullName} уже есть с списке",SeverityEnum.Warning);
+                    return;
+                }
+                var newFcdaViewModel = _fcdaViewModelFactory.CreateFcdaViewModelElement(fcdaModel);
+                FcdaViewModels.Add(newFcdaViewModel);
+                _loggingService.LogUserAction($"Добавлен FCDA {newFcdaViewModel.FullName} через DragDrop");
+
+            }
         }
 
         private bool CheckFc(object model)

@@ -13,8 +13,10 @@ namespace BISC.Modules.Logging.Infrastructure.Model
 
         public string Message { get; set; }
         public SeverityEnum Severity { get; set; }
-        public DateTime MessageDateTime { get; set; }
+        public MessageTypeEnum MessageType { get; set; }
 
+        public DateTime MessageDateTime { get; set; }
+       
         #endregion
     }
 }

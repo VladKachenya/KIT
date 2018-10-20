@@ -13,5 +13,6 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
     {
         ICommand DeleteFcdaCommand { get; }
         IFcda GetFcda();
+        string FullName { get; }
     }
 }

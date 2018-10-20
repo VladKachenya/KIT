@@ -21,6 +21,8 @@ namespace BISC.Presentation.ViewModels
         bool _isAutoEnabledQualityInGooseReceiving;
         int _mmsQueryDelay;
         bool _isVisibleValidadionError;
+        private bool _isUserLoggingEnabled;
+
         #endregion
 
         #region C-tor
@@ -41,6 +43,7 @@ namespace BISC.Presentation.ViewModels
             IsAutoEnabledQualityInGooseReceiving = _configurationService.IsAutoEnabledQualityInGooseReceiving;
             _mmsQueryDelay = _configurationService.MmsQueryDelay;
             IsVisibleValidadionError = false;
+            IsUserLoggingEnabled = _configurationService.IsUserLoggingEnabled;
         }
         #endregion
 
@@ -50,6 +53,7 @@ namespace BISC.Presentation.ViewModels
             _configurationService.IsAutoEnabledValidityInGooseReceiving = IsAutoEnabledValidityInGooseReceiving;
             _configurationService.IsAutoEnabledQualityInGooseReceiving = IsAutoEnabledQualityInGooseReceiving;
             _configurationService.MmsQueryDelay = _mmsQueryDelay;
+            _configurationService.IsUserLoggingEnabled = _isUserLoggingEnabled;
 
         }
         #endregion
@@ -81,8 +85,8 @@ namespace BISC.Presentation.ViewModels
                     IsVisibleValidadionError = true;
                     return;
                 }
-                else 
-                { 
+                else
+                {
                     IsVisibleValidadionError = false;
                     _mmsQueryDelay = buf;
                     OnPropertyChanged();
@@ -101,9 +105,15 @@ namespace BISC.Presentation.ViewModels
         public ICommand CloseCommand { get; }
         public ICommand ConfirmCommand { get; }
 
+        public bool IsUserLoggingEnabled
+        {
+            get => _isUserLoggingEnabled;
+            set { SetProperty(ref _isUserLoggingEnabled, value); }
+        }
+
         #endregion
 
-     
+
         #region Overrides of ViewModelBase
 
         protected override void OnDisposing()

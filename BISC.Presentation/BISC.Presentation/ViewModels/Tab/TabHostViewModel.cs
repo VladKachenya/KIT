@@ -22,12 +22,14 @@ namespace BISC.Presentation.ViewModels.Tab
     {
         private readonly INavigationService _navigationService;
         private readonly IGlobalEventsService _globalEventsService;
+        private readonly ILoggingService _loggingService;
         private ITabViewModel _activeTabViewModel;
 
-        public TabHostViewModel(INavigationService navigationService, IGlobalEventsService globalEventsService)
+        public TabHostViewModel(INavigationService navigationService, IGlobalEventsService globalEventsService,ILoggingService loggingService)
         {
             _navigationService = navigationService;
             _globalEventsService = globalEventsService;
+            _loggingService = loggingService;
             TabViewModels = new ObservableCollection<ITabViewModel>();
             TabViewModels.CollectionChanged += TabViewModels_CollectionChanged;
         }
@@ -51,8 +53,8 @@ namespace BISC.Presentation.ViewModels.Tab
                 if(_activeTabViewModel!=null)
                 _navigationService.DeactivateRegion(_activeTabViewModel.TabRegionName);
                 _activeTabViewModel = value;
-
                 _navigationService.ActivateRegion(value.TabRegionName);
+                _loggingService.LogUserAction($"Пользователь переместился на вкладку: {value.TabHeader}");
                 OnPropertyChanged();
             }
         }

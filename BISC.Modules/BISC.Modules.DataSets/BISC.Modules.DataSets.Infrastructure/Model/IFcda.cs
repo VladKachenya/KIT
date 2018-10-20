@@ -13,6 +13,5 @@ namespace BISC.Modules.DataSets.Infrastructure.Model
         string DaName { get; set; }
         string Fc { get; set; }
 
-
     }
 }

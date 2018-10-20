@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Infrastucture;
@@ -18,6 +19,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
     public class InfoModelTreeItemDetailsViewModel : NavigationViewModelBase
     {
         private readonly IInfoModelTreeFactory _infoModelTreeFactory;
+        private readonly ILoggingService _loggingService;
         private bool _isDeviceConnected;
         private bool _isLocalValuesShowing;
         private ObservableCollection<IInfoModelItemViewModel> _allIecTreeItems;
@@ -25,9 +27,10 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         private bool _isFcSortChecked;
         private BiscNavigationParameters _biscNavigationParameters;
 
-        public InfoModelTreeItemDetailsViewModel(IInfoModelTreeFactory infoModelTreeFactory)
+        public InfoModelTreeItemDetailsViewModel(IInfoModelTreeFactory infoModelTreeFactory,ILoggingService loggingService)
         {
             _infoModelTreeFactory = infoModelTreeFactory;
+            _loggingService = loggingService;
         }
 
         public ObservableCollection<IInfoModelItemViewModel> AllIecTreeItems
@@ -62,6 +65,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
                 if (_isFcSortChecked != value)
                 {
                     SetProperty(ref _isFcSortChecked, value);
+                    _loggingService.LogUserAction($"Пользователь выставил сортировку по FC в состояние {value}");
                     UpdateInfoModelTree();
                 }
 

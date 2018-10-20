@@ -69,6 +69,7 @@
     <Compile Include="Behaviors\DataTable\ColumnDescriptor.cs" />
     <Compile Include="Behaviors\DynamicColumnsDataDridBehavior.cs" />
     <Compile Include="Behaviors\FocusBehavior.cs" />
+    <Compile Include="Behaviors\ScrollableListBoxBehavior.cs" />
     <Compile Include="ChangeTracker\ChangeTracker.cs" />
     <Compile Include="Commands\DialogCommands.cs" />
     <Compile Include="Commands\RegionsClosedCommand.cs" />
