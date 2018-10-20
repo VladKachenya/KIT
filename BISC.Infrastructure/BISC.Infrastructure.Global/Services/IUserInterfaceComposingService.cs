@@ -10,6 +10,7 @@ namespace BISC.Infrastructure.Global.Services
         public const string SaveIconKey = "SaveIcon";
         public const string ContentSaveAllKey = "ContentSaveAllIcon";
         public const string UploadNetworkKey = "UploadNetworkIcon";
+        public const string AddIconKey = "BookmarkPlusIcon";
 
     }
 

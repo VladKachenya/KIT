@@ -70,8 +70,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, _device);
             if (result.IsSucceed)
             {
-                _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject.MainSclModel.Value, _device.Name);
+                _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject.MainSclModel.Value,
+                    _device.Name);
                 _treeManagementService.DeleteTreeItem(_treeItemIdentifier);
+                _connectionPoolService.GetConnection(_device.Ip).StopConnection();
             }
         }
 

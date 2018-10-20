@@ -41,7 +41,7 @@
                                 </UniformGrid>
                                 <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.DataSet}" Columns="2">
                                     <TextBlock Margin="4" Text="DataSet"></TextBlock>
-                                    <ComboBox Margin="2" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" SelectedItem="{Binding SelectedDataset}" ItemsSource="{Binding AvailableDatasets}"></ComboBox>
+                                    <ComboBox Margin="2" IsEnabled="{Binding IsDynamic}" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" SelectedItem="{Binding SelectedDataset}" ItemsSource="{Binding AvailableDatasets}"></ComboBox>
                                 </UniformGrid>
                                 <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.MinTime}" Columns="2">
                                     <TextBlock Margin="4" Text="MinTime" HorizontalAlignment="Stretch"></TextBlock>

@@ -15,17 +15,19 @@ namespace BISC.Modules.Gooses.Model.Services
 {
    public class FtpGooseModelService: IFtpGooseModelService
     {
+        private readonly IDeviceFileWritingServices _deviceFileWritingServices;
 
-        public FtpGooseModelService( )
+        public FtpGooseModelService(IDeviceFileWritingServices deviceFileWritingServices )
         {
+            _deviceFileWritingServices = deviceFileWritingServices;
         }
 
 
         #region Implementation of IFtpGooseModelService
 
-        public List<GooseFtpDto> GetGooseDtosFromDevice(string ip)
+        public async Task<List<GooseFtpDto>> GetGooseDtosFromDevice(string ip)
         {
-            string fileInDevice = string.Empty;
+            string fileInDevice =await _deviceFileWritingServices.ReadFileStringFromDevice(ip, "1:/CFG", "GOOSETR.CFG");
             var gooseStrings = GetGooseNamesListFromFile(fileInDevice);
 
 

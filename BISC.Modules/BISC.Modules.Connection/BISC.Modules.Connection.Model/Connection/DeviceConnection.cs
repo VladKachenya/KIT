@@ -48,7 +48,7 @@ namespace BISC.Modules.Connection.Model.Connection
         {
             if (!MmsConnection.CheckConnection())
             {
-                _connectionCheckingTimer.Dispose();
+                _connectionCheckingTimer?.Dispose();
                 IsConnected = false;
             }
         }

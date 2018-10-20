@@ -50,6 +50,12 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _userInterfaceComposingService = userInterfaceComposingService;
             SaveCommand = commandFactory.CreatePresentationCommand(OnSaveChangesCommand);
             DeleteGooseCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteGoose);
+            AddGooseCommand = commandFactory.CreatePresentationCommand(OnAddGooseCommand);
+        }
+
+        private void OnAddGooseCommand()
+        {
+            throw new NotImplementedException();
         }
 
         private void OnDeleteGoose(object obj)
@@ -96,12 +102,13 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             set { SetProperty(ref _gooseControlViewModels, value); }
         }
         public ICommand DeleteGooseCommand { get; }
+        public ICommand AddGooseCommand { get; }
 
         public ICommand SaveCommand { get; }
         public override void OnActivate()
         {
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить блоки управления GOOSE устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
-
+            _userInterfaceComposingService.AddGlobalCommand(AddGooseCommand, $"Добавить блок управления GOOSE в устройство { _device.Name}",IconsKeys.AddIconKey,true,false);
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnActivate();
         }
@@ -117,7 +124,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         public override void OnDeactivate()
         {
             _globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
-
             base.OnDeactivate();
         }
 

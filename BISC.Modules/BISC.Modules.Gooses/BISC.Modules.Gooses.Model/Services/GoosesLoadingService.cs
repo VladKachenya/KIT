@@ -84,7 +84,7 @@ namespace BISC.Modules.Gooses.Model.Services
             if (_ldGoosesDictionary.Values.Any())
             {
 
-                var dynamicGooseControls = _ftpGooseModelService.GetGooseDtosFromDevice(device.Ip);
+                var dynamicGooseControls =await _ftpGooseModelService.GetGooseDtosFromDevice(device.Ip);
                
 
 

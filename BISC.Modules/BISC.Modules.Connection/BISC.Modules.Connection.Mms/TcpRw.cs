@@ -102,7 +102,7 @@ namespace BISC.Modules.Connection.MMS
         public static void StopClient(TcpState tcps)
         {
             // Connect to a remote device.
-            tcps.logger.LogInfo("StopClient: Socket shutdowned.");
+            //tcps.logger.LogInfo("StopClient: Socket shutdowned.");
             try
             {
 

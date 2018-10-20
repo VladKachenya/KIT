@@ -7,7 +7,7 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
 {
     public interface IFtpGooseModelService
     {
-        List<GooseFtpDto> GetGooseDtosFromDevice(string ip);
+        Task<List<GooseFtpDto>> GetGooseDtosFromDevice(string ip);
         Task<OperationResult> WriteGooseDtosToDevice(string ip, List<GooseFtpDto> gooseDtos);
     }
 }
