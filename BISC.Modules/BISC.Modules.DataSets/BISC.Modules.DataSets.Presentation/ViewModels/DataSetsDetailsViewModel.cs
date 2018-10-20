@@ -98,6 +98,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private void OnDeleteDataSetViewModel(object dataSetViewModel)
         {
             var element = dataSetViewModel as IDataSetViewModel;
+            _loggingService.LogUserAction($"Пользователь удаляет Dataset {element.SelectedParentLd + "." + element.SelectedParentLn+"."+element.EditableNamePart}");
             DataSets.Remove(element);
         }
         private void OnAddNewDataSet()
@@ -123,10 +124,10 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             DataSets.Clear();
         }
 
-        private void OnSaveСhanges()
+        private async void OnSaveСhanges()
         {
             _loggingService.LogUserAction($"Пользователь сохраняет изменения DataSets устройства {_device.Name}");
-            _dataSetSavingService.SaveDataSets(DataSets.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+           await _dataSetSavingService.SaveDataSets(DataSets.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             ResetAllDataSetCollections();
             _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
             SortDataSetsByIsDynamic();
@@ -215,7 +216,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             if (connectionEvent.Ip == _device.Ip)
             {
-                _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+                _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}", connectionEvent.IsConnected);
 
             }
         }

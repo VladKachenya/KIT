@@ -18,6 +18,17 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
         Task<OperationResult<List<string>>> GetListDataSetsAsync(string ldInst, bool acceptCache);
         Task<OperationResult<DataSetDto>> GetListDataSetInfoAsync(string ldInst,string lnName,string datasetName, bool acceptCache);
         Task<OperationResult<List<GooseDto>>> GetListGoosesAsync(string fullLdPath, string lnName,string deviceName);
+        Task<OperationResult> DeleteDataSet(string ln,string ld,string ied,string name);
+        Task<OperationResult> AddDataSet(string ln, string ld, string ied , string nameDataSet, List<FcdaDto> fcdaDtos);
+    }
+
+    public class FcdaDto
+    {
+        public string Ln;
+        public string Ld;
+        public string Ied;
+        public string Fc;
+        public string[] DaDoPathParts;
 
     }
 

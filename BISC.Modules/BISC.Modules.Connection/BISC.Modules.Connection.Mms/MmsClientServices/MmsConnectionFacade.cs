@@ -327,6 +327,44 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             return new OperationResult<List<GooseDto>>(gooseDtos);
         }
 
+        public async Task<OperationResult> DeleteDataSet(string ln, string ld, string ied, string name)
+        {
+            try
+            {
+               await new DataSetClientService(_state).SendDeleteNVLAsync(new Dto.DataSetDto()
+                {
+                    Ied = ied,
+                    Ld = ld,
+                    Ln = ln,
+                    Name = name
+                });
+                return OperationResult.SucceedResult;
+            }
+            catch (Exception e)
+            {
+               return new OperationResult(e.Message);
+            }
+        }
+
+        public async Task<OperationResult> AddDataSet(string ln, string ld, string ied, string nameDataSet, List<FcdaDto> fcdaDtos)
+        {
+            try
+            {
+                await new DataSetClientService(_state).SendDefineNVLAsync(new Dto.DataSetDto()
+                {
+                    Ied = ied,
+                    Ld = ld,
+                    Ln = ln,
+                    Name = nameDataSet
+                },fcdaDtos);
+                return OperationResult.SucceedResult;
+            }
+            catch (Exception e)
+            {
+                return new OperationResult(e.Message);
+            }
+        }
+
 
         private MmsTypeDescription GetMmsTypeDescription(TypeDescription responseTypeDescription, string name)
         {
