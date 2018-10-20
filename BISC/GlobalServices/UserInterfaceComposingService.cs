@@ -30,13 +30,29 @@ namespace BISC.GlobalServices
             globalCommand.Command = command;
             globalCommand.CommandName = name;
             globalCommand.IconId = iconId;
-            if (isAddToToolBar)
+            if (isAddToToolBar&&!_globalToolbarCommands.Any((command1 =>command1.Command==globalCommand.Command)))
             {
                 _globalToolbarCommands.Add(globalCommand);
             }
-            if (isAddToMenu)
+            if (isAddToMenu && !_globalMenuCommands.Any((command1 => command1.Command == globalCommand.Command)))
             {
                 _globalMenuCommands.Add(globalCommand);
+            }
+        }
+
+        public void DeleteGlobalCommand(ICommand command)
+        {
+            var deletingCommand =
+                _globalMenuCommands.FirstOrDefault((globalCommand => globalCommand.Command == command));
+            if (deletingCommand != null)
+            {
+                _globalMenuCommands.Remove(deletingCommand);
+            }
+             deletingCommand =
+                 _globalToolbarCommands.FirstOrDefault((globalCommand => globalCommand.Command == command));
+            if (deletingCommand != null)
+            {
+                _globalToolbarCommands.Remove(deletingCommand);
             }
         }
 

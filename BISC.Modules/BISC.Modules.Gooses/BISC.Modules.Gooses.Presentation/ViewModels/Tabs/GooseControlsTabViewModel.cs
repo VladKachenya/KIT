@@ -55,7 +55,9 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         private void OnAddGooseCommand()
         {
-            throw new NotImplementedException();
+            _loggingService.LogUserAction($"Пользователь добавляет Goose CB (устройство {_device.Name})");
+
+            GooseControlViewModels.Add(_gooseControlViewModelFactory.CreateGooseControlViewModel(_device));
         }
 
         private void OnDeleteGoose(object obj)
@@ -108,7 +110,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         public override void OnActivate()
         {
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить блоки управления GOOSE устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
-            _userInterfaceComposingService.AddGlobalCommand(AddGooseCommand, $"Добавить блок управления GOOSE в устройство { _device.Name}",IconsKeys.AddIconKey,true,false);
+            _userInterfaceComposingService.AddGlobalCommand(AddGooseCommand, $"Добавить блок управления GOOSE в устройство { _device.Name}",IconsKeys.AddIconKey,false,true);
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnActivate();
         }
@@ -122,7 +124,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         }
 
         public override void OnDeactivate()
-        {
+        {_userInterfaceComposingService.DeleteGlobalCommand(AddGooseCommand);
+            _userInterfaceComposingService.ClearCurrentSaveCommand();
             _globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnDeactivate();
         }
