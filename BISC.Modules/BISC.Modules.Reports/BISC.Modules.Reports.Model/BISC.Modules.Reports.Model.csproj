@@ -49,9 +49,12 @@
     <Compile Include="Model\RptEnabled.cs" />
     <Compile Include="Model\TrgOps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializers\OptFieldsSerializer.cs" />
+    <Compile Include="Serializers\ReportControlSerializer.cs" />
+    <Compile Include="Serializers\RptEnabledSerializer.cs" />
+    <Compile Include="Serializers\TrgOpsSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Serializers\" />
     <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
