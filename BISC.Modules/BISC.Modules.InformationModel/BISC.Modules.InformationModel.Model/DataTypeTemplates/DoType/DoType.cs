@@ -23,7 +23,7 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType
         public ChildModelsList<ISdo> SdoList=>new ChildModelsList<ISdo>(this,"SDO");
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IDoType)) return false;
             var element = obj as IDoType;
             if (element.Id != Id) return false;

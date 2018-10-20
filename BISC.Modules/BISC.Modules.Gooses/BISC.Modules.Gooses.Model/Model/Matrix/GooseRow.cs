@@ -59,7 +59,7 @@ namespace BISC.Modules.Gooses.Model.Model.Matrix
 
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IGooseRow)) return false;
             var element = obj as IGooseRow;
             if (element.Signature != Signature) return false;

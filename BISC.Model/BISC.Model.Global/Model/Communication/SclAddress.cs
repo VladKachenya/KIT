@@ -46,7 +46,7 @@ namespace BISC.Model.Global.Model.Communication
         }
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is ISclAddress)) return false;
             var element = obj as ISclAddress;
             return true;

@@ -19,7 +19,7 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType
         public ChildModelsList<IEnumVal> EnumValList =>new ChildModelsList<IEnumVal>(this, "EnumVal");
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IEnumType)) return false;
             var element = obj as IEnumType;
             if (element.Id != Id) return false;

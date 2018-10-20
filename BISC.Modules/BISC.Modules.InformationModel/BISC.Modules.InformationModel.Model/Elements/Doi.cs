@@ -24,7 +24,7 @@ namespace BISC.Modules.InformationModel.Model.Elements
 
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IDoi)) return false;
             var element = obj as IDoi;
             if (element.Name != Name) return false;

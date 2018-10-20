@@ -24,7 +24,7 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public string Name => Prefix + LnClass + Inst;
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is ILogicalNode)) return false;
             var element = obj as ILogicalNode;
             if (element.Name != Name) return false;

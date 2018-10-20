@@ -26,7 +26,7 @@ namespace BISC.Modules.Gooses.Model.Model
         #endregion
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is ISubscriberDevice)) return false;
             var element = obj as ISubscriberDevice;
             if (element.LdInst != LdInst) return false;

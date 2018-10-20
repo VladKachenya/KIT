@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D1B96DC2-63D6-4726-9CFF-9C88E1315834}</ProjectGuid>
+    <ProjectGuid>{9BBA1EE8-4D1E-4520-8468-3458DBB155F6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BISC.Modules.Reports.Infrastructure</RootNamespace>
-    <AssemblyName>BISC.Modules.Reports.Infrastructure</AssemblyName>
+    <RootNamespace>BISC.Modules.Reports.Model</RootNamespace>
+    <AssemblyName>BISC.Modules.Reports.Model</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -44,17 +44,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Keys\ReportsKeys.cs" />
-    <Compile Include="Model\IOptFields.cs" />
-    <Compile Include="Model\IReportControl.cs" />
-    <Compile Include="Model\IRptEnabled.cs" />
-    <Compile Include="Model\ITrgOps.cs" />
+    <Compile Include="Model\OptFields.cs" />
+    <Compile Include="Model\ReportControl.cs" />
+    <Compile Include="Model\RptEnabled.cs" />
+    <Compile Include="Model\TrgOps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Serializers\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Global\BISC.Model.Global.csproj">
+      <Project>{FCA3F7FE-D64B-4C3C-9F8D-85753FC944BE}</Project>
+      <Name>BISC.Model.Global</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
       <Name>BISC.Model.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BISC.Modules.Reports.Infrastructure\BISC.Modules.Reports.Infrastructure.csproj">
+      <Project>{D1B96DC2-63D6-4726-9CFF-9C88E1315834}</Project>
+      <Name>BISC.Modules.Reports.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

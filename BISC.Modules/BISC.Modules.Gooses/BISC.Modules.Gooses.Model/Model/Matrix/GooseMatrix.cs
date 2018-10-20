@@ -25,7 +25,7 @@ namespace BISC.Modules.Gooses.Model.Model.Matrix
         #endregion
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IGooseMatrix)) return false;
             var element = obj as IGooseMatrix;
             if (element.RelatedIedName != RelatedIedName) return false;

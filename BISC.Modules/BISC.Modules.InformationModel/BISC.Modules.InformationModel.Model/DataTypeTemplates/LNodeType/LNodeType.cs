@@ -22,7 +22,7 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.LNodeType
         public ChildModelsList<IDo> DoList =>new ChildModelsList<IDo>(this, "DO");
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is ILNodeType)) return false;
             var element = obj as ILNodeType;
             if (element.Id != Id) return false;

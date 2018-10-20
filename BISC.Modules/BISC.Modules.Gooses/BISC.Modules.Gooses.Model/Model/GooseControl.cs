@@ -29,7 +29,7 @@ namespace BISC.Modules.Gooses.Model.Model
 
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IGooseControl)) return false;
             var element = obj as IGooseControl;
             if (element.Name != Name) return false;

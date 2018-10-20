@@ -23,7 +23,7 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public ChildModelsList<IDai> DaiCollection =>new ChildModelsList<IDai>(this, InfoModelKeys.ModelKeys.DaiKey);
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is ISdi)) return false;
             var element = obj as ISdi;
             if (element.Name != Name) return false;

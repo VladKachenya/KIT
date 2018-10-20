@@ -21,7 +21,7 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public ChildModelProperty<IVal> Value =>new ChildModelProperty<IVal>(this, InfoModelKeys.ModelKeys.ValKey);
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IDai)) return false;
             var element = obj as IDai;
             if (element.Name != Name) return false;

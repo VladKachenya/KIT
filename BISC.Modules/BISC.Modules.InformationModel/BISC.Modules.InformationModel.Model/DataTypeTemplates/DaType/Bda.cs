@@ -21,7 +21,7 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DaType
         public string Type { get; set; }
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IBda)) return false;
             var element = obj as IBda;
             if (element.Name != Name) return false;

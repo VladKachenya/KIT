@@ -23,7 +23,7 @@ namespace BISC.Model.Global.Model.Communication
         public ChildModelsList<IGse> GseList=>new ChildModelsList<IGse>(this,ModelKeys.GseKey);
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IConnectedAccessPoint)) return false;
             var element = obj as IConnectedAccessPoint;
             if (element.IedName != IedName) return false;

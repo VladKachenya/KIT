@@ -98,7 +98,7 @@ namespace BISC.Modules.DataSets.Model.Model
 
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IFcda)) return false;
             var element = obj as IFcda;
             if (element.LdInst != LdInst) return false;

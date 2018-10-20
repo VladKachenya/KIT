@@ -44,7 +44,7 @@ namespace BISC.Model.Global.Model.Communication
         public ChildModelProperty<ISclAddress> SclAddress => new ChildModelProperty<ISclAddress>(this, ModelKeys.SclAddressKey);
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IGse)) return false;
             var element = obj as IGse;
             if (element.VlanId != VlanId) return false;

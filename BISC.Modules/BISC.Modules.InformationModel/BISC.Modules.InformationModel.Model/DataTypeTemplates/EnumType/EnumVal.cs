@@ -19,7 +19,7 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType
         public string Value { get; set; }
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IEnumVal)) return false;
             var element = obj as IEnumVal;
             if (element.Ord != Ord) return false;

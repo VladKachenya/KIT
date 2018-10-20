@@ -19,7 +19,7 @@ namespace BISC.Modules.InformationModel.Model.Elements
         public string Value { get; set; }
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IVal)) return false;
             var element = obj as IVal;
             if (element.Value != Value) return false;

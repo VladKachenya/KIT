@@ -19,7 +19,7 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DaType
         public ChildModelsList<IBda> Bdas =>new ChildModelsList<IBda>(this, "BDA");
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IDaType)) return false;
             var element = obj as IDaType;
             if (element.Id != Id) return false;

@@ -26,7 +26,7 @@ namespace BISC.Modules.InformationModel.Model.Elements
         #endregion
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IDeviceAccessPoint)) return false;
             var element = obj as IDeviceAccessPoint;
             if (element.Name != Name) return false;

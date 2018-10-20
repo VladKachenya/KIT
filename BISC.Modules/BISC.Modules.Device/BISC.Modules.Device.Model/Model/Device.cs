@@ -32,7 +32,7 @@ namespace BISC.Modules.Device.Model.Model
 
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IDevice)) return false;
             var element = obj as IDevice;
             if (element.Name != Name) return false;

@@ -26,7 +26,7 @@ namespace BISC.Modules.DataSets.Model.Model
 
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IDataSet)) return false;
             var element = obj as IDataSet;
             if (element.Name != Name) return false;

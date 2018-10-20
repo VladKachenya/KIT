@@ -36,7 +36,7 @@ namespace BISC.Modules.Gooses.Model.Model
         #endregion
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IExternalGooseRef)) return false;
             var element = obj as IExternalGooseRef;
             if (element.AsString() != AsString()) return false;

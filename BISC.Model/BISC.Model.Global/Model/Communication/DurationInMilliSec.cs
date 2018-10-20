@@ -25,7 +25,7 @@ namespace BISC.Model.Global.Model.Communication
         public int Value { get; set; }
         public override bool ModelElementCompareTo(IModelElement obj)
         {
-            if (base.Equals(obj)) return false;
+            if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IDurationInMilliSec)) return false;
             var element = obj as IDurationInMilliSec;
             if (element.Unit != Unit) return false;
