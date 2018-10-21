@@ -1,6 +1,5 @@
 ﻿using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Keys;
-using BISC.Modules.Reports.Presentation.Interfaces.ViewModels;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
@@ -14,7 +13,7 @@ using System.Windows.Input;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
 {
-    public class ReportsTreeItemViewModel : NavigationViewModelBase, IReportsTreeItemViewModel
+    public class ReportsTreeItemViewModel : NavigationViewModelBase
     {
         private readonly ITabManagementService _tabManagementService;
         private IDevice _device;

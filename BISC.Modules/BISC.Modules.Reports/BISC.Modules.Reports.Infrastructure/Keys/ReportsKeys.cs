@@ -10,10 +10,10 @@ namespace BISC.Modules.Reports.Infrastructure.Keys
     {
         public static class ReportsModelKeys
         {
-            public const string ReportControlModelKey = "ReportControlModelKey";
-            public const string OptFieldsModelKey = "OptFieldsModelKey";
-            public const string RptEnabledModelKey = "RptEnabledModelKey";
-            public const string TrgOpsModelKey = "TrgOpsModelKey";
+            public const string ReportControlModelKey = "ReportControl";
+            public const string OptFieldsModelKey = "OptFields";
+            public const string RptEnabledModelKey = "RptEnabled";
+            public const string TrgOpsModelKey = "TrgOps";
         }
         public static class ReportsPresentationKeys
         {

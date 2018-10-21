@@ -1,7 +1,6 @@
 ﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Modules.Reports.Infrastructure.Keys;
-using BISC.Modules.Reports.Presentation.Interfaces.ViewModels;
 using BISC.Modules.Reports.Presentation.Services;
 using BISC.Modules.Reports.Presentation.ViewModels;
 using BISC.Modules.Reports.Presentation.Views;

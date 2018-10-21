@@ -28,7 +28,6 @@ namespace BISC.Modules.Reports.Model.Module
         public void Initialize()
         {
             var modelElementsRegistryService = _injectionContainer.ResolveType<IModelElementsRegistryService>();
-
             modelElementsRegistryService.RegisterModelElement(new ReportControlSerializer(), ReportsKeys.ReportsModelKeys.ReportControlModelKey);
             modelElementsRegistryService.RegisterModelElement(new RptEnabledSerializer(), ReportsKeys.ReportsModelKeys.RptEnabledModelKey);
             modelElementsRegistryService.RegisterModelElement(new OptFieldsSerializer(), ReportsKeys.ReportsModelKeys.OptFieldsModelKey);

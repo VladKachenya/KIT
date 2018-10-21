@@ -18,27 +18,21 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
     {
         private IDevice _device;
         private IReportsModelService _reportsModelService;
-        private ISaveCheckingService _saveCheckingService;
-        private IUserInterfaceComposingService _userInterfaceComposingService;
+       
         public string TestValue => "I`m reports details view";
 
         #region Ctor
-        public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService,
-            ISaveCheckingService saveCheckingService, IUserInterfaceComposingService userInterfaceComposingService,
-            INavigationService navigationService, ILoggingService loggingService)
+        public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService) 
         {
             _reportsModelService = reportsModelService;
-            _saveCheckingService = saveCheckingService;
-            _userInterfaceComposingService = userInterfaceComposingService;
         }
         #endregion
 
         #region override of NavigationViewModelBase
-
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
-            //_device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
-            //_dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
+            _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
+            var reportControls = _reportsModelService.GetAllReportControlsOfDevice(_device);
             //SortDataSetsByIsDynamic();
             //DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
             //_regionName = navigationContext.BiscNavigationParameters
@@ -48,47 +42,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             //ChangeTracker.SetTrackingEnabled(true);
             //_navigationService.NavigateViewToRegion(InfoModelKeys.InfoModelTreeItemDetailsViewKey, ModelRegionKey,
             //    new BiscNavigationParameters().AddParameterByName("IED", _device));
-            //base.OnNavigatedTo(navigationContext);
+            base.OnNavigatedTo(navigationContext);
         }
-
-
-
-        public override void OnActivate()
-        {
-
-            //_userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
-            //_globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
-
-            base.OnActivate();
-
-        }
-
-        //private void OnConnectionChanged(ConnectionEvent connectionEvent)
-        //{
-        //    if (connectionEvent.Ip == _device.Ip)
-        //    {
-        //        _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}", connectionEvent.IsConnected);
-
-        //    }
-        //}
-
-        //public override void OnDeactivate()
-        //{
-        //    _userInterfaceComposingService.ClearCurrentSaveCommand();
-        //    _globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
-
-        //    base.OnDeactivate();
-        //}
-
-
-
-        //protected override void OnDisposing()
-        //{
-        //    _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
-        //    _navigationService.DisposeRegionViewModel(ModelRegionKey);
-        //    base.OnDisposing();
-        //}
-
 
         #endregion
     }
