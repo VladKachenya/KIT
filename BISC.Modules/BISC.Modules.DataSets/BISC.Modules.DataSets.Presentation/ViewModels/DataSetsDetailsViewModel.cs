@@ -204,8 +204,9 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public override void OnActivate()
         {
-
+           
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            _userInterfaceComposingService.AddGlobalCommand(AddNewDataSetCommand,$"Добавить DataSet {_device.Name}",IconsKeys.AddIconKey,false,true);
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
 
             base.OnActivate();
@@ -224,6 +225,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public override void OnDeactivate()
         {
             _userInterfaceComposingService.ClearCurrentSaveCommand();
+            _userInterfaceComposingService.DeleteGlobalCommand(AddNewDataSetCommand);
             _globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
 
             base.OnDeactivate();

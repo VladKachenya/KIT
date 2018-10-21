@@ -79,13 +79,13 @@
                         <ContentControl ContentTemplate="{DynamicResource ArrowCollapseLeftIcon}"/>
                     </Button.Content>
                 </Button>
-                <Button  Command="{Binding AddNewDataSetCommand}" Visibility="Visible" Margin="10,5" Height="20" Width="20"
+                <!--<Button  Command="{Binding AddNewDataSetCommand}" Visibility="Visible" Margin="10,5" Height="20" Width="20"
                          Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
                         ToolTip="Добавить DataSet">
                     <Button.Content>
                         <ContentControl ContentTemplate="{DynamicResource PlusOutlineIcon}"/>
                     </Button.Content>
-                </Button>
+                </Button>-->
             
 
 
