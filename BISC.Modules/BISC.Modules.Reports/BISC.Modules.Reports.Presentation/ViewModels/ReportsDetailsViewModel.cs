@@ -11,21 +11,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
 {
     public class ReportsDetailsViewModel : NavigationViewModelBase
     {
+        private string _regionName;
         private IDevice _device;
         private IReportsModelService _reportsModelService;
-       
-        public string TestValue => "I`m reports details view";
+        private ISaveCheckingService _saveCheckingService;
+
 
         #region Ctor
-        public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService) 
+        public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService, ISaveCheckingService saveCheckingService) 
         {
             _reportsModelService = reportsModelService;
+            _saveCheckingService = saveCheckingService;
         }
+        #endregion
+
+        #region public interface
+
+        public ICommand SaveСhangesCommand { get; }
+
         #endregion
 
         #region override of NavigationViewModelBase
@@ -33,18 +42,20 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             var reportControls = _reportsModelService.GetAllReportControlsOfDevice(_device);
-            //SortDataSetsByIsDynamic();
             //DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
-            //_regionName = navigationContext.BiscNavigationParameters
-            //    .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
-            //_saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-            //    $"DataSets устройства {_device.Name}", SaveСhangesCommand, _regionName));
-            //ChangeTracker.SetTrackingEnabled(true);
-            //_navigationService.NavigateViewToRegion(InfoModelKeys.InfoModelTreeItemDetailsViewKey, ModelRegionKey,
-            //    new BiscNavigationParameters().AddParameterByName("IED", _device));
+            _regionName = navigationContext.BiscNavigationParameters
+                .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
+            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
+                $"DataSets устройства {_device.Name}", SaveСhangesCommand, _regionName));
+            ChangeTracker.SetTrackingEnabled(true);
             base.OnNavigatedTo(navigationContext);
         }
 
+        protected override void OnDisposing()
+        {
+            _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
+            base.OnDisposing();
+        }
         #endregion
     }
 }

@@ -49,6 +49,10 @@
     <Compile Include="Model\IReportControl.cs" />
     <Compile Include="Model\IRptEnabled.cs" />
     <Compile Include="Model\ITrgOps.cs" />
+    <Compile Include="Presentation\ViewModels\IOprionalFildsViewModel.cs" />
+    <Compile Include="Presentation\ViewModels\IReportControlViewModel.cs" />
+    <Compile Include="Presentation\ViewModels\IReportEnabledViewModel.cs" />
+    <Compile Include="Presentation\ViewModels\ITriggerOptionsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IReportsModelService.cs" />
   </ItemGroup>
@@ -57,6 +61,9 @@
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
       <Name>BISC.Model.Infrastructure</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Presentation\Factorys\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
