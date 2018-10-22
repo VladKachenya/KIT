@@ -1,8 +1,12 @@
 ﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Modules.Reports.Infrastructure.Keys;
+using BISC.Modules.Reports.Infrastructure.Presentation.Factorys;
+using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
+using BISC.Modules.Reports.Presentation.Factorys;
 using BISC.Modules.Reports.Presentation.Services;
 using BISC.Modules.Reports.Presentation.ViewModels;
+using BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels;
 using BISC.Modules.Reports.Presentation.Views;
 using BISC.Presentation.Infrastructure.UiFromModel;
 using System;
@@ -33,6 +37,11 @@ namespace BISC.Modules.Reports.Presentation.Module
 
             _injectionContainer.RegisterType<ReportsTreeItemViewModel>();
             _injectionContainer.RegisterType<ReportsDetailsViewModel>();
+            _injectionContainer.RegisterType<IOprionalFildsViewModel, OprionalFildsViewModel>();
+            _injectionContainer.RegisterType<IReportEnabledViewModel, ReportEnabledViewModel>();
+            _injectionContainer.RegisterType<ITriggerOptionsViewModel, TriggerOptionsViewModel>();
+            _injectionContainer.RegisterType<IReportControlViewModel, ReportControlViewModel>();
+            _injectionContainer.RegisterType<IReportControlFactoryViewModel, ReportControlFactoryViewModel>(true);
 
         }
     }

@@ -38,10 +38,6 @@ namespace BISC.Modules.Reports.Model.Services
                 }
                 foreach (var element in lDevice.LogicalNodeZero.Value.ChildModelElements)
                 {
-                    if (element is IDataSet)
-                    {
-                        
-                    }
                     if (element is IReportControl reportControl)
                     {
                         ReportControls.Add(reportControl);
