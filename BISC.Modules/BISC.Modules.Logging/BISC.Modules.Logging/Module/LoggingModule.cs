@@ -38,12 +38,13 @@ namespace BISC.Modules.Logging.Infrastructure.Module
             _injectionContainer.RegisterType<object, NotificationBarView>(LogKeys.LogKeysPresentation
                 .NotificationBarViewName);
             var globalEventsService = _injectionContainer.ResolveType<IGlobalEventsService>();
-            globalEventsService.Subscribe<ShellLoadedEvent>((args =>
+            var userInt = _injectionContainer.ResolveType<ShellLoadedService>();
+            userInt.OnShellLoadedAction += () =>
             {
                 _injectionContainer.ResolveType<INavigationService>().NavigateViewToRegion(
                     LogKeys.LogKeysPresentation.NotificationBarViewName,
                     KeysForNavigation.RegionNames.NotificationBarKey);
-            }));
+            };
         }
 
         #endregion

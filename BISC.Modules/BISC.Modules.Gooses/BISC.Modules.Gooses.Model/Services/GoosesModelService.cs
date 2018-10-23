@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
+using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.DataSets.Infrastructure.Model;
+using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Model;
@@ -22,12 +25,17 @@ namespace BISC.Modules.Gooses.Model.Services
         private readonly IInfoModelService _infoModelService;
         private readonly IDeviceModelService _deviceModelService;
         private readonly IBiscProject _biscProject;
+        private readonly ISclCommunicationModelService _sclCommunicationModelService;
+        private readonly IDatasetModelService _datasetModelService;
 
-        public GoosesModelService(IInfoModelService infoModelService,IDeviceModelService deviceModelService,IBiscProject biscProject)
+        public GoosesModelService(IInfoModelService infoModelService,IDeviceModelService deviceModelService,IBiscProject biscProject,
+            ISclCommunicationModelService sclCommunicationModelService,IDatasetModelService datasetModelService)
         {
             _infoModelService = infoModelService;
             _deviceModelService = deviceModelService;
             _biscProject = biscProject;
+            _sclCommunicationModelService = sclCommunicationModelService;
+            _datasetModelService = datasetModelService;
         }
         public void AddGseControl(string lnName, string ldName, IModelElement devcice, IGooseControl gooseControl)
         {
@@ -218,6 +226,74 @@ namespace BISC.Modules.Gooses.Model.Services
             return gooseMatrix;
         }
 
+        public void DeleteGooseCbAndGseByName(string name, IDevice device)
+        {
+            var ldevices = _infoModelService.GetLDevicesFromDevices(device);
+            IGooseControl findedGooseControlToDelete = null;
+            foreach (var lDevice in ldevices)
+            {
+                foreach (var childModelElement in lDevice.LogicalNodeZero.Value.ChildModelElements)
+                {
+                    if (childModelElement is IGooseControl findedGooseControl&&findedGooseControl.Name==name)
+                    {
+                        findedGooseControlToDelete = findedGooseControl;
+                        break;
+                    }
+                }
+                if (findedGooseControlToDelete != null)
+                {
+                    lDevice.LogicalNodeZero.Value.ChildModelElements.Remove(findedGooseControlToDelete);
+                }
+            }
+            if(findedGooseControlToDelete==null)return;
+            _sclCommunicationModelService.DeleteGseOfDevice(device.Name,name,device.GetFirstParentOfType<ISclModel>());
+
+            var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
+            var datasetOfGoose = datasets.FirstOrDefault((set => set.Name ==findedGooseControlToDelete.DataSet));
+            if (datasetOfGoose != null)
+            {
+                foreach (var fcda in datasetOfGoose.FcdaList)
+                {
+                    var devices = _deviceModelService.GetDevicesFromModel(device.GetFirstParentOfType<ISclModel>());
+                    foreach (var anotherDevice in devices)
+                    {
+                        if (anotherDevice == device)
+                        {
+                            continue;
+                        }
+
+                        var inputs = GetGooseInputsOfDevice(anotherDevice);
+                        foreach (var input in inputs)
+                        {
+                            IExternalGooseRef externalGooseRefToDelete = null;
+                            foreach (var externalGooseReference in input.ExternalGooseReferences)
+                            {
+                                if (CompareFcdaAndExtRef(externalGooseReference, fcda))
+                                {
+                                    externalGooseRefToDelete = externalGooseReference;
+                                    break;
+                                }   
+                            }
+
+                            if (externalGooseRefToDelete != null)
+                            {
+                                input.ExternalGooseReferences.Remove(externalGooseRefToDelete);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        public bool CompareFcdaAndExtRef(IExternalGooseRef externalGooseRef, IFcda fcda)
+        {
+            if (externalGooseRef.Prefix != fcda.Prefix) return false;
+            if (externalGooseRef.DaName != fcda.DaName) return false;
+            if (externalGooseRef.DoName != fcda.DoName) return false;
+            if (externalGooseRef.LdInst != fcda.LdInst) return false;
+            if (externalGooseRef.LnInst != fcda.LnInst) return false;
+            if (externalGooseRef.LnClass != fcda.LnClass) return false;
+            return true;
+        }
 
         public List<IGooseInput> GetGooseInputsOfDevice(IDevice device)
         {

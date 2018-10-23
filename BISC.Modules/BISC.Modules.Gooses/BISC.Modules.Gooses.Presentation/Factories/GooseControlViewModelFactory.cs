@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,7 +48,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 var gseOfGoose = gses.FirstOrDefault((gse => gse.CbName == gooseControl.Name));
                 if (gseOfGoose != null)
                 {
-                    gooseControlViewModel.AppId = uint.Parse(gseOfGoose.AppId);
+                    gooseControlViewModel.AppId = uint.Parse(gseOfGoose.AppId,NumberStyles.HexNumber);
                     gooseControlViewModel.MacAddress = gseOfGoose.MacAddress;
                     gooseControlViewModel.MaxTime = (uint) gseOfGoose.MaxTime.Value.Value;
                     gooseControlViewModel.MinTime = (uint) gseOfGoose.MinTime.Value.Value;

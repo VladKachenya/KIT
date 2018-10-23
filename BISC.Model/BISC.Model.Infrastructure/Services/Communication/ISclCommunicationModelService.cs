@@ -13,6 +13,7 @@ namespace BISC.Model.Infrastructure.Services.Communication
         void AddGse(IGse gse, ISclModel sclModel,string iedName);
         List<IGse> GetGsesForDevice(string deviceName,ISclModel sclModel);
         string GetIpOfDevice(string deviceName, ISclModel sclModel);
+        void DeleteGseOfDevice(string deviceName, string cbName, ISclModel sclModel);
 
     }
 }

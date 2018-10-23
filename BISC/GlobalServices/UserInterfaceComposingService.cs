@@ -24,6 +24,8 @@ namespace BISC.GlobalServices
             _shellViewModel = shellViewModel;
             _globalCommandFactory = globalCommandFactory;
         }
+        
+
         public void AddGlobalCommand(ICommand command, string name, string iconId, bool isAddToMenu = false, bool isAddToToolBar = false)
         {
             IGlobalCommand globalCommand = _globalCommandFactory();

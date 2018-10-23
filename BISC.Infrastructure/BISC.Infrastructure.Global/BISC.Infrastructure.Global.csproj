@@ -61,6 +61,7 @@
     <Compile Include="Services\IProjectService.cs" />
     <Compile Include="Services\IUserInterfaceComposingService.cs" />
     <Compile Include="Services\IUserNotificationService.cs" />
+    <Compile Include="Services\ShellLoadedService.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -140,5 +140,22 @@ namespace BISC.Model.Global.Services.CommunicationModel
             var address = connectedAccessPoint.SclAddresses.FirstOrDefault();
             return address?.GetProperty("IP");
         }
+
+        public void DeleteGseOfDevice(string deviceName, string cbName,ISclModel sclModel)
+        {
+            ISclCommunicationModel sclCommunicationModel =
+                (sclModel.ChildModelElements.FirstOrDefault((element => (element is ISclCommunicationModel))) as
+                    ISclCommunicationModel);
+            var connectedAp = sclCommunicationModel?.SubNetworks[0].ConnectedAccessPoints
+                .FirstOrDefault((point => point.IedName == deviceName));
+            if (connectedAp != null)
+            {
+                var gseToDel = connectedAp.GseList.FirstOrDefault((gse => gse.CbName == cbName));
+                if (gseToDel != null)
+                {
+                    connectedAp.GseList.Remove(gseToDel);
+                }
+            }
+        }
     }
 }

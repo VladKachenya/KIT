@@ -25,18 +25,20 @@ namespace BISC.ViewModel
         private readonly IProjectService _projectService;
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IGlobalEventsService _globalEventsService;
+        private readonly ShellLoadedService _shellLoadedService;
         private bool _isLeftMenuEnabled;
         private string _applicationTitle;
         private GridLength _expanderRowHeight;
         private bool _isNotificationsExpanded;
 
         public ShellViewModel(INavigationService navigationService,
-            IProjectService projectService, ISaveCheckingService saveCheckingService,IGlobalEventsService globalEventsService)
+            IProjectService projectService, ISaveCheckingService saveCheckingService,IGlobalEventsService globalEventsService, ShellLoadedService shellLoadedService)
         {
             _navigationService = navigationService;
             _projectService = projectService;
             _saveCheckingService = saveCheckingService;
             _globalEventsService = globalEventsService;
+            _shellLoadedService = shellLoadedService;
             ShellLoadedCommand = new DelegateCommand(OnShellLoaded);
             ShellClosingCommand=new DelegateCommand<object>(OnShellClosing);
             _globalEventsService.Subscribe<NotificationBarExpandEvent>(OnNotificationBarClosing);
@@ -92,7 +94,7 @@ namespace BISC.ViewModel
         {
             _globalEventsService.SendMessage(new ShellLoadedEvent());
             ApplicationTitle = $"Bemn Intellectual Substation Control (Текущий проект: {_projectService.GetCurrentProjectPath(false)})";
-
+            _shellLoadedService.OnShellLoadedAction?.Invoke();
         }
 
 

@@ -49,9 +49,17 @@ namespace BISC.Modules.Gooses.Model.Services
             }
         }
 
-        public Task<OperationResult> WriteGooseDtosToDevice(string ip, List<GooseFtpDto> gooseDtos)
+        public async Task<OperationResult> WriteGooseDtosToDevice(string ip, List<GooseFtpDto> gooseDtos)
         {
-            throw new NotImplementedException();
+            try
+            {
+                throw new NotImplementedException();
+
+            }
+            catch (Exception e)
+            {
+            return new OperationResult("nnn");
+            }
         }
 
 

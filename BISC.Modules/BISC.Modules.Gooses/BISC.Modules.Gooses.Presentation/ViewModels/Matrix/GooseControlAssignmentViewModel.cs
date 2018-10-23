@@ -54,10 +54,10 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
                 foreach (var fcdaAssignmentItem in gooseControlBlockAssignmentItem.FcdaAssignmentItems)
                 {
                     var inputExisting= existingGooseInputsOfDevice.FirstOrDefault((input =>
-                        input.ExternalGooseReferences.Any((extRef => CompareFcdaAndExtRef(extRef, fcdaAssignmentItem.Model)))));
+                        input.ExternalGooseReferences.Any((extRef => _goosesModelService.CompareFcdaAndExtRef(extRef, fcdaAssignmentItem.Model)))));
 
                     var extRefExisting = inputExisting?.ExternalGooseReferences.FirstOrDefault((extRef =>
-                        CompareFcdaAndExtRef(extRef, fcdaAssignmentItem.Model)));
+                        _goosesModelService.CompareFcdaAndExtRef(extRef, fcdaAssignmentItem.Model)));
 
                     bool isSubscribed = extRefExisting != null;
 
@@ -124,7 +124,7 @@ public ObservableCollection<GooseControlBlockAssignmentItem> GooseControlBlockAs
                     {
 
                         bool isSubscribed = existingGooseInputsOfDevice.Any((input =>
-                            input.ExternalGooseReferences.Any((extRef => CompareFcdaAndExtRef(extRef, fcda)))));
+                            input.ExternalGooseReferences.Any((extRef => _goosesModelService.CompareFcdaAndExtRef(extRef, fcda)))));
                         FcdaAssignmentItem fcdaAssignmentItem = new FcdaAssignmentItem();
                         fcdaAssignmentItem.Model = fcda;
                         if (string.IsNullOrEmpty(fcda.DaName))
@@ -152,16 +152,7 @@ public ObservableCollection<GooseControlBlockAssignmentItem> GooseControlBlockAs
             base.OnNavigatedTo(navigationContext);
         }
 
-        private bool CompareFcdaAndExtRef(IExternalGooseRef externalGooseRef, IFcda fcda)
-        {
-            if (externalGooseRef.Prefix != fcda.Prefix) return false;
-            if (externalGooseRef.DaName != fcda.DaName) return false;
-            if (externalGooseRef.DoName != fcda.DoName) return false;
-            if (externalGooseRef.LdInst != fcda.LdInst) return false;
-            if (externalGooseRef.LnInst != fcda.LnInst) return false;
-            if (externalGooseRef.LnClass != fcda.LnClass) return false;
-            return true;
-        }
+    
         
         #endregion
     }
