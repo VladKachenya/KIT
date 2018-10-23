@@ -10,7 +10,7 @@
         <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B">
             <StackPanel Orientation="Horizontal">
                 <CheckBox x:Name="VelueCheckBox" 
-                          VerticalAlignment="Center" Opacity="0.8" IsEnabled="False"/>
+                          VerticalAlignment="Center" IsEnabled="True"/>
                 <TextBlock x:Name="NameTextBox" Margin="2"/>
             </StackPanel>
         </Border>
