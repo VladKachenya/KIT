@@ -19,17 +19,21 @@
                 <Expander HorizontalAlignment="Stretch" IsExpanded="{Binding IsExpanded}">
                     <Expander.Header >
                         <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <StackPanel Orientation="Horizontal">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal" Grid.Column="0">
                                 <Border Margin="2" Background="{Binding TypeColorBrush}" >
                                     <TextBlock Margin="4"  Text="{Binding ElementName}"/>
                                 </Border>
                                 <TextBlock Margin="6" Text="{Binding IsBuffered, Converter={StaticResource boolianToBufferidStringConverter}}"/>
-                             
                                 <TextBlock Margin="6" Text="{Binding Name}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <Button  Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" >
+                                    <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}" />
+                                </Button>
                             </StackPanel>
                         </Grid>
                     </Expander.Header>

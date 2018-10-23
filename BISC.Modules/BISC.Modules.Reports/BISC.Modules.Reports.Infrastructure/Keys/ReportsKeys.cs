@@ -19,6 +19,9 @@ namespace BISC.Modules.Reports.Infrastructure.Keys
         {
             public const string ReportsTreeItemView = "ReportsTreeItemView";
             public const string ReportsDetailsView = "ReportsDetailsView";
+            public const string ReportEditingView = "ReportEditingView";
+            public const string ReportsAddingView = "ReportsAddingView";
+
         }
     }
 }

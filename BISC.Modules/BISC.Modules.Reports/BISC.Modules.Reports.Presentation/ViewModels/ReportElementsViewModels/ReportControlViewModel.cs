@@ -1,4 +1,5 @@
-﻿using BISC.Modules.Reports.Infrastructure.Model;
+﻿using BISC.Infrastructure.Global.Services;
+using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Presentation.BaseItems.ViewModels;
 using System;
@@ -23,7 +24,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 
         #region ctor
         public ReportControlViewModel(IReportEnabledViewModel reportEnabledViewModel, ITriggerOptionsViewModel triggerOptionsViewModel,
-            IOprionalFildsViewModel oprionalFildsViewModel)
+            IOprionalFildsViewModel oprionalFildsViewModel, IGlobalEventsService globalEventsService)
         {
             ReportEnabledViewModel = reportEnabledViewModel;
             TriggerOptionsViewModel = triggerOptionsViewModel;

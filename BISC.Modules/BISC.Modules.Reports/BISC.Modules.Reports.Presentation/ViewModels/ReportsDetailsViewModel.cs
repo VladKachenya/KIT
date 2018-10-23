@@ -1,6 +1,7 @@
 ﻿using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Reports.Infrastructure.Keys;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.Factorys;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
@@ -21,12 +22,14 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 {
     public class ReportsDetailsViewModel : NavigationViewModelBase
     {
+        private int _controlSwitch;
         private string _regionName;
         private IDevice _device;
         private List<IReportControl> _reportControlsModel;
         private IReportsModelService _reportsModelService;
         private ISaveCheckingService _saveCheckingService;
         private IReportControlFactoryViewModel _reportControlFactoryViewModel;
+
 
 
         #region Ctor
@@ -36,12 +39,29 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _reportsModelService = reportsModelService;
             _saveCheckingService = saveCheckingService;
             _reportControlFactoryViewModel = reportControlFactoryViewModel;
+            TestCommand = commandFactory.CreatePresentationCommand(OnTestCommand);
+            ModelRegionKey = Guid.NewGuid().ToString();
+        }
+        #endregion
+
+        #region private methods
+        private void OnTestCommand()
+        {
+            if (ControlSwitch >= 3) ControlSwitch = 0;
+            else ControlSwitch++;
         }
         #endregion
 
         #region public interface
+        public int ControlSwitch
+        {
+            get => _controlSwitch;
+            set => SetProperty(ref _controlSwitch, value);
+        }
         public ObservableCollection<IReportControlViewModel> ReportControlsViewModel { get; protected set; }
         public ICommand SaveСhangesCommand { get; }
+        public ICommand TestCommand { get; }
+        public string ModelRegionKey { get; }
 
         #endregion
 

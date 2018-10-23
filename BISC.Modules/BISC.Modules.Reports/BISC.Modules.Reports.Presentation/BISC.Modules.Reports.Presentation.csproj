@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\BoolianToBufferidStringConverter.cs" />
+    <Compile Include="Converters\IntegerAndParametrToVisibleConverter.cs" />
     <Compile Include="Factorys\ReportControlFactoryViewModel.cs" />
     <Compile Include="Module\ReportsPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -64,6 +65,12 @@
     </Compile>
     <Compile Include="Views\Controls\NameStringValueControl.xaml.cs">
       <DependentUpon>NameStringValueControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReportAddingVeiw.xaml.cs">
+      <DependentUpon>ReportAddingVeiw.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReportEditingView.xaml.cs">
+      <DependentUpon>ReportEditingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ReportsDetailsView.xaml.cs">
       <DependentUpon>ReportsDetailsView.xaml</DependentUpon>
@@ -82,6 +89,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\NameStringValueControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ReportAddingVeiw.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ReportEditingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
