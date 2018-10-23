@@ -7,9 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
 using BISC.Infrastructure.Global.IoC;
+using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Loading.Events;
@@ -31,12 +33,14 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly IGlobalEventsService _globalEventsService;
         private readonly IBiscProject _biscProject;
         private readonly IUserNotificationService _userNotificationService;
+        private readonly ILoggingService _loggingService;
+        private readonly IConnectionPoolService _connectionPoolService;
         private List<IDeviceElementLoadingService> _elementLoadingServices;
 
         public DeviceLoadingService(IInjectionContainer injectionContainer, IDeviceModelService deviceModelService,
             ITreeManagementService treeManagementService, IDeviceAddingService deviceAddingService,
             Func<ISclModel> sclModelCreator, IGlobalEventsService globalEventsService, IBiscProject biscProject,
-            IUserNotificationService userNotificationService)
+            IUserNotificationService userNotificationService,ILoggingService loggingService,IConnectionPoolService connectionPoolService)
         {
             _deviceModelService = deviceModelService;
             _treeManagementService = treeManagementService;
@@ -45,6 +49,8 @@ namespace BISC.Modules.Device.Presentation.Services
             _globalEventsService = globalEventsService;
             _biscProject = biscProject;
             _userNotificationService = userNotificationService;
+            _loggingService = loggingService;
+            _connectionPoolService = connectionPoolService;
             _elementLoadingServices = injectionContainer.ResolveAll(typeof(IDeviceElementLoadingService))
                 .Cast<IDeviceElementLoadingService>().ToList();
         }
@@ -94,10 +100,13 @@ namespace BISC.Modules.Device.Presentation.Services
             {
                 if (cts.IsCancellationRequested)
                 {
+                    _connectionPoolService.GetConnection(device.Ip).StopConnection();
+                    _loggingService.LogUserAction($"Загрузка устройства отменена пользователем {device.Name}");
                     return new OperationResult($"Загрузка устройства отменена пользователем {device.Name}");
                 }
                 else
                 {
+                    _loggingService.LogMessage($"Ошибка загрузка устройства {e.Message + Environment.NewLine + e.StackTrace}",SeverityEnum.Critical);
                     return new OperationResult($"Ошибка загрузка устройства {device.Name}");
                 }
             }

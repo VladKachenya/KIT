@@ -109,7 +109,12 @@
     <DataTemplate x:Key="ArrowCollapseRightIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ArrowCollapseRight" />
     </DataTemplate>
-
+    <DataTemplate x:Key="CheckboxMultipleMarkedIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="CheckboxMultipleMarked" />
+    </DataTemplate>
+    <DataTemplate x:Key="CheckboxMultipleBlankOutlineIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="CheckboxMultipleBlankOutline" />
+    </DataTemplate>
     <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
         <!--<Style.Resources >
             <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#44111121" />

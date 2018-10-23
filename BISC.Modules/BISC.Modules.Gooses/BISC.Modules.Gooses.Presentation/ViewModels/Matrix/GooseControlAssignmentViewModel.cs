@@ -15,6 +15,7 @@ using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Modules.DataSets.Infrastructure.Services;
+using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities;
 using BISC.Presentation.Infrastructure.Factories;
 
@@ -26,6 +27,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         private readonly IGoosesModelService _goosesModelService;
         private readonly IBiscProject _biscProject;
         private readonly IDatasetModelService _datasetModelService;
+        private readonly ICommandFactory _commandFactory;
         private  IDevice _device;
         
 
@@ -36,6 +38,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             _goosesModelService = goosesModelService;
             _biscProject = biscProject;
             _datasetModelService = datasetModelService;
+            _commandFactory = commandFactory;
             SaveChangesCommand = commandFactory.CreatePresentationCommand(OnSaveChanges);
             GooseControlBlockAssignmentItems=new ObservableCollection<GooseControlBlockAssignmentItem>();
 
@@ -44,6 +47,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         private void OnSaveChanges()
         {
             var existingGooseInputsOfDevice = _goosesModelService.GetGooseInputsOfDevice(_device);
+            IGooseMatrix gooseMatrix = _goosesModelService.GetGooseMatrixForDevice(_device);
+
             foreach (var gooseControlBlockAssignmentItem in GooseControlBlockAssignmentItems)
             {
                 foreach (var fcdaAssignmentItem in gooseControlBlockAssignmentItem.FcdaAssignmentItems)
@@ -62,6 +67,13 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
                         if (!fcdaAssignmentItem.IsSubscribed)
                         {
                             inputExisting.ExternalGooseReferences.Remove(extRefExisting);
+                            foreach (var gooseRow in gooseMatrix.GooseRows)
+                            {
+                                if (extRefExisting.AsString() == gooseRow.ReferencePath)
+                                {
+                                    gooseMatrix.GooseRows.Remove(gooseRow);
+                                }
+                            }
                         }
                     }
                     else
@@ -105,7 +117,7 @@ public ObservableCollection<GooseControlBlockAssignmentItem> GooseControlBlockAs
                 if (dataSet != null)
                 {
                     GooseControlBlockAssignmentItem gooseControlBlockAssignmentItem =
-                        new GooseControlBlockAssignmentItem();
+                        new GooseControlBlockAssignmentItem(_commandFactory);
                     gooseControlBlockAssignmentItem.Signature = subscribedGooseTuple.Item2.AppId;
 
                     foreach (var fcda in dataSet.FcdaList)
@@ -115,9 +127,19 @@ public ObservableCollection<GooseControlBlockAssignmentItem> GooseControlBlockAs
                             input.ExternalGooseReferences.Any((extRef => CompareFcdaAndExtRef(extRef, fcda)))));
                         FcdaAssignmentItem fcdaAssignmentItem = new FcdaAssignmentItem();
                         fcdaAssignmentItem.Model = fcda;
-                        fcdaAssignmentItem.Signature =
-                            fcda.LdInst + "." + fcda.Prefix + fcda.LnClass + fcda.LnInst + "." +
-                            fcda.DoName + "." + fcda.DaName + ".[" + fcda.Fc + "]";
+                        if (string.IsNullOrEmpty(fcda.DaName))
+                        {
+                            fcdaAssignmentItem.Signature =
+                                fcda.LdInst + "." + fcda.Prefix + fcda.LnClass + fcda.LnInst + "." +
+                                fcda.DoName + "[" + fcda.Fc + "]";
+                        }
+                        else
+                        {
+                            fcdaAssignmentItem.Signature =
+                                fcda.LdInst + "." + fcda.Prefix + fcda.LnClass + fcda.LnInst + "." +
+                                fcda.DoName + "." + fcda.DaName + ".[" + fcda.Fc + "]";
+                        }
+                   
                         fcdaAssignmentItem.IsSubscribed = isSubscribed;
                         fcdaAssignmentItem.ParentDeviceName = subscribedGooseTuple.Item1.Name;
                         gooseControlBlockAssignmentItem.FcdaAssignmentItems.Add(fcdaAssignmentItem);

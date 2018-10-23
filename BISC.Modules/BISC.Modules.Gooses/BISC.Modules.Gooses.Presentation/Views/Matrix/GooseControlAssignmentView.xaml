@@ -10,37 +10,71 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <ScrollViewer VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <ItemsControl Name="itemsControl" ItemsSource="{Binding GooseControlBlockAssignmentItems}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="entities:GooseControlBlockAssignmentItem">
-                    <Border  Margin="3" BorderThickness="1" BorderBrush="Gray">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Margin="10" VerticalAlignment="Center" Text="{Binding Signature}"></TextBlock>
-                            <ListBox Grid.Column="1" ItemsSource="{ Binding FcdaAssignmentItems}" HorizontalAlignment="Stretch">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="entities:FcdaAssignmentItem">
-                                        <CheckBox Content="{Binding Signature}" IsChecked="{Binding IsSubscribed}">
+            <ItemsControl Name="itemsControl" ItemsSource="{Binding GooseControlBlockAssignmentItems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="entities:GooseControlBlockAssignmentItem">
+                        <Border  Margin="3" BorderThickness="1" BorderBrush="Gray">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Margin="10" VerticalAlignment="Center" Text="{Binding Signature}"></TextBlock>
+                                    <Grid Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                           <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Grid.Column="0" ToolTip="Выделить все" Command="{Binding SelectAllCommand}" Style="{StaticResource MaterialDesignFlatButton}">
+                                            <Button.Content>
+                                                <ContentControl Width="20" Height="20" ContentTemplate="{DynamicResource CheckboxMultipleMarkedIcon}"></ContentControl>
+                                            </Button.Content>
                                             <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="Checked" >
-                                                    <i:InvokeCommandAction Command="{Binding DataContext.SaveChangesCommand,Source={x:Reference Name=itemsControl}}"></i:InvokeCommandAction>
-                                                </i:EventTrigger>
-                                                <i:EventTrigger EventName="Unchecked" >
+                                                <i:EventTrigger EventName="Click" >
                                                     <i:InvokeCommandAction Command="{Binding DataContext.SaveChangesCommand,Source={x:Reference Name=itemsControl}}"></i:InvokeCommandAction>
                                                 </i:EventTrigger>
                                             </i:Interaction.Triggers>
-                                        </CheckBox>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ListBox>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+                                        </Button>
+                                        <Button Grid.Column="1" ToolTip="Снять выделение у всех" Command="{Binding UnSelectAllCommand}" Style="{StaticResource MaterialDesignFlatButton}">
+                                            <Button.Content>
+                                                <ContentControl Width="20" Height="20" ContentTemplate="{DynamicResource CheckboxMultipleBlankOutlineIcon}"></ContentControl>
+                                            </Button.Content>
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click" >
+                                                    <i:InvokeCommandAction Command="{Binding DataContext.SaveChangesCommand,Source={x:Reference Name=itemsControl}}"></i:InvokeCommandAction>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Button>
+
+                                    </Grid>
+
+                                </Grid>
+                                <ListBox Grid.Column="1" ItemsSource="{ Binding FcdaAssignmentItems}" HorizontalAlignment="Stretch">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="entities:FcdaAssignmentItem">
+                                            <CheckBox Content="{Binding Signature}" IsChecked="{Binding IsSubscribed}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="Checked" >
+                                                        <i:InvokeCommandAction Command="{Binding DataContext.SaveChangesCommand,Source={x:Reference Name=itemsControl}}"></i:InvokeCommandAction>
+                                                    </i:EventTrigger>
+                                                    <i:EventTrigger EventName="Unchecked" >
+                                                        <i:InvokeCommandAction Command="{Binding DataContext.SaveChangesCommand,Source={x:Reference Name=itemsControl}}"></i:InvokeCommandAction>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </CheckBox>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </ScrollViewer>
     </Grid>
 </UserControl>

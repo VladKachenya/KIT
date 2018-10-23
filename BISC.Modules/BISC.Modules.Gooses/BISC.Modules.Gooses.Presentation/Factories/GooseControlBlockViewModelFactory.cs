@@ -117,19 +117,20 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
         private IGooseRow GetGooseRowForRef(IExternalGooseRef externalGooseRef, IGooseMatrix gooseMatrix, IDataSet dataset)
         {
-            foreach (var gooseRow in gooseMatrix.GooseRows)
-            {
-                if (gooseRow.ReferencePath == externalGooseRef.AsString())
-                {
-                    return gooseRow;
-                }
-            }
+          
             int fcdaNum = -1;
             foreach (var fcda in dataset.FcdaList)
             {
                 if (CompareFcdaAndExtRef(externalGooseRef, fcda))
                 {
                     fcdaNum = dataset.FcdaList.IndexOf(fcda);
+                    foreach (var gooseRow in gooseMatrix.GooseRows)
+                    {
+                        if (gooseRow.ReferencePath == externalGooseRef.AsString())
+                        {
+                            return gooseRow;
+                        }
+                    }
                     break;
                 }
             }

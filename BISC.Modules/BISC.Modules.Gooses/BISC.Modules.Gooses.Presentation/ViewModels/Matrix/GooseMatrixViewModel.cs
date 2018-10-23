@@ -71,12 +71,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             SaveToDeviceCommand = commandFactory.CreatePresentationCommand(OnSaveToDevice);
         }
 
-        public bool IsActive
-        {
-            get => _isActive1;
-            set { SetProperty(ref _isActive1, value); }
-        }
-
 
         private async void OnSaveToDevice()
         {
@@ -111,6 +105,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         {
             var gooseControlBlocksSubscribed = _goosesModelService.GetGooseControlsSubscribed(_device, _biscProject.MainSclModel.Value);
             IGooseMatrix gooseMatrix = _goosesModelService.GetGooseMatrixForDevice(_device);
+            gooseMatrix.GooseRows.Clear();
             foreach (var gooseControlBlockSubscribed in gooseControlBlocksSubscribed)
             {
                 GooseControlBlockViewModel gooseControlBlockViewModel =
@@ -156,6 +151,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             InitDictionary();
             _isInitialized = true;
             Validate();
+            IsActive = true;
             base.OnNavigatedTo(navigationContext);
         }
 
@@ -163,11 +159,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 
 
    
-
-        protected override void OnNavigatedFrom(BiscNavigationContext navigationContext)
-        {
-            base.OnNavigatedFrom(navigationContext);
-        }
+        
         
         private bool _isInitialized = false;
 

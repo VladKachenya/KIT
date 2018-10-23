@@ -23,6 +23,7 @@ namespace BISC.Modules.Gooses.Presentation.Services
         public async Task SaveGooseControls(List<GooseControlViewModel> gooseControlViewModelsToSave,IDevice device,bool isInDevice)
         {
             var goosesExisting = _goosesModelService.GetGooseControlsOfDevice(device);
+            
             foreach (var gooseControlViewModel in gooseControlViewModelsToSave)
             {
                 if (isInDevice)

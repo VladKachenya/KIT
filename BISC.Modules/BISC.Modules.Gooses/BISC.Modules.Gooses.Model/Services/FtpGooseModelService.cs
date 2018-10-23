@@ -28,6 +28,10 @@ namespace BISC.Modules.Gooses.Model.Services
         public async Task<List<GooseFtpDto>> GetGooseDtosFromDevice(string ip)
         {
             string fileInDevice =await _deviceFileWritingServices.ReadFileStringFromDevice(ip, "1:/CFG", "GOOSETR.CFG");
+            try
+            {
+
+         
             var gooseStrings = GetGooseNamesListFromFile(fileInDevice);
 
 
@@ -38,6 +42,11 @@ namespace BISC.Modules.Gooses.Model.Services
             }
 
             return gooseFtpDtos;
+            }
+            catch (Exception e)
+            {
+                return new List<GooseFtpDto>();
+            }
         }
 
         public Task<OperationResult> WriteGooseDtosToDevice(string ip, List<GooseFtpDto> gooseDtos)

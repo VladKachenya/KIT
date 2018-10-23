@@ -4,8 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Factories;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
 {
@@ -13,9 +15,29 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
     {
         private string _signature;
 
-        public GooseControlBlockAssignmentItem()
+        public GooseControlBlockAssignmentItem(ICommandFactory commandFactory)
         {
-            FcdaAssignmentItems=new ObservableCollection<FcdaAssignmentItem>();
+            SelectAllCommand = commandFactory.CreatePresentationCommand(OnSelectAll);
+            UnSelectAllCommand = commandFactory.CreatePresentationCommand(OnUnSelectAll);
+
+            FcdaAssignmentItems = new ObservableCollection<FcdaAssignmentItem>();
+        }
+
+        private void OnUnSelectAll()
+        {
+            foreach (var fcdaAssignmentItem in FcdaAssignmentItems)
+            {
+                fcdaAssignmentItem.IsSubscribed = false;
+
+            }
+        }
+
+        private void OnSelectAll()
+        {
+            foreach (var fcdaAssignmentItem in FcdaAssignmentItems)
+            {
+                fcdaAssignmentItem.IsSubscribed = true;
+            }
         }
 
         public string Signature
@@ -24,6 +46,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
             set { SetProperty(ref _signature , value); }
         }
 
+        public ICommand SelectAllCommand { get; }
+        public ICommand UnSelectAllCommand { get; }
         public ObservableCollection<FcdaAssignmentItem> FcdaAssignmentItems { get; }
     }
     public class FcdaAssignmentItem : ViewModelBase
@@ -48,5 +72,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
             get => _isSubscribed;
             set { SetProperty(ref _isSubscribed, value); }
         }
+
+
     }
 }
