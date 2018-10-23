@@ -13,6 +13,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition  Width="1*"/>
         </Grid.ColumnDefinitions>
         <ScrollViewer Grid.Row="1" Grid.Column="0">
@@ -23,10 +24,11 @@
                         <local:ReportViewModel DataContext="{Binding .}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-                
             </ItemsControl>
-            
         </ScrollViewer>
-        
+        <GridSplitter Grid.Column="1" Grid.RowSpan="2" ShowsPreview="False" Width="3"
+            HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#7778F3"/>
+
+
     </Grid>
 </UserControl>

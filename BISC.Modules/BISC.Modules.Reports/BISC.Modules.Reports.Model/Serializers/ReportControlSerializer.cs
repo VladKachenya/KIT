@@ -18,7 +18,7 @@ namespace BISC.Modules.Reports.Model.Serializers
             RegisterProperty(nameof(IReportControl.RptID), "rptID");
             RegisterProperty(nameof(IReportControl.Buffered), "buffered");
             RegisterProperty(nameof(IReportControl.BufTime), "bufTime");
-            RegisterProperty(nameof(IReportControl.DataSet), "dataSet");
+            RegisterProperty(nameof(IReportControl.DataSet), "datSet");
             RegisterProperty(nameof(IReportControl.IntgPd), "intgPd");
             RegisterProperty(nameof(IReportControl.ConfRev), "confRev");
         }

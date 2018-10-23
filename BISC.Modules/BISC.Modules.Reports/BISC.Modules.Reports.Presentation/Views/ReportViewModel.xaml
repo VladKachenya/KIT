@@ -4,8 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BISC.Modules.Reports.Presentation.Views"
+             xmlns:localControls="clr-namespace:BISC.Modules.Reports.Presentation.Views.Controls"
+             xmlns:localConverters="clr-namespace:BISC.Modules.Reports.Presentation.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="Auto" d:DesignWidth="500">
+    <UserControl.Resources>
+        <localConverters:BoolianToBufferidStringConverter x:Key="boolianToBufferidStringConverter"/>
+    </UserControl.Resources>
     <Grid>
         <Border x:Name="Border"
             BorderThickness="1 0 0 1"
@@ -22,99 +27,65 @@
                                 <Border Margin="2" Background="{Binding TypeColorBrush}" >
                                     <TextBlock Margin="4"  Text="{Binding ElementName}"/>
                                 </Border>
+                                <TextBlock Margin="6" Text="{Binding IsBuffered, Converter={StaticResource boolianToBufferidStringConverter}}"/>
+                             
                                 <TextBlock Margin="6" Text="{Binding Name}"/>
                             </StackPanel>
                         </Grid>
                     </Expander.Header>
                     <Border BorderThickness="0"  Margin="50, 0, 50, 10">
-                        <Grid >
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B"
-                                     Grid.Row="0" Grid.ColumnSpan="2">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Report ID:" Margin="5"/>
-                                    <TextBlock Text="{Binding ReportID}" Margin="5"/>
-                                </StackPanel>
-                            </Border>
-                            <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B"
-                                     Grid.Row="1" Grid.ColumnSpan="2">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Data set name:" Margin="5"/>
-                                    <TextBlock Text="{Binding DataSetName}" Margin="5"/>
-                                </StackPanel>
-                            </Border>
-                            <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B"
-                                     Grid.Row="2" Grid.ColumnSpan="2">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Report enable max:" Margin="5"/>
-                                    <TextBlock Text="{Binding ReportEnabledViewModel.Max}" Margin="5"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Grid.Row="3" Grid.Column="0" BorderThickness="0, 0, 8, 0">
+                        <StackPanel Orientation="Vertical" >
+                            <localControls:NameStringValueControl TextOfName="Report ID:" 
+                                                                  TextOfValue ="{Binding ReportID}"/>
+                            <localControls:NameStringValueControl TextOfName="Data set name:" 
+                                                                  TextOfValue ="{Binding DataSetName}"/>
+                            <localControls:NameStringValueControl TextOfName="Report enable max:" 
+                                                                  TextOfValue ="{Binding ReportEnabledViewModel.Max}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" BorderThickness="0, 0, 2, 0">
                                     <StackPanel Orientation="Vertical" >
-                                        <TextBlock Text="Oprional filds" TextAlignment="Center" Margin="8"/>
-                                        <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B">
-                                            <StackPanel Orientation="Horizontal">
-                                                <CheckBox IsChecked="{Binding OprionalFildsViewModel.SequenceNumber}" VerticalAlignment="Center" Opacity="0.8" IsEnabled="False"/>
-                                                <TextBlock Text="Sequence number" Margin="2"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B">
-                                            <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding OprionalFildsViewModel.ReportTimeStamp}" VerticalAlignment="Center" IsEnabled="False"/>
-                                                <TextBlock Text="Report time stamp" Margin="2"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B">
-                                            <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding OprionalFildsViewModel.ReasonForInclusion}" VerticalAlignment="Center" IsEnabled="False"/>
-                                                <TextBlock Text="Reason for inclusion" Margin="2"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B">
-                                            <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding OprionalFildsViewModel.DataSetName}" VerticalAlignment="Center" IsEnabled="False"/>
-                                                <TextBlock Text="Data set name" Margin="2"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B">
-                                            <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding OprionalFildsViewModel.DataReference}" VerticalAlignment="Center" IsEnabled="False"/>
-                                                <TextBlock Text="Data reference" Margin="2"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B">
-                                            <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding OprionalFildsViewModel.BufferOverflow}" VerticalAlignment="Center" IsEnabled="False"/>
-                                                <TextBlock Text="Buffer overflow" Margin="2"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B">
-                                            <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding OprionalFildsViewModel.EntruID}" VerticalAlignment="Center" IsEnabled="False"/>
-                                                <TextBlock Text="Entru ID" Margin="2"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B">
-                                            <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding OprionalFildsViewModel.ConfigRevision}" VerticalAlignment="Center" IsEnabled="False"/>
-                                                <TextBlock Text="Config revision" Margin="2"/>
-                                            </StackPanel>
-                                        </Border>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
+                                        <TextBlock Text="Oprional filds" TextAlignment="Center" Margin="0, 3, 0, 0"/>
+                                        <localControls:NameBoolValueControl TextOfName="Sequence number" 
+                                        IsChecked="{Binding OprionalFildsViewModel.SequenceNumber}"/>
+                                        <localControls:NameBoolValueControl TextOfName="Report time stamp" 
+                                        IsChecked="{Binding OprionalFildsViewModel.ReportTimeStamp}"/>
+                                        <localControls:NameBoolValueControl TextOfName="Reason for inclusion" 
+                                        IsChecked="{Binding OprionalFildsViewModel.ReasonForInclusion}"/>
+                                        <localControls:NameBoolValueControl TextOfName="Data set name" 
+                                        IsChecked="{Binding OprionalFildsViewModel.DataSetName}"/>
+                                        <localControls:NameBoolValueControl TextOfName="Data reference" 
+                                        IsChecked="{Binding OprionalFildsViewModel.DataReference}"/>
+                                        <localControls:NameBoolValueControl TextOfName="Buffer overflow" 
+                                        IsChecked="{Binding OprionalFildsViewModel.BufferOverflow}"/>
+                                        <localControls:NameBoolValueControl TextOfName="Entru ID" 
+                                        IsChecked="{Binding OprionalFildsViewModel.EntruID}"/>
+                                        <localControls:NameBoolValueControl TextOfName="Config revision" 
+                                        IsChecked="{Binding OprionalFildsViewModel.ConfigRevision}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="1" BorderThickness="2, 0, 0, 0">
+                                    <StackPanel Orientation="Vertical" >
+                                        <TextBlock Text="Trigger options" TextAlignment="Center" Margin="0, 3, 0, 0"/>
+                                        <localControls:NameBoolValueControl TextOfName="Data change" 
+                                        IsChecked="{Binding TriggerOptionsViewModel.DataChange}"/>
+                                        <localControls:NameBoolValueControl TextOfName="Quality change" 
+                                        IsChecked="{Binding TriggerOptionsViewModel.QualityChange}"/>
+                                        <localControls:NameBoolValueControl TextOfName="Data update" 
+                                        IsChecked="{Binding TriggerOptionsViewModel.DataUpdate}"/>
+                                        <localControls:NameBoolValueControl TextOfName="Integrity" 
+                                        IsChecked="{Binding TriggerOptionsViewModel.Integrity}"/>
+                                        <localControls:NameBoolValueControl TextOfName="Perfom genetral interrogation" 
+                                        IsChecked="{Binding TriggerOptionsViewModel.GenetralInterrogation}"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                            <localControls:NameStringValueControl TextOfName="Integruty period:" 
+                                TextOfValue ="{Binding IntegrutyPeriod}" />
+                        </StackPanel>
                     </Border>
                 </Expander>
             </Grid>
