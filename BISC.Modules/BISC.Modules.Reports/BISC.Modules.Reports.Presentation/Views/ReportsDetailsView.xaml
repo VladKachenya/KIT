@@ -6,12 +6,19 @@
              xmlns:local="clr-namespace:BISC.Modules.Reports.Presentation.Views"
              mc:Ignorable="d" 
              xmlns:localConverters="clr-namespace:BISC.Modules.Reports.Presentation.Converters"
+             xmlns:reportElementsViewModels="clr-namespace:BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels"
+             xmlns:controls="clr-namespace:BISC.Modules.Reports.Presentation.Views.Controls"
+             xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <localConverters:IntegerAndParametrToVisibleConverter x:Key="IntToVisConv"/>
+        <converters:InverseConverter x:Key="inverseConverter"></converters:InverseConverter>
+        <converters:IsNullToVisibilityConverter x:Key="IsNullToVisibilityConverter"></converters:IsNullToVisibilityConverter>
+        <localConverters:BoolianToBufferidStringConverter x:Key="boolianToBufferidStringConverter"/>
+
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
+        <!--<Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
@@ -38,6 +45,113 @@
         <StackPanel Grid.Column="2" Grid.RowSpan="2">
             <local:ReportAddingVeiw Visibility="{Binding ControlSwitch, ConverterParameter=1, Converter={StaticResource IntToVisConv}}"/>
             <local:ReportEditingView Visibility="{Binding ControlSwitch, ConverterParameter=2, Converter={StaticResource IntToVisConv}}"/>
-        </StackPanel>
+        </StackPanel>-->
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <ListBox Name="ListBox" ItemsSource="{Binding ReportControlViewModels}">
+
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="reportElementsViewModels:ReportControlViewModel">
+                    <Grid Background="Transparent">
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Удалить" IsEnabled="{Binding IsDynamic}" Command="{Binding DataContext.DeleteReportCommand,Source={x:Reference Name=ListBox}}" CommandParameter="{Binding .}">
+                                </MenuItem>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+                        <TextBlock Text="{Binding Name}"></TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Grid Grid.Column="1"  Visibility="{Binding Source={x:Reference Name=ListBox},Path=SelectedItem,Converter={StaticResource IsNullToVisibilityConverter}}" DataContext="{Binding Source={x:Reference Name=ListBox},Path=SelectedItem}" >
+            <Border x:Name="Border"
+            BorderThickness="1 0 0 1"
+            BorderBrush="{DynamicResource MaterialDesignDivider}">
+                <Grid>
+                    <Expander HorizontalAlignment="Stretch" IsExpanded="True">
+                        <Expander.Header >
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                    <Border Margin="2" Background="{Binding TypeColorBrush}" >
+                                        <TextBlock Margin="4"  Text="{Binding ElementName}"/>
+                                    </Border>
+                                    <TextBlock Margin="6" Text="{Binding IsBuffered, Converter={StaticResource boolianToBufferidStringConverter}}"/>
+                                    <TextBlock Margin="6" Text="{Binding Name}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <Button  Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" >
+                                        <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}" />
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Expander.Header>
+                        <Border BorderThickness="0"  Margin="50, 0, 50, 10">
+                            <StackPanel Orientation="Vertical" >
+                                <controls:NameStringValueControl TextOfName="Report ID:" 
+                                                                  TextOfValue ="{Binding ReportID}"/>
+                                <controls:NameStringValueControl TextOfName="Data set name:" 
+                                                                  TextOfValue ="{Binding DataSetName}"/>
+                                <controls:NameStringValueControl TextOfName="Report enable max:" 
+                                                                  TextOfValue ="{Binding ReportEnabledViewModel.Max}"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" BorderThickness="0, 0, 2, 0">
+                                        <StackPanel Orientation="Vertical" >
+                                            <TextBlock Text="Oprional filds" TextAlignment="Center" Margin="0, 3, 0, 0"/>
+                                            <controls:NameBoolValueControl TextOfName="Sequence number" 
+                                        IsChecked="{Binding OprionalFildsViewModel.SequenceNumber}"/>
+                                            <controls:NameBoolValueControl TextOfName="Report time stamp" 
+                                        IsChecked="{Binding OprionalFildsViewModel.ReportTimeStamp}"/>
+                                            <controls:NameBoolValueControl TextOfName="Reason for inclusion" 
+                                        IsChecked="{Binding OprionalFildsViewModel.ReasonForInclusion}"/>
+                                            <controls:NameBoolValueControl TextOfName="Data set name" 
+                                        IsChecked="{Binding OprionalFildsViewModel.DataSetName}"/>
+                                            <controls:NameBoolValueControl TextOfName="Data reference" 
+                                        IsChecked="{Binding OprionalFildsViewModel.DataReference}"/>
+                                            <controls:NameBoolValueControl TextOfName="Buffer overflow" 
+                                        IsChecked="{Binding OprionalFildsViewModel.BufferOverflow}"/>
+                                            <controls:NameBoolValueControl TextOfName="Entru ID" 
+                                        IsChecked="{Binding OprionalFildsViewModel.EntruID}"/>
+                                            <controls:NameBoolValueControl TextOfName="Config revision" 
+                                        IsChecked="{Binding OprionalFildsViewModel.ConfigRevision}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Column="1" BorderThickness="2, 0, 0, 0">
+                                        <StackPanel Orientation="Vertical" >
+                                            <TextBlock Text="Trigger options" TextAlignment="Center" Margin="0, 3, 0, 0"/>
+                                            <controls:NameBoolValueControl TextOfName="Data change" 
+                                        IsChecked="{Binding TriggerOptionsViewModel.DataChange}"/>
+                                            <controls:NameBoolValueControl TextOfName="Quality change" 
+                                        IsChecked="{Binding TriggerOptionsViewModel.QualityChange}"/>
+                                            <controls:NameBoolValueControl TextOfName="Data update" 
+                                        IsChecked="{Binding TriggerOptionsViewModel.DataUpdate}"/>
+                                            <controls:NameBoolValueControl TextOfName="Integrity" 
+                                        IsChecked="{Binding TriggerOptionsViewModel.Integrity}"/>
+                                            <controls:NameBoolValueControl TextOfName="Perfom genetral interrogation" 
+                                        IsChecked="{Binding TriggerOptionsViewModel.GenetralInterrogation}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                                <controls:NameStringValueControl TextOfName="Integruty period:" 
+                                TextOfValue ="{Binding IntegrutyPeriod}" />
+                            </StackPanel>
+                        </Border>
+                    </Expander>
+                </Grid>
+            </Border>
+        </Grid>
+
     </Grid>
 </UserControl>

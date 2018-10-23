@@ -58,7 +58,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             get => _controlSwitch;
             set => SetProperty(ref _controlSwitch, value);
         }
-        public ObservableCollection<IReportControlViewModel> ReportControlsViewModel { get; protected set; }
+        public ObservableCollection<IReportControlViewModel> ReportControlViewModels { get; protected set; }
         public ICommand SaveСhangesCommand { get; }
         public ICommand TestCommand { get; }
         public string ModelRegionKey { get; }
@@ -70,7 +70,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             _reportControlsModel = _reportsModelService.GetAllReportControlsOfDevice(_device);
-            ReportControlsViewModel = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel);
+            ReportControlViewModels = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel);
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
