@@ -52,13 +52,14 @@
     <Compile Include="Model\IRptEnabled.cs" />
     <Compile Include="Model\ITrgOps.cs" />
     <Compile Include="Presentation\Factorys\IReportControlFactoryViewModel.cs" />
+    <Compile Include="Presentation\Services\IReportsSavingService.cs" />
     <Compile Include="Presentation\ViewModels\Base\IReportElementBase.cs" />
     <Compile Include="Presentation\ViewModels\IOprionalFildsViewModel.cs" />
     <Compile Include="Presentation\ViewModels\IReportControlViewModel.cs" />
     <Compile Include="Presentation\ViewModels\IReportEnabledViewModel.cs" />
     <Compile Include="Presentation\ViewModels\ITriggerOptionsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\IReportControlSavingService.cs" />
+    <Compile Include="Services\IReportsLoadingService.cs" />
     <Compile Include="Services\IReportsModelService.cs" />
   </ItemGroup>
   <ItemGroup>

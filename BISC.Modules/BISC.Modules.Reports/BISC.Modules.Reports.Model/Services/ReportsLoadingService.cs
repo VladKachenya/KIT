@@ -9,11 +9,8 @@ using System.Threading.Tasks;
 
 namespace BISC.Modules.Reports.Model.Services
 {
-    public class ReportControlSavingService : IReportControlSavingService
+    public class ReportsLoadingService : IReportsLoadingService
     {
-        public Task SaveReportControls(List<IReportControlViewModel> ReportsToSave, IModelElement device, bool isSavingInDevice)
-        {
-            return null;
-        }
+
     }
 }

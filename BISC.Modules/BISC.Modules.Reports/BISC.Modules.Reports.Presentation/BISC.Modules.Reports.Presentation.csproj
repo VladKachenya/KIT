@@ -53,6 +53,7 @@
     <Compile Include="Factorys\ReportControlFactoryViewModel.cs" />
     <Compile Include="Module\ReportsPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ReportsSavingService.cs" />
     <Compile Include="Services\ReportsUiHandlingService.cs" />
     <Compile Include="ViewModels\ReportElementsViewModels\OprionalFildsViewModel.cs" />
     <Compile Include="ViewModels\ReportElementsViewModels\ReportControlViewModel.cs" />

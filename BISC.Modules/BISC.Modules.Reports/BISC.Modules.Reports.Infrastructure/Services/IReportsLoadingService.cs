@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace BISC.Modules.Reports.Infrastructure.Services
 {
-    public interface IReportControlSavingService
+    public interface IReportsLoadingService
     {
-        Task SaveReportControls(List<IReportControlViewModel> ReportsToSave, IModelElement device, bool isSavingInDevice);
+        //Task SaveReportControls(List<IReportControlViewModel> ReportsToSave, IModelElement device, bool isSavingInDevice);
     }
 }

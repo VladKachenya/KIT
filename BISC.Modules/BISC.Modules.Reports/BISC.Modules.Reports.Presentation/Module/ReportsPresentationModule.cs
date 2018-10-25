@@ -2,6 +2,7 @@
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Modules.Reports.Infrastructure.Keys;
 using BISC.Modules.Reports.Infrastructure.Presentation.Factorys;
+using BISC.Modules.Reports.Infrastructure.Presentation.Services;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Presentation.Factorys;
 using BISC.Modules.Reports.Presentation.Services;
@@ -32,18 +33,15 @@ namespace BISC.Modules.Reports.Presentation.Module
 
             _injectionContainer.ResolveType<IUiFromModelElementRegistryService>().RegisterModelElement(_injectionContainer.ResolveType<ReportsUiHandlingService>(), "IED");
             _injectionContainer.RegisterType<IReportControlViewModel, ReportControlViewModel>();
-            //ReportsDetailsView
             _injectionContainer.RegisterType<object, ReportsDetailsView>(ReportsKeys.ReportsPresentationKeys.ReportsDetailsView);
             _injectionContainer.RegisterType<object, ReportsTreeItemView>(ReportsKeys.ReportsPresentationKeys.ReportsTreeItemView);
-            //_injectionContainer.RegisterType<object, ReportEditingView>(ReportsKeys.ReportsPresentationKeys.ReportEditingView);
-            //_injectionContainer.RegisterType<object, ReportAddingVeiw>(ReportsKeys.ReportsPresentationKeys.ReportsAddingView);
-
 
             _injectionContainer.RegisterType<ReportsTreeItemViewModel>();
             _injectionContainer.RegisterType<ReportsDetailsViewModel>();
             _injectionContainer.RegisterType<IOprionalFildsViewModel, OprionalFildsViewModel>();
             _injectionContainer.RegisterType<IReportEnabledViewModel, ReportEnabledViewModel>();
             _injectionContainer.RegisterType<ITriggerOptionsViewModel, TriggerOptionsViewModel>();
+            _injectionContainer.RegisterType<IReportsSavingService, ReportsSavingService>(true);
             _injectionContainer.RegisterType<IReportControlFactoryViewModel, ReportControlFactoryViewModel>(true);
 
         }
