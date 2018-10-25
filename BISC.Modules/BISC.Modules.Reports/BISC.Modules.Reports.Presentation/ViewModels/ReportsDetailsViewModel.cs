@@ -5,7 +5,6 @@ using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Keys;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.Factorys;
-using BISC.Modules.Reports.Infrastructure.Presentation.Services;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Infrastructure.Services;
 using BISC.Presentation.BaseItems.ViewModels;
@@ -34,22 +33,23 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private ObservableCollection<IReportControlViewModel> _reportControlViewModels;
         private readonly ILoggingService _loggingService;
-        private IReportsLoadingService _reportsLoadingService;
-        private IReportsSavingService _reportsSavingService;
+        //private IReportsLoadingService _reportsLoadingService;
+        //private IReportsSavingService _reportsSavingService;
 
 
         #region Ctor
         public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService, ISaveCheckingService saveCheckingService,
             IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService, IConnectionPoolService connectionPoolService,
-            ILoggingService loggingService, IReportsLoadingService reportsLoadingService, IReportsSavingService reportsSavingService) 
+            ILoggingService loggingService)
+             //IReportsLoadingService reportsLoadingService, IReportsSavingService reportsSavingService
         {
             _reportsModelService = reportsModelService;
             _saveCheckingService = saveCheckingService;
             _reportControlFactoryViewModel = reportControlFactoryViewModel;
             _userInterfaceComposingService = userInterfaceComposingService;
             _connectionPoolService = connectionPoolService;
-            _reportsSavingService = reportsSavingService;
-            _reportsLoadingService = reportsLoadingService;
+            //_reportsSavingService = reportsSavingService;
+            //_reportsLoadingService = reportsLoadingService;
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand);
             AddNewReportCommand = commandFactory.CreatePresentationCommand(OnAddNewReportCommand);
             UndoChangesCommad = commandFactory.CreatePresentationCommand(OnUndoChanges);

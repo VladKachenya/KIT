@@ -37,7 +37,7 @@ namespace BISC.Modules.Reports.Model.Module
 
             _injectionContainer.RegisterType<IReportsModelService, ReportsModelService>();
             _injectionContainer.RegisterType<IReportControlsFactory, ReportControlsFactory>(true);
-            _injectionContainer.RegisterType<IReportsLoadingService, ReportsLoadingService>(true);
+            //_injectionContainer.RegisterType<IReportsLoadingService, ReportsLoadingService>(true);
 
 
         }
