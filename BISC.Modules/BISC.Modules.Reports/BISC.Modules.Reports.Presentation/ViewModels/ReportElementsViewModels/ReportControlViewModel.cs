@@ -2,6 +2,7 @@
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Events;
 using BISC.Presentation.Infrastructure.Factories;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
     {
         private IReportControl _model;
         private string _name;
+        private bool _isChenged;
         private string _reportID;
         private bool _isBuffered;
         private int _bufferTime;
@@ -26,7 +28,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private IReportEnabledViewModel _reportEnabledViewModel;
         private ITriggerOptionsViewModel _triggerOptionsViewModel;
         private IOprionalFildsViewModel _oprionalFildsViewModel;
-        
+        private IGlobalEventsService _globalEventsService;
+
 
 
         #region ctor
@@ -36,7 +39,15 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             ReportEnabledViewModel = reportEnabledViewModel;
             TriggerOptionsViewModel = triggerOptionsViewModel;
             OprionalFildsViewModel = oprionalFildsViewModel;
+            _globalEventsService = globalEventsService;
             UndoChengestCommand = commandFactory.CreatePresentationCommand(UpdateViewModel);
+            _globalEventsService.Subscribe<SaveCheckEvent>(OnSaveCheck);
+
+        }
+
+        private void OnSaveCheck(SaveCheckEvent saveCheckEvent)
+        {
+            IsChenged = ChangeTracker.GetIsModifiedRecursive();
         }
         #endregion
 
@@ -74,6 +85,16 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
                 SetRoportID();
             }
         }
+        public bool IsChenged
+        {
+            get => _isChenged;
+            set
+            {
+                _isChenged = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string ReportID
         {
             get => _reportID;
@@ -173,8 +194,15 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             ReportEnabledViewModel.UpdateViewModel();
             TriggerOptionsViewModel.UpdateViewModel();
             OprionalFildsViewModel.UpdateViewModel();
+            ChangeTracker.AcceptChanges();
         }
         #endregion
+
+        protected override void OnDisposing()
+        {
+            _globalEventsService.Unsubscribe<SaveCheckEvent>(OnSaveCheck);
+            base.OnDisposing();
+        }
 
     }
 }

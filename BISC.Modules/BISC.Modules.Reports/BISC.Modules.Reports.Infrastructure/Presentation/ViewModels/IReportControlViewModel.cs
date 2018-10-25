@@ -12,6 +12,7 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
 {
     public interface IReportControlViewModel : IReportElementBase<IReportControl>
     {
+        bool IsChenged { get; set; }
         string ElementName { get; }
         Brush TypeColorBrush { get; }
         string Name { get; set; }
