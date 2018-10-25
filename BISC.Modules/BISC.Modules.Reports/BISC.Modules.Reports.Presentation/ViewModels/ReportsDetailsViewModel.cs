@@ -76,10 +76,26 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             ReportControlViewModels.Add(_reportControlFactoryViewModel.CreateReportViewModel(ReportControlViewModels.Select((model => model.ReportID)).ToList(),_device));
         }
 
-        private void OnUndoChanges()
+        private async void OnUndoChanges()
         {
-            GetReportsFromDevice();
-            ChangeTracker.AcceptChanges();
+           
+        }
+
+        private async Task UpdateDataSets(bool updateFromDevice)
+        {
+            //if (updateFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
+            //{
+            //    await _datasetsLoadingService.EstimateProgress(_device);
+            //    await _datasetsLoadingService.Load(_device, null, _biscProject.MainSclModel.Value, new CancellationToken());
+            //}
+            //_dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
+            //SortDataSetsByIsDynamic();
+            //DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
+            //_saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
+            //_saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
+            //    $"DataSets устройства {_device.Name}", SaveСhangesCommand, _regionName));
+            //ChangeTracker.AcceptChanges();
+            //ChangeTracker.SetTrackingEnabled(true);
         }
 
         private void GetReportsFromDevice()
@@ -124,9 +140,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
 
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            _userInterfaceComposingService.AddGlobalCommand(UndoChangesCommad, $"Обновить Report-ы {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewReportCommand, $"Добавить Report {_device.Name}", IconsKeys.AddIconKey, false, true);
-            _userInterfaceComposingService.AddGlobalCommand(UndoChangesCommad, $"Сопоставить Reports с моделью устройства {_device.Name}", IconsKeys.CloseCircleIconKey, false, true);
-
             //_globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnActivate();
         }
