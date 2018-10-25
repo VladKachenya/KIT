@@ -13,6 +13,7 @@ namespace BISC.Infrastructure.Global.Services
         public const string UploadNetworkKey = "UploadNetworkIcon";
         public const string AddIconKey = "PlusOutlineIcon";
         public const string CloseCircleIconKey ="CloseCircleIcon";
+        public const string UpdateIconKey = "ReloadIcon";
 
     }
 

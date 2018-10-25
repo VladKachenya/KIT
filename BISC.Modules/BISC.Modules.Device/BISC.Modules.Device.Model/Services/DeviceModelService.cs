@@ -64,6 +64,7 @@ namespace BISC.Modules.Device.Model.Services
             }
             _sclCommunicationModelService.AddDefaultConnectedAccessPointForDevice(sclModel,device.Name,device.Ip);
             sclModel.ChildModelElements.Add(device);
+            device.ParentModelElement = sclModel;
             return OperationResult.SucceedResult;
         }
 

@@ -143,6 +143,10 @@
       <Project>{B2BF5767-508B-469C-B196-A991678867AE}</Project>
       <Name>BISC.Modules.DataSets.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BISC.Modules.DataSets.Model\BISC.Modules.DataSets.Model.csproj">
+      <Project>{B0245475-552D-4A8F-8F54-6BA350777A92}</Project>
+      <Name>BISC.Modules.DataSets.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Converters\" />

@@ -109,6 +109,7 @@
     <Compile Include="ViewModels\ToolBarMenuViewModel.cs" />
     <Compile Include="ViewModels\Tree\MainTreeViewModel.cs" />
     <Compile Include="ViewModels\Tree\TreeItemViewModel.cs" />
+    <Compile Include="ViewModels\UserInteractionOptionsViewModel.cs" />
     <Compile Include="Views\ApplicationSettingsView.xaml.cs">
       <DependentUpon>ApplicationSettingsView.xaml</DependentUpon>
     </Compile>
@@ -131,6 +132,10 @@
     <Compile Include="ViewModels\Tab\TabViewModel.cs" />
     <Compile Include="Views\ToolBarMenuView.xaml.cs">
       <DependentUpon>ToolBarMenuView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Services\UserInteractionService.cs" />
+    <Compile Include="Views\UserInteractionOptionsView.xaml.cs">
+      <DependentUpon>UserInteractionOptionsView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +170,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ToolBarMenuView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserInteractionOptionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

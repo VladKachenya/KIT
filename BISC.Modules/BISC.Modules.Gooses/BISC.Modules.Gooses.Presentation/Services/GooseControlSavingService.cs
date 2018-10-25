@@ -4,6 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
+using BISC.Infrastructure.Global.Services;
+using BISC.Model.Global.Model.Communication;
+using BISC.Model.Infrastructure.Project;
+using BISC.Model.Infrastructure.Project.Communication;
+using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
@@ -17,11 +22,18 @@ namespace BISC.Modules.Gooses.Presentation.Services
     {
         private readonly IFtpGooseModelService _ftpGooseModelService;
         private readonly IGoosesModelService _goosesModelService;
+        private readonly IProjectService _projectService;
+        private readonly ISclCommunicationModelService _sclCommunicationModelService;
+        private readonly IBiscProject _biscProject;
 
-        public GooseControlSavingService(IFtpGooseModelService ftpGooseModelService, IGoosesModelService goosesModelService)
+        public GooseControlSavingService(IFtpGooseModelService ftpGooseModelService, IGoosesModelService goosesModelService, 
+            IProjectService projectService,ISclCommunicationModelService sclCommunicationModelService,IBiscProject biscProject)
         {
             _ftpGooseModelService = ftpGooseModelService;
             _goosesModelService = goosesModelService;
+            _projectService = projectService;
+            _sclCommunicationModelService = sclCommunicationModelService;
+            _biscProject = biscProject;
         }
 
         public async Task<OperationResult> SaveGooseControls(List<GooseControlViewModel> gooseControlViewModelsToSave, IDevice device, bool isInDevice)
@@ -42,22 +54,11 @@ namespace BISC.Modules.Gooses.Presentation.Services
             foreach (var gooseControlViewModel in gooseControlViewModelsToSave)
             {
                 if (!gooseControlViewModel.IsDynamic) continue;
-
-
                 if (gooseControlViewModel.ChangeTracker.GetIsModifiedRecursive())
                 {
                     var existingGooseControl = goosesExisting.FirstOrDefault(control => control.Name == gooseControlViewModel.Name);
-                    if (existingGooseControl != null)
-                    {
-                        MapGooseControlFromViewModel(existingGooseControl, gooseControlViewModel);
-                    }
-                    else
-                    {
-                        
-                    }
+                    MapGooseControlFromViewModel(existingGooseControl, gooseControlViewModel, existingGooseControl == null,device);
                 }
-
-
             }
 
             foreach (var gooseControlExisting in goosesExisting)
@@ -67,6 +68,7 @@ namespace BISC.Modules.Gooses.Presentation.Services
                     _goosesModelService.DeleteGooseCbAndGseByName(gooseControlExisting.Name, device);
                 }
             }
+            _projectService.SaveCurrentProject();
             return OperationResult.SucceedResult;
 
 
@@ -74,12 +76,62 @@ namespace BISC.Modules.Gooses.Presentation.Services
 
         private GooseFtpDto GetGooseFtpDtosFromViewModel(GooseControlViewModel gooseControlViewModel)
         {
-            return new GooseFtpDto();
+            var gooseFtpDto = new GooseFtpDto();
+            gooseFtpDto.Name = gooseControlViewModel.Name;
+            gooseFtpDto.AppId = gooseControlViewModel.AppId;
+            gooseFtpDto.FixedOffs = gooseControlViewModel.FixedOffs;
+            gooseFtpDto.GoId = gooseControlViewModel.GoId;
+            gooseFtpDto.GseType = gooseControlViewModel.GseType;
+            gooseFtpDto.MacAddress = gooseControlViewModel.MacAddress;
+            gooseFtpDto.MaxTime = gooseControlViewModel.MaxTime;
+            gooseFtpDto.MinTime = gooseControlViewModel.MinTime;
+            gooseFtpDto.SelectedDataset = gooseControlViewModel.SelectedDataset;
+            gooseFtpDto.VlanId = gooseControlViewModel.VlanId;
+            gooseFtpDto.VlanPriority = gooseControlViewModel.VlanPriority;
+            gooseFtpDto.ConfRev = gooseControlViewModel.ConfRev;
+            gooseFtpDto.LdInst = gooseControlViewModel.LdInst;
+            return gooseFtpDto;
         }
 
 
-        private void MapGooseControlFromViewModel(IGooseControl gooseControl, GooseControlViewModel gooseControlViewModel)
+        private void MapGooseControlFromViewModel(IGooseControl gooseControl, GooseControlViewModel gooseControlViewModel, bool isNew,IDevice device)
         {
+            IGse relatedGse = null;
+            if (isNew)
+            {
+                gooseControl=new GooseControl();
+                relatedGse=new Gse();
+            }
+            else
+            {
+                if (gooseControl.DataSet != gooseControlViewModel.SelectedDataset)
+                {
+
+                }
+
+                relatedGse = _sclCommunicationModelService.GetGsesForDevice(device.Name, _biscProject.MainSclModel.Value).FirstOrDefault((gse =>gse.CbName==gooseControl.Name ));
+
+            }
+
+            gooseControl.Name = gooseControlViewModel.Name;
+            gooseControl.ConfRev = gooseControlViewModel.ConfRev;
+            gooseControl.AppId = gooseControlViewModel.GoId;
+            gooseControl.DataSet = gooseControlViewModel.SelectedDataset;
+            gooseControl.IsDynamic = gooseControlViewModel.IsDynamic;
+
+            relatedGse.CbName = gooseControlViewModel.Name;
+            relatedGse.AppId = gooseControlViewModel.AppId.ToString("X");
+            relatedGse.LdInst = gooseControlViewModel.LdInst;
+            relatedGse.MacAddress = gooseControlViewModel.MacAddress;
+            relatedGse.MaxTime.Value.Value = (int)gooseControlViewModel.MaxTime;
+            relatedGse.MinTime.Value.Value = (int)gooseControlViewModel.MinTime;
+            relatedGse.VlanId = gooseControlViewModel.VlanId.ToString();
+            relatedGse.VlanPriority = (int)gooseControlViewModel.VlanPriority;
+            if (isNew)
+            {
+                _goosesModelService.AddGseControl("LLN0",relatedGse.LdInst,device,gooseControl);
+                _sclCommunicationModelService.AddGse(relatedGse, _biscProject.MainSclModel.Value, device.Name);
+            }
 
         }
     }

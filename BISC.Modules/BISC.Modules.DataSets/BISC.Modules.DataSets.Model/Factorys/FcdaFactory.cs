@@ -43,6 +43,7 @@ namespace BISC.Modules.DataSets.Model.Factorys
             result.LnInst = ln.Inst;
             result.DoName = dai.GetFirstParentOfType<IDoi>().Name;
             result.DaName = GetDaiRecursive(dai, String.Empty);
+            result.Prefix = ln.Prefix;
             result.Fc = GetDaFc(dai);
             return result;
         }

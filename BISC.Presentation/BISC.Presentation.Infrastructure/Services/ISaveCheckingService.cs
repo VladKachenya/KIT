@@ -36,5 +36,7 @@ namespace BISC.Presentation.Infrastructure.Services
         Task<SaveResult> SaveAllUnsavedEntities(bool isNeedToAsk);
         Task<bool> GetIsRegionSaved(string regionName);
 
+        Task<bool> GetIsRegionSavedWithChildRegions(string regionName);
+
     }
 }

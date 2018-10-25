@@ -12,6 +12,8 @@
     <UserControl.Resources>
         <converters:InverseConverter x:Key="inverseConverter"></converters:InverseConverter>
         <converters:IsNullToVisibilityConverter x:Key="IsNullToVisibilityConverter"></converters:IsNullToVisibilityConverter>
+        <converters:BoolToVisConverter x:Key="boolToVisConverter"></converters:BoolToVisConverter>
+
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -27,6 +29,10 @@
             <ListBox.ItemTemplate>
                <DataTemplate DataType="gooseControls:GooseControlViewModel">
                    <Grid Background="Transparent">
+                       <Grid.ColumnDefinitions>
+                           <ColumnDefinition Width="*"></ColumnDefinition>
+                           <ColumnDefinition Width="Auto"></ColumnDefinition>
+                       </Grid.ColumnDefinitions>
                        <Grid.ContextMenu>
                            <ContextMenu>
                            <MenuItem Header="Удалить" IsEnabled="{Binding IsDynamic}" Command="{Binding DataContext.DeleteGooseCommand,Source={x:Reference Name=ListBox}}" CommandParameter="{Binding .}">
@@ -34,7 +40,9 @@
                            </MenuItem>
                            </ContextMenu>
                         </Grid.ContextMenu>
-                       <TextBlock Text="{Binding Name}"></TextBlock>
+                       <ContentControl Background="Transparent" ToolTip="Динамический (редактируемый) блок управления GOOSE" Visibility="{Binding IsDynamic,Converter={StaticResource boolToVisConverter}}" Grid.Column="0" Width="15" Height="15" 
+                                       ></ContentControl>
+                       <TextBlock Grid.Column="1" Text="{Binding Name}"></TextBlock>
                    </Grid>
                </DataTemplate>
             </ListBox.ItemTemplate>
@@ -44,7 +52,7 @@
 
 
         <GroupBox Grid.Column="1" Visibility="{Binding Source={x:Reference Name=ListBox},Path=SelectedItem,Converter={StaticResource IsNullToVisibilityConverter}}" DataContext="{Binding Source={x:Reference Name=ListBox},Path=SelectedItem}" Header="Goose Control Block">
-            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="15">
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>

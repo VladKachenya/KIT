@@ -20,7 +20,7 @@ using BISC.Modules.InformationModel.Infrastucture.Services;
 
 namespace BISC.Modules.Gooses.Model.Services
 {
-   public class  GoosesModelService: IGoosesModelService
+    public class GoosesModelService : IGoosesModelService
     {
         private readonly IInfoModelService _infoModelService;
         private readonly IDeviceModelService _deviceModelService;
@@ -28,8 +28,8 @@ namespace BISC.Modules.Gooses.Model.Services
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IDatasetModelService _datasetModelService;
 
-        public GoosesModelService(IInfoModelService infoModelService,IDeviceModelService deviceModelService,IBiscProject biscProject,
-            ISclCommunicationModelService sclCommunicationModelService,IDatasetModelService datasetModelService)
+        public GoosesModelService(IInfoModelService infoModelService, IDeviceModelService deviceModelService, IBiscProject biscProject,
+            ISclCommunicationModelService sclCommunicationModelService, IDatasetModelService datasetModelService)
         {
             _infoModelService = infoModelService;
             _deviceModelService = deviceModelService;
@@ -47,6 +47,7 @@ namespace BISC.Modules.Gooses.Model.Services
                 if (lnName == "LLN0")
                 {
                     ld.LogicalNodeZero.Value.ChildModelElements.Add(gooseControl);
+                    gooseControl.ParentModelElement = ld.LogicalNodeZero.Value;
                 }
                 else
                 {
@@ -58,8 +59,8 @@ namespace BISC.Modules.Gooses.Model.Services
 
         public List<IGooseControl> GetGooseControlsOfDevice(IDevice device)
         {
-           var ldevices= _infoModelService.GetLDevicesFromDevices(device);
-            List<IGooseControl> gooseControls=new List<IGooseControl>();
+            var ldevices = _infoModelService.GetLDevicesFromDevices(device);
+            List<IGooseControl> gooseControls = new List<IGooseControl>();
             foreach (var lDevice in ldevices)
             {
                 foreach (var childModelElement in lDevice.LogicalNodeZero.Value.ChildModelElements)
@@ -132,7 +133,7 @@ namespace BISC.Modules.Gooses.Model.Services
             }
         }
 
-        public void AddGooseExternalReferenceToDevice(IFcda fcda, IDevice device,string deviceNameOfFcda)
+        public void AddGooseExternalReferenceToDevice(IFcda fcda, IDevice device, string deviceNameOfFcda)
         {
             var inputs = GetGooseInputsOfDevice(device);
             var extRef = new ExternalGooseRef()
@@ -152,7 +153,7 @@ namespace BISC.Modules.Gooses.Model.Services
             else
             {
                 var ldevices = _infoModelService.GetLDevicesFromDevices(device);
-                GooseInput gooseInput=new GooseInput();
+                GooseInput gooseInput = new GooseInput();
                 gooseInput.ExternalGooseReferences.Add(extRef);
                 ldevices.First().LogicalNodeZero.Value.ChildModelElements.Add(gooseInput);
             }
@@ -160,7 +161,7 @@ namespace BISC.Modules.Gooses.Model.Services
 
         public List<Tuple<IDevice, IGooseControl>> GetGooseControlsSubscribed(IDevice deviceSubscriber, ISclModel sclModel)
         {
-            List<Tuple<IDevice, IGooseControl>> result=new List<Tuple<IDevice, IGooseControl>>();
+            List<Tuple<IDevice, IGooseControl>> result = new List<Tuple<IDevice, IGooseControl>>();
             var devices = _deviceModelService.GetDevicesFromModel(sclModel);
             foreach (var device in devices)
             {
@@ -191,14 +192,14 @@ namespace BISC.Modules.Gooses.Model.Services
                 {
                     if (gooseMatrixInModel.RelatedIedName == device.Name)
                     {
-                        existing= gooseMatrixInModel;
+                        existing = gooseMatrixInModel;
                     }
                 }
             }
-            if (existing!= null)
+            if (existing != null)
             {
-                if(existing==gooseMatrix)return;
-                    existing.GooseRows.Clear();
+                if (existing == gooseMatrix) return;
+                existing.GooseRows.Clear();
                 existing.GooseRows.AddRange(gooseMatrix.GooseRows);
             }
             else
@@ -220,7 +221,7 @@ namespace BISC.Modules.Gooses.Model.Services
                     }
                 }
             }
-            IGooseMatrix gooseMatrix=new GooseMatrix();
+            IGooseMatrix gooseMatrix = new GooseMatrix();
             gooseMatrix.RelatedIedName = device.Name;
             _biscProject.CustomElements.Value.ChildModelElements.Add(gooseMatrix);
             return gooseMatrix;
@@ -234,7 +235,7 @@ namespace BISC.Modules.Gooses.Model.Services
             {
                 foreach (var childModelElement in lDevice.LogicalNodeZero.Value.ChildModelElements)
                 {
-                    if (childModelElement is IGooseControl findedGooseControl&&findedGooseControl.Name==name)
+                    if (childModelElement is IGooseControl findedGooseControl && findedGooseControl.Name == name)
                     {
                         findedGooseControlToDelete = findedGooseControl;
                         break;
@@ -245,11 +246,11 @@ namespace BISC.Modules.Gooses.Model.Services
                     lDevice.LogicalNodeZero.Value.ChildModelElements.Remove(findedGooseControlToDelete);
                 }
             }
-            if(findedGooseControlToDelete==null)return;
-            _sclCommunicationModelService.DeleteGseOfDevice(device.Name,name,device.GetFirstParentOfType<ISclModel>());
+            if (findedGooseControlToDelete == null) return;
+            _sclCommunicationModelService.DeleteGseOfDevice(device.Name, name, device.GetFirstParentOfType<ISclModel>());
 
             var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
-            var datasetOfGoose = datasets.FirstOrDefault((set => set.Name ==findedGooseControlToDelete.DataSet));
+            var datasetOfGoose = datasets.FirstOrDefault((set => set.Name == findedGooseControlToDelete.DataSet));
             if (datasetOfGoose != null)
             {
                 foreach (var fcda in datasetOfGoose.FcdaList)
@@ -272,7 +273,7 @@ namespace BISC.Modules.Gooses.Model.Services
                                 {
                                     externalGooseRefToDelete = externalGooseReference;
                                     break;
-                                }   
+                                }
                             }
 
                             if (externalGooseRefToDelete != null)
@@ -293,6 +294,37 @@ namespace BISC.Modules.Gooses.Model.Services
             if (externalGooseRef.LnInst != fcda.LnInst) return false;
             if (externalGooseRef.LnClass != fcda.LnClass) return false;
             return true;
+        }
+
+        public void DeleteAllGoosesFromDevice(IDevice device)
+        {
+            var ldevices = _infoModelService.GetLDevicesFromDevices(device);
+            List<IGooseControl> findedAllGooseControlsToDelete = new List<IGooseControl>();
+
+            foreach (var lDevice in ldevices)
+            {
+                List<IGooseControl> findedGooseControlsToDelete = new List<IGooseControl>();
+
+                foreach (var childModelElement in lDevice.LogicalNodeZero.Value.ChildModelElements)
+                {
+                    if (childModelElement is IGooseControl findedGooseControl)
+                    {
+                        findedGooseControlsToDelete.Add(findedGooseControl);
+                        findedAllGooseControlsToDelete.Add(findedGooseControl);
+                    }
+                }
+
+                findedGooseControlsToDelete.ForEach((control =>
+                {
+                    lDevice.LogicalNodeZero.Value.ChildModelElements.Remove(control);
+                }));
+            }
+
+            if (!findedAllGooseControlsToDelete.Any()) return;
+            foreach (var control in findedAllGooseControlsToDelete)
+            {
+                _sclCommunicationModelService.DeleteGseOfDevice(device.Name, control.Name, device.GetFirstParentOfType<ISclModel>());
+            }
         }
 
         public List<IGooseInput> GetGooseInputsOfDevice(IDevice device)

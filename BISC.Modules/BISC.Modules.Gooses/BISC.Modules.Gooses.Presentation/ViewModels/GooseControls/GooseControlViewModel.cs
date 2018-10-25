@@ -21,6 +21,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
         private string _selectedDataset;
         private string _goId;
         private List<string> _availableDatasets;
+        private int _confRev;
 
         public string Name
         {
@@ -83,6 +84,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
         {
             get { return _vlanPriority; }
             set
+
+
             {
                 if (value < 0) value = 0;
                 if (value > 7) value = 7;
@@ -135,5 +138,14 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
                 SetProperty(ref _isDynamic, value,true);
             }
         }
+
+        public int ConfRev
+        {
+            get => _confRev;
+            set => SetProperty(ref _confRev, value, true);
+
+        }
+
+        public string LdInst { get; set; }
     }
 }

@@ -196,7 +196,7 @@
                                                 </Button>
                                                 <ToggleButton x:Name="EditToggleButton" IsChecked="{Binding IsEditing}" 
                                                       IsEnabled="{Binding IsEditeble}"
-                                                              
+                                                           Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"   
                                                       Style="{StaticResource MaterialDesignSwitchToggleButton}"
                                                       ToolTip="Разрешить редактирование датасета"/>
                                             </StackPanel>

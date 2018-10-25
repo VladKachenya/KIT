@@ -19,6 +19,8 @@ namespace BISC.Modules.Gooses.Infrastructure.Model.FTP
         public uint AppId { get; set; }
         public string MacAddress { get; set; }
         public string GseType { get; set; }
+        public int ConfRev { get; set; } 
 
+        public string LdInst { get; set; }
     }
 }

@@ -226,6 +226,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             if (sourceItem != null && sourceItem.TypeName == InfoModelKeys.ModelKeys.DaiKey)
             {
                 if ((sourceItem.Model as IDai).GetFirstParentOfType<IDevice>() != _device) return;
+                if (!IsEditing) return;
                 IDa Da = _dataTypeTemplatesModelService.GetDaOfDai(sourceItem.Model as IDai,
                     _biscProject.MainSclModel.Value);
                 if (Da.Fc == "ST" || Da.Fc == "MX")
@@ -238,6 +239,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public void Drop(IDropInfo dropInfo)
         {
+            if (!IsEditing) return;
             TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;
             //TreeItemViewModelBase targetItem = dropInfo.TargetItem as TreeItemViewModelBase;
             var elementModel = sourceItem.Model;
@@ -255,7 +257,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                     return;
                 }
                 var newFcdaViewModel = _fcdaViewModelFactory.CreateFcdaViewModelElement(fcdaModel);
-                FcdaViewModels.Add(newFcdaViewModel);
+                FcdaViewModels.Insert(dropInfo.InsertIndex,newFcdaViewModel);
                 _loggingService.LogUserAction($"Добавлен FCDA {newFcdaViewModel.FullName} через DragDrop");
 
             }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
@@ -71,7 +72,22 @@ namespace BISC.Modules.DataSets.Model.Services
                             logicalNode.ChildModelElements.Remove(ds);
             }
         }
-
+        public void DeleteAllDatasetsFromDevice(IModelElement device)
+        {
+            List<ILDevice> lDevices = _infoModelService.GetLDevicesFromDevices(device);
+            foreach (var lDevice in lDevices)
+            {
+                foreach (var logicalNode in lDevice.AlLogicalNodes)
+                {
+                    var datasetsToDelete = logicalNode.ChildModelElements.Where((element =>
+                        element.ElementName == DatasetKeys.DatasetModelKeys.DataSetModelKey)).ToList();
+                    foreach (var datasetToDelete in datasetsToDelete)
+                    {
+                        logicalNode.ChildModelElements.Remove(datasetToDelete);
+                    }
+                }
+            }
+        }
         public void AddDatasetToDevice(IDataSet dataSet, IModelElement device, string ldName = null, string lnName = null)
         {
             // первое приближение 

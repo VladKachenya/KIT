@@ -25,5 +25,6 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
         IGooseMatrix GetGooseMatrixForDevice(IDevice device);
         void DeleteGooseCbAndGseByName(string name, IDevice device);
         bool CompareFcdaAndExtRef(IExternalGooseRef externalGooseRef, IFcda fcda);
+        void DeleteAllGoosesFromDevice(IDevice device);
     }
 }

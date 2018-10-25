@@ -53,12 +53,26 @@ namespace BISC.Modules.Gooses.Model.Services
         {
             try
             {
-                throw new NotImplementedException();
+                StringBuilder sb = new StringBuilder();
+                TextWriter streamWriter = new StringWriter(sb);
+                Write(gooseDtos, streamWriter);
+                string fileString = sb.ToString();
+
+                var res= await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() {fileString},
+                    new List<string>() {"GOOSETR.CFG"});
+                if (res)
+                {
+                    return OperationResult.SucceedResult;
+                }
+                else
+                {
+                    return new OperationResult("Не удалось обновить блоки управления GOOSE по FTP");
+                }
 
             }
             catch (Exception e)
             {
-            return new OperationResult("nnn");
+            return new OperationResult("Не удалось обновить блоки управления GOOSE по FTP");
             }
         }
 
@@ -71,26 +85,23 @@ namespace BISC.Modules.Gooses.Model.Services
 
                 foreach (var gooseDtoObj in gooseDtosToParse)
                 {
-                    //var gse = gooseDto.Gse;
-                    //var gseControl = gooseDto.GseControl;
 
-                    //string ld = gse.ldInst;
-                    //string goCBName = gseControl.name;
-                    //string goId = gseControl.appID;
-                    //string dataSet = gseControl.datSet;
-                    //uint confRev = gseControl.confRev;
-                    //string fixedOffs = gseControl.fixedOffs ? "1" : "0";
-                    //string minTime = gse.MinTime.Value.ToString();
-                    //string maxTime = gse.MaxTime.Value.ToString();
-                    //string VlanPriority = uint.Parse(gse.Address.P.First((p => p.type == "VLAN-PRIORITY")).Value, NumberStyles.HexNumber).ToString();
-                    //string VlanId = uint.Parse(gse.Address.P.First((p => p.type == "VLAN-ID")).Value, NumberStyles.HexNumber).ToString();
-                    //string AppId = uint.Parse(gse.Address.P.First((p => p.type == "APPID")).Value, NumberStyles.HexNumber).ToString();
-                    //string MacAddress = gse.Address.P.First((p => p.type == "MAC-Address")).Value.Replace("-", "");
+                    string ld = gooseDtoObj.LdInst;
+                    string goCBName = gooseDtoObj.Name;
+                    string goId = gooseDtoObj.GoId;
+                    string dataSet = gooseDtoObj.SelectedDataset;
+                    uint confRev = (uint)gooseDtoObj.ConfRev;
+                    string fixedOffs = gooseDtoObj.FixedOffs ? "1" : "0";
+                    string minTime = gooseDtoObj.MinTime.ToString();
+                    string maxTime = gooseDtoObj.MaxTime.ToString();
+                    string VlanPriority = gooseDtoObj.VlanPriority.ToString("X");
+                    string VlanId = gooseDtoObj.VlanId.ToString("X");
+                    string AppId = gooseDtoObj.AppId.ToString("X");
+                    string MacAddress = gooseDtoObj.MacAddress;
 
-
-                    //streamWriter.WriteLine($"GoCB({ld} {goCBName} {goId} {dataSet} {confRev} {fixedOffs} {minTime} {maxTime})");
-                    //streamWriter.WriteLine($"GoDA({VlanPriority} {VlanId} {AppId} {MacAddress})");
-                    //streamWriter.WriteLine();
+                    streamWriter.WriteLine($"GoCB({ld} {goCBName} {goId} {dataSet} {confRev} {fixedOffs} {minTime} {maxTime})");
+                    streamWriter.WriteLine($"GoDA({VlanPriority} {VlanId} {AppId} {MacAddress})");
+                    streamWriter.WriteLine();
                 }
 
             }

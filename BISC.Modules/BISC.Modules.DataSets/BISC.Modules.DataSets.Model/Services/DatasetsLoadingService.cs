@@ -47,6 +47,7 @@ namespace BISC.Modules.DataSets.Model.Services
         public async Task<int> EstimateProgress(IDevice device)
         {
             var connection = _connectionPoolService.GetConnection(device.Ip);
+            _ldDatasetDictionary.Clear();
             var ldevices = (await connection.MmsConnection
                 .GetLdListAsync()).Item;
             int count = 0;
@@ -63,6 +64,7 @@ namespace BISC.Modules.DataSets.Model.Services
         public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel,CancellationToken cancellationToken)
         {
             var connection = _connectionPoolService.GetConnection(device.Ip);
+            _datasetModelService.DeleteAllDatasetsFromDevice(device);
             foreach (var ldevice in _ldDatasetDictionary.Keys)
             {
                 foreach (var datasetRef in _ldDatasetDictionary[ldevice])

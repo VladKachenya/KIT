@@ -21,6 +21,8 @@
             public static string ToolBarMenuViewName = "ToolBarMenu";
             public static string SaveChangesViewName = "SaveChangesView";
             public static string ApplicationSettingsViewName = "ApplicationSettingsView";
+            public static string UserInteractionOptionsViewName = "UserInteractionOptionsView";
+
         }
 
     }

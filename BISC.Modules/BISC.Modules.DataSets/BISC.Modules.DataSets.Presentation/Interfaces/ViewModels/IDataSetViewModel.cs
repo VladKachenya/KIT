@@ -15,6 +15,7 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
     public interface IDataSetViewModel  : IDataSetElementBaseViewModel<IDataSet>,IObjectWithChangeTracker
     {
         bool IsExpanded { get; set; }
+        bool IsEditing { get; set; }
         ObservableCollection<IFcdaViewModel> FcdaViewModels { get;}
         ICommand DeleteFcdaCommand { get; }
         ICommand AddFcdaToDataset { get; }

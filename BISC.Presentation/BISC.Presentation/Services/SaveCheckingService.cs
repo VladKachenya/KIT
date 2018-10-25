@@ -109,5 +109,10 @@ namespace BISC.Presentation.Services
 
             return true;
         }
+
+        public Task<bool> GetIsRegionSavedWithChildRegions(string regionName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -51,6 +51,7 @@ namespace BISC.Modules.Gooses.Model.Services
             var ldevices = (await connection.MmsConnection
                 .GetLdListAsync()).Item;
             int count = 0;
+            _ldGoosesDictionary.Clear();
             foreach (var lDevice in ldevices)
             {
              
@@ -80,7 +81,7 @@ namespace BISC.Modules.Gooses.Model.Services
         public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel,CancellationToken cancellationToken)
         {
             var connection = _connectionPoolService.GetConnection(device.Ip);
-
+            _goosesModelService.DeleteAllGoosesFromDevice(device);
             if (_ldGoosesDictionary.Values.Any())
             {
 

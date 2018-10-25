@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Infrastructure.Connection;
@@ -54,6 +55,8 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                     gooseControlViewModel.MinTime = (uint) gseOfGoose.MinTime.Value.Value;
                     gooseControlViewModel.VlanId = uint.Parse(gseOfGoose.VlanId);
                     gooseControlViewModel.VlanPriority = (uint) gseOfGoose.VlanPriority;
+                    gooseControlViewModel.LdInst = gseOfGoose.LdInst;
+
                 }
 
                 var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
@@ -62,6 +65,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 gooseControlViewModel.SelectedDataset = gooseControl.DataSet;
                 gooseControlViewModel.AvailableDatasets = datasets.Select((set => set.Name)).ToList();
                 gooseControlViewModel.IsDynamic = gooseControl.IsDynamic;
+                gooseControlViewModel.ConfRev = gooseControl.ConfRev;
                 gooseControlViewModels.Add(gooseControlViewModel);
             }
 
@@ -82,6 +86,17 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             gooseControlViewModel.VlanPriority = 4;
             gooseControlViewModel.MaxTime = 10;
             gooseControlViewModel.MinTime = 2000;
+            gooseControlViewModel.ConfRev = 0;
+
+            var ldevices = new List<ILDevice>();
+            device.GetAllChildrenOfType(ref ldevices);
+            var ldevice = ldevices.FirstOrDefault((lDevice => lDevice.Inst == "LD0"));
+
+            if (ldevice == null)
+                ldevice = ldevices.FirstOrDefault();
+
+            gooseControlViewModel.LdInst = ldevice.Inst;
+
             gooseControlViewModel.ChangeTracker.SetNew();
 
 

@@ -7,4 +7,7 @@ namespace BISC.Infrastructure.Global.Services
         Task ShowContentAsDialog(object content);
 
     }
+
+
+
 }

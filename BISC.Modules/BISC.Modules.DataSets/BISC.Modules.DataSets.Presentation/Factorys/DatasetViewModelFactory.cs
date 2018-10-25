@@ -39,6 +39,7 @@ namespace BISC.Modules.DataSets.Presentation.Factorys
             newDataSetViewModel.ParentLdList = _infoModelService.GetLDevicesFromDevices(device).Select((ldevice => ldevice.Inst)).ToList();
             newDataSetViewModel.SelectedParentLd = newDataSetViewModel.ParentLdList.First();
             newDataSetViewModel.IsEditeble = true;
+            newDataSetViewModel.IsEditing = true;
             newDataSetViewModel.ChangeTracker.SetNew();
             return newDataSetViewModel;
         }

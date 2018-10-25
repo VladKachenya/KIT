@@ -52,7 +52,7 @@ namespace BISC.Modules.Reports.Presentation.Factorys
 
         public IReportControlViewModel CreateReportViewModel(List<string> existingNames, IDevice device)
         {
-            var reportsName = existingNames.Select(repId => repId.Split('$')[2]);
+            var reportsName = existingNames.Select(repId => repId.Split('$','/','.')[2]);
             IReportControlViewModel newReport = _injectionContainer.ResolveType<IReportControlViewModel>();
             var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
             newReport.AvailableDatasets = datasets.Select((ds => ds.Name)).ToList();

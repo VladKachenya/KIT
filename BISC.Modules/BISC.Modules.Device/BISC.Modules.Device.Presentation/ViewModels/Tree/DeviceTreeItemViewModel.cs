@@ -31,6 +31,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private readonly ITreeManagementService _treeManagementService;
         private readonly ITabManagementService _tabManagementService;
         private readonly IGoosesModelService _goosesModelService;
+        private readonly ISaveCheckingService _saveCheckingService;
 
         private string _deviceName;
         private IDevice _device;
@@ -38,7 +39,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private bool _isDeviceConnected;
 
         public DeviceTreeItemViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService, IGlobalEventsService globalEventsService, IConnectionPoolService connectionPoolService,
-            IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService,IGoosesModelService goosesModelService)
+            IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService,
+            IGoosesModelService goosesModelService,ISaveCheckingService saveCheckingService)
         {
             _deviceModelService = deviceModelService;
             _globalEventsService = globalEventsService;
@@ -47,6 +49,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _treeManagementService = treeManagementService;
             _tabManagementService = tabManagementService;
             _goosesModelService = goosesModelService;
+            _saveCheckingService = saveCheckingService;
             DeleteDeviceCommand = commandFactory.CreatePresentationCommand(OnDeleteDeviceExecute);
             NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
         }
@@ -64,10 +67,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             set { SetProperty(ref _isDeviceConnected, value); }
         }
 
-        private void OnDeleteDeviceExecute()
+        private async void OnDeleteDeviceExecute()
         {
             Dispose();
             var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, _device);
+            //_saveCheckingService.GetIsRegionCanBeClosed()
             if (result.IsSucceed)
             {
                 _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject.MainSclModel.Value,
