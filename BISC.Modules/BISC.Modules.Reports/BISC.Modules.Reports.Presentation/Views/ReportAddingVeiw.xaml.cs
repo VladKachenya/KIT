@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BISC.Modules.Reports.Presentation.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,10 @@ namespace BISC.Modules.Reports.Presentation.Views
     /// </summary>
     public partial class ReportAddingVeiw : UserControl
     {
-        public ReportAddingVeiw()
+        public ReportAddingVeiw(ReportsDetailsViewModel reportsDetailsViewModel)
         {
             InitializeComponent();
+            DataContext = reportsDetailsViewModel;
         }
     }
 }

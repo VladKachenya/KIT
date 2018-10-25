@@ -20,6 +20,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private int _bufferTime;
         private string _dataSetName;
         private int _integrutyPeriod;
+        private List<String> _availableDatasets;
 
 
         #region ctor
@@ -29,6 +30,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             ReportEnabledViewModel = reportEnabledViewModel;
             TriggerOptionsViewModel = triggerOptionsViewModel;
             OprionalFildsViewModel = oprionalFildsViewModel;
+
         }
         #endregion
 
@@ -40,6 +42,13 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         #region Implementation of IReportControlViewModel
         public string ElementName => "Report";
         public Brush TypeColorBrush => new SolidColorBrush(Color.FromRgb(240, 126, 184));
+
+
+        public List<string> AvailableDatasets
+        {
+            get => _availableDatasets;
+            set { SetProperty(ref _availableDatasets, value); }
+        }
         public string Name
         {
             get => _name;
@@ -60,16 +69,22 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             get => _bufferTime;
             set => SetProperty(ref _bufferTime, value);
         }
-        public string DataSetName
+        public string SelectidDataSetName
         {
             get => _dataSetName;
-            set => SetProperty(ref _dataSetName, value);
+            set
+            {
+                var val = AvailableDatasets.Find( item => item == value);
+                SetProperty(ref _dataSetName, value);
+            }
         }
         public int IntegrutyPeriod
         {
             get => _integrutyPeriod;
             set => SetProperty(ref _integrutyPeriod, value);
         }
+
+        public bool IsDynamic => _model.IsDynamic;
 
         public IReportEnabledViewModel ReportEnabledViewModel { get; }
         public ITriggerOptionsViewModel TriggerOptionsViewModel { get; }
@@ -87,6 +102,14 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             }
         }
 
+        public void ActivateElement()
+        {
+            ChangeTracker.SetTrackingEnabled(true);
+            ReportEnabledViewModel.ActivateElement();
+            TriggerOptionsViewModel.ActivateElement();
+            OprionalFildsViewModel.ActivateElement();
+        }
+
         //public string PrefixName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void UpdateModel()
@@ -95,8 +118,11 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             _model.RptID = ReportID;
             _model.Buffered = IsBuffered;
             _model.BufTime = BufferTime;
-            _model.DataSet = DataSetName;
+            _model.DataSet = SelectidDataSetName;
             _model.IntgPd = IntegrutyPeriod;
+            //ReportEnabledViewModel.UpdateModel();
+            //TriggerOptionsViewModel.UpdateModel();
+            //OprionalFildsViewModel.UpdateModel();
         }
 
         public void UpdateViewModel()
@@ -105,8 +131,11 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             this.ReportID = _model.RptID;
             this.IsBuffered = _model.Buffered;
             this.BufferTime = _model.BufTime;
-            this.DataSetName = _model.DataSet;
+            this.SelectidDataSetName = _model.DataSet;
             this.IntegrutyPeriod = _model.IntgPd;
+            //ReportEnabledViewModel.UpdateViewModel();
+            //TriggerOptionsViewModel.UpdateViewModel();
+            //OprionalFildsViewModel.UpdateViewModel();
         }
         #endregion
 

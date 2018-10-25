@@ -14,11 +14,12 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
         string ElementName { get; }
         Brush TypeColorBrush { get; }
         string Name { get; set; }
-        //string PrefixName { get; set; }
         string ReportID { get; set; }
         bool IsBuffered { get; set; }
         int BufferTime { get; set; }
-        string DataSetName { get; set; }
+        string SelectidDataSetName { get; set; }
+        List<string> AvailableDatasets { get; set; }
+        bool IsDynamic { get; }
         int IntegrutyPeriod { get; set; }
 
         IReportEnabledViewModel ReportEnabledViewModel { get; }

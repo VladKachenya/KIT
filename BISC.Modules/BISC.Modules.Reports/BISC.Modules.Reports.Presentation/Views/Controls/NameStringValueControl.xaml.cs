@@ -49,7 +49,7 @@ namespace BISC.Modules.Reports.Presentation.Views.Controls
 
         private static void TextOfValuePropertyChenged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as NameStringValueControl).ValueTextBox.Text = e.NewValue.ToString();
+            (d as NameStringValueControl).ValueTextBox.Text = e.NewValue?.ToString();
         }
 
     }

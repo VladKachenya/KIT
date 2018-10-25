@@ -23,9 +23,13 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         #region ctor
         public OprionalFildsViewModel()
         {
-
+           
         }
         #endregion
+        public void ActivateElement()
+        {
+            ChangeTracker.SetTrackingEnabled(true);
+        }
         public bool SequenceNumber
         {
             get => _sequenceNumber;
@@ -100,8 +104,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             BufferOverflow = _model.BufOvfl;
             EntruID = _model.EntryID;
             ConfigRevision = _model.ConfigRef;
-
-
         }
     }
 }

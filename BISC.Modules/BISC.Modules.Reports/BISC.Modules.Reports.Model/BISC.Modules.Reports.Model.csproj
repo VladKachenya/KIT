@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Factorys\ReportControlsFactory.cs" />
     <Compile Include="Model\OptFields.cs" />
     <Compile Include="Model\ReportControl.cs" />
     <Compile Include="Model\RptEnabled.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="Serializers\ReportControlSerializer.cs" />
     <Compile Include="Serializers\RptEnabledSerializer.cs" />
     <Compile Include="Serializers\TrgOpsSerializer.cs" />
+    <Compile Include="Services\ReportControlSavingService.cs" />
     <Compile Include="Services\ReportsModelService.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -1,4 +1,5 @@
 ﻿using BISC.Infrastructure.Global.Services;
+using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Keys;
@@ -22,45 +23,81 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 {
     public class ReportsDetailsViewModel : NavigationViewModelBase
     {
-        private int _controlSwitch;
         private string _regionName;
         private IDevice _device;
         private List<IReportControl> _reportControlsModel;
         private IReportsModelService _reportsModelService;
         private ISaveCheckingService _saveCheckingService;
         private IReportControlFactoryViewModel _reportControlFactoryViewModel;
-
+        private readonly IConnectionPoolService _connectionPoolService;
+        private readonly IUserInterfaceComposingService _userInterfaceComposingService;
+        private ObservableCollection<IReportControlViewModel> _reportControlViewModels;
+        private readonly ILoggingService _loggingService;
+        private IReportControlSavingService _reportControlSavingService;
 
 
         #region Ctor
         public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService, ISaveCheckingService saveCheckingService,
-            IReportControlFactoryViewModel reportControlFactoryViewModel) 
+            IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService, IConnectionPoolService connectionPoolService,
+            ILoggingService loggingService, IReportControlSavingService reportControlSavingService) 
         {
             _reportsModelService = reportsModelService;
             _saveCheckingService = saveCheckingService;
             _reportControlFactoryViewModel = reportControlFactoryViewModel;
-            TestCommand = commandFactory.CreatePresentationCommand(OnTestCommand);
+            _userInterfaceComposingService = userInterfaceComposingService;
+            _connectionPoolService = connectionPoolService;
+            _reportControlSavingService = reportControlSavingService;
+            SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand);
+            AddNewReportCommand = commandFactory.CreatePresentationCommand(OnAddNewReportCommand);
+            UndoChangesCommad = commandFactory.CreatePresentationCommand(OnUndoChanges);
+            _loggingService = loggingService;
             ModelRegionKey = Guid.NewGuid().ToString();
         }
         #endregion
 
         #region private methods
-        private void OnTestCommand()
+        private async void OnSaveСhangesCommand()
         {
-            if (ControlSwitch >= 3) ControlSwitch = 0;
-            else ControlSwitch++;
+            _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
+            await _reportControlSavingService.SaveReportControls(ReportControlsViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            _reportControlsModel = _reportsModelService.GetAllReportControlsOfDevice(_device);
+            ReportControlsViewModels = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device);
+            ChangeTracker.AcceptChanges();
         }
+
+        private void ResetAllCollections()
+        {
+            _reportControlsModel.Clear();
+            ReportControlsViewModels.Clear();
+        }
+
+        private void OnAddNewReportCommand()
+        {
+            ReportControlsViewModels.Add(_reportControlFactoryViewModel.GetReportControlViewModel(_device));
+        }
+
+        private void OnUndoChanges()
+        {
+            foreach (var element in ReportControlsViewModels)
+                element.UpdateViewModel();
+            ChangeTracker.AcceptChanges();
+        }
+
         #endregion
 
         #region public interface
-        public int ControlSwitch
+        public ObservableCollection<IReportControlViewModel> ReportControlsViewModels
         {
-            get => _controlSwitch;
-            set => SetProperty(ref _controlSwitch, value);
+            get => _reportControlViewModels;
+            protected set => SetProperty(ref _reportControlViewModels, value);
         }
-        public ObservableCollection<IReportControlViewModel> ReportControlViewModels { get; protected set; }
+
+
+        public ICommand DeleteReportCommand { get; }
         public ICommand SaveСhangesCommand { get; }
+        public ICommand UndoChangesCommad { get; }
         public ICommand TestCommand { get; }
+        public ICommand AddNewReportCommand { get; }
         public string ModelRegionKey { get; }
 
         #endregion
@@ -70,13 +107,33 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             _reportControlsModel = _reportsModelService.GetAllReportControlsOfDevice(_device);
-            ReportControlViewModels = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel);
+            ReportControlsViewModels = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device);
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
                 $"Reports устройства {_device.Name}", SaveСhangesCommand, _regionName));
             ChangeTracker.SetTrackingEnabled(true);
             base.OnNavigatedTo(navigationContext);
+        }
+
+        public override void OnActivate()
+        {
+
+            _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            _userInterfaceComposingService.AddGlobalCommand(AddNewReportCommand, $"Добавить Report {_device.Name}", IconsKeys.AddIconKey, false, true);
+            _userInterfaceComposingService.AddGlobalCommand(UndoChangesCommad, $"Отменить изменения Reports {_device.Name}", IconsKeys.CloseCircleIconKey, false, true);
+
+            //_globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
+            base.OnActivate();
+        }
+
+        public override void OnDeactivate()
+        {
+            _userInterfaceComposingService.ClearCurrentSaveCommand();
+            _userInterfaceComposingService.DeleteGlobalCommand(AddNewReportCommand);
+            _userInterfaceComposingService.DeleteGlobalCommand(UndoChangesCommad);
+            //_globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
+            base.OnDeactivate();
         }
 
         protected override void OnDisposing()

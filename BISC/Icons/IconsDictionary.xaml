@@ -7,6 +7,9 @@
     <DataTemplate x:Key="CloseIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Close" />
     </DataTemplate>
+    <DataTemplate x:Key="CloseCircleIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="CloseCircle" />
+    </DataTemplate>
     <DataTemplate x:Key="RightArrowIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ArrowRightBold" />
     </DataTemplate>

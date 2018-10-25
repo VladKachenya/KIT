@@ -23,6 +23,8 @@ namespace BISC.Modules.Reports.Model.Model
         public string DataSet { get; set; }
         public int IntgPd { get; set; }
         public string ConfRev { get; set; }
+        public bool IsDynamic { get; set; }
+
 
         public ChildModelProperty<ITrgOps> TrgOps => new ChildModelProperty<ITrgOps>(this, ReportsKeys.ReportsModelKeys.TrgOpsModelKey);
         public ChildModelProperty<IOptFields> OptFields => new ChildModelProperty<IOptFields>(this, ReportsKeys.ReportsModelKeys.OptFieldsModelKey);
@@ -40,7 +42,7 @@ namespace BISC.Modules.Reports.Model.Model
             if (element.DataSet != DataSet) return false;
             if (element.IntgPd != IntgPd) return false;
             if (element.ConfRev != ConfRev) return false;
-
+            if (element.IsDynamic != IsDynamic) return false;
             return true;
         }
     }

@@ -21,6 +21,7 @@ namespace BISC.Modules.Reports.Model.Serializers
             RegisterProperty(nameof(IReportControl.DataSet), "datSet");
             RegisterProperty(nameof(IReportControl.IntgPd), "intgPd");
             RegisterProperty(nameof(IReportControl.ConfRev), "confRev");
+            RegisterProperty(nameof(IReportControl.IsDynamic), "IsDynamic");
         }
 
         public override IModelElement GetConcreteObject()

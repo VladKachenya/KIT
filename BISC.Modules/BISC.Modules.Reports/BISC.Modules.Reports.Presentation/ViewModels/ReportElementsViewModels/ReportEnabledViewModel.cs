@@ -13,6 +13,16 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
     {
         private int _max;
         private IRptEnabled _model;
+        public ReportEnabledViewModel()
+        {
+          
+
+        }
+
+        public void ActivateElement()
+        {
+            ChangeTracker.SetTrackingEnabled(true);
+        }
         public int Max
         {
             get => _max;

@@ -7,6 +7,36 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="Hi, I`m a adding user control"/>
+        <ListBox Name="ListBox" ItemsSource="{Binding ReportControlViewModels}" HorizontalContentAlignment="Stretch">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="reportElementsViewModels:ReportControlViewModel">
+                    <Grid Background="Transparent" Margin="15,0">
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Удалить" IsEnabled="{Binding IsDynamic}" 
+                                          Command="{Binding DataContext.DeleteReportCommand, Source={x:Reference Name=ListBox}}" CommandParameter="{Binding .}">
+                                </MenuItem>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0">
+                            <Border Margin="2" Background="{Binding TypeColorBrush}" >
+                                <TextBlock Margin="4"  Text="{Binding ElementName}"/>
+                            </Border>
+                            <TextBlock Margin="6" Text="{Binding Name}"/>
+                        </StackPanel>
+                        <!--<Label HorizontalAlignment="Center" Height="25" Width="25" 
+                                       VerticalAlignment="Center" Grid.Column="1" Visibility="Hidden">
+                            <Label.Content>
+                                <ContentControl  ContentTemplate="{DynamicResource SaveIcon}"/>
+                            </Label.Content>
+                        </Label>-->
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </UserControl>

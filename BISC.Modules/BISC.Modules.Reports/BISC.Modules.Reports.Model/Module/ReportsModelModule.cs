@@ -1,8 +1,10 @@
 ﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Infrastructure;
+using BISC.Modules.Reports.Infrastructure.Factorys;
 using BISC.Modules.Reports.Infrastructure.Keys;
 using BISC.Modules.Reports.Infrastructure.Services;
+using BISC.Modules.Reports.Model.Factorys;
 using BISC.Modules.Reports.Model.Serializers;
 using BISC.Modules.Reports.Model.Services;
 using System;
@@ -34,7 +36,10 @@ namespace BISC.Modules.Reports.Model.Module
             modelElementsRegistryService.RegisterModelElement(new TrgOpsSerializer(), ReportsKeys.ReportsModelKeys.TrgOpsModelKey);
 
             _injectionContainer.RegisterType<IReportsModelService, ReportsModelService>();
-            
+            _injectionContainer.RegisterType<IReportControlsFactory, ReportControlsFactory>(true);
+            _injectionContainer.RegisterType<IReportControlSavingService, ReportControlSavingService>(true);
+
+
         }
 
         #endregion

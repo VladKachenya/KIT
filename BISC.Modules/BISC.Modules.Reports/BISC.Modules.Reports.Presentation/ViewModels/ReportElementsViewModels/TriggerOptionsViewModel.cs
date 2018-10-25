@@ -20,10 +20,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 
         #region Ctor
         public TriggerOptionsViewModel()
-        {
-
-        }
-
+        {}
         #endregion
 
 
@@ -62,6 +59,11 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
                 _model = value;
                 UpdateViewModel();
             }
+        }
+
+        public void ActivateElement()
+        {
+            ChangeTracker.SetTrackingEnabled(true);
         }
 
         public void UpdateModel()
