@@ -28,9 +28,14 @@ namespace BISC.Model.Global.Model.Communication
         }
         public int VlanPriority
         {
-            get => int.Parse(SclAddress.Value.GetProperty("VLAN-PRIORITY"));
+            get
+            {
+                if ((SclAddress.Value != null)&& (SclAddress.Value.GetProperty("VLAN-PRIORITY")!=null)) return int.Parse(SclAddress.Value.GetProperty("VLAN-PRIORITY"));
+                return 0;
+            }
             set => SclAddress.Value.SetProperty("VLAN-PRIORITY", value.ToString());
         }
+
         public string AppId
         {
             get => SclAddress.Value.GetProperty("APPID");

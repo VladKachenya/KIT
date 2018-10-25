@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.Reports.Infrastructure.Services
 {
@@ -12,5 +13,6 @@ namespace BISC.Modules.Reports.Infrastructure.Services
     {
         List<IReportControl> GetAllReportControlsOfDevice(IModelElement device);
 
+        void DeleteAllReportsOfDevice(IDevice device);
     }
 }

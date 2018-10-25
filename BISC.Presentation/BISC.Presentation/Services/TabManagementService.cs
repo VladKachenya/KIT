@@ -16,12 +16,14 @@ namespace BISC.Presentation.Services
         private readonly ITabHostViewModel _tabHostViewModel;
         private readonly INavigationService _navigationService;
         private readonly Func<ITabViewModel> _tabViewModelFactory;
+        private readonly ISaveCheckingService _saveCheckingService;
         private readonly Dictionary<TreeItemIdentifier,ITabViewModel> _tabViewModelsDictionary=new Dictionary<TreeItemIdentifier, ITabViewModel>();
-        public TabManagementService(ITabHostViewModel tabHostViewModel,INavigationService navigationService,Func<ITabViewModel> tabViewModelFactory)
+        public TabManagementService(ITabHostViewModel tabHostViewModel,INavigationService navigationService,Func<ITabViewModel> tabViewModelFactory,ISaveCheckingService saveCheckingService)
         {
             _tabHostViewModel = tabHostViewModel;
             _navigationService = navigationService;
             _tabViewModelFactory = tabViewModelFactory;
+            _saveCheckingService = saveCheckingService;
         }
         public void NavigateToTab(string viewName, BiscNavigationParameters navigationParameters, string header, TreeItemIdentifier owner)
         {
@@ -52,8 +54,10 @@ namespace BISC.Presentation.Services
             {
                 _tabHostViewModel.TabViewModels.Remove(_tabViewModelsDictionary[owner]);
                 _tabViewModelsDictionary.Remove(owner);
+                _saveCheckingService.RemoveSaveCheckingEntityByOwner(owner.ItemId.ToString());
             }
         }
+
         public void CloseTab(string regioId)
         {
             var tabVm = _tabViewModelsDictionary.FirstOrDefault((pair => pair.Value.TabRegionName.ToString() == regioId));
@@ -61,7 +65,38 @@ namespace BISC.Presentation.Services
             {
                 _tabHostViewModel.TabViewModels.Remove(tabVm.Value);
                 _tabViewModelsDictionary.Remove(tabVm.Key);
+                _saveCheckingService.RemoveSaveCheckingEntityByOwner(regioId);
             }
+        }
+
+        public void CloseTabWithChildren(string regionId)
+        {
+            var idsToRemove=new List<TreeItemIdentifier>();
+            foreach (var identifier in _tabViewModelsDictionary.Keys)
+            {
+                if (IsTreeItemIdentifierIsChildOfRegion(regionId, identifier))
+                {
+                    idsToRemove.Add(identifier);
+                }
+            }
+            foreach (var identifierToRemove in idsToRemove)
+            {
+                CloseTab(identifierToRemove);
+            }
+        }
+
+        private bool IsTreeItemIdentifierIsChildOfRegion(string regionId,TreeItemIdentifier treeItemIdentifier)
+        {
+            if (treeItemIdentifier.ItemId.ToString() == regionId)
+            {
+                return true;
+            }
+            if (treeItemIdentifier.ParenTreeItemIdentifier == null)
+            {
+                return false;
+            }
+
+            return IsTreeItemIdentifierIsChildOfRegion(regionId, treeItemIdentifier.ParenTreeItemIdentifier);
         }
     }
 }

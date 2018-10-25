@@ -6,12 +6,13 @@ namespace BISC.Presentation.Infrastructure.Services
 {
     public class SaveCheckingEntity
     {
-        public SaveCheckingEntity(IChangeTracker changeTracker, string entityFriendlyName, ICommand saveCommand, string regionName=null)
+        public SaveCheckingEntity(IChangeTracker changeTracker, string entityFriendlyName, ICommand saveCommand, string deviceKey, string regionName=null)
         {
 
             ChangeTracker = changeTracker;
             EntityFriendlyName = entityFriendlyName;
             SaveCommand = saveCommand;
+            DeviceKey = deviceKey;
             RegionName = regionName;
         }
 
@@ -20,6 +21,7 @@ namespace BISC.Presentation.Infrastructure.Services
         public string EntityFriendlyName { get; }
         public ICommand SaveCommand { get; }
         public string RegionName { get; }
+        public string DeviceKey { get; }
     }
 
     public class SaveResult
@@ -35,8 +37,7 @@ namespace BISC.Presentation.Infrastructure.Services
         void RemoveSaveCheckingEntityByOwner(string regionName);
         Task<SaveResult> SaveAllUnsavedEntities(bool isNeedToAsk);
         Task<bool> GetIsRegionSaved(string regionName);
-
-        Task<bool> GetIsRegionSavedWithChildRegions(string regionName);
+        Task<bool> GetIsDeviceEntitiesSaved(string deviceName);
 
     }
 }

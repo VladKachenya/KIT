@@ -22,11 +22,12 @@ namespace BISC.Presentation.Services
 
         public async Task<int> ShowOptionToUser(string title, string message, List<string> options)
         {
-            OperationResult<int> operationResult=new OperationResult<int>(1);
+            OperationResult<int> operationResult = new OperationResult<int>(1);
 
             await _navigationService.NavigateViewToGlobalRegion(
                 KeysForNavigation.ViewNames.UserInteractionOptionsViewName,
-                new BiscNavigationParameters().AddParameterByName("result", operationResult));
+                new BiscNavigationParameters().AddParameterByName("result", operationResult)
+                    .AddParameterByName("message", message).AddParameterByName("title", title).AddParameterByName("options", options));
 
 
             return operationResult.Item;

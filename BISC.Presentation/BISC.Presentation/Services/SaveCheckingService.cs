@@ -110,9 +110,10 @@ namespace BISC.Presentation.Services
             return true;
         }
 
-        public Task<bool> GetIsRegionSavedWithChildRegions(string regionName)
+        public async Task<bool> GetIsDeviceEntitiesSaved(string deviceName)
         {
-            throw new NotImplementedException();
+            return !_saveCheckingEntities.Any((entity =>
+                entity.DeviceKey == deviceName && entity.ChangeTracker.GetIsModifiedRecursive()));
         }
     }
 }

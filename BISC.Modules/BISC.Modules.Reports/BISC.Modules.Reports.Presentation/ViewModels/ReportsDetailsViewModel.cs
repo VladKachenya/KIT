@@ -134,7 +134,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"Reports устройства {_device.Name}", SaveСhangesCommand, _regionName));
+                $"Reports устройства {_device.Name}", SaveСhangesCommand,_device.Name, _regionName));
             ChangeTracker.SetTrackingEnabled(true);
             base.OnNavigatedTo(navigationContext);
         }

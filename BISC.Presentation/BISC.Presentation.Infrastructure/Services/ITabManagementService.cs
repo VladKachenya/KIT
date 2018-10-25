@@ -10,6 +10,7 @@ namespace BISC.Presentation.Infrastructure.Services
         void NavigateToTab(string viewName, BiscNavigationParameters navigationParameters,string header, TreeItemIdentifier owner);
         void CloseTab(TreeItemIdentifier owner);
         void CloseTab(string regionId);
+        void CloseTabWithChildren(string regionId);
 
     }
 }

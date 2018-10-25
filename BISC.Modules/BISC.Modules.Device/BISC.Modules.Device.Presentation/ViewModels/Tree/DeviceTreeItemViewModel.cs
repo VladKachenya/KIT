@@ -32,6 +32,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private readonly ITabManagementService _tabManagementService;
         private readonly IGoosesModelService _goosesModelService;
         private readonly ISaveCheckingService _saveCheckingService;
+        private readonly IUserInteractionService _userInteractionService;
+        private readonly ILoggingService _loggingService;
 
         private string _deviceName;
         private IDevice _device;
@@ -40,7 +42,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 
         public DeviceTreeItemViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService, IGlobalEventsService globalEventsService, IConnectionPoolService connectionPoolService,
             IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService,
-            IGoosesModelService goosesModelService,ISaveCheckingService saveCheckingService)
+            IGoosesModelService goosesModelService,ISaveCheckingService saveCheckingService,IUserInteractionService userInteractionService,ILoggingService loggingService)
         {
             _deviceModelService = deviceModelService;
             _globalEventsService = globalEventsService;
@@ -50,6 +52,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _tabManagementService = tabManagementService;
             _goosesModelService = goosesModelService;
             _saveCheckingService = saveCheckingService;
+            _userInteractionService = userInteractionService;
+            _loggingService = loggingService;
             DeleteDeviceCommand = commandFactory.CreatePresentationCommand(OnDeleteDeviceExecute);
             NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
         }
@@ -70,14 +74,26 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private async void OnDeleteDeviceExecute()
         {
             Dispose();
+            _loggingService.LogUserAction("Пользователь удаляет устройство "+_device.Name);
+            var isSaved=await _saveCheckingService.GetIsDeviceEntitiesSaved(_device.Name);
+            if (!isSaved)
+            {
+              var res= await _userInteractionService.ShowOptionToUser("Несохраненные изменения",
+                    "В устройстве имеются несохраненные изменения." + Environment.NewLine + "Все равно удалить?",
+                    new List<string>() {"Удалить", "Отмена"});
+                if (res == 1)
+                {
+                    return;
+                }
+            }
             var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, _device);
-            //_saveCheckingService.GetIsRegionCanBeClosed()
             if (result.IsSucceed)
             {
                 _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject.MainSclModel.Value,
                     _device.Name);
                 _treeManagementService.DeleteTreeItem(_treeItemIdentifier);
                 _connectionPoolService.GetConnection(_device.Ip).StopConnection();
+                _tabManagementService.CloseTabWithChildren(_treeItemIdentifier.ItemId.ToString());
             }
         }
 

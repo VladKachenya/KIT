@@ -35,6 +35,10 @@ namespace BISC.Modules.Gooses.Presentation.Services
             _sclCommunicationModelService = sclCommunicationModelService;
             _biscProject = biscProject;
         }
+        
+
+
+
 
         public async Task<OperationResult> SaveGooseControls(List<GooseControlViewModel> gooseControlViewModelsToSave, IDevice device, bool isInDevice)
         {
@@ -101,6 +105,7 @@ namespace BISC.Modules.Gooses.Presentation.Services
             {
                 gooseControl=new GooseControl();
                 relatedGse=new Gse();
+                relatedGse.ChildModelElements.Add(new SclAddress());
             }
             else
             {
@@ -120,11 +125,21 @@ namespace BISC.Modules.Gooses.Presentation.Services
             gooseControl.IsDynamic = gooseControlViewModel.IsDynamic;
 
             relatedGse.CbName = gooseControlViewModel.Name;
-            relatedGse.AppId = gooseControlViewModel.AppId.ToString("X");
+            relatedGse.AppId = gooseControlViewModel.AppId.ToString();
             relatedGse.LdInst = gooseControlViewModel.LdInst;
             relatedGse.MacAddress = gooseControlViewModel.MacAddress;
-            relatedGse.MaxTime.Value.Value = (int)gooseControlViewModel.MaxTime;
-            relatedGse.MinTime.Value.Value = (int)gooseControlViewModel.MinTime;
+            relatedGse.MaxTime.Value = new DurationInMilliSec("MinTime")
+            {
+                Multiplier = "m",
+                Value = (int)gooseControlViewModel.MaxTime,
+                Unit = "s"
+            };
+            relatedGse.MinTime.Value = new DurationInMilliSec("MinTime")
+            {
+                Multiplier = "m",
+                Value = (int)gooseControlViewModel.MinTime,
+                Unit = "s"
+            };
             relatedGse.VlanId = gooseControlViewModel.VlanId.ToString();
             relatedGse.VlanPriority = (int)gooseControlViewModel.VlanPriority;
             if (isNew)

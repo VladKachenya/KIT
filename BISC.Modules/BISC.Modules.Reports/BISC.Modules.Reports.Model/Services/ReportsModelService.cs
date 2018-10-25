@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.Reports.Model.Services
 {
@@ -46,6 +47,43 @@ namespace BISC.Modules.Reports.Model.Services
 
             }
             return ReportControls;
+        }
+
+
+
+
+
+        public void DeleteAllReportsOfDevice(IDevice device)
+        {
+            var ldevices = _infoModelService.GetLDevicesFromDevices(device);
+            foreach (var lDevice in ldevices)
+            {
+                foreach (var logicalNode in lDevice.LogicalNodes)
+                {
+                    List<IReportControl> reportControlsToDelete = new List<IReportControl>();
+
+                    logicalNode.ChildModelElements.ForEach((element =>
+                    {
+                        if (element is IReportControl reportControl)
+                        {
+                            reportControlsToDelete.Add(reportControl);
+                        }
+                    }));
+                    reportControlsToDelete.ForEach((control => logicalNode.ChildModelElements.Remove(control)));
+                }
+                foreach (var element in lDevice.LogicalNodeZero.Value.ChildModelElements)
+                {
+                    List<IReportControl> reportControlsToDelete = new List<IReportControl>();
+
+                    if (element is IReportControl reportControl)
+                    {
+                        reportControlsToDelete.Add(reportControl);
+                    }
+                    reportControlsToDelete.ForEach((control => lDevice.LogicalNodeZero.Value.ChildModelElements.Remove(control)));
+
+                }
+
+            }
         }
     }
 }

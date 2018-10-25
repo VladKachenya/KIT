@@ -105,7 +105,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"DataSets устройства {_device.Name}", SaveСhangesCommand, _regionName));
+                $"DataSets устройства {_device.Name}", SaveСhangesCommand,_device.Name, _regionName));
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
         }

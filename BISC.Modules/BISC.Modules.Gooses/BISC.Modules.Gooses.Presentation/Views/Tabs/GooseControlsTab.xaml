@@ -13,6 +13,7 @@
         <converters:InverseConverter x:Key="inverseConverter"></converters:InverseConverter>
         <converters:IsNullToVisibilityConverter x:Key="IsNullToVisibilityConverter"></converters:IsNullToVisibilityConverter>
         <converters:BoolToVisConverter x:Key="boolToVisConverter"></converters:BoolToVisConverter>
+        <converters:BoolToVisConverter Invert="True" x:Key="boolToInVisConverter"></converters:BoolToVisConverter>
 
     </UserControl.Resources>
     <Grid>
@@ -40,8 +41,9 @@
                            </MenuItem>
                            </ContextMenu>
                         </Grid.ContextMenu>
-                       <ContentControl Background="Transparent" ToolTip="Динамический (редактируемый) блок управления GOOSE" Visibility="{Binding IsDynamic,Converter={StaticResource boolToVisConverter}}" Grid.Column="0" Width="15" Height="15" 
-                                       ></ContentControl>
+                        <ContentControl Background="Transparent" ContentTemplate="{StaticResource PencilIcon}" ToolTip="Динамический (редактируемый) блок управления GOOSE" Visibility="{Binding IsDynamic,Converter={StaticResource boolToVisConverter}}" Grid.Column="0" Width="15" Height="15" ></ContentControl>
+                        <ContentControl Background="Transparent" ContentTemplate="{StaticResource PencilLockIcon}" ToolTip="Статический блок управления GOOSE" Visibility="{Binding IsDynamic,Converter={StaticResource boolToInVisConverter}}" Grid.Column="0" Width="15" Height="15" ></ContentControl>
+
                        <TextBlock Grid.Column="1" Text="{Binding Name}"></TextBlock>
                    </Grid>
                </DataTemplate>

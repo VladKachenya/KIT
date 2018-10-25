@@ -94,10 +94,10 @@ namespace BISC.Modules.Gooses.Model.Services
                     string fixedOffs = gooseDtoObj.FixedOffs ? "1" : "0";
                     string minTime = gooseDtoObj.MinTime.ToString();
                     string maxTime = gooseDtoObj.MaxTime.ToString();
-                    string VlanPriority = gooseDtoObj.VlanPriority.ToString("X");
-                    string VlanId = gooseDtoObj.VlanId.ToString("X");
-                    string AppId = gooseDtoObj.AppId.ToString("X");
-                    string MacAddress = gooseDtoObj.MacAddress;
+                    string VlanPriority = gooseDtoObj.VlanPriority.ToString();
+                    string VlanId = gooseDtoObj.VlanId.ToString();
+                    string AppId = gooseDtoObj.AppId.ToString();
+                    string MacAddress = gooseDtoObj.MacAddress.Replace("-",String.Empty);
 
                     streamWriter.WriteLine($"GoCB({ld} {goCBName} {goId} {dataSet} {confRev} {fixedOffs} {minTime} {maxTime})");
                     streamWriter.WriteLine($"GoDA({VlanPriority} {VlanId} {AppId} {MacAddress})");

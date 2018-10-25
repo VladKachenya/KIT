@@ -63,7 +63,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <GroupBox x:Name="Border" Margin="50, 0, 50, 0" Header="Область редактирования отчётов"
+            <GroupBox x:Name="Border" Margin="3, 0, 3, 0" Header="Область редактирования отчётов"
                     BorderBrush="{DynamicResource MaterialDesignDivider}">
                     <StackPanel Orientation="Vertical" >
                     <Grid >
@@ -173,7 +173,7 @@
                                 </Border>
                             </StackPanel>
                         </GroupBox>
-                        <GroupBox Grid.Column="1" Margin="5" Header="Trigger options">
+                        <GroupBox  Grid.Column="1" Margin="5" Header="Trigger options">
                             <StackPanel Orientation="Vertical" >
                                 <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B"
                                         ToolTip="{x:Static ToolTipConstants:StringConstants.ReportControl_dchg_Description}">

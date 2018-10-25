@@ -4,9 +4,35 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BISC.Presentation.Views"
+             xmlns:tab="clr-namespace:BISC.Presentation.ViewModels.Tab"
+             xmlns:viewModels="clr-namespace:BISC.Presentation.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             MinWidth="300" MinHeight="150"
+             d:DataContext="{d:DesignInstance viewModels:UserInteractionOptionsViewModel, IsDesignTimeCreatable=False}">
+
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+
+        </Grid.RowDefinitions>
+
+        <TextBlock Margin="15" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding Title}"></TextBlock>
+        <TextBlock Margin="15,50,15,10" Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Message}">
+        </TextBlock>
+        <ItemsControl Margin="1" Grid.Row="2" ItemsSource="{Binding OptionCollection}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="viewModels:OptionSelectionCommand">
+                        <Button Margin="5" MinWidth="100" Content="{Binding OptionSignature}" Command="{Binding SelectionCommand}"></Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"></StackPanel>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
     </Grid>
 </UserControl>

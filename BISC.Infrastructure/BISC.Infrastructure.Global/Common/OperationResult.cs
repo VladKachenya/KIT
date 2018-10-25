@@ -39,7 +39,7 @@ namespace BISC.Infrastructure.Global.Common
 
     public class OperationResult<T>:OperationResult
     {
-        public T Item { get; }
+        public T Item { get; set; }
         public OperationResult(T resultItem, bool isSucceed = true,string error=null)
         {
             IsSucceed = isSucceed;

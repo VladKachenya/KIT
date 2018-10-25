@@ -49,11 +49,20 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 var gseOfGoose = gses.FirstOrDefault((gse => gse.CbName == gooseControl.Name));
                 if (gseOfGoose != null)
                 {
-                    gooseControlViewModel.AppId = uint.Parse(gseOfGoose.AppId,NumberStyles.HexNumber);
+                    if (gseOfGoose.AppId != null)
+                        gooseControlViewModel.AppId = uint.Parse(gseOfGoose.AppId);
                     gooseControlViewModel.MacAddress = gseOfGoose.MacAddress;
-                    gooseControlViewModel.MaxTime = (uint) gseOfGoose.MaxTime.Value.Value;
-                    gooseControlViewModel.MinTime = (uint) gseOfGoose.MinTime.Value.Value;
-                    gooseControlViewModel.VlanId = uint.Parse(gseOfGoose.VlanId);
+                    if (gseOfGoose.MaxTime.Value != null)
+                    {
+                        gooseControlViewModel.MaxTime = (uint) gseOfGoose.MaxTime.Value.Value;
+                    }
+
+                    if (gseOfGoose.MinTime.Value != null)
+                        gooseControlViewModel.MinTime = (uint) gseOfGoose.MinTime.Value.Value;
+
+                    if (gseOfGoose.VlanId != null) gooseControlViewModel.VlanId = uint.Parse(gseOfGoose.VlanId);
+                    if (gseOfGoose.VlanPriority != null) gooseControlViewModel.VlanPriority = (uint)gseOfGoose.VlanPriority;
+
                     gooseControlViewModel.VlanPriority = (uint) gseOfGoose.VlanPriority;
                     gooseControlViewModel.LdInst = gseOfGoose.LdInst;
 
@@ -84,8 +93,8 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             gooseControlViewModel.MacAddress = "01-0C-CD-01-00-00";
             gooseControlViewModel.VlanId = 0;
             gooseControlViewModel.VlanPriority = 4;
-            gooseControlViewModel.MaxTime = 10;
-            gooseControlViewModel.MinTime = 2000;
+            gooseControlViewModel.MaxTime = 2000;
+            gooseControlViewModel.MinTime = 10;
             gooseControlViewModel.ConfRev = 0;
 
             var ldevices = new List<ILDevice>();
