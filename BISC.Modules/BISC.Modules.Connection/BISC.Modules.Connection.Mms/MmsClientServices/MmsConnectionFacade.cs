@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
 using BISC.Modules.Connection.Infrastructure.Connection;
 using BISC.Modules.Connection.MMS.MMS_ASN1_Model;
+using BISC.Modules.Reports.Infrastructure.Model;
+using BISC.Modules.Reports.Model.Model;
 using Microsoft.Practices.ObjectBuilder2;
 
 namespace BISC.Modules.Connection.MMS.MmsClientServices
@@ -325,6 +327,90 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
 
 
             return new OperationResult<List<GooseDto>>(gooseDtos);
+        }
+
+        public async Task<OperationResult<List<IReportControl>>> GetListReportsAsync(string fullLdPath, string lnName, string deviceName, string reportType)
+        {
+            List<IReportControl> reportDtos = new List<IReportControl>();
+            MMSpdu recievedMmSpdu =
+                (await new ReadingValuesClientService(_state).SendReadAsync(fullLdPath, lnName, reportType));
+            if (recievedMmSpdu.Confirmed_ResponsePDU.Service.Read == null) return new OperationResult<List<IReportControl>>("");
+            AccessResult accessResult = recievedMmSpdu.Confirmed_ResponsePDU.Service.Read.ListOfAccessResult.First();
+            if (accessResult.Success == null && !accessResult.Success.isStructureSelected()) return new OperationResult<List<IReportControl>>("");
+            var r = (await GetMmsTypeDescription(fullLdPath, lnName, true)).Item.Components;
+            var typeDescriptionForFc =
+                (await GetMmsTypeDescription(fullLdPath, lnName, true)).Item.Components.First(
+                    (description => description.Name == reportType));
+            //for (int i = 0; i < typeDescriptionForFc.Components.Count; i++)
+            //{
+            //    IReportControl reportDto = new ReportControl();
+            //    reportDto.Name = typeDescriptionForFc.Components.ToArray()[i].Name;
+
+            //    var typeDescriptionForReport = typeDescriptionForFc.Components.ToArray()[i];
+            //    var dataForReport = accessResult.Success.Structure.ToArray()[i];
+
+            //    int index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(),
+            //        (type =>
+            //            type.TypeName == "RptID"));
+            //    reportDto.rptID = dataForReport.Structure.ToArray()[index].Visible_string;
+
+            //    index = Array.FindIndex(typeDescriptionForReport.Structure.Components.ToArray(), (type =>
+            //        type.ComponentName.Value == "RptEna"));
+            //    reportDto.RptEna = dataForReport.Structure.ToArray()[index].Boolean;
+
+            //    //index = Array.FindIndex(typeDescriptionForReport.Structure.Components.ToArray(), (type =>
+            //    //    type.ComponentName.Value == "Resv"));
+            //    //reportControl.reasonCode = dataForReport.Structure.ToArray()[index].Boolean;
+
+
+            //    index = Array.FindIndex(typeDescriptionForReport.Structure.Components.ToArray(), (type =>
+            //        type.ComponentName.Value == "DatSet"));
+            //    reportDto.datSet = dataForReport.Structure.ToArray()[index].Visible_string.Split('$').Last();
+
+
+            //    index = Array.FindIndex(typeDescriptionForReport.Structure.Components.ToArray(), (type =>
+            //        type.ComponentName.Value == "ConfRev"));
+            //    reportDto.ConfRev = (uint)dataForReport.Structure.ToArray()[index].Integer;
+
+            //    index = Array.FindIndex(typeDescriptionForReport.Structure.Components.ToArray(), (type =>
+            //        type.ComponentName.Value == "OptFlds"));
+            //    reportDto.OptFields =
+            //        new tReportControlOptFields(dataForReport.Structure.ToArray()[index].Bit_string.Value
+            //            .ReportOptionsFromBytes());
+
+            //    index = Array.FindIndex(typeDescriptionForReport.Structure.Components.ToArray(), (type =>
+            //        type.ComponentName.Value == "BufTm"));
+            //    reportDto.BufTime = (uint)dataForReport.Structure.ToArray()[index].Unsigned;
+
+            //    //index = Array.FindIndex(typeDescriptionForReport.Structure.Components.ToArray(), (type =>
+            //    //    type.ComponentName.Value == "SqNum"));
+            //    //reportControl. = (uint)dataForReport.Structure.ToArray()[index].Integer;
+
+            //    index = Array.FindIndex(typeDescriptionForReport.Structure.Components.ToArray(), (type =>
+            //        type.ComponentName.Value == "TrgOps"));
+
+            //    reportDto.TrgOps = new tTrgOps((dataForReport.Structure.ToArray()[index].Bit_string.Value.TriggerOptionsFromBytes()));
+
+            //    index = Array.FindIndex(typeDescriptionForReport.Structure.Components.ToArray(), (type =>
+            //        type.ComponentName.Value == "IntgPd"));
+            //    reportDto.IntgPd = (uint)dataForReport.Structure.ToArray()[index].Unsigned;
+
+
+            //    index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
+            //        type.TypeName == "GI"));
+            //    reportDto. = dataForReport.Structure.ToArray()[index].Boolean;
+
+
+            //    if (reportType == "RP")
+            //    {
+            //        reportDto.Buffered = false;
+            //    }
+            //    else
+            //    {
+            //        reportDto.Buffered = true;
+            //    }
+            //}
+            return new OperationResult<List<IReportControl>>(reportDtos);
         }
 
         public async Task<OperationResult> DeleteDataSet(string ln, string ld, string ied, string name)

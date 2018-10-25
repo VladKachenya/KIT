@@ -52,6 +52,7 @@ namespace BISC.Presentation.Services
         {
             if (_tabViewModelsDictionary.ContainsKey(owner))
             {
+                _tabViewModelsDictionary[owner].Dispose();
                 _tabHostViewModel.TabViewModels.Remove(_tabViewModelsDictionary[owner]);
                 _tabViewModelsDictionary.Remove(owner);
                 _saveCheckingService.RemoveSaveCheckingEntityByOwner(owner.ItemId.ToString());
@@ -63,6 +64,7 @@ namespace BISC.Presentation.Services
             var tabVm = _tabViewModelsDictionary.FirstOrDefault((pair => pair.Value.TabRegionName.ToString() == regioId));
             if (tabVm.Value!=null)
             {
+                tabVm.Value.Dispose();
                 _tabHostViewModel.TabViewModels.Remove(tabVm.Value);
                 _tabViewModelsDictionary.Remove(tabVm.Key);
                 _saveCheckingService.RemoveSaveCheckingEntityByOwner(regioId);

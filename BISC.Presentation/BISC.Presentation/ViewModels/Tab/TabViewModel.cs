@@ -66,6 +66,18 @@ namespace BISC.Presentation.ViewModels.Tab
 
         public ICommand CloseFragmentCommand { get; }
 
+        #region Overrides of ViewModelBase
+
+        protected override void OnDisposing()
+        {
+            _globalEventsService.Unsubscribe<SaveCheckEvent>(OnSaveCheck);
+
+            base.OnDisposing();
+
+        }
+
+        #endregion
+
         #endregion
     }
 }

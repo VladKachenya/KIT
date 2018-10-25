@@ -34,7 +34,7 @@ namespace BISC.Modules.Reports.Model.Services
 
         public void Dispose()
         {
-            
+
         }
 
         #endregion
@@ -55,7 +55,7 @@ namespace BISC.Modules.Reports.Model.Services
                 foreach (var definition in definitions)
                 {
                     var parts = definition.Split('$');
-                    if ((parts.Length == 3) && (parts[1] == "RP" || parts[1] == "BR"))
+                    if ((parts.Length == 2) && (parts[1] == "RP" || parts[1] == "BR"))
                     {
                         if (_ldReportsDictionary.ContainsKey(lDevice))
                         {
@@ -74,15 +74,31 @@ namespace BISC.Modules.Reports.Model.Services
             return count;
         }
 
-        public Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel,
+        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel,
             CancellationToken cancellationToken)
         {
-            //var connection = _connectionPoolService.GetConnection(device.Ip);
-            //_reportsModelService.DeleteAllReportsOfDevice(device);
-            throw new AbandonedMutexException();
+            var connection = _connectionPoolService.GetConnection(device.Ip);
+            _reportsModelService.DeleteAllReportsOfDevice(device);
+            if (!_ldReportsDictionary.Values.Any()) return;
+
+            foreach (var ldevice in _ldReportsDictionary.Keys)
+            {
+
+                foreach (var reportString in _ldReportsDictionary[ldevice])
+                {
+                    var reportStringParts = reportString.Split('$');
+                    if (reportStringParts.Length != 2) continue;
+                    var res = await connection.MmsConnection.GetListReportsAsync(ldevice, reportStringParts[0], device.Name, reportStringParts[1]);
+
+
+
+
+                }
+            }
+
         }
 
-        public int Priority { get; }
+        public int Priority => 20;
 
         #endregion
     }

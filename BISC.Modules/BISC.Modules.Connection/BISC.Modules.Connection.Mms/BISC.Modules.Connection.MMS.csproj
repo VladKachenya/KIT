@@ -176,6 +176,7 @@
     <Compile Include="MmsClientServices\MmsClientServiceBase.cs" />
     <Compile Include="MmsClientServices\MmsConnectionFacade.cs" />
     <Compile Include="MmsClientServices\ReadingValuesClientService.cs" />
+    <Compile Include="MmsClientServices\ReportClientService.cs" />
     <Compile Include="MMS_ASN1_Model\MMSpdu.cs" />
     <Compile Include="Module\ConnectionMmsModule.cs" />
     <Compile Include="org\bn\attributes\ASN1Any.cs" />
@@ -718,6 +719,22 @@
     <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
       <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
       <Name>BISC.Infrastructure.Global</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Global\BISC.Model.Global.csproj">
+      <Project>{FCA3F7FE-D64B-4C3C-9F8D-85753FC944BE}</Project>
+      <Name>BISC.Model.Global</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
+      <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
+      <Name>BISC.Model.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.Reports\BISC.Modules.Reports.Infrastructure\BISC.Modules.Reports.Infrastructure.csproj">
+      <Project>{D1B96DC2-63D6-4726-9CFF-9C88E1315834}</Project>
+      <Name>BISC.Modules.Reports.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.Reports\BISC.Modules.Reports.Model\BISC.Modules.Reports.Model.csproj">
+      <Project>{9BBA1EE8-4D1E-4520-8468-3458DBB155F6}</Project>
+      <Name>BISC.Modules.Reports.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
       <Project>{84925CA6-959A-4094-9688-622DC28B7452}</Project>

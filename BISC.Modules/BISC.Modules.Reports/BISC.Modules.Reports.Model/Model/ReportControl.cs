@@ -29,6 +29,7 @@ namespace BISC.Modules.Reports.Model.Model
         public ChildModelProperty<ITrgOps> TrgOps => new ChildModelProperty<ITrgOps>(this, ReportsKeys.ReportsModelKeys.TrgOpsModelKey);
         public ChildModelProperty<IOptFields> OptFields => new ChildModelProperty<IOptFields>(this, ReportsKeys.ReportsModelKeys.OptFieldsModelKey);
         public ChildModelProperty<IRptEnabled> RptEnabled => new ChildModelProperty<IRptEnabled>(this, ReportsKeys.ReportsModelKeys.RptEnabledModelKey);
+       
 
         public override bool ModelElementCompareTo(IModelElement obj)
         {
