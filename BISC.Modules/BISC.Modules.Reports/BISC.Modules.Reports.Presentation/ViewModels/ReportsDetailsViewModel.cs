@@ -124,7 +124,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _userInterfaceComposingService.AddGlobalCommand(AddNewReportCommand, $"Добавить Report {_device.Name}", IconsKeys.AddIconKey, false, true);
-            _userInterfaceComposingService.AddGlobalCommand(UndoChangesCommad, $"Отменить изменения Reports {_device.Name}", IconsKeys.CloseCircleIconKey, false, true);
+            _userInterfaceComposingService.AddGlobalCommand(UndoChangesCommad, $"Сопоставить Reports с моделью устройства {_device.Name}", IconsKeys.CloseCircleIconKey, false, true);
 
             //_globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnActivate();
