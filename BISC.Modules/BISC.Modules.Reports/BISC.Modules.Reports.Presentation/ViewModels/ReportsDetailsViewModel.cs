@@ -72,6 +72,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         private void OnAddNewReportCommand()
         {
+            _loggingService.LogUserAction($"Пользователь добавил Report устройства {_device.Name}");
             ReportControlViewModels.Add(_reportControlFactoryViewModel.CreateReportViewModel(ReportControlViewModels.Select((model => model.ReportID)).ToList(),_device));
         }
 

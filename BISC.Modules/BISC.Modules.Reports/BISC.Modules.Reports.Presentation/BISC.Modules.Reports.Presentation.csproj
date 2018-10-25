@@ -60,55 +60,20 @@
     <Compile Include="ViewModels\ReportElementsViewModels\TriggerOptionsViewModel.cs" />
     <Compile Include="ViewModels\ReportsDetailsViewModel.cs" />
     <Compile Include="ViewModels\ReportsTreeItemViewModel.cs" />
-    <Compile Include="Views\Controls\NameBoolValueControl.xaml.cs">
-      <DependentUpon>NameBoolValueControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Controls\NameStringValueControl.xaml.cs">
-      <DependentUpon>NameStringValueControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ReportAddingVeiw.xaml.cs">
-      <DependentUpon>ReportAddingVeiw.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ReportEditingView.xaml.cs">
-      <DependentUpon>ReportEditingView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ReportsDetailsView.xaml.cs">
       <DependentUpon>ReportsDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ReportsTreeItemView.xaml.cs">
       <DependentUpon>ReportsTreeItemView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ReportViewModel.xaml.cs">
-      <DependentUpon>ReportViewModel.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Page Include="Views\Controls\NameBoolValueControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Controls\NameStringValueControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ReportAddingVeiw.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ReportEditingView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ReportsDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ReportsTreeItemView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ReportViewModel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

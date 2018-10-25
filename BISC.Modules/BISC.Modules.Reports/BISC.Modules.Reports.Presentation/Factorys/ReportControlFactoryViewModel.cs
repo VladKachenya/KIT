@@ -53,12 +53,12 @@ namespace BISC.Modules.Reports.Presentation.Factorys
         public IReportControlViewModel CreateReportViewModel(List<string> existingNames, IDevice device)
         {
             var reportsName = existingNames.Select(repId => repId.Split('$','/','.')[2]);
+            var model = _reportControlsFactory.GetReportControl();
+            model.Name = GetUniqueNameOfReport(reportsName);
             IReportControlViewModel newReport = _injectionContainer.ResolveType<IReportControlViewModel>();
             var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
             newReport.AvailableDatasets = datasets.Select((ds => ds.Name)).ToList();
-            newReport.Model = _reportControlsFactory.GetReportControl();
-            newReport.Name = GetUniqueNameOfReport(reportsName);
-            newReport.UpdateModel();
+            newReport.Model = model;
             newReport.ActivateElement();
             return newReport;
         }

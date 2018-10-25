@@ -69,6 +69,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             get => _name;
             set
             {
+                if (value.Length > 20) return;
                 SetProperty(ref _name, value);
                 SetRoportID();
             }
