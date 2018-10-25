@@ -33,7 +33,7 @@ namespace BISC.Modules.Reports.Presentation.Module
             _injectionContainer.ResolveType<IUiFromModelElementRegistryService>().RegisterModelElement(_injectionContainer.ResolveType<ReportsUiHandlingService>(), "IED");
             _injectionContainer.RegisterType<IReportControlViewModel, ReportControlViewModel>();
             //ReportsDetailsView
-            _injectionContainer.RegisterType<object, ReportAddingVeiw>(ReportsKeys.ReportsPresentationKeys.ReportsDetailsView);
+            _injectionContainer.RegisterType<object, ReportsDetailsView>(ReportsKeys.ReportsPresentationKeys.ReportsDetailsView);
             _injectionContainer.RegisterType<object, ReportsTreeItemView>(ReportsKeys.ReportsPresentationKeys.ReportsTreeItemView);
             _injectionContainer.RegisterType<object, ReportEditingView>(ReportsKeys.ReportsPresentationKeys.ReportEditingView);
             _injectionContainer.RegisterType<object, ReportAddingVeiw>(ReportsKeys.ReportsPresentationKeys.ReportsAddingView);

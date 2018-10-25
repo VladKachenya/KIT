@@ -59,26 +59,26 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private async void OnSaveСhangesCommand()
         {
             _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
-            await _reportControlSavingService.SaveReportControls(ReportControlsViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            await _reportControlSavingService.SaveReportControls(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _reportControlsModel = _reportsModelService.GetAllReportControlsOfDevice(_device);
-            ReportControlsViewModels = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device);
+            ReportControlViewModels = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device);
             ChangeTracker.AcceptChanges();
         }
 
         private void ResetAllCollections()
         {
             _reportControlsModel.Clear();
-            ReportControlsViewModels.Clear();
+            ReportControlViewModels.Clear();
         }
 
         private void OnAddNewReportCommand()
         {
-            ReportControlsViewModels.Add(_reportControlFactoryViewModel.GetReportControlViewModel(_device));
+            ReportControlViewModels.Add(_reportControlFactoryViewModel.GetReportControlViewModel(_device));
         }
 
         private void OnUndoChanges()
         {
-            foreach (var element in ReportControlsViewModels)
+            foreach (var element in ReportControlViewModels)
                 element.UpdateViewModel();
             ChangeTracker.AcceptChanges();
         }
@@ -86,7 +86,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         #endregion
 
         #region public interface
-        public ObservableCollection<IReportControlViewModel> ReportControlsViewModels
+        public ObservableCollection<IReportControlViewModel> ReportControlViewModels
         {
             get => _reportControlViewModels;
             protected set => SetProperty(ref _reportControlViewModels, value);
@@ -107,7 +107,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             _reportControlsModel = _reportsModelService.GetAllReportControlsOfDevice(_device);
-            ReportControlsViewModels = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device);
+            ReportControlViewModels = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device);
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
