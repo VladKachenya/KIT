@@ -26,7 +26,18 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         public int Max
         {
             get => _max;
-            set => SetProperty(ref _max, value);
+            set
+            {
+                if (value < 1)
+                {
+                    value = 1;
+                }
+                if (value > 3)
+                {
+                    value = 3;
+                }
+                SetProperty(ref _max, value);
+            }
         }
         public IRptEnabled Model
         {

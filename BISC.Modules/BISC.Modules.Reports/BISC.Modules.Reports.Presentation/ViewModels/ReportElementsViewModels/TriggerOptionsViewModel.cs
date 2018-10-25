@@ -38,8 +38,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         }
         public bool DataUpdate
         {
-            get => _dataChange;
-            set => SetProperty(ref _dataChange, value);
+            get => _dataUpdate;
+            set => SetProperty(ref _dataUpdate, value);
         }
         public bool Integrity
         {

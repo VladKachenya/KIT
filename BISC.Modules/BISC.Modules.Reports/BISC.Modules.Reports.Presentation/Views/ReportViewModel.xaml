@@ -12,7 +12,7 @@
         <localConverters:BoolianToBufferidStringConverter x:Key="boolianToBufferidStringConverter"/>
     </UserControl.Resources>
     <Grid>
-        <Border x:Name="Border"
+        <!--<Border x:Name="Border"
             BorderThickness="1 0 0 1"
             BorderBrush="{DynamicResource MaterialDesignDivider}">
             <Grid>
@@ -92,7 +92,7 @@
                         </StackPanel>
                     </Border>
                 </Expander>
-            </Grid>
-        </Border>
+            </Grid>-->
+        <!--</Border>-->
     </Grid>
 </UserControl>

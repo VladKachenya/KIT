@@ -13,7 +13,7 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.Factorys
     public interface IReportControlFactoryViewModel
     {
         IReportControlViewModel GetReportControlViewModel(IReportControl model, IDevice device);
-        IReportControlViewModel GetReportControlViewModel(IDevice device);
+        IReportControlViewModel CreateReportViewModel(List<string> existingNames, IDevice device);
 
         ObservableCollection<IReportControlViewModel> GetReportControlsViewModel ( List<IReportControl> modelsList, IDevice device);
     }

@@ -48,9 +48,40 @@ namespace BISC.Modules.Reports.Presentation.Factorys
             newReport.ActivateElement();
             return newReport;
         }
-        public IReportControlViewModel GetReportControlViewModel(IDevice device)
+
+
+        public IReportControlViewModel CreateReportViewModel(List<string> existingNames, IDevice device)
         {
-            return GetReportControlViewModel(_reportControlsFactory.GetReportControl(), device);
+            var reportsName = existingNames.Select(repId => repId.Split('$')[2]);
+            IReportControlViewModel newReport = _injectionContainer.ResolveType<IReportControlViewModel>();
+            var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
+            newReport.AvailableDatasets = datasets.Select((ds => ds.Name)).ToList();
+            newReport.Model = _reportControlsFactory.GetReportControl();
+            newReport.Name = GetUniqueNameOfReport(reportsName);
+            newReport.UpdateModel();
+            newReport.ActivateElement();
+            return newReport;
+        }
+
+        private string GetUniqueNameOfReport(IEnumerable<string> existingNames)
+        {
+            string nameBody = "NewReport";
+            string result;
+            int i = 0;
+            bool isFind;
+            do
+            {
+                i++;
+                result = nameBody + i.ToString();
+                isFind = false;
+                foreach (var element in existingNames)
+                {
+                    if (result == element)
+                        isFind = true;
+                }
+            } while (isFind);
+
+            return result;
         }
     }
 }

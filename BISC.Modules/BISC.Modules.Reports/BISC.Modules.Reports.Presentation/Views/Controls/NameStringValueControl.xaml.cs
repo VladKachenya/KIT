@@ -20,37 +20,37 @@ namespace BISC.Modules.Reports.Presentation.Views.Controls
     /// </summary>
     public partial class NameStringValueControl : UserControl
     {
-        public static readonly DependencyProperty TextOfNameProperty = 
-            DependencyProperty.Register("TextOfName", typeof(string), typeof(NameStringValueControl), new PropertyMetadata(TextOfNamePropertyChenged));
+        //public static readonly DependencyProperty TextOfNameProperty = 
+        //    DependencyProperty.Register("TextOfName", typeof(string), typeof(NameStringValueControl), new PropertyMetadata(TextOfNamePropertyChenged));
 
-        public static readonly DependencyProperty TextOfValueProperty =
-            DependencyProperty.Register("TextOfValue", typeof(string), typeof(NameStringValueControl), new PropertyMetadata(TextOfValuePropertyChenged));
+        //public static readonly DependencyProperty TextOfValueProperty =
+        //    DependencyProperty.Register("TextOfValue", typeof(string), typeof(NameStringValueControl), new PropertyMetadata(TextOfValuePropertyChenged));
         public NameStringValueControl()
         {
             InitializeComponent();
         }   
 
-        public string TextOfName
-        {
-            get { return (string)GetValue(TextOfNameProperty); }
-            set { SetValue(TextOfNameProperty, value); }
-        }
+        //public string TextOfName
+        //{
+        //    get { return (string)GetValue(TextOfNameProperty); }
+        //    set { SetValue(TextOfNameProperty, value); }
+        //}
 
-        public string TextOfValue
-        {
-            get { return (string)GetValue(TextOfValueProperty); }
-            set { SetValue(TextOfValueProperty, value); }
-        }
+        //public string TextOfValue
+        //{
+        //    get { return (string)GetValue(TextOfValueProperty); }
+        //    set { SetValue(TextOfValueProperty, value); }
+        //}
 
-        private static void TextOfNamePropertyChenged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as NameStringValueControl).NameTextBox.Text = e.NewValue.ToString();
-        }
+        //private static void TextOfNamePropertyChenged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //{
+        //    (d as NameStringValueControl).NameTextBox.Text = e.NewValue.ToString();
+        //}
 
-        private static void TextOfValuePropertyChenged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as NameStringValueControl).ValueTextBox.Text = e.NewValue?.ToString();
-        }
+        //private static void TextOfValuePropertyChenged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //{
+        //    (d as NameStringValueControl).ValueTextBox.Text = e.NewValue?.ToString();
+        //}
 
     }
 }

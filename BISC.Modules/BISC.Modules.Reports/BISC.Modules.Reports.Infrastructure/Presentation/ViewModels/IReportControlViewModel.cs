@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
@@ -14,13 +15,15 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
         string ElementName { get; }
         Brush TypeColorBrush { get; }
         string Name { get; set; }
-        string ReportID { get; set; }
+        string ReportID { get;}
         bool IsBuffered { get; set; }
         int BufferTime { get; set; }
         string SelectidDataSetName { get; set; }
         List<string> AvailableDatasets { get; set; }
         bool IsDynamic { get; }
         int IntegrutyPeriod { get; set; }
+
+        ICommand UndoChengestCommand { get; }
 
         IReportEnabledViewModel ReportEnabledViewModel { get; }
         ITriggerOptionsViewModel TriggerOptionsViewModel { get; }

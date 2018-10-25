@@ -2,11 +2,13 @@
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Factories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
@@ -21,21 +23,34 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private string _dataSetName;
         private int _integrutyPeriod;
         private List<String> _availableDatasets;
+        private IReportEnabledViewModel _reportEnabledViewModel;
+        private ITriggerOptionsViewModel _triggerOptionsViewModel;
+        private IOprionalFildsViewModel _oprionalFildsViewModel;
+        
 
 
         #region ctor
         public ReportControlViewModel(IReportEnabledViewModel reportEnabledViewModel, ITriggerOptionsViewModel triggerOptionsViewModel,
-            IOprionalFildsViewModel oprionalFildsViewModel, IGlobalEventsService globalEventsService)
+            IOprionalFildsViewModel oprionalFildsViewModel, IGlobalEventsService globalEventsService, ICommandFactory commandFactory)
         {
             ReportEnabledViewModel = reportEnabledViewModel;
             TriggerOptionsViewModel = triggerOptionsViewModel;
             OprionalFildsViewModel = oprionalFildsViewModel;
-
+            UndoChengestCommand = commandFactory.CreatePresentationCommand(UpdateViewModel);
         }
         #endregion
 
         #region private methods
 
+        private void SetRoportID()
+        {
+            if (IsDynamic)
+            { 
+                string buf = _isBuffered ? "BR" : "RP";
+                _reportID = $"LLN0${buf}${_name}";
+                OnPropertyChanged(nameof(ReportID));
+            }
+        }
 
         #endregion
 
@@ -52,17 +67,24 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         public string Name
         {
             get => _name;
-            set => SetProperty(ref _name, value);
+            set
+            {
+                SetProperty(ref _name, value);
+                SetRoportID();
+            }
         }
         public string ReportID
         {
             get => _reportID;
-            set => SetProperty(ref _reportID, value);
         }
         public bool IsBuffered
         {
             get => _isBuffered;
-            set => SetProperty(ref _isBuffered, value);
+            set
+            {
+                SetProperty(ref _isBuffered, value);
+                SetRoportID();
+            }
         }
         public int BufferTime
         {
@@ -81,14 +103,30 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         public int IntegrutyPeriod
         {
             get => _integrutyPeriod;
-            set => SetProperty(ref _integrutyPeriod, value);
+            set
+            {
+                SetProperty(ref _integrutyPeriod, value);
+            }
         }
 
         public bool IsDynamic => _model.IsDynamic;
+        public ICommand UndoChengestCommand { get; }
 
-        public IReportEnabledViewModel ReportEnabledViewModel { get; }
-        public ITriggerOptionsViewModel TriggerOptionsViewModel { get; }
-        public IOprionalFildsViewModel OprionalFildsViewModel { get; }
+        public IReportEnabledViewModel ReportEnabledViewModel
+        {
+            get => _reportEnabledViewModel;
+            protected set => SetProperty(ref _reportEnabledViewModel, value);
+        }
+        public ITriggerOptionsViewModel TriggerOptionsViewModel
+        {
+            get => _triggerOptionsViewModel;
+            protected set => SetProperty(ref _triggerOptionsViewModel, value);
+        }
+        public IOprionalFildsViewModel OprionalFildsViewModel
+        {
+            get => _oprionalFildsViewModel;
+            protected set => SetProperty(ref _oprionalFildsViewModel, value);
+        }
         public IReportControl Model
         {
             get => _model;
@@ -110,8 +148,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             OprionalFildsViewModel.ActivateElement();
         }
 
-        //public string PrefixName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
         public void UpdateModel()
         {
             _model.Name = Name;
@@ -120,22 +156,22 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             _model.BufTime = BufferTime;
             _model.DataSet = SelectidDataSetName;
             _model.IntgPd = IntegrutyPeriod;
-            //ReportEnabledViewModel.UpdateModel();
-            //TriggerOptionsViewModel.UpdateModel();
-            //OprionalFildsViewModel.UpdateModel();
+            ReportEnabledViewModel.UpdateModel();
+            TriggerOptionsViewModel.UpdateModel();
+            OprionalFildsViewModel.UpdateModel();
         }
 
         public void UpdateViewModel()
         {
+            this._reportID = _model.RptID;
             this.Name = _model.Name;
-            this.ReportID = _model.RptID;
             this.IsBuffered = _model.Buffered;
             this.BufferTime = _model.BufTime;
             this.SelectidDataSetName = _model.DataSet;
             this.IntegrutyPeriod = _model.IntgPd;
-            //ReportEnabledViewModel.UpdateViewModel();
-            //TriggerOptionsViewModel.UpdateViewModel();
-            //OprionalFildsViewModel.UpdateViewModel();
+            ReportEnabledViewModel.UpdateViewModel();
+            TriggerOptionsViewModel.UpdateViewModel();
+            OprionalFildsViewModel.UpdateViewModel();
         }
         #endregion
 

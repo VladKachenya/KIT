@@ -59,9 +59,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private async void OnSaveСhangesCommand()
         {
             _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
-            await _reportControlSavingService.SaveReportControls(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
-            _reportControlsModel = _reportsModelService.GetAllReportControlsOfDevice(_device);
-            ReportControlViewModels = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device);
+            //await _reportControlSavingService.SaveReportControls(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            GetReportsFromDevice();
             ChangeTracker.AcceptChanges();
         }
 
@@ -73,14 +72,19 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         private void OnAddNewReportCommand()
         {
-            ReportControlViewModels.Add(_reportControlFactoryViewModel.GetReportControlViewModel(_device));
+            ReportControlViewModels.Add(_reportControlFactoryViewModel.CreateReportViewModel(ReportControlViewModels.Select((model => model.ReportID)).ToList(),_device));
         }
 
         private void OnUndoChanges()
         {
-            foreach (var element in ReportControlViewModels)
-                element.UpdateViewModel();
+            GetReportsFromDevice();
             ChangeTracker.AcceptChanges();
+        }
+
+        private void GetReportsFromDevice()
+        {
+            _reportControlsModel = _reportsModelService.GetAllReportControlsOfDevice(_device);
+            ReportControlViewModels = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device);
         }
 
         #endregion
@@ -106,8 +110,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
-            _reportControlsModel = _reportsModelService.GetAllReportControlsOfDevice(_device);
-            ReportControlViewModels = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device);
+            GetReportsFromDevice();
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,

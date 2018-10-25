@@ -13,7 +13,7 @@ namespace BISC.Modules.Reports.Model.Services
     {
         public Task SaveReportControls(List<IReportControlViewModel> ReportsToSave, IModelElement device, bool isSavingInDevice)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

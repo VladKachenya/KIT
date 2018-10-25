@@ -8,11 +8,6 @@
              x:Name="RootElement"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B" >
-            <StackPanel Orientation="Horizontal">
-                <TextBlock x:Name="NameTextBox" Margin="5" HorizontalAlignment="Center"/>
-                <TextBox x:Name="ValueTextBox" Margin="5, 0" TextAlignment="Center" MinWidth="10"/>
-            </StackPanel>
-        </Border>
+
     </Grid>
 </UserControl>
