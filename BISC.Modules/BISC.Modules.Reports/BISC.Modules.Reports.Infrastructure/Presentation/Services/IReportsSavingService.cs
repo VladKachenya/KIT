@@ -10,6 +10,6 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.Services
 {
     public interface IReportsSavingService
     {
-        Task SaveReports(List<IReportControlViewModel> reportsToSave, IModelElement device, bool isSavingInDevice);
+        Task SaveReportsAsync(List<IReportControlViewModel> reportsToSave, IModelElement device, bool isSavingInDevice);
     }
 }

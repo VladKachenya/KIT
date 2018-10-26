@@ -1,4 +1,5 @@
-﻿using BISC.Infrastructure.Global.Services;
+﻿using BISC.Infrastructure.Global.Logging;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
@@ -6,6 +7,8 @@ using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
+using BISC.Modules.Reports.Infrastructure.Factorys;
+using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.Services;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Infrastructure.Services;
@@ -23,10 +26,11 @@ namespace BISC.Modules.Reports.Presentation.Services
         IInfoModelService _infoModelService;
         ILoggingService _loggingService;
         IConnectionPoolService _connectionPoolService;
-        ISclCommunicationModelService _sclCommunicationModel;
+        ISclCommunicationModelService _sclCommunicationModelService;
         IBiscProject _biscProject;
         IProjectService _projectService;
         IReportsModelService _reportsModelService;
+        IReportControlsFactory _IReportControlsFactory;
         #endregion
 
         #region Ctor
@@ -36,7 +40,7 @@ namespace BISC.Modules.Reports.Presentation.Services
             _infoModelService = infoModelService;
             _loggingService = loggingService;
             _connectionPoolService = connectionPoolService;
-            _sclCommunicationModel = sclCommunicationModelService;
+            _sclCommunicationModelService = sclCommunicationModelService;
             _biscProject = biscProject;
             _projectService = projectService;
             _reportsModelService = reportModelService;
@@ -44,7 +48,7 @@ namespace BISC.Modules.Reports.Presentation.Services
         #endregion
 
         #region Implementation of IReportsSavingService
-        public Task SaveReports(List<IReportControlViewModel> reportsToSave, IModelElement device, bool isSavingInDevice)
+        public async Task SaveReportsAsync(List<IReportControlViewModel> reportsToSave, IModelElement device, bool isSavingInDevice)
         {
             try
             {
@@ -58,7 +62,7 @@ namespace BISC.Modules.Reports.Presentation.Services
                         var ldevice = ln.ParentModelElement as IDevice;
                         if (isSavingInDevice)
                         {
-                            //выполнить комуникацию с устройством
+                            await Task.Run(() => null);
                         }
                         ln.ChildModelElements.Remove(reportControlsInDevise.First(element => (element.RptID == reportControlInDevise.RptID)));
                     }
@@ -67,18 +71,37 @@ namespace BISC.Modules.Reports.Presentation.Services
                 foreach (IReportControlViewModel reportToSave in reportsToSave)
                 {
                     if (!reportToSave.ChangeTracker.GetIsModifiedRecursive()) continue;
-                    //var lDevice = _infoModelService.GetLDevicesFromDevices(device)
-                    //    .FirstOrDefault((ld => ld.Inst == reportToSave.))
+                    var lDevice = _infoModelService.GetLDevicesFromDevices(device)
+                        .FirstOrDefault((ld => ld.Inst == reportToSave.ParentLdName));
+                    var lNode = lDevice.AlLogicalNodes
+                        .FirstOrDefault(node => node.Name == reportToSave.ParentLnName);
+                    if (!reportToSave.IsDynamic)
+                    {
+                        if (reportControlsInDevise.Any(rep => rep.RptID == reportToSave.ReportID))
+                        {
+                            if (isSavingInDevice)
+                            {
+                                //выполнение коммуникации с устройством
+                            }
+                            lNode.ChildModelElements.Remove(reportControlsInDevise.FirstOrDefault(rep => rep.RptID == reportToSave.ReportID));
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                    reportToSave.UpdateModel();
+                    reportToSave.Model.ParentModelElement = lNode;
                 }
-
-
-
+                _projectService.SaveCurrentProject();
+                _loggingService.LogMessage($"Reports устройства {(device as IDevice).Name} успешно сохранены",
+                    SeverityEnum.Info);
             }
-            catch
+            catch (Exception e)
             {
-
+                _loggingService.LogMessage($"Reports устройства {(device as IDevice).Name} сохранены c ошибкой: {e.Message}",
+                    SeverityEnum.Warning);
             }
-            throw new Exception();
         }
         #endregion
     }

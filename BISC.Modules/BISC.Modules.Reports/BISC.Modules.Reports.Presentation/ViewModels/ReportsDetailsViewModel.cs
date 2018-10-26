@@ -63,7 +63,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private async void OnSaveСhangesCommand()
         {
             _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
-            await _reportsSavingService.SaveReports(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            await _reportsSavingService.SaveReportsAsync(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             GetReportsFromDevice();
             ChangeTracker.AcceptChanges();
         }

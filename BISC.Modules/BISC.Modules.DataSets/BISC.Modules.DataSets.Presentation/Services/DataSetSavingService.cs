@@ -113,9 +113,6 @@ namespace BISC.Modules.DataSets.Presentation.Services
                     }
                 }
 
-
-
-
                 foreach (var dataSetToSave in dataSetsToSave)
                 {
                     if (dataSetToSave.IsEditeble)

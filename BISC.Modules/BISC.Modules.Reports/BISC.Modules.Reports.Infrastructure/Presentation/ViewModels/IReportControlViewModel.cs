@@ -14,8 +14,8 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
 {
     public interface IReportControlViewModel : IReportElementBase<IReportControl>
     {
-        string ParentLd { get;}
-        string ParentLn { get;}
+        string ParentLdName { get;}
+        string ParentLnName { get;}
         bool IsChenged { get; set; }
         string ElementName { get; }
         Brush TypeColorBrush { get; }

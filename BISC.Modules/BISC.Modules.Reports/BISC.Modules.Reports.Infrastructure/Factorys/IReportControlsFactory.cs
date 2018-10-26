@@ -1,4 +1,5 @@
-﻿using BISC.Modules.Reports.Infrastructure.Model;
+﻿using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.Reports.Infrastructure.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

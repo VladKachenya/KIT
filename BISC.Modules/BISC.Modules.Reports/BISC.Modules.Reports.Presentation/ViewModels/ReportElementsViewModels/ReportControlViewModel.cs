@@ -31,7 +31,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private ITriggerOptionsViewModel _triggerOptionsViewModel;
         private IOprionalFildsViewModel _oprionalFildsViewModel;
         private IGlobalEventsService _globalEventsService;
-        private IModelElement _lDevice;
+        private ILDevice _lDevice;
 
 
         #region ctor
@@ -58,7 +58,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private void SetRoportID()
         {
             string buf = _isBuffered ? "BR" : "RP";
-            _reportID = $"{ParentLn}${buf}${_name}";
+            _reportID = $"{ParentLnName}${buf}${_name}";
             OnPropertyChanged(nameof(ReportID));
         }
 
@@ -130,8 +130,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             }
         }
 
-        public string ParentLd{ get; protected set; }
-        public string ParentLn { get; protected set; }
+        public string ParentLdName { get; protected set; }
+        public string ParentLnName { get; protected set; }
         public bool IsDynamic => _model.IsDynamic;
         public ICommand UndoChengestCommand { get; }
         public IReportEnabledViewModel ReportEnabledViewModel
@@ -207,8 +207,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         public void SetParentLDevice(ILDevice lDevice)
         {
             _lDevice = lDevice;
-            ParentLd = lDevice.Inst;
-            ParentLn = lDevice.LogicalNodeZero.Value.Name;
+            ParentLdName = lDevice.Inst;
+            ParentLnName = lDevice.LogicalNodeZero.Value.Name;
             SetRoportID();
         }
         #endregion

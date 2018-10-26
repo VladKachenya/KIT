@@ -1,4 +1,5 @@
-﻿using BISC.Modules.Reports.Infrastructure.Factorys;
+﻿using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.Reports.Infrastructure.Factorys;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Model.Model;
 using System;
