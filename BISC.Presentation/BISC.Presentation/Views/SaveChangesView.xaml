@@ -26,8 +26,8 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Margin="4" Orientation="Horizontal">
-                        <ContentControl ContentTemplate="{DynamicResource AlertIcon}"></ContentControl>
-                        <TextBlock Text="{Binding EntityFriendlyName}"></TextBlock>
+                        <ContentControl ContentTemplate="{DynamicResource AlertIcon}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding EntityFriendlyName}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
