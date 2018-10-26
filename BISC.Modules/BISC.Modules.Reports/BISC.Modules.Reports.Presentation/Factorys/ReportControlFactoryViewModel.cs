@@ -1,6 +1,9 @@
 ﻿using BISC.Infrastructure.Global.IoC;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.Reports.Infrastructure.Factorys;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.Factorys;
@@ -20,12 +23,14 @@ namespace BISC.Modules.Reports.Presentation.Factorys
         private readonly IInjectionContainer _injectionContainer;
         private readonly IReportControlsFactory _reportControlsFactory;
         private readonly IDatasetModelService _datasetModelService;
+        private readonly IInfoModelService _infoModelService;
 
-        public ReportControlFactoryViewModel(IInjectionContainer injectionContainer, IReportControlsFactory reportControlsFactory, IDatasetModelService datasetModelService)
+        public ReportControlFactoryViewModel(IInjectionContainer injectionContainer, IReportControlsFactory reportControlsFactory, IDatasetModelService datasetModelService, IInfoModelService infoModelService)
         {
             _injectionContainer = injectionContainer;
             _reportControlsFactory = reportControlsFactory;
             _datasetModelService = datasetModelService;
+            _infoModelService = infoModelService;
         }
         public ObservableCollection<IReportControlViewModel> GetReportControlsViewModel(List<IReportControl> modelsList, IDevice device)
         {
@@ -37,16 +42,7 @@ namespace BISC.Modules.Reports.Presentation.Factorys
 
         public IReportControlViewModel GetReportControlViewModel(IReportControl model, IDevice device)
         {
-            IReportControlViewModel newReport = _injectionContainer.ResolveType<IReportControlViewModel>();
-            if( device != null)
-            { 
-                var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
-                newReport.AvailableDatasets = datasets.Select((ds => ds.Name)).ToList();
-                newReport.Model = model;
-            }
-            //obj.ChangeTracker.SetNew();
-            newReport.ActivateElement();
-            return newReport;
+            return GetNewReportViewModel(GetLDeviceOfReportControlRecursive(model), model, device);
         }
 
 
@@ -55,13 +51,20 @@ namespace BISC.Modules.Reports.Presentation.Factorys
             var reportsName = existingNames.Select(repId => repId.Split('$','/','.')[2]);
             var model = _reportControlsFactory.GetReportControl();
             model.Name = GetUniqueNameOfReport(reportsName);
+            return GetNewReportViewModel(_infoModelService.GetZeroLDevicesFromDevices(device), model, device);
+        }
+
+        private IReportControlViewModel GetNewReportViewModel(ILDevice parientDevice, IReportControl model, IDevice device)
+        {
             IReportControlViewModel newReport = _injectionContainer.ResolveType<IReportControlViewModel>();
             var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
             newReport.AvailableDatasets = datasets.Select((ds => ds.Name)).ToList();
             newReport.Model = model;
+            newReport.SetParentLDevice(parientDevice);
             newReport.ActivateElement();
             return newReport;
         }
+
 
         private string GetUniqueNameOfReport(IEnumerable<string> existingNames)
         {
@@ -82,6 +85,13 @@ namespace BISC.Modules.Reports.Presentation.Factorys
             } while (isFind);
 
             return result;
+        }
+
+        private ILDevice GetLDeviceOfReportControlRecursive(IModelElement reportControl)
+        {
+            if (reportControl == null) return null;
+            if (reportControl is ILDevice) return reportControl as ILDevice;
+            return GetLDeviceOfReportControlRecursive(reportControl.ParentModelElement);
         }
     }
 }

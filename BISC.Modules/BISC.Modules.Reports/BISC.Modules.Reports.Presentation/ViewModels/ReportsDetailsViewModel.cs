@@ -5,6 +5,7 @@ using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Keys;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.Factorys;
+using BISC.Modules.Reports.Infrastructure.Presentation.Services;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Infrastructure.Services;
 using BISC.Presentation.BaseItems.ViewModels;
@@ -34,21 +35,21 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private ObservableCollection<IReportControlViewModel> _reportControlViewModels;
         private readonly ILoggingService _loggingService;
         //private IReportsLoadingService _reportsLoadingService;
-        //private IReportsSavingService _reportsSavingService;
+        private IReportsSavingService _reportsSavingService;
 
 
         #region Ctor
         public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService, ISaveCheckingService saveCheckingService,
             IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService, IConnectionPoolService connectionPoolService,
-            ILoggingService loggingService)
-             //IReportsLoadingService reportsLoadingService, IReportsSavingService reportsSavingService
+            ILoggingService loggingService, IReportsSavingService reportsSavingService)
+             //IReportsLoadingService reportsLoadingService, 
         {
             _reportsModelService = reportsModelService;
             _saveCheckingService = saveCheckingService;
             _reportControlFactoryViewModel = reportControlFactoryViewModel;
             _userInterfaceComposingService = userInterfaceComposingService;
             _connectionPoolService = connectionPoolService;
-            //_reportsSavingService = reportsSavingService;
+            _reportsSavingService = reportsSavingService;
             //_reportsLoadingService = reportsLoadingService;
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand);
             AddNewReportCommand = commandFactory.CreatePresentationCommand(OnAddNewReportCommand);
@@ -62,7 +63,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private async void OnSaveСhangesCommand()
         {
             _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
-            //await reportsSavingService.SaveReports(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            await _reportsSavingService.SaveReports(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             GetReportsFromDevice();
             ChangeTracker.AcceptChanges();
         }
@@ -161,6 +162,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         protected override void OnDisposing()
         {
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
+            ReportControlViewModels.ToList().ForEach(element => (element as IDisposable).Dispose());
             base.OnDisposing();
         }
         #endregion

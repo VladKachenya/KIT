@@ -61,7 +61,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-                <local:ReportControlView DataContext="{Binding .}" Margin="10,0" FontSize="14"/>
+                <local:ReportControlView DataContext="{Binding .}" Margin="10,0" />
             </Grid>
         </ScrollViewer>
     </Grid>

@@ -18,7 +18,6 @@ namespace BISC.Modules.Reports.Model.Factorys
             report.OptFields.Value = new OptFields();
             report.RptEnabled.Value = new RptEnabled();
             report.TrgOps.Value = new TrgOps();
-            report.RptID = "LLN0$";
             return report;
         }
     }

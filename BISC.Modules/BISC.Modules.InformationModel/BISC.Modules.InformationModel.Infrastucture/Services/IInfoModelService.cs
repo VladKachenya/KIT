@@ -10,5 +10,7 @@ public interface IInfoModelService
         void AddOrReplaceLDevice(IDeviceAccessPoint deviceAccessPoint,ILDevice lDevice);
         void InitializeInfoModel(IModelElement device, string deviceName,ISclModel sclModel);
         List<ILDevice> GetLDevicesFromDevices(IModelElement device);
+
+        ILDevice GetZeroLDevicesFromDevices(IModelElement device);
     }
 }

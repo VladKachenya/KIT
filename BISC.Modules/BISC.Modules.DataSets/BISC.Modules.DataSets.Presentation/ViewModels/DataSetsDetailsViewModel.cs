@@ -155,7 +155,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private async void OnSaveСhanges()
         {
             _loggingService.LogUserAction($"Пользователь сохраняет изменения DataSets устройства {_device.Name}");
-           await _dataSetSavingService.SaveDataSets(DataSets.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            await _dataSetSavingService.SaveDataSets(DataSets.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             ResetAllDataSetCollections();
             _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
             SortDataSetsByIsDynamic();

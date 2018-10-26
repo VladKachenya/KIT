@@ -1,4 +1,6 @@
-﻿using BISC.Modules.Reports.Infrastructure.Model;
+﻿using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels.Base;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,8 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
 {
     public interface IReportControlViewModel : IReportElementBase<IReportControl>
     {
+        string ParentLd { get;}
+        string ParentLn { get;}
         bool IsChenged { get; set; }
         string ElementName { get; }
         Brush TypeColorBrush { get; }
@@ -29,6 +33,7 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
         IReportEnabledViewModel ReportEnabledViewModel { get; }
         ITriggerOptionsViewModel TriggerOptionsViewModel { get; }
         IOprionalFildsViewModel OprionalFildsViewModel { get; }
+        void SetParentLDevice(ILDevice lDevice);
 
     }
 }

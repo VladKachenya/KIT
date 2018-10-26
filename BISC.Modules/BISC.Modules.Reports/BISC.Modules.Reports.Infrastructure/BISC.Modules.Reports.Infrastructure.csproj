@@ -52,6 +52,7 @@
     <Compile Include="Model\IRptEnabled.cs" />
     <Compile Include="Model\ITrgOps.cs" />
     <Compile Include="Presentation\Factorys\IReportControlFactoryViewModel.cs" />
+    <Compile Include="Presentation\Services\IReportsSavingService.cs" />
     <Compile Include="Presentation\ViewModels\Base\IReportElementBase.cs" />
     <Compile Include="Presentation\ViewModels\IOprionalFildsViewModel.cs" />
     <Compile Include="Presentation\ViewModels\IReportControlViewModel.cs" />
@@ -78,9 +79,11 @@
       <Project>{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}</Project>
       <Name>BISC.Modules.Device.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Infrastucture\BISC.Modules.InformationModel.Infrastucture.csproj">
+      <Project>{1642183D-562D-4E50-B8F7-22205D731E45}</Project>
+      <Name>BISC.Modules.InformationModel.Infrastucture</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Presentation\Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

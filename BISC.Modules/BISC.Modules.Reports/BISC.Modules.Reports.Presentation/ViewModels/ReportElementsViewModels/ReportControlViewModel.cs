@@ -1,4 +1,6 @@
 ﻿using BISC.Infrastructure.Global.Services;
+using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Presentation.BaseItems.ViewModels;
@@ -29,7 +31,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private ITriggerOptionsViewModel _triggerOptionsViewModel;
         private IOprionalFildsViewModel _oprionalFildsViewModel;
         private IGlobalEventsService _globalEventsService;
-
+        private IModelElement _lDevice;
 
 
         #region ctor
@@ -55,12 +57,9 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 
         private void SetRoportID()
         {
-            if (IsDynamic)
-            { 
-                string buf = _isBuffered ? "BR" : "RP";
-                _reportID = $"LLN0${buf}${_name}";
-                OnPropertyChanged(nameof(ReportID));
-            }
+            string buf = _isBuffered ? "BR" : "RP";
+            _reportID = $"{ParentLn}${buf}${_name}";
+            OnPropertyChanged(nameof(ReportID));
         }
 
         #endregion
@@ -131,9 +130,10 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             }
         }
 
+        public string ParentLd{ get; protected set; }
+        public string ParentLn { get; protected set; }
         public bool IsDynamic => _model.IsDynamic;
         public ICommand UndoChengestCommand { get; }
-
         public IReportEnabledViewModel ReportEnabledViewModel
         {
             get => _reportEnabledViewModel;
@@ -185,7 +185,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 
         public void UpdateViewModel()
         {
-            this._reportID = _model.RptID;
             this.Name = _model.Name;
             this.IsBuffered = _model.Buffered;
             this.BufferTime = _model.BufTime;
@@ -198,11 +197,21 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         }
         #endregion
 
+        #region override of IDisposable
         protected override void OnDisposing()
         {
             _globalEventsService.Unsubscribe<SaveCheckEvent>(OnSaveCheck);
             base.OnDisposing();
         }
+
+        public void SetParentLDevice(ILDevice lDevice)
+        {
+            _lDevice = lDevice;
+            ParentLd = lDevice.Inst;
+            ParentLn = lDevice.LogicalNodeZero.Value.Name;
+            SetRoportID();
+        }
+        #endregion
 
     }
 }

@@ -61,5 +61,11 @@ namespace BISC.Modules.InformationModel.Model.Services
                     return childModelProperty.Value.LDevicesCollection.ToList();
             return new List<ILDevice>();
         }
+
+        public ILDevice GetZeroLDevicesFromDevices(IModelElement device)
+        {
+            var lDevices = GetLDevicesFromDevices(device);
+            return lDevices.FirstOrDefault(ld => ld.Inst == "LD0");
+        }
     }
 }
