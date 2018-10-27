@@ -232,6 +232,7 @@
                                                             <TextBlock Margin="3" Text="{Binding FullName}"/>
                                                         </StackPanel>
                                                         <Button Margin="2" Padding="3" Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                            IsEnabled="{Binding DataContext.IsEditing, Source={x:Reference EditToggleButton}}"
                                                             Command="{Binding DataContext.DeleteFcdaCommand,Source={x:Reference fcdaListBox}}"
                                                             CommandParameter="{Binding .}"
                                                             Style="{DynamicResource MaterialDesignRaisedButton}"
