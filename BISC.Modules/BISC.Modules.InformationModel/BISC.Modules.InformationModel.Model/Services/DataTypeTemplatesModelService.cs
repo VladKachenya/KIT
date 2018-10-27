@@ -365,22 +365,22 @@ namespace BISC.Modules.InformationModel.Model.Services
                 if (dotypeitem.Id == dotype.Id)
                     return dotypeitem;
             }
-            foreach (IDoType dotypeitem in dataTypeTemplates.DoTypes)
-            {
-                if ((dotypeitem.DaList.Count == dotype.DaList.Count) && (dotypeitem.SdoList.Count == dotype.SdoList.Count))
-                {
-                    bool b = true;
-                    foreach (var da in dotype.DaList)
-                        if (!CheckIfExist(dotypeitem, da))
-                            b = false;
-                    foreach (var sdo in dotype.SdoList)
-                        if (!CheckIfExist(dotypeitem, sdo))
-                            b = false;
+            //foreach (IDoType dotypeitem in dataTypeTemplates.DoTypes)
+            //{
+            //    if ((dotypeitem.DaList.Count == dotype.DaList.Count) && (dotypeitem.SdoList.Count == dotype.SdoList.Count))
+            //    {
+            //        bool b = true;
+            //        foreach (var da in dotype.DaList)
+            //            if (!CheckIfExist(dotypeitem, da))
+            //                b = false;
+            //        foreach (var sdo in dotype.SdoList)
+            //            if (!CheckIfExist(dotypeitem, sdo))
+            //                b = false;
 
-                    if ((dotype.Cdc == dotypeitem.Cdc) && (b))
-                        return dotypeitem;
-                }
-            }
+            //        if ((dotype.Cdc == dotypeitem.Cdc) && (b))
+            //            return dotypeitem;
+            //    }
+            //}
             return null;
         }
 
