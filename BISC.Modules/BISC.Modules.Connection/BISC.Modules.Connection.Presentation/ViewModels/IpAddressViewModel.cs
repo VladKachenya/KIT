@@ -119,6 +119,8 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
 
         private void ValidateIpPart(ref string valiatingIpPart)
         {
+            valiatingIpPart = new string(valiatingIpPart.Where(x => (x > 47 && x < 58)).ToArray());
+
             if (valiatingIpPart.Length > 3)
             {
                 valiatingIpPart = valiatingIpPart.Substring(0,3);
