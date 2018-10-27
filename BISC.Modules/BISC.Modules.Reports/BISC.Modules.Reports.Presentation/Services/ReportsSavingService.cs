@@ -8,6 +8,7 @@ using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.Reports.Infrastructure.Factorys;
+using BISC.Modules.Reports.Infrastructure.Keys;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.Services;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
@@ -48,7 +49,7 @@ namespace BISC.Modules.Reports.Presentation.Services
         #endregion
 
         #region Implementation of IReportsSavingService
-        public async Task SaveReportsAsync(List<IReportControlViewModel> reportsToSave, IModelElement device, bool isSavingInDevice)
+        public async Task SaveReportsAsync(List<IReportControlViewModel> reportsToSave, IDevice device, bool isSavingInDevice)
         {
             try
             {
@@ -56,7 +57,7 @@ namespace BISC.Modules.Reports.Presentation.Services
                 var reportControlsInDevise = _reportsModelService.GetAllReportControlsOfDevice(device);
                 foreach (var reportControlInDevise in reportControlsInDevise)
                 {
-                    if (!reportsToSave.Any(element => element.ReportID == reportControlInDevise.RptID))
+                    if (!reportsToSave.Any(element => element.Name == reportControlInDevise.Name))
                     {
                         var ln = reportControlInDevise.ParentModelElement as ILogicalNode;
                         var ldevice = ln.ParentModelElement as IDevice;
@@ -64,7 +65,7 @@ namespace BISC.Modules.Reports.Presentation.Services
                         {
                             await Task.Run(() => null);
                         }
-                        ln.ChildModelElements.Remove(reportControlsInDevise.First(element => (element.RptID == reportControlInDevise.RptID)));
+                        ln.ChildModelElements.Remove(reportControlsInDevise.First(element => (element.Name == reportControlInDevise.Name)));
                     }
                 }
 
@@ -75,23 +76,25 @@ namespace BISC.Modules.Reports.Presentation.Services
                         .FirstOrDefault((ld => ld.Inst == reportToSave.ParentLdName));
                     var lNode = lDevice.AlLogicalNodes
                         .FirstOrDefault(node => node.Name == reportToSave.ParentLnName);
+                    // Тут надо разобратся
                     if (!reportToSave.IsDynamic)
                     {
-                        if (reportControlsInDevise.Any(rep => rep.RptID == reportToSave.ReportID))
+                        if (reportControlsInDevise.Any(rep => rep.Name == reportToSave.Name))
                         {
                             if (isSavingInDevice)
                             {
                                 //выполнение коммуникации с устройством
                             }
-                            lNode.ChildModelElements.Remove(reportControlsInDevise.FirstOrDefault(rep => rep.RptID == reportToSave.ReportID));
                         }
                     }
                     else
                     {
-
                     }
+                    _reportsModelService.DeleteReportsFromDevice(device, new List<IReportControl> { reportToSave.Model });
                     reportToSave.UpdateModel();
-                    reportToSave.Model.ParentModelElement = lNode;
+                    _reportsModelService.AddReportsToDevice(device, new List<IReportControl> { reportToSave.Model });
+                    //SetReportToLigicNode(lNode, reportToSave.Model, insertIndex);
+                    //reportToSave.Model.ParentModelElement = lNode;
                 }
                 _projectService.SaveCurrentProject();
                 _loggingService.LogMessage($"Reports устройства {(device as IDevice).Name} успешно сохранены",
@@ -103,6 +106,6 @@ namespace BISC.Modules.Reports.Presentation.Services
                     SeverityEnum.Warning);
             }
         }
-        #endregion
+        #endregion     
     }
 }

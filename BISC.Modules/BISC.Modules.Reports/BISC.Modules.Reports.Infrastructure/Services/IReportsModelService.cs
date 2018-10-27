@@ -15,6 +15,9 @@ namespace BISC.Modules.Reports.Infrastructure.Services
         List<IReportControl> GetAllReportControlsOfDevice(IModelElement device);
 
         void DeleteAllReportsOfDevice(IDevice device);
-        void AddReportsToDevice(IDevice device, List<IReportControl> reportControls,string lDevice);
+        void AddReportsToDevice(IDevice device, List<IReportControl> reportControls);
+        void AddReportsToDevice(IDevice device, List<IReportControl> reportControls, string lDevice);
+        void DeleteReportsFromDevice(IDevice device, List<IReportControl> reportControls);
+
     }
 }

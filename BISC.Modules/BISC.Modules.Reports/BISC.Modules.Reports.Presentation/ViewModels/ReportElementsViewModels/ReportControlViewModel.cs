@@ -193,7 +193,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             ReportEnabledViewModel.UpdateViewModel();
             TriggerOptionsViewModel.UpdateViewModel();
             OprionalFildsViewModel.UpdateViewModel();
-            ChangeTracker.AcceptChanges();
+            if(Model.ParentModelElement != null)
+                ChangeTracker.AcceptChanges();
         }
         #endregion
 

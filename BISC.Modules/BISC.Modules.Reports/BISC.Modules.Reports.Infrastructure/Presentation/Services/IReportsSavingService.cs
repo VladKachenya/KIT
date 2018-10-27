@@ -1,4 +1,5 @@
 ﻿using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.Services
 {
     public interface IReportsSavingService
     {
-        Task SaveReportsAsync(List<IReportControlViewModel> reportsToSave, IModelElement device, bool isSavingInDevice);
+        Task SaveReportsAsync(List<IReportControlViewModel> reportsToSave, IDevice device, bool isSavingInDevice);
     }
 }

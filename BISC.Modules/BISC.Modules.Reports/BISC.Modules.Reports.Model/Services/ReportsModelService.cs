@@ -94,7 +94,7 @@ namespace BISC.Modules.Reports.Model.Services
 
             foreach (var reportControl in reportControls)
             {
-                var ldevice = ldevices.FirstOrDefault((device1 => device1.Inst == lDevice.Replace(device.Name,string.Empty)));
+                var ldevice = ldevices.FirstOrDefault((device1 => device1.Inst == lDevice.Replace(device.Name, string.Empty)));
                 if (ldevice != null)
                 {
                     var logicalNodeToAdd = ldevice.AlLogicalNodes.FirstOrDefault((node =>
@@ -107,7 +107,39 @@ namespace BISC.Modules.Reports.Model.Services
                 }
             }
         }
+        public void AddReportsToDevice(IDevice device, List<IReportControl> reportControls)
+        {
+            var lNode = _infoModelService.GetZeroLDevicesFromDevices(device).LogicalNodeZero.Value;
+            var reportsInDevice = GetAllReportControlsOfDevice(device);
+            foreach (var toBeAddedReport in reportControls)
+            {
+                IReportControl repToDev = reportsInDevice.FirstOrDefault(rep => rep.Name == toBeAddedReport.Name);
+                int index = lNode.ChildModelElements.IndexOf(repToDev);
+                if (index > 0)
+                {
+                    DeleteReportsFromDevice(device, new List<IReportControl> { repToDev });
+                    lNode.ChildModelElements.Insert(index, toBeAddedReport);
+                }
+                else
+                {
+                    index = lNode.ChildModelElements.IndexOf(reportsInDevice.Last());
+                    lNode.ChildModelElements.Insert(index + 1, toBeAddedReport);
+                }
+                toBeAddedReport.ParentModelElement = lNode;
+            }
+        }
 
-     
+        public void DeleteReportsFromDevice(IDevice device, List<IReportControl> reportControls)
+        {
+            var lNode = _infoModelService.GetZeroLDevicesFromDevices(device).LogicalNodeZero.Value;
+            var reportsInDevice = GetAllReportControlsOfDevice(device);
+            foreach (var toBeDeletedReport in reportControls)
+            {
+                IReportControl repToDev = reportsInDevice.FirstOrDefault(rep => rep.Name == toBeDeletedReport.Name);
+                toBeDeletedReport.ParentModelElement = null;
+                if (repToDev != null)
+                    lNode.ChildModelElements.Remove(repToDev);
+            }
+        }
     }
 }

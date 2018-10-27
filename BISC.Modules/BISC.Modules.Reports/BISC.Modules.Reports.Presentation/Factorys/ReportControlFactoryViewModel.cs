@@ -51,7 +51,9 @@ namespace BISC.Modules.Reports.Presentation.Factorys
             var reportsName = existingNames.Select(repId => repId.Split('$','/','.')[2]);
             var model = _reportControlsFactory.GetReportControl();
             model.Name = GetUniqueNameOfReport(reportsName);
-            return GetNewReportViewModel(_infoModelService.GetZeroLDevicesFromDevices(device), model, device);
+            var report = GetNewReportViewModel(_infoModelService.GetZeroLDevicesFromDevices(device), model, device);
+            report.ChangeTracker.SetNew();
+            return report;
         }
 
         private IReportControlViewModel GetNewReportViewModel(ILDevice parientDevice, IReportControl model, IDevice device)
