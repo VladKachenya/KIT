@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Modules.Reports.Infrastructure.Model;
-using BISC.Modules.Reports.Model.Model;
+﻿using BISC.Modules.Reports.Infrastructure.Model;
 
-namespace IEC61850DeviceInteractions.Helpers
+namespace BISC.Modules.Connection.Infrastructure.Connection.Dto
 {
     public static class OptionsEnumExtensions
     {
@@ -79,9 +73,8 @@ namespace IEC61850DeviceInteractions.Helpers
         public const byte TimQualNotSynchronized = 0x20; // bit "2". Bits 3-7=time precision encoding
 
 
-        public static IOptFields ReportOptionsFromBytes(this byte[] value)
+        public static IOptFields ReportOptionsFromBytes(this byte[] value, IOptFields res)
         {
-            IOptFields res = new OptFields();
             if (value == null || value.Length < 1) return res;
             if ((value[0] & OptFldsSeqNum) == OptFldsSeqNum) res.SeqNum=true;
             if ((value[0] & OptFldsTimeOfEntry) == OptFldsTimeOfEntry) res.TimeStamp=true;
@@ -127,9 +120,8 @@ namespace IEC61850DeviceInteractions.Helpers
             if (inp.ConfigRef) res |= OptFldsConfRevForFile;
             return res;
         }
-        public static ITrgOps TriggerOptionsFromBytes(this byte[] value)
+        public static ITrgOps TriggerOptionsFromBytes(this byte[] value,ITrgOps res)
         {
-            ITrgOps res = new TrgOps();
             if (value == null || value.Length < 1) return res;
             if ((value[0] & TrgOpsDataChange) == TrgOpsDataChange) res.Dchg=true;
             if ((value[0] & TrgOpsQualChange) == TrgOpsQualChange) res.Qchg = true;

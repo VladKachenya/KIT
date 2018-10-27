@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
+using BISC.Modules.Reports.Model.Model;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 {
@@ -32,6 +33,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private IOprionalFildsViewModel _oprionalFildsViewModel;
         private IGlobalEventsService _globalEventsService;
         private ILDevice _lDevice;
+        private bool _giBool;
 
 
         #region ctor
@@ -149,6 +151,13 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             get => _oprionalFildsViewModel;
             protected set => SetProperty(ref _oprionalFildsViewModel, value);
         }
+
+        public bool GiBool
+        {
+            get => _giBool;
+            set =>SetProperty(ref _giBool , value);
+        }
+
         public IReportControl Model
         {
             get => _model;
@@ -170,18 +179,23 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             OprionalFildsViewModel.ActivateElement();
         }
 
-        public void UpdateModel()
+        public IReportControl GetUpdatedModel()
         {
-            _model.Name = Name;
-            _model.RptID = ReportID;
-            _model.Buffered = IsBuffered;
-            _model.BufTime = BufferTime;
-            _model.DataSet = SelectidDataSetName;
-            _model.IntgPd = IntegrutyPeriod;
-            ReportEnabledViewModel.UpdateModel();
-            TriggerOptionsViewModel.UpdateModel();
-            OprionalFildsViewModel.UpdateModel();
+          IReportControl reportControl=new ReportControl();
+            reportControl.Name = Name;
+            reportControl.RptID = ReportID;
+            reportControl.Buffered = IsBuffered;
+            reportControl.BufTime = BufferTime;
+            reportControl.DataSet = SelectidDataSetName;
+            reportControl.IntgPd = IntegrutyPeriod;
+            reportControl.GiBool = GiBool;
+            reportControl.OptFields.Value= OprionalFildsViewModel.GetUpdatedModel();
+            reportControl.RptEnabled.Value = ReportEnabledViewModel.GetUpdatedModel();
+            reportControl.TrgOps.Value = TriggerOptionsViewModel.GetUpdatedModel();
+            return reportControl;
         }
+
+      
 
         public void UpdateViewModel()
         {
@@ -190,6 +204,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             this.BufferTime = _model.BufTime;
             this.SelectidDataSetName = _model.DataSet;
             this.IntegrutyPeriod = _model.IntgPd;
+            GiBool = _model.GiBool;
             ReportEnabledViewModel.UpdateViewModel();
             TriggerOptionsViewModel.UpdateViewModel();
             OprionalFildsViewModel.UpdateViewModel();

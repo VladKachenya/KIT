@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Modules.Reports.Model.Model;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 {
@@ -20,6 +21,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private bool _entruID;
         private bool _configRevision;
         private IOptFields _model;
+        private bool _segmentation;
+
         #region ctor
         public OprionalFildsViewModel()
         {
@@ -71,6 +74,12 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             set => SetProperty(ref _configRevision, value);
         }
 
+        public bool Segmentation
+        {
+            get => _segmentation;
+            set => SetProperty(ref _segmentation , value);
+        }
+
 
         public IOptFields Model
         {
@@ -82,16 +91,19 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             }
         }
 
-        public void UpdateModel()
+        public IOptFields GetUpdatedModel()
         {
-            _model.SeqNum = SequenceNumber;
-            _model.TimeStamp = ReportTimeStamp;
-            _model.ReasonCode = ReasonForInclusion;
-            _model.DataSet = DataSetName;
-            _model.DataRef = DataReference;
-            _model.BufOvfl = BufferOverflow;
-            _model.EntryID = EntruID;
-            _model.ConfigRef = ConfigRevision;
+            IOptFields optFields=new OptFields();
+            optFields.SeqNum = SequenceNumber;
+            optFields.TimeStamp = ReportTimeStamp;
+            optFields.ReasonCode = ReasonForInclusion;
+            optFields.DataSet = DataSetName;
+            optFields.DataRef = DataReference;
+            optFields.BufOvfl = BufferOverflow;
+            optFields.EntryID = EntruID;
+            optFields.ConfigRef = ConfigRevision;
+            optFields.Segmentation = Segmentation;
+            return optFields;
         }
 
         public void UpdateViewModel()
@@ -104,6 +116,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             BufferOverflow = _model.BufOvfl;
             EntruID = _model.EntryID;
             ConfigRevision = _model.ConfigRef;
+            Segmentation = _model.Segmentation;
+
         }
     }
 }

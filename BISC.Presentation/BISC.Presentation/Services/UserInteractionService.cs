@@ -33,6 +33,19 @@ namespace BISC.Presentation.Services
             return operationResult.Item;
         }
 
+        public async Task<int> ShowOptionToUser(string title, string message, List<string> options, string idOfDiologHost)
+        {
+            OperationResult<int> operationResult = new OperationResult<int>(1);
+
+            await _navigationService.NavigateViewToGlobalRegion(
+                KeysForNavigation.ViewNames.UserInteractionOptionsViewName,
+                new BiscNavigationParameters().AddParameterByName("result", operationResult)
+                    .AddParameterByName("message", message).AddParameterByName("title", title).AddParameterByName("options", options),idOfDiologHost);
+
+
+            return operationResult.Item;
+        }
+
         #endregion
     }
 }

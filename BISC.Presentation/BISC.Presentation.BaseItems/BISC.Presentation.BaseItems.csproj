@@ -90,6 +90,7 @@
     <Compile Include="ViewModels\ComplexViewModelBase.cs" />
     <Compile Include="ViewModels\NavigationViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\BiscDialogHost.cs" />
     <Compile Include="Views\DynamicRegion.xaml.cs">
       <DependentUpon>DynamicRegion.xaml</DependentUpon>
     </Compile>

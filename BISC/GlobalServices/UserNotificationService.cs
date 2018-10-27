@@ -13,7 +13,7 @@ namespace BISC.GlobalServices
     {
         public void NotifyUserGlobal(string message)
         {
-           // Shell.Snackbar.MessageQueue.Enqueue(message);
+            // Shell.Snackbar.MessageQueue.Enqueue(message);
         }
 
         public async Task ShowContentAsDialog(object content)
@@ -30,7 +30,19 @@ namespace BISC.GlobalServices
             }
         }
 
-        
+        public async Task ShowContentAsDialog(object content, string idOfDialogHost)
+        {
+            try
+            {
 
+                await DialogHost.Show(content, idOfDialogHost);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
     }
 }

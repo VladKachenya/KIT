@@ -18,6 +18,8 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
         bool BufferOverflow { get; set; }
         bool EntruID { get; set; }
         bool ConfigRevision { get; set; }
+        bool Segmentation { get; set; }
+
 
     }
 }

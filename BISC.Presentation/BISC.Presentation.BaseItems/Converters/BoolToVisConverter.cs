@@ -15,6 +15,7 @@ namespace BISC.Presentation.BaseItems.Converters
     {
 
         public bool Invert { get; set; }
+        public Visibility FalseVisibility { get; set; } = Visibility.Collapsed;
 
 
 
@@ -36,9 +37,7 @@ namespace BISC.Presentation.BaseItems.Converters
 
             if (Invert) isVisible = !isVisible;
 
-
-
-            return isVisible ? Visibility.Visible : Visibility.Collapsed;
+            return isVisible ? Visibility.Visible : FalseVisibility;
 
         }
 

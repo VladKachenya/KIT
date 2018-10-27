@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Connection\Dto\DataSetDto.cs" />
     <Compile Include="Connection\Dto\GooseDto.cs" />
+    <Compile Include="Connection\Dto\OptionsEnumExtensions.cs" />
     <Compile Include="Connection\IDeviceConnection.cs" />
     <Compile Include="Connection\IMmsConnectionFacade.cs" />
     <Compile Include="Events\ConnectionEvent.cs" />
@@ -60,6 +61,10 @@
     <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
       <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
       <Name>BISC.Infrastructure.Global</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
+      <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
+      <Name>BISC.Model.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules.Reports\BISC.Modules.Reports.Infrastructure\BISC.Modules.Reports.Infrastructure.csproj">
       <Project>{D1B96DC2-63D6-4726-9CFF-9C88E1315834}</Project>

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Modules.Reports.Model.Model;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 {
@@ -66,13 +67,15 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             ChangeTracker.SetTrackingEnabled(true);
         }
 
-        public void UpdateModel()
+        public ITrgOps GetUpdatedModel()
         {
-            _model.Dchg = DataChange;
-            _model.Qchg = QualityChange;
-            _model.Dupd = DataUpdate;
-            _model.Period = Integrity;
-            _model.Gi = GenetralInterrogation;
+            ITrgOps trgOps=new TrgOps();
+            trgOps.Dchg = DataChange;
+            trgOps.Qchg = QualityChange;
+            trgOps.Dupd = DataUpdate;
+            trgOps.Period = Integrity;
+            trgOps.Gi = GenetralInterrogation;
+            return trgOps;
         }
 
         public void UpdateViewModel()

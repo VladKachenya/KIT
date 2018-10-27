@@ -13,7 +13,7 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels.Base
     {
         T Model { get; set; }
         void ActivateElement();
-        void UpdateModel();
+        T GetUpdatedModel();
         void UpdateViewModel();
     }
 }

@@ -20,6 +20,7 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
         Task<OperationResult<DataSetDto>> GetListDataSetInfoAsync(string ldInst,string lnName,string datasetName, bool acceptCache);
         Task<OperationResult<List<GooseDto>>> GetListGoosesAsync(string fullLdPath, string lnName,string deviceName);
         Task<OperationResult<List<IReportControl>>> GetListReportsAsync(string fullLdPath, string lnName, string deviceName,string reportType);
+        Task<OperationResult> WriteReportDataAsync(string ldFullPath, string rptId, string itemValueName, object valueToSave);
 
         Task<OperationResult> DeleteDataSet(string ln,string ld,string ied,string name);
         Task<OperationResult> AddDataSet(string ln, string ld, string ied , string nameDataSet, List<FcdaDto> fcdaDtos);

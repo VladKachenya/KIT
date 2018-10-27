@@ -81,6 +81,7 @@ namespace BISC.Modules.Reports.Model.Services
             var connection = _connectionPoolService.GetConnection(device.Ip);
             _reportsModelService.DeleteAllReportsOfDevice(device);
             if (!_ldReportsDictionary.Values.Any()) return;
+            var dynamicReports = await _ftpReportModelService.GetReportsFromDevice(device.Ip);
             foreach (var ldevice in _ldReportsDictionary.Keys)
             {
                 List<IReportControl> reportControls = new List<IReportControl>();
@@ -96,6 +97,13 @@ namespace BISC.Modules.Reports.Model.Services
                         reportControls.AddRange(res.Item);
                     }
                 }
+                reportControls.ForEach((control =>
+                {
+                    if (dynamicReports.Any((reportControl => reportControl.Name == control.Name.Replace("01",string.Empty))))
+                    {
+                        control.IsDynamic = true;
+                    }
+                } ));
                 _reportsModelService.AddReportsToDevice(device, reportControls, ldevice);
             }
 

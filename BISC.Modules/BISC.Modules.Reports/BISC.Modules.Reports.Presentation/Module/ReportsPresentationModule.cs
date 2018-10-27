@@ -41,7 +41,7 @@ namespace BISC.Modules.Reports.Presentation.Module
             _injectionContainer.RegisterType<IOprionalFildsViewModel, OprionalFildsViewModel>();
             _injectionContainer.RegisterType<IReportEnabledViewModel, ReportEnabledViewModel>();
             _injectionContainer.RegisterType<ITriggerOptionsViewModel, TriggerOptionsViewModel>();
-            _injectionContainer.RegisterType<IReportsSavingService, ReportsSavingService>(true);
+            _injectionContainer.RegisterType<IReportsSavingService, ReportsSavingService>(false);
             _injectionContainer.RegisterType<IReportControlFactoryViewModel, ReportControlFactoryViewModel>(true);
 
         }

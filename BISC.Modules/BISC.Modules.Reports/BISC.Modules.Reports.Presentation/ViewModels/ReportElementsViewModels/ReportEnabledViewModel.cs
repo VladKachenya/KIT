@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Modules.Reports.Model.Model;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 {
@@ -49,9 +50,11 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             }
         }
 
-        public void UpdateModel()
+        public IRptEnabled GetUpdatedModel()
         {
-            _model.Max = Max;
+            IRptEnabled rptEnabled=new RptEnabled();
+            rptEnabled.Max = Max;
+            return rptEnabled;
         }
 
         public void UpdateViewModel()

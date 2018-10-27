@@ -126,15 +126,21 @@ namespace BISC.Presentation.Services
             }
         }
 
-        public async Task NavigateViewToGlobalRegion(string viewName, BiscNavigationParameters navigationParameters = null)
+        public async Task NavigateViewToGlobalRegion(string viewName, BiscNavigationParameters navigationParameters = null, string idOfDialogHost = null)
         {
             var content = _injectionContainer.ResolveType<object>(viewName);
             var r = new BiscNavigationContext() { BiscNavigationParameters = navigationParameters }.ToNavigationContext();
             ((content as FrameworkElement).DataContext as INavigationAware)?.OnNavigatedTo(new BiscNavigationContext() { BiscNavigationParameters = navigationParameters }.ToNavigationContext());
             try
             {
-                await _userNotificationService.ShowContentAsDialog(content);
-
+                if (idOfDialogHost != null)
+                {
+                    await _userNotificationService.ShowContentAsDialog(content, idOfDialogHost);
+                }
+                else
+                {
+                    await _userNotificationService.ShowContentAsDialog(content);
+                }
             }
             catch (Exception e)
             {

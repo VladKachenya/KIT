@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
 using BISC.Modules.Connection.Infrastructure.Connection;
+using BISC.Modules.Connection.Infrastructure.Connection.Dto;
 using BISC.Modules.Connection.MMS.MMS_ASN1_Model;
+using BISC.Modules.Connection.MMS.org.bn.types;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Model.Model;
-using IEC61850DeviceInteractions.Helpers;
 using Microsoft.Practices.ObjectBuilder2;
 
 namespace BISC.Modules.Connection.MMS.MmsClientServices
@@ -375,7 +376,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
 
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "OptFlds"));
-                reportDto.OptFields.Value =dataForReport.Structure.ToArray()[index].Bit_string.Value.ReportOptionsFromBytes();
+                reportDto.OptFields.Value =dataForReport.Structure.ToArray()[index].Bit_string.Value.ReportOptionsFromBytes(new OptFields());
 
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "BufTm"));
@@ -388,7 +389,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "TrgOps"));
 
-                reportDto.TrgOps.Value =dataForReport.Structure.ToArray()[index].Bit_string.Value.TriggerOptionsFromBytes();
+                reportDto.TrgOps.Value =dataForReport.Structure.ToArray()[index].Bit_string.Value.TriggerOptionsFromBytes(new TrgOps());
 
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "IntgPd"));
@@ -411,6 +412,72 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 reportDtos.Add(reportDto);
             }
             return new OperationResult<List<IReportControl>>(reportDtos);
+        }
+
+        public async Task<OperationResult> WriteReportDataAsync(string ldFullPath, string rptId, string itemValueName,
+            object valueToSave)
+        {
+            try
+            {
+                MMSpdu res=null;
+                if (itemValueName == "TrgOps")
+                {
+                     res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.bit_string, ldFullPath,
+                        rptId, itemValueName,
+                        new BitString((byte[]) valueToSave, 2));
+                }
+                else if (itemValueName == "OptFlds")
+                {
+                     res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.bit_string, ldFullPath,
+                        rptId, itemValueName,
+                        new BitString((byte[]) valueToSave, 6));
+                }
+                else if (itemValueName == "DatSet")
+                {
+                     res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.VisString255,
+                        ldFullPath, rptId, itemValueName,
+                        valueToSave);
+                }
+                else if (itemValueName == "GI")
+                {
+                     res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.BOOLEAN, ldFullPath,
+                        rptId, itemValueName,
+                        valueToSave);
+                }
+                else if (itemValueName == "RptID")
+                {
+                    res= await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.VisString255,
+                        ldFullPath, rptId, itemValueName,
+                        valueToSave);
+                    
+                }
+                else if ((itemValueName == "BufTm")|| (itemValueName == "IntgPd"))
+                {
+                     res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.INT32U,
+                        ldFullPath, rptId, itemValueName,
+                        valueToSave);
+                }
+                else
+                {
+                    return new OperationResult("Неизвестные данные для сохранения в отчет");
+
+                }
+                if (res != null&&res.Confirmed_ResponsePDU.Service.Write.Value.First().Success!=null)
+                {
+                   return OperationResult.SucceedResult;
+                }
+                else
+                {
+                    return new OperationResult($"Ответ на запись {itemValueName} в устройство: ошибка");
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                return new OperationResult("Не удалось записать данные по MMS");
+            }
+
         }
 
         public async Task<OperationResult> DeleteDataSet(string ln, string ld, string ied, string name)

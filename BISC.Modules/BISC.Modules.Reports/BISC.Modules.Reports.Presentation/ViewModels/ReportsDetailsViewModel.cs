@@ -41,12 +41,15 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private IReportsSavingService _reportsSavingService;
         private readonly IBiscProject _biscProject;
         private readonly ReportControlLoadingService _reportControlLoadingService;
+        private readonly IUserNotificationService _userNotificationService;
+        private readonly IUserInteractionService _userInteractionService;
 
 
         #region Ctor
         public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService, ISaveCheckingService saveCheckingService,
             IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService, IConnectionPoolService connectionPoolService,
-            ILoggingService loggingService, IReportsSavingService reportsSavingService,IBiscProject biscProject, ReportControlLoadingService reportControlLoadingService)
+            ILoggingService loggingService, IReportsSavingService reportsSavingService,IBiscProject biscProject,
+                ReportControlLoadingService reportControlLoadingService,IUserNotificationService userNotificationService,IUserInteractionService userInteractionService)
              //IReportsLoadingService reportsLoadingService, 
         {
             _reportsModelService = reportsModelService;
@@ -57,15 +60,24 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _reportsSavingService = reportsSavingService;
             _biscProject = biscProject;
             _reportControlLoadingService = reportControlLoadingService;
+            _userNotificationService = userNotificationService;
+            _userInteractionService = userInteractionService;
             //_reportsLoadingService = reportsLoadingService;
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand);
             AddNewReportCommand = commandFactory.CreatePresentationCommand(OnAddNewReportCommand);
             UpdateReportsCommad = commandFactory.CreatePresentationCommand(OnUpdateReports);
+            DeleteReportCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteReport);
             _loggingService = loggingService;
             ModelRegionKey = Guid.NewGuid().ToString();
         }
 
-    
+        private void OnDeleteReport(object obj)
+        {
+            if (obj is IReportControlViewModel reportControlViewModel)
+            {
+                ReportControlViewModels.Remove(reportControlViewModel);
+            }
+        }
 
         #endregion
 
@@ -149,11 +161,12 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
                 .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
             await UpdateReports(false);
             base.OnNavigatedTo(navigationContext);
+            //await _userInteractionService.ShowOptionToUser("Требуется перезапуск устройства",
+            //    "Для дальнейшей работы необходимо перезапустить устройство", new List<string>() { }, "100");
         }
 
-        public override void OnActivate()
+        public override  void OnActivate()
         {
-
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _userInterfaceComposingService.AddGlobalCommand(UpdateReportsCommad, $"Обновить Report-ы {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewReportCommand, $"Добавить Report {_device.Name}", IconsKeys.AddIconKey, false, true);

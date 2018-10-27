@@ -9,10 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
+using BISC.Presentation.Infrastructure.ChangeTracker;
 
 namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
 {
-    public interface IReportControlViewModel : IReportElementBase<IReportControl>
+    public interface IReportControlViewModel : IReportElementBase<IReportControl>,IObjectWithChangeTracker
     {
         string ParentLdName { get;}
         string ParentLnName { get;}
@@ -33,6 +34,7 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
         IReportEnabledViewModel ReportEnabledViewModel { get; }
         ITriggerOptionsViewModel TriggerOptionsViewModel { get; }
         IOprionalFildsViewModel OprionalFildsViewModel { get; }
+        bool GiBool { get; set; }
         void SetParentLDevice(ILDevice lDevice);
 
     }
