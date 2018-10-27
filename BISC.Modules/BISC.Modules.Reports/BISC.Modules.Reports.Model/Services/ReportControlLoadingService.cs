@@ -9,6 +9,7 @@ using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Services;
 
 namespace BISC.Modules.Reports.Model.Services
@@ -80,21 +81,23 @@ namespace BISC.Modules.Reports.Model.Services
             var connection = _connectionPoolService.GetConnection(device.Ip);
             _reportsModelService.DeleteAllReportsOfDevice(device);
             if (!_ldReportsDictionary.Values.Any()) return;
-
+            List<IReportControl> reportControls=new List<IReportControl>();
             foreach (var ldevice in _ldReportsDictionary.Keys)
             {
-
                 foreach (var reportString in _ldReportsDictionary[ldevice])
                 {
                     var reportStringParts = reportString.Split('$');
                     if (reportStringParts.Length != 2) continue;
-                    var res = await connection.MmsConnection.GetListReportsAsync(ldevice, reportStringParts[0], device.Name, reportStringParts[1]);
-
-
-
-
+                    var res = await connection.MmsConnection.GetListReportsAsync(ldevice, reportStringParts[0],
+                        device.Name, reportStringParts[1]);
+                    if (res.IsSucceed)
+                    {
+                        reportControls.AddRange(res.Item);
+                    }
                 }
             }
+
+            _reportsModelService.AddReportsToDevice(device, reportControls);
 
         }
 

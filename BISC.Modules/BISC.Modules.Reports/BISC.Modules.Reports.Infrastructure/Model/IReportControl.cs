@@ -20,6 +20,7 @@ namespace BISC.Modules.Reports.Infrastructure.Model
         ChildModelProperty<ITrgOps> TrgOps { get; }
         ChildModelProperty<IOptFields> OptFields { get; }
         ChildModelProperty<IRptEnabled> RptEnabled { get; }
-
+        bool RptEnabledBool { get; set; }
+        bool GiBool { get; set; }
     }
 }

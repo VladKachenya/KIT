@@ -85,5 +85,10 @@ namespace BISC.Modules.Reports.Model.Services
 
             }
         }
+
+        public void AddReportsToDevice(IDevice device, List<IReportControl> reportControls)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
