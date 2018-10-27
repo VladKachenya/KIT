@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
 
 namespace BISC.Modules.Reports.Model.Services
 {
@@ -71,24 +72,42 @@ namespace BISC.Modules.Reports.Model.Services
                     }));
                     reportControlsToDelete.ForEach((control => logicalNode.ChildModelElements.Remove(control)));
                 }
+                List<IReportControl> reportControlsToDeleteInLn0 = new List<IReportControl>();
+
                 foreach (var element in lDevice.LogicalNodeZero.Value.ChildModelElements)
                 {
-                    List<IReportControl> reportControlsToDelete = new List<IReportControl>();
 
                     if (element is IReportControl reportControl)
                     {
-                        reportControlsToDelete.Add(reportControl);
+                        reportControlsToDeleteInLn0.Add(reportControl);
                     }
-                    reportControlsToDelete.ForEach((control => lDevice.LogicalNodeZero.Value.ChildModelElements.Remove(control)));
 
                 }
+                reportControlsToDeleteInLn0.ForEach((control => lDevice.LogicalNodeZero.Value.ChildModelElements.Remove(control)));
 
             }
         }
 
-        public void AddReportsToDevice(IDevice device, List<IReportControl> reportControls)
+        public void AddReportsToDevice(IDevice device, List<IReportControl> reportControls, string lDevice)
         {
-            throw new NotImplementedException();
+            var ldevices = _infoModelService.GetLDevicesFromDevices(device);
+
+            foreach (var reportControl in reportControls)
+            {
+                var ldevice = ldevices.FirstOrDefault((device1 => device1.Inst == lDevice.Replace(device.Name,string.Empty)));
+                if (ldevice != null)
+                {
+                    var logicalNodeToAdd = ldevice.AlLogicalNodes.FirstOrDefault((node =>
+                        node.Name == reportControl.RptID.Split('$').First()));
+                    if (logicalNodeToAdd != null)
+                    {
+                        logicalNodeToAdd.ChildModelElements.Add(reportControl);
+                        reportControl.ParentModelElement = logicalNodeToAdd;
+                    }
+                }
+            }
         }
+
+     
     }
 }

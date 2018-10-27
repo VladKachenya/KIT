@@ -406,6 +406,8 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 {
                     reportDto.Buffered = true;
                 }
+                reportDto.RptEnabled.Value=new RptEnabled();
+                reportDto.RptEnabled.Value.Max = 1;
                 reportDtos.Add(reportDto);
             }
             return new OperationResult<List<IReportControl>>(reportDtos);

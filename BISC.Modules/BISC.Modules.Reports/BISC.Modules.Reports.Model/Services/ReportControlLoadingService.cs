@@ -81,9 +81,10 @@ namespace BISC.Modules.Reports.Model.Services
             var connection = _connectionPoolService.GetConnection(device.Ip);
             _reportsModelService.DeleteAllReportsOfDevice(device);
             if (!_ldReportsDictionary.Values.Any()) return;
-            List<IReportControl> reportControls=new List<IReportControl>();
             foreach (var ldevice in _ldReportsDictionary.Keys)
             {
+                List<IReportControl> reportControls = new List<IReportControl>();
+
                 foreach (var reportString in _ldReportsDictionary[ldevice])
                 {
                     var reportStringParts = reportString.Split('$');
@@ -95,9 +96,9 @@ namespace BISC.Modules.Reports.Model.Services
                         reportControls.AddRange(res.Item);
                     }
                 }
+                _reportsModelService.AddReportsToDevice(device, reportControls, ldevice);
             }
 
-            _reportsModelService.AddReportsToDevice(device, reportControls);
 
         }
 

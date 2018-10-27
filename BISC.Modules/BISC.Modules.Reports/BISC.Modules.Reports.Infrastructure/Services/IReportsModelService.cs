@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
 
 namespace BISC.Modules.Reports.Infrastructure.Services
 {
@@ -14,6 +15,6 @@ namespace BISC.Modules.Reports.Infrastructure.Services
         List<IReportControl> GetAllReportControlsOfDevice(IModelElement device);
 
         void DeleteAllReportsOfDevice(IDevice device);
-        void AddReportsToDevice(IDevice device, List<IReportControl> reportControls);
+        void AddReportsToDevice(IDevice device, List<IReportControl> reportControls,string lDevice);
     }
 }

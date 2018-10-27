@@ -126,6 +126,10 @@
       <Project>{D1B96DC2-63D6-4726-9CFF-9C88E1315834}</Project>
       <Name>BISC.Modules.Reports.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BISC.Modules.Reports.Model\BISC.Modules.Reports.Model.csproj">
+      <Project>{9BBA1EE8-4D1E-4520-8468-3458DBB155F6}</Project>
+      <Name>BISC.Modules.Reports.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

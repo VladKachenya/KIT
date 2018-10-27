@@ -17,8 +17,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Reports.Model.Services;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
 {
@@ -36,12 +39,14 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private readonly ILoggingService _loggingService;
         //private IReportsLoadingService _reportsLoadingService;
         private IReportsSavingService _reportsSavingService;
+        private readonly IBiscProject _biscProject;
+        private readonly ReportControlLoadingService _reportControlLoadingService;
 
 
         #region Ctor
         public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService, ISaveCheckingService saveCheckingService,
             IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService, IConnectionPoolService connectionPoolService,
-            ILoggingService loggingService, IReportsSavingService reportsSavingService)
+            ILoggingService loggingService, IReportsSavingService reportsSavingService,IBiscProject biscProject, ReportControlLoadingService reportControlLoadingService)
              //IReportsLoadingService reportsLoadingService, 
         {
             _reportsModelService = reportsModelService;
@@ -50,13 +55,18 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _userInterfaceComposingService = userInterfaceComposingService;
             _connectionPoolService = connectionPoolService;
             _reportsSavingService = reportsSavingService;
+            _biscProject = biscProject;
+            _reportControlLoadingService = reportControlLoadingService;
             //_reportsLoadingService = reportsLoadingService;
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand);
             AddNewReportCommand = commandFactory.CreatePresentationCommand(OnAddNewReportCommand);
-            UndoChangesCommad = commandFactory.CreatePresentationCommand(OnUndoChanges);
+            UpdateReportsCommad = commandFactory.CreatePresentationCommand(OnUpdateReports);
             _loggingService = loggingService;
             ModelRegionKey = Guid.NewGuid().ToString();
         }
+
+    
+
         #endregion
 
         #region private methods
@@ -64,7 +74,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
             _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
             await _reportsSavingService.SaveReportsAsync(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
-            GetReportsFromDevice();
+            UpdateViewModels();
             ChangeTracker.AcceptChanges();
         }
 
@@ -77,32 +87,35 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private void OnAddNewReportCommand()
         {
             _loggingService.LogUserAction($"Пользователь добавил Report устройства {_device.Name}");
-            ReportControlViewModels.Add(_reportControlFactoryViewModel.CreateReportViewModel(ReportControlViewModels.Select((model => model.ReportID)).ToList(),_device));
+            ReportControlViewModels.Add(
+                _reportControlFactoryViewModel.CreateReportViewModel(
+                    ReportControlViewModels.Select((model => model.ReportID)).ToList(), _device));
         }
 
-        private async void OnUndoChanges()
+        private async void  OnUpdateReports()
         {
-           
+            await UpdateReports(true);
         }
 
-        private async Task UpdateDataSets(bool updateFromDevice)
+
+
+
+        private async Task UpdateReports(bool updateFromDevice)
         {
-            //if (updateFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
-            //{
-            //    await _datasetsLoadingService.EstimateProgress(_device);
-            //    await _datasetsLoadingService.Load(_device, null, _biscProject.MainSclModel.Value, new CancellationToken());
-            //}
-            //_dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
-            //SortDataSetsByIsDynamic();
-            //DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
-            //_saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
-            //_saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-            //    $"DataSets устройства {_device.Name}", SaveСhangesCommand, _regionName));
-            //ChangeTracker.AcceptChanges();
-            //ChangeTracker.SetTrackingEnabled(true);
+            if (updateFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
+            {
+                await _reportControlLoadingService.EstimateProgress(_device);
+                await _reportControlLoadingService.Load(_device, null, _biscProject.MainSclModel.Value, new CancellationToken());
+            }
+            UpdateViewModels();
+            _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
+            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
+                $"Reports устройства {_device.Name}", SaveСhangesCommand,_device.Name, _regionName));
+            ChangeTracker.AcceptChanges();
+            ChangeTracker.SetTrackingEnabled(true);
         }
 
-        private void GetReportsFromDevice()
+        private void UpdateViewModels()
         {
             _reportControlsModel = _reportsModelService.GetAllReportControlsOfDevice(_device);
             ReportControlViewModels = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device);
@@ -120,7 +133,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         public ICommand DeleteReportCommand { get; }
         public ICommand SaveСhangesCommand { get; }
-        public ICommand UndoChangesCommad { get; }
+        public ICommand UpdateReportsCommad { get; }
         public ICommand TestCommand { get; }
         public ICommand AddNewReportCommand { get; }
         public string ModelRegionKey { get; }
@@ -128,15 +141,13 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         #endregion
 
         #region override of NavigationViewModelBase
-        protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
+
+        protected override async void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
-            GetReportsFromDevice();
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
-            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"Reports устройства {_device.Name}", SaveСhangesCommand,_device.Name, _regionName));
-            ChangeTracker.SetTrackingEnabled(true);
+            await UpdateReports(false);
             base.OnNavigatedTo(navigationContext);
         }
 
@@ -144,7 +155,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
 
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
-            _userInterfaceComposingService.AddGlobalCommand(UndoChangesCommad, $"Обновить Report-ы {_device.Name}", IconsKeys.UpdateIconKey, false, true);
+            _userInterfaceComposingService.AddGlobalCommand(UpdateReportsCommad, $"Обновить Report-ы {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewReportCommand, $"Добавить Report {_device.Name}", IconsKeys.AddIconKey, false, true);
             //_globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnActivate();
@@ -154,7 +165,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
             _userInterfaceComposingService.ClearCurrentSaveCommand();
             _userInterfaceComposingService.DeleteGlobalCommand(AddNewReportCommand);
-            _userInterfaceComposingService.DeleteGlobalCommand(UndoChangesCommad);
+            _userInterfaceComposingService.DeleteGlobalCommand(UpdateReportsCommad);
             //_globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnDeactivate();
         }
