@@ -112,7 +112,11 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         public int BufferTime
         {
             get => _bufferTime;
-            set => SetProperty(ref _bufferTime, value);
+            set
+            {
+                if(value < 0 || value > 3600000) return;
+                SetProperty(ref _bufferTime, value);
+            }
         }
         public string SelectidDataSetName
         {
@@ -189,6 +193,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             reportControl.DataSet = SelectidDataSetName;
             reportControl.IntgPd = IntegrutyPeriod;
             reportControl.GiBool = GiBool;
+            reportControl.IsDynamic = IsDynamic;
             reportControl.OptFields.Value= OprionalFildsViewModel.GetUpdatedModel();
             reportControl.RptEnabled.Value = ReportEnabledViewModel.GetUpdatedModel();
             reportControl.TrgOps.Value = TriggerOptionsViewModel.GetUpdatedModel();

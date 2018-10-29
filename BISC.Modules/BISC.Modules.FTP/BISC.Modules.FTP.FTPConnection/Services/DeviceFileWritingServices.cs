@@ -61,11 +61,29 @@ namespace BISC.Modules.FTP.FTPConnection.Services
             }
             return file;
         }
-        
 
 
+        public async Task ResetDevice(string ip)
+        {
+            try
+            {
+                await _ftpClientWrapper.Connect(ip);
+                await ResetDevice();
+            }
+            catch (Exception e)
+            {
+                return ;
+            }
+            finally
+            {
+                await _ftpClientWrapper.Disconnect();
 
-        public async Task ResetDevice()
+            }
+
+        }
+
+
+        private async Task ResetDevice()
         {
             try
             {

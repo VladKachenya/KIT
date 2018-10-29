@@ -7,5 +7,7 @@ namespace BISC.Modules.Device.Presentation.Interfaces
     {
         ICommand DeleteDeviceCommand { get; }
         ICommand NavigateToDetailsCommand { get;  }
+        ICommand ResetDeviceViaFtpCommand { get; }
+
     }
 }

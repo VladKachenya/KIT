@@ -20,7 +20,7 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Button Margin="4" Grid.Column="0" ToolTip="Найстройка Goose подписок" Width="18" Height="18" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToSubscriptionCommand}">
+            <Button Margin="4" Grid.Column="0" ToolTip="Настройка Goose подписок" Width="18" Height="18" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToSubscriptionCommand}">
                 <ContentControl ContentTemplate="{DynamicResource LanPendingIcon}"></ContentControl>
             </Button>
             <Button Margin="4" Grid.Column="1" ToolTip="Goose матрица" Width="18" Height="18" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToMatrixCommand}">

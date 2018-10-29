@@ -147,6 +147,10 @@
       <Project>{48F6571C-ED09-4ED9-B76A-AC78EF9E9890}</Project>
       <Name>BISC.Modules.Connection.Presentation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.FTP\BISC.Modules.FTP.Infrastructure\BISC.Modules.FTP.Infrastructure.csproj">
+      <Project>{60A162A1-2A6A-4A39-B349-4B718BA1FA1F}</Project>
+      <Name>BISC.Modules.FTP.Infrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules.Gooses\BISC.Modules.Gooses.Infrastructure\BISC.Modules.Gooses.Infrastructure.csproj">
       <Project>{7FD15BE3-633C-4063-8948-B1663736523D}</Project>
       <Name>BISC.Modules.Gooses.Infrastructure</Name>

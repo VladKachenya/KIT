@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Events;
@@ -19,6 +20,8 @@ using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.Tree;
 using BISC.Modules.Gooses.Infrastructure.Services;
+using BISC.Modules.FTP.Infrastructure.Serviсes;
+using BISC.Presentation.Infrastructure.Commands;
 
 namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 {
@@ -34,6 +37,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInteractionService _userInteractionService;
         private readonly ILoggingService _loggingService;
+        private readonly IDeviceFileWritingServices _fTPfileWritingServices;
+        private Dispatcher _dispatcher;
 
         private string _deviceName;
         private IDevice _device;
@@ -41,9 +46,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private bool _isDeviceConnected;
 
         public DeviceTreeItemViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService, IGlobalEventsService globalEventsService, IConnectionPoolService connectionPoolService,
-            IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService,
+            IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService, IDeviceFileWritingServices fTPfileWritingServices,
             IGoosesModelService goosesModelService,ISaveCheckingService saveCheckingService,IUserInteractionService userInteractionService,ILoggingService loggingService)
         {
+            _dispatcher = Dispatcher.CurrentDispatcher;
             _deviceModelService = deviceModelService;
             _globalEventsService = globalEventsService;
             _connectionPoolService = connectionPoolService;
@@ -54,10 +60,16 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _saveCheckingService = saveCheckingService;
             _userInteractionService = userInteractionService;
             _loggingService = loggingService;
+            _fTPfileWritingServices = fTPfileWritingServices;
             DeleteDeviceCommand = commandFactory.CreatePresentationCommand(OnDeleteDeviceExecute);
             NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
+            ResetDeviceViaFtpCommand = commandFactory.CreatePresentationCommand(OnResetDeviceViaFtp, () => IsDeviceConnected);
         }
 
+        private async void OnResetDeviceViaFtp()
+        {
+            await _fTPfileWritingServices.ResetDevice(_device.Ip);
+        }
         private void OnNavigateToDetailsExecute()
         {
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
@@ -68,7 +80,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         public bool IsDeviceConnected
         {
             get => _isDeviceConnected;
-            set { SetProperty(ref _isDeviceConnected, value); }
+            set
+            {
+                SetProperty(ref _isDeviceConnected, value);
+                _dispatcher.Invoke( () => (ResetDeviceViaFtpCommand as IPresentationCommand)?.RaiseCanExecute());
+            }
         }
 
         private async void OnDeleteDeviceExecute()
@@ -145,5 +161,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 
         public ICommand DeleteDeviceCommand { get; }
         public ICommand NavigateToDetailsCommand { get; }
+        public ICommand ResetDeviceViaFtpCommand { get; }
+        
     }
 }

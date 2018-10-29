@@ -190,7 +190,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels
 
         private void VerifyConnection()
         {
-            (ResetDeviceCommand as IPresentationCommand).RaiseCanExecute();
+            (ResetDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
         }
 
         private void AddNoteToActionMassageList(bool? status, string massage)

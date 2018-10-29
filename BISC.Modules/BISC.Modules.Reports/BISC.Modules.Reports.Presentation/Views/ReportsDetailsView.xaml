@@ -18,55 +18,61 @@
         <localConverters:BoolianToBufferidStringConverter x:Key="boolianToBufferidStringConverter"/>
     </UserControl.Resources>
     <views:BiscDialogHost Identifier="100">
-    <Grid>
+    <Grid Name="MainGrid" Loaded="MainGrid_OnLoaded">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <ListBox Name="ListBox" ItemsSource="{Binding ReportControlViewModels}" HorizontalContentAlignment="Stretch"
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="reportElementsViewModels:ReportControlViewModel">
-                    <Grid Background="Transparent" >
-                        <Grid.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Удалить" IsEnabled="{Binding IsDynamic}" 
-                                          Command="{Binding DataContext.DeleteReportCommand, Source={x:Reference Name=ListBox}}" CommandParameter="{Binding .}">
-                                </MenuItem>
-                            </ContextMenu>
-                        </Grid.ContextMenu>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Horizontal" Grid.Column="0" MinWidth="200">
-                            <Label HorizontalAlignment="Center" Height="25" Width="25" 
-                                       VerticalAlignment="Center" Grid.Column="1" Visibility="{Binding IsChenged, Converter={StaticResource BoolToVisConvHidden}}">
-                                <Label.Content>
-                                    <ContentControl  ContentTemplate="{DynamicResource SaveIcon}"/>
-                                </Label.Content>
-                            </Label>
-                            <ContentControl  Height="20" Width="20" ToolTip="Динамический блок управления отчетами (FTP)" ContentTemplate="{DynamicResource PencilIcon}" Visibility="{Binding IsDynamic, Converter={StaticResource BoolToVisConvHidden}}"/>
-                            <Border Margin="2" Background="{Binding TypeColorBrush}" >
-                                <TextBlock Margin="4"  Text="{Binding ElementName}"/>
-                            </Border>
-                            <TextBlock Margin="6" Text="{Binding IsBuffered, Converter={StaticResource boolianToBufferidStringConverter}}"/>
-                            <TextBlock Margin="6" Text="{Binding Name}" MaxWidth="250"/>
-                        </StackPanel>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="1" 
-                      Visibility="{Binding Source={x:Reference Name=ListBox},Path=SelectedItem,Converter={StaticResource IsNullToVisibilityConverter}}">        
-        <Grid DataContext="{Binding Source={x:Reference Name=ListBox},Path=SelectedItem}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-                <local:ReportControlView DataContext="{Binding .}" Margin="10,0" />
-            </Grid>
-        </ScrollViewer>
+        <Grid HorizontalAlignment="Stretch" Grid.Column="0">
+            <ListBox Name="ListBoxColumn" ItemsSource="{Binding ReportControlViewModels}" HorizontalContentAlignment="Left"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto" >
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="reportElementsViewModels:ReportControlViewModel">
+                        <Grid Background="Transparent" >
+                            <Grid.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Удалить" IsEnabled="{Binding IsDynamic}" 
+                                              Command="{Binding DataContext.DeleteReportCommand, Source={x:Reference Name=ListBoxColumn}}" CommandParameter="{Binding .}">
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Grid.ContextMenu>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal" Grid.Column="0" MinWidth="200">
+                                <Label HorizontalAlignment="Center" Height="25" Width="25" 
+                                           VerticalAlignment="Center" Grid.Column="1" Visibility="{Binding IsChenged, Converter={StaticResource BoolToVisConvHidden}}">
+                                    <Label.Content>
+                                        <ContentControl  ContentTemplate="{DynamicResource SaveIcon}"/>
+                                    </Label.Content>
+                                </Label>
+                                <ContentControl  Height="20" Width="20" ToolTip="Динамический блок управления отчетами (FTP)" ContentTemplate="{DynamicResource PencilIcon}" Visibility="{Binding IsDynamic, Converter={StaticResource BoolToVisConvHidden}}"/>
+                                <Border Margin="2" Background="{Binding TypeColorBrush}" >
+                                    <TextBlock Margin="4"  Text="{Binding ElementName}"/>
+                                </Border>
+                                <TextBlock Margin="6" Text="{Binding IsBuffered, Converter={StaticResource boolianToBufferidStringConverter}}"/>
+                                <TextBlock Margin="6" Text="{Binding Name}" MaxWidth="250"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+            <GridSplitter Width="5" Grid.Column="1" Name="GridSplitterColumn" ShowsPreview="True" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+         <Grid Grid.Column="2" HorizontalAlignment="Stretch">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"  Name="ReportColumn"
+                      Visibility="{Binding Source={x:Reference Name=ListBoxColumn},Path=SelectedItem,Converter={StaticResource IsNullToVisibilityConverter}}">
+                <Grid DataContext="{Binding Source={x:Reference Name=ListBoxColumn},Path=SelectedItem}" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                        <local:ReportControlView DataContext="{Binding .}" Margin="10,0" />
+                </Grid>
+            </ScrollViewer>
+        </Grid>
         </Grid>
     </views:BiscDialogHost>
 </UserControl>

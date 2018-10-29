@@ -55,6 +55,6 @@
             <views:DynamicRegion HorizontalAlignment="Stretch" Margin ="2" RegionKey="{x:Static keys1:DeviceKeys.DeviceAddingRegionKey}" />
 
         </Grid>
-        <Button Grid.Row="2" Content="Отмена"  Command="{Binding CloseCommand}"/>
+        <Button Grid.Row="2" Content="Закрыть"  Command="{Binding CloseCommand}"/>
     </Grid>
 </UserControl>

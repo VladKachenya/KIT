@@ -126,7 +126,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private void OnDeleteDataSetViewModel(object dataSetViewModel)
         {
             var element = dataSetViewModel as IDataSetViewModel;
-            _loggingService.LogUserAction($"Пользователь удаляет Dataset {element.SelectedParentLd + "." + element.SelectedParentLn+"."+element.EditableNamePart}");
+            _loggingService.LogUserAction($"Пользователь удаляет DataSet {element.SelectedParentLd + "." + element.SelectedParentLn+"."+element.EditableNamePart}");
             DataSets.Remove(element);
         }
         private void OnAddNewDataSet()

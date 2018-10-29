@@ -201,21 +201,37 @@
                 </StackPanel>
             </Border>
 
+            
+                <Border BorderThickness="0, 0, 0, 0" BorderBrush="#FF5B5D5B" >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0">
+                        <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsBuffered}"
+                                        ToolTip="{x:Static ToolTipConstants:StringConstants.ReportControl_bufTime_Description}">
+                                <TextBlock Text="Buffer Time (мс):" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding BufferTime, UpdateSourceTrigger=PropertyChanged}" Margin="5, 0" TextAlignment="Left" 
+                                         Padding="5,0" Width="120" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding IsDynamic, Converter={StaticResource BoolToVisConv}}"
+                                    Grid.Column="1">
+                            <StackPanel Orientation="Horizontal"
+                                        ToolTip="{x:Static ToolTipConstants:StringConstants.ReportControl_isBuffered_Description}" Grid.Column="0">
+                                <CheckBox IsChecked="{Binding IsBuffered, UpdateSourceTrigger=PropertyChanged}" 
+                                                VerticalAlignment="Center" IsEnabled="True"/>
+                                <TextBlock Text="Is buffered"  Margin="2" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Border BorderThickness="0, 0, 0, 0" BorderBrush="#FF5B5D5B" Visibility="{Binding IsDynamic, Converter={StaticResource BoolToVisConv}}">
-                    <StackPanel Orientation="Horizontal">
-                        <StackPanel Orientation="Horizontal"
-                                    ToolTip="{x:Static ToolTipConstants:StringConstants.ReportControl_isBuffered_Description}" Grid.Column="0">
-                            <CheckBox IsChecked="{Binding IsBuffered, UpdateSourceTrigger=PropertyChanged}" 
-                                            VerticalAlignment="Center" IsEnabled="True"/>
-                            <TextBlock Text="Is buffered"  Margin="2" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
                 <Button Grid.Column="1" Content="Отменить изменения" Command="{Binding UndoChengestCommand}" Margin="10"/>
             </Grid>
         </StackPanel>
