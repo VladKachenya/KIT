@@ -15,6 +15,7 @@ using BISC.Modules.Device.Presentation.Interfaces.Factories;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
 using BISC.Presentation.BaseItems.Common;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
 
@@ -30,6 +31,9 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IDeviceViewModelFactory _deviceViewModelFactory;
         private readonly IDeviceAddingService _deviceAddingService;
         private ISclModel _currentAddingSclModel;
+        private bool _selectFileIsOpen;
+        private IFileViewModel _activeFileViewModel;
+
         public DeviceFromFileAddingViewModel(ICommandFactory commandFactory, IConfigurationService configurationService,
             IFileViewModelFactory fileViewModelFactory, IModelComposingService modelComposingService, IDeviceModelService deviceModelService,
             IDeviceViewModelFactory deviceViewModelFactory, IDeviceAddingService deviceAddingService)
@@ -43,12 +47,14 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _deviceViewModelFactory = deviceViewModelFactory;
             _deviceAddingService = deviceAddingService;
             LastOpenedFiles = new ObservableCollection<IFileViewModel>();
-            OpenFileWithDevices = _commandFactory.CreatePresentationCommand(OnOpenFileWithDevicesExecute);
+            OpenFileWithDevices = _commandFactory.CreatePresentationCommand(OnOpenFileWithDevicesExecute, () => _selectFileIsOpen);
             DeleteFileFromView = _commandFactory.CreatePresentationCommand<IFileViewModel>(OnDeleteFileFromViewExecute);
             LoadDevicesFromFile = _commandFactory.CreatePresentationCommand<IFileViewModel>(OnLoadDevicesFromFileExecute);
             AddSelectedDevices = _commandFactory.CreatePresentationCommand(OnAddSelectedDevicesExecute);
             FillLastOpenedFilesFromConfig();
             CurrentDevicesToAdd = new ObservableCollection<IDeviceViewModel>();
+            _selectFileIsOpen = true;
+            _activeFileViewModel = null;
         }
 
 
@@ -59,6 +65,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         private void OnLoadDevicesFromFileExecute(IFileViewModel fileViewModel)
         {
+            _activeFileViewModel = fileViewModel;
             var model = _modelComposingService.DeserializeModelFromFile(XElement.Load(fileViewModel.FullPath));
             _currentAddingSclModel = model;
             var devices = _deviceModelService.GetDevicesFromModel(model);
@@ -81,6 +88,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels
                 LastOpenedFiles.Remove(fileViewModel);
                 SaveChangesInConfig();
             }
+
+            if (_activeFileViewModel == fileViewModel)
+            {
+                CurrentDevicesToAdd.Clear();
+                _activeFileViewModel = null;
+            }
         }
 
         #region Overrides of NavigationViewModelBase
@@ -101,11 +114,15 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         private void OnOpenFileWithDevicesExecute()
         {
+            _selectFileIsOpen = false;
+            (OpenFileWithDevices as IPresentationCommand)?.RaiseCanExecute();
             var fileMaybe = FileHelper.SelectFileToOpen("Открыть файл с устройствами", "SCL Files (*.cid,*.icd,*.iid)|*.cid;*.icd;*iid|" +
                                                                         "Configured IED Description Files (*.cid)|*.cid|" +
                                                                         "IED Capability Description Files (*.icd)|*.icd|" +
                                                                         "Instantiated IED description Files (*.iid)|*.iid|" +
                                                                         "All Files (*.*)|*.*");
+            _selectFileIsOpen = true;
+            (OpenFileWithDevices as IPresentationCommand)?.RaiseCanExecute();
             if (!fileMaybe.Any()) return;
 
             var existing =
