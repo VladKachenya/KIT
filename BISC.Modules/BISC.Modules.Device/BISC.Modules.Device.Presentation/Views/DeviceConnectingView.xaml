@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
     </UserControl.Resources>
-    <Grid Height="400" Width="400">
+    <Grid Height="400" Width="400" x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -32,7 +32,8 @@
         </StackPanel>
         <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility ="Auto">
-            <ItemsControl x:Name="ipListBox" 
+            <view:LastIpAddressesView DataContext="{Binding  LastConnectedIps}"></view:LastIpAddressesView>
+            <!--<ItemsControl x:Name="ipListBox" 
                           ItemsSource="{Binding LastConnectedIps.LastIpAddresses}"
                           MinHeight="300"
                           MinWidth="100" >
@@ -41,7 +42,7 @@
                         <StackPanel Orientation="Horizontal">
                             <view:IpAddressView></view:IpAddressView>
                             <Button Margin="5" Width="24" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"
-                                    Command="{Binding ElementName=ipListBox,Path=DataContext.DeleteItemCommand }"  CommandParameter="{Binding .}"
+                                    Command="{Binding ElementName=MainGrid,Path=DataContext.LastConnectedIps.DeleteItemCommand }"  CommandParameter="{Binding .}"
                                     Style="{DynamicResource MaterialDesignFlatButton}">
                                 <Button.Content>
                                     <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
@@ -50,7 +51,7 @@
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            </ItemsControl>-->
         </ScrollViewer>
     </Grid>
 </UserControl>
