@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;

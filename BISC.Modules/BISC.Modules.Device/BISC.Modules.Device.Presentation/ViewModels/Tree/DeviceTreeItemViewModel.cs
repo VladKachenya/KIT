@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Events;
@@ -73,11 +74,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 
         private void OnExportCidDevice()
         {
-           var filePath= FileHelper.SelectFilePathToSave($"Сохранение устройства {_device.Name} в файл", ".cid", "Cid file",
-                $"{_device.Name}.cid");
+           var filePath= FileHelper.SelectFilePathToSave($"Сохранение устройства {_device.Name} в файл", ".cid", "Cid SCL files (*.cid)|*.cid",
+                $"BISC_{_device.Name}.cid");
             if (filePath.Any())
             {
                 _deviceSerializingService.SerializeCidSingleDevice(_device, filePath.GetFirstValue());
+                _loggingService.LogMessage($"Модель устройства {_device.Name} записана в файл {filePath.GetFirstValue()}",SeverityEnum.Info);
             }
         }
 
@@ -87,6 +89,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
                 $"Устройство {_device.Name} ,будет перезагуржено", new List<string> { "Ok", "Отмена" });
             if(res == 1)
                 return;
+            _loggingService.LogMessage($"Устройство {_device.Name} перезагружается",SeverityEnum.Info);
             await _fTPfileWritingServices.ResetDevice(_device.Ip);
         }
 
@@ -122,7 +125,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
                     return;
                 }
             }
-            var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, _device);
+            var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, _device.Name);
             if (result.IsSucceed)
             {
                 _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject.MainSclModel.Value,

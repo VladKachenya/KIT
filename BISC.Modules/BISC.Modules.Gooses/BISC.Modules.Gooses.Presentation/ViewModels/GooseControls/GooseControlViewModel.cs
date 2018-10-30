@@ -128,7 +128,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
             }
         }
 
-        public string GseType => "GOOSE";
+        public string GseType { get; set; }
+    
 
         public bool IsDynamic
         {

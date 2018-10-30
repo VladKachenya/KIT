@@ -112,7 +112,8 @@ namespace BISC.Model.Global.Constants
             public const string APPID =
                 "идентификатор широковещательной рассылки";
 
-
+            public const string ConfRev =
+                "Номер ревизии конфигурации";
         }
     }
 }

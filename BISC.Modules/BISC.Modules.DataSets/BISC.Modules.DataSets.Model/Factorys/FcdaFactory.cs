@@ -41,8 +41,8 @@ namespace BISC.Modules.DataSets.Model.Factorys
             var ln = dai.GetFirstParentOfType<ILogicalNode>();
             result.LnClass = ln.LnClass;
             result.LnInst = ln.Inst;
-            result.DoName = dai.GetFirstParentOfType<IDoi>().Name;
-            result.DaName = GetDaiRecursive(dai, String.Empty);
+            result.DoName = GetDoNameRecursive(dai, String.Empty);
+            result.DaName = dai.Name; 
             result.Prefix = ln.Prefix;
             result.Fc = GetDaFc(dai);
             return result;
@@ -57,22 +57,29 @@ namespace BISC.Modules.DataSets.Model.Factorys
 
 
 
-        private string GetDaiRecursive(IModelElement modelElement,string daName)
+        private string GetDoNameRecursive(IModelElement modelElement,string daName)
         {
-            if (modelElement is IDoi)
+            if (modelElement is IDoi doi)
             {
-                return daName;
+                return doi.Name+"."+daName;
             }
            
             if (modelElement is IDai dai)
             {
-                daName += dai.Name;
+                
             }
             if (modelElement is ISdi sdi)
             {
-                daName = sdi.Name+"."+daName;
+                if (!string.IsNullOrEmpty(daName))
+                {
+                    daName = sdi.Name + "." + daName;
+                }
+                else
+                {
+                    daName = sdi.Name;
+                }
             }
-            return GetDaiRecursive(modelElement.ParentModelElement, daName);
+            return GetDoNameRecursive(modelElement.ParentModelElement, daName);
         }
 
 

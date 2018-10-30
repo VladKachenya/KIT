@@ -83,6 +83,10 @@
                         <TextBlock Margin="4" Text="MaxTime"></TextBlock>
                         <TextBox  Margin="2" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Text="{Binding MaxTime,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
                     </UniformGrid>
+                    <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.ConfRev}" Columns="2">
+                        <TextBlock Margin="4" Text="ConfRev"></TextBlock>
+                        <TextBox  Margin="2" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Text="{Binding ConfRev,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                    </UniformGrid>
                     <!--<UniformGrid Columns="2">
                                     <TextBlock Margin="4" Text="ConfRev" HorizontalAlignment="Stretch"></TextBlock>
                                     <TextBox  Margin="2" Text="{Binding ConfRev,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>

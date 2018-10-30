@@ -4,6 +4,6 @@ namespace BISC.Modules.Device.Infrastructure.Services
 {
     public interface IDeviceSerializingService
     {
-        string SerializeCidSingleDevice(IDevice device,string filePath);
+        void SerializeCidSingleDevice(IDevice device,string filePath);
     }
 }

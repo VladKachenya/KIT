@@ -25,6 +25,8 @@ namespace BISC.Modules.Gooses.Model.Model
         public int ConfRev { get; set; }
         public string AppId { get; set; }
         public bool IsDynamic { get; set; }
+        public bool FixedOffs { get; set; }
+        public string GooseType { get; set; }
         public ChildModelsList<ISubscriberDevice> SubscriberDevice=>new ChildModelsList<ISubscriberDevice>(this, GooseKeys.GooseModelKeys.SubscriberDeviceKey);
         #endregion
 

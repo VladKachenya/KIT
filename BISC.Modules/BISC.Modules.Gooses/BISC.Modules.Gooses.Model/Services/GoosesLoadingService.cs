@@ -115,6 +115,8 @@ namespace BISC.Modules.Gooses.Model.Services
                             _goosesModelService.AddGseControl(goParts[0], ldevice.Replace(device.Name, ""), device,
                                 gooseControl);
 
+                            gooseControl.GooseType = "GOOSE";
+                            gooseControl.FixedOffs = false;
                             IGse gse = new Gse();
                             gse.ChildModelElements.Add(new SclAddress());
                             gse.CbName = gooseDto.CbName;

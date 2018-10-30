@@ -100,7 +100,17 @@ namespace BISC.Model.Global.Serializators
             {
                 foreach (var property in _properties)
                 {
-                    if(serializingType==SerializingType.Extended&&property.SerializingType==SerializingType.Basic)continue;
+                    if (serializingType == SerializingType.Basic &&
+                        property.SerializingType == SerializingType.Extended)
+                    {
+                        var attrToDel=modelElement.ModelElementAttributes.FirstOrDefault(
+                            (attribute => attribute.Name == property.Name));
+                        if (attrToDel != null)
+                        {
+                            modelElement.ModelElementAttributes.Remove(attrToDel);
+                        }
+                        continue;
+                    }
                     foreach (var propertyInfo in modelElementProperties)
                     {
                         if (property.PropertyName != propertyInfo.Name) continue;

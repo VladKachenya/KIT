@@ -75,6 +75,9 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 gooseControlViewModel.AvailableDatasets = datasets.Select((set => set.Name)).ToList();
                 gooseControlViewModel.IsDynamic = gooseControl.IsDynamic;
                 gooseControlViewModel.ConfRev = gooseControl.ConfRev;
+                gooseControlViewModel.FixedOffs = gooseControl.FixedOffs;
+                gooseControlViewModel.GseType = gooseControl.GooseType;
+
                 gooseControlViewModels.Add(gooseControlViewModel);
             }
 
@@ -103,9 +106,10 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
             if (ldevice == null)
                 ldevice = ldevices.FirstOrDefault();
-
+            gooseControlViewModel.ConfRev = 1;
             gooseControlViewModel.LdInst = ldevice.Inst;
-
+            gooseControlViewModel.GseType = "GOOSE";
+            gooseControlViewModel.FixedOffs = false;
             gooseControlViewModel.ChangeTracker.SetNew();
 
 

@@ -105,6 +105,7 @@ namespace BISC.Modules.Gooses.Presentation.Services
             gooseFtpDto.VlanPriority = gooseControlViewModel.VlanPriority;
             gooseFtpDto.ConfRev = gooseControlViewModel.ConfRev;
             gooseFtpDto.LdInst = gooseControlViewModel.LdInst;
+            
             return gooseFtpDto;
         }
 
@@ -134,6 +135,8 @@ namespace BISC.Modules.Gooses.Presentation.Services
             gooseControl.AppId = gooseControlViewModel.GoId;
             gooseControl.DataSet = gooseControlViewModel.SelectedDataset;
             gooseControl.IsDynamic = gooseControlViewModel.IsDynamic;
+            gooseControl.GooseType = gooseControlViewModel.GseType;
+            gooseControl.FixedOffs = gooseControlViewModel.FixedOffs;
 
             relatedGse.CbName = gooseControlViewModel.Name;
             relatedGse.AppIdDec = gooseControlViewModel.AppId.ToString();
