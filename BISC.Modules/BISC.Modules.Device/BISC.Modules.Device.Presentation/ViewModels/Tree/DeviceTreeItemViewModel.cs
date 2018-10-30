@@ -83,8 +83,13 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 
         private async void OnResetDeviceViaFtp()
         {
+            var res = await _userInteractionService.ShowOptionToUser("Перезагрузка устройства",
+                $"Устройство {_device.Name} ,будет перезагуржено", new List<string> { "Ok", "Отмена" });
+            if(res == 1)
+                return;
             await _fTPfileWritingServices.ResetDevice(_device.Ip);
         }
+
         private void OnNavigateToDetailsExecute()
         {
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();

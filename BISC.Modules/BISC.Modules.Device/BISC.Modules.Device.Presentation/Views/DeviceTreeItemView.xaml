@@ -47,10 +47,10 @@
                 </ContentControl.Style>
             </ContentControl>
         </StackPanel>
-        <!--<Button Grid.Column="1" Width="15" Height="15" ToolTip="Перезагрузить устройство по FTP" Margin="10,0"
+        <Button Grid.Column="1" Width="15" Height="15" ToolTip="Перезагрузить устройство по FTP" Margin="10,0"
                 Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding ResetDeviceViaFtpCommand}">
             <ContentControl ContentTemplate="{DynamicResource LockResetIcon}"></ContentControl>
-        </Button>-->
+        </Button>
         <Button Grid.Column="2" Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToDetailsCommand}">
             <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}"></ContentControl>
         </Button>
