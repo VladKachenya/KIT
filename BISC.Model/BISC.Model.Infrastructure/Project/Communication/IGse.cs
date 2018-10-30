@@ -8,6 +8,8 @@ namespace BISC.Model.Infrastructure.Project.Communication
         string MacAddress { get; set; }
         int VlanPriority { get; set; }
         string AppId { get; set; }
+        string AppIdDec { get; set; }
+
         string LdInst { get; set; }
         string CbName { get; set; }
 

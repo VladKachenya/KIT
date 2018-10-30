@@ -164,5 +164,8 @@
     <Folder Include="Interfaces\Commands\" />
     <Folder Include="ViewModels\Commands\" />
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

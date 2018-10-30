@@ -132,7 +132,7 @@ namespace BISC.Modules.Gooses.Model.Services
                                 Unit = "s"
                             };
                             gse.MacAddress = gooseDto.MAC_Address;
-                            gse.AppId = gooseDto.APPID.ToString("D4");
+                            gse.AppIdDec = gooseDto.APPID.ToString("D4");
                             gse.VlanId = gooseDto.VLAN_ID.ToString();
                             gse.VlanPriority = (int) gooseDto.VLAN_PRIORITY;
                             _sclCommunicationModelService.AddGse(gse, sclModel, device.Name);

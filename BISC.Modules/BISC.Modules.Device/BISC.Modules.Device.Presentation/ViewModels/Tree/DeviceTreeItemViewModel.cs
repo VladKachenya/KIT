@@ -21,6 +21,7 @@ using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.Tree;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.FTP.Infrastructure.Serviсes;
+using BISC.Presentation.BaseItems.Common;
 using BISC.Presentation.Infrastructure.Commands;
 
 namespace BISC.Modules.Device.Presentation.ViewModels.Tree
@@ -37,6 +38,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInteractionService _userInteractionService;
         private readonly ILoggingService _loggingService;
+        private readonly IDeviceSerializingService _deviceSerializingService;
         private readonly IDeviceFileWritingServices _fTPfileWritingServices;
         private Dispatcher _dispatcher;
 
@@ -47,7 +49,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 
         public DeviceTreeItemViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService, IGlobalEventsService globalEventsService, IConnectionPoolService connectionPoolService,
             IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService, IDeviceFileWritingServices fTPfileWritingServices,
-            IGoosesModelService goosesModelService,ISaveCheckingService saveCheckingService,IUserInteractionService userInteractionService,ILoggingService loggingService)
+            IGoosesModelService goosesModelService,ISaveCheckingService saveCheckingService,IUserInteractionService userInteractionService,ILoggingService loggingService,
+            IDeviceSerializingService deviceSerializingService)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
             _deviceModelService = deviceModelService;
@@ -60,10 +63,22 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _saveCheckingService = saveCheckingService;
             _userInteractionService = userInteractionService;
             _loggingService = loggingService;
+            _deviceSerializingService = deviceSerializingService;
             _fTPfileWritingServices = fTPfileWritingServices;
             DeleteDeviceCommand = commandFactory.CreatePresentationCommand(OnDeleteDeviceExecute);
             NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
             ResetDeviceViaFtpCommand = commandFactory.CreatePresentationCommand(OnResetDeviceViaFtp, () => IsDeviceConnected);
+            ExportCidDeviceCommand = commandFactory.CreatePresentationCommand(OnExportCidDevice);
+        }
+
+        private void OnExportCidDevice()
+        {
+           var filePath= FileHelper.SelectFilePathToSave($"Сохранение устройства {_device.Name} в файл", ".cid", "Cid file",
+                $"{_device.Name}.cid");
+            if (filePath.Any())
+            {
+                _deviceSerializingService.SerializeCidSingleDevice(_device, filePath.GetFirstValue());
+            }
         }
 
         private async void OnResetDeviceViaFtp()
@@ -162,6 +177,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         public ICommand DeleteDeviceCommand { get; }
         public ICommand NavigateToDetailsCommand { get; }
         public ICommand ResetDeviceViaFtpCommand { get; }
-        
+
+        public ICommand ExportCidDeviceCommand { get; }
+
     }
 }

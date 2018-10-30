@@ -8,6 +8,7 @@ using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Global.Serializators;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Model.Infrastructure.Serializing;
 
 namespace BISC.Model.Global.Services
 {
@@ -55,13 +56,13 @@ namespace BISC.Model.Global.Services
           return  (T)(_modelElementSerializatorDictionary[xElement.Name.LocalName] as IModelElementDeSerializer<T>).DeserializeModelElement(xElement);
         }
 
-        public XElement SerializeModelElement<T>(T modelElement, bool isDefaultSerializatorAllowed = true) where T : IModelElement
+        public XElement SerializeModelElement<T>(T modelElement,SerializingType serializingType, bool isDefaultSerializatorAllowed = true) where T : IModelElement
         {
             if (!_modelElementSerializatorDictionary.ContainsKey(modelElement.ElementName))
             {
                 if (isDefaultSerializatorAllowed)
                 {
-                    return (new DefaultModelElementSerializer<IModelElement>(this)).SerializeModelElement(modelElement);
+                    return (new DefaultModelElementSerializer<IModelElement>(this)).SerializeModelElement(modelElement,serializingType);
                 }
                 else
                 {
@@ -69,7 +70,7 @@ namespace BISC.Model.Global.Services
                 }
             }
 
-            return (_modelElementSerializatorDictionary[modelElement.ElementName] as IModelElementSerializer).SerializeSimpleModelElement(modelElement);
+            return (_modelElementSerializatorDictionary[modelElement.ElementName] as IModelElementSerializer).SerializeSimpleModelElement(modelElement,serializingType);
         }
 
 

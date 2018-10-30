@@ -9,6 +9,7 @@ using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
+using BISC.Model.Infrastructure.Serializing;
 using BISC.Model.Infrastructure.Services;
 
 namespace BISC.Model.Global.Services
@@ -30,9 +31,9 @@ namespace BISC.Model.Global.Services
             return modelElement as ISclModel;
         }
 
-        public void SerializeModelInFile(string filePath, IModelElement modelElement)
+        public void SerializeModelInFile(string filePath, IModelElement modelElement, SerializingType serializingType)
         {
-           XElement xElement= _modelElementsRegistryService.SerializeModelElement(modelElement);
+           XElement xElement= _modelElementsRegistryService.SerializeModelElement(modelElement,serializingType);
             xElement.Save(filePath);
         }
     }

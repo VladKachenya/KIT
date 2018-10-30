@@ -53,8 +53,8 @@
     <Compile Include="Elements\IModelElement.cs" />
     <Compile Include="Elements\IModelElementComparable.cs" />
     <Compile Include="Factorys\IMismatchFactory.cs" />
-    <Compile Include="IModelElementSerializer.cs" />
-    <Compile Include="IModelElementsRegistryService.cs" />
+    <Compile Include="Serializing\IModelElementSerializer.cs" />
+    <Compile Include="Serializing\IModelElementsRegistryService.cs" />
     <Compile Include="Keys\ModelKeys.cs" />
     <Compile Include="Project\Communication\IAddressProperty.cs" />
     <Compile Include="Project\Communication\IConnectedAccessPoint.cs" />
@@ -67,10 +67,17 @@
     <Compile Include="Project\ISclHeader.cs" />
     <Compile Include="Project\ISclModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializing\SerializingType.cs" />
     <Compile Include="Services\Communication\ISclCommunicationModelService.cs" />
     <Compile Include="Services\IModelsComparingServise.cs" />
     <Compile Include="Services\IModelComposingService.cs" />
     <Compile Include="Services\IModelTypesResolvingService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
+      <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
+      <Name>BISC.Infrastructure.Global</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

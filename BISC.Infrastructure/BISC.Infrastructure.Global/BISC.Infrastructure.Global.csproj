@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ICloneable.cs" />
     <Compile Include="Common\Maybe.cs" />
     <Compile Include="Common\OperationResult.cs" />
     <Compile Include="Constants\Constants.cs" />

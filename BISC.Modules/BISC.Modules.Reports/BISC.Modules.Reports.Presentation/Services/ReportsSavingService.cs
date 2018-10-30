@@ -80,19 +80,23 @@ namespace BISC.Modules.Reports.Presentation.Services
                                 if (isSavingInDevice)
                                 {
                                     //выполнение коммуникации с устройством
-                                    var res = await SaveReportMms(reportToSave, reportControlInDevise, device,
-                                        ldevice.Inst, ln.Name);
-                                    if (!res.IsSucceed)
+                                    for (int i = 0; i < reportToSave.ReportEnabledViewModel.Max; i++)
                                     {
-                                        _loggingService.LogMessage(res.GetFirstError(), SeverityEnum.Warning);
+                                        var res = await SaveReportMms(reportToSave, reportControlInDevise, device,
+                                            ldevice.Inst, ln.Name,i.ToString("D2"));
+                                        if (!res.IsSucceed)
+                                        {
+                                            _loggingService.LogMessage(res.GetFirstError(), SeverityEnum.Warning);
+                                        }
+                                        else
+                                        {
+                                            _loggingService.LogMessage(
+                                                $"Запись Отчета {reportToSave.Name} в устройство {device.Name} по MMS прошла успешно",
+                                                SeverityEnum.Info);
+                                            MapViewModelToModel(reportControlInDevise, reportToSave);
+                                        }
                                     }
-                                    else
-                                    {
-                                        _loggingService.LogMessage(
-                                            $"Запись Отчета {reportToSave.Name} в устройство {device.Name} по MMS прошла успешно",
-                                            SeverityEnum.Info);
-                                        MapViewModelToModel(reportControlInDevise, reportToSave);
-                                    }
+                              
                                 }
                                 else
                                 {
@@ -138,6 +142,10 @@ namespace BISC.Modules.Reports.Presentation.Services
 
             List<IReportControl> reportControlsToSave =
                 reportsToSaveDynamic.Select((model => model.GetUpdatedModel())).ToList();
+            if (!reportsToSaveDynamic.Any() && !reportControlsInDeviceToDelete.Any())
+            {
+                return OperationResult.SucceedResult;
+            }
             if (isSavingInDevice)
             {
                 var res = await _ftpReportModelService.WriteReportsToDevice(device.Ip, reportControlsToSave,
@@ -182,11 +190,11 @@ namespace BISC.Modules.Reports.Presentation.Services
             reportControl.TrgOps.Value = reportControlViewModel.TriggerOptionsViewModel.GetUpdatedModel();
         }
         private async Task<OperationResult> SaveReportMms(IReportControlViewModel reportToSave, IReportControl reportControl,
-            IDevice device, string ldInst, string lnName)
+            IDevice device, string ldInst, string lnName,string rptInst)
         {
             string fc = reportToSave.IsBuffered ? "BR" : "RP";
 
-            string rptPath = lnName + "$" + fc + "$" + reportControl.Name;
+            string rptPath = lnName + "$" + fc + "$" + reportControl.Name+rptInst;
             OperationResult savingResult = OperationResult.SucceedResult;
             if ((reportControl.OptFields.Value.TimeStamp != reportToSave.OprionalFildsViewModel.ReportTimeStamp) ||
                 (reportControl.OptFields.Value.DataSet != reportToSave.OprionalFildsViewModel.DataSetName) ||

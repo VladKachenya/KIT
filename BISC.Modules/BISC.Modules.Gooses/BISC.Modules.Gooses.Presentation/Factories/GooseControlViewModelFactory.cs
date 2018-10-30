@@ -50,7 +50,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 if (gseOfGoose != null)
                 {
                     if (gseOfGoose.AppId != null)
-                        gooseControlViewModel.AppId = uint.Parse(gseOfGoose.AppId);
+                        gooseControlViewModel.AppId = uint.Parse(gseOfGoose.AppIdDec);
                     gooseControlViewModel.MacAddress = gseOfGoose.MacAddress;
                     if (gseOfGoose.MaxTime.Value != null)
                     {

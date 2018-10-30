@@ -48,5 +48,24 @@ namespace BISC.Modules.Reports.Model.Model
             if (element.IsDynamic != IsDynamic) return false;
             return true;
         }
+
+        #region Implementation of ICloneable<out IReportControl>
+
+        //public IReportControl Clone()
+        //{
+        //    IReportControl reportControl=new ReportControl();
+        //    reportControl.Name = Name;
+        //    reportControl.RptID = RptID;
+        //    reportControl.BufTime = BufTime;
+        //    reportControl.Buffered = Buffered;
+        //    reportControl.DataSet = DataSet;
+        //    reportControl.ConfRev = ConfRev;
+        //    reportControl.GiBool = GiBool;
+        //    reportControl.IntgPd = IntgPd;
+        //    reportControl.IsDynamic = IsDynamic;
+        //    return reportControl;
+        //}
+
+        #endregion
     }
 }

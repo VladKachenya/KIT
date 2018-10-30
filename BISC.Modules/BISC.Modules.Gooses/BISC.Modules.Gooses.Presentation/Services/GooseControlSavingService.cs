@@ -136,7 +136,7 @@ namespace BISC.Modules.Gooses.Presentation.Services
             gooseControl.IsDynamic = gooseControlViewModel.IsDynamic;
 
             relatedGse.CbName = gooseControlViewModel.Name;
-            relatedGse.AppId = gooseControlViewModel.AppId.ToString();
+            relatedGse.AppIdDec = gooseControlViewModel.AppId.ToString();
             relatedGse.LdInst = gooseControlViewModel.LdInst;
             relatedGse.MacAddress = gooseControlViewModel.MacAddress;
             relatedGse.MaxTime.Value = new DurationInMilliSec("MinTime")

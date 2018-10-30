@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Model.Global.Serializators;
+using BISC.Model.Infrastructure.Serializing;
 using BISC.Tests.Model.InitializeModules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
@@ -30,7 +31,7 @@ namespace BISC.Tests.Model.Model.Global.Serializers
             SclModelElementSerializer sclModelElementSerializer=new SclModelElementSerializer();
             var deserializedElement = sclModelElementSerializer.DeserializeModelElement(XElement.Parse(Properties.Resources.rel670_gooseUROV));
 
-            var serializedFile = sclModelElementSerializer.SerializeModelElement(deserializedElement);
+            var serializedFile = sclModelElementSerializer.SerializeModelElement(deserializedElement,SerializingType.Extended);
         }
         [TestMethod]
         public void SerializingMustBeSucceed_SclModelFilled()
@@ -39,7 +40,7 @@ namespace BISC.Tests.Model.Model.Global.Serializers
             SclModelElementSerializer sclModelElementSerializer = new SclModelElementSerializer();
             var deserializedElementEtalon = sclModelElementSerializer.DeserializeModelElement(XElement.Parse(Properties.Resources.rel670_gooseUROV));
             
-            var serializedFile = sclModelElementSerializer.SerializeModelElement(deserializedElementEtalon);
+            var serializedFile = sclModelElementSerializer.SerializeModelElement(deserializedElementEtalon,SerializingType.Extended);
 
             var deserializedElementResult=   sclModelElementSerializer.DeserializeModelElement(serializedFile);
         }

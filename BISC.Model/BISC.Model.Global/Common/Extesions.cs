@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Model.Infrastructure.Serializing;
 
 namespace BISC.Model.Global.Common
 {
@@ -35,15 +36,6 @@ namespace BISC.Model.Global.Common
 
      
 
-        public static XElement FillChildXElements<T>(this XElement element, string elementName, IModelElementSerializer<IModelElement> serializer, List<T> modelElements) where T : IModelElement
-        {
-            element.CleanChildXElements(elementName);
-            foreach (var modelElement in modelElements)
-            {
-                element.Add(serializer.SerializeModelElement(modelElement));
-            }
-            return element;
-        }
 
         public static IModelElement FillChildModelElements<T>(this IModelElement modelElement, List<T> childElementsList)
         {

@@ -11,6 +11,7 @@ using BISC.Model.Global.Project;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Keys;
 using BISC.Model.Infrastructure.Project;
+using BISC.Model.Infrastructure.Serializing;
 
 namespace BISC.Model.Global.Services
 {
@@ -78,7 +79,7 @@ namespace BISC.Model.Global.Services
 
         public void SaveCurrentProject()
         {
-            var xProjectElement = _modelElementsRegistryService.SerializeModelElement(_biscProject);
+            var xProjectElement = _modelElementsRegistryService.SerializeModelElement(_biscProject,SerializingType.Extended);
             xProjectElement.Save(_currentProjectPath);
         }
 

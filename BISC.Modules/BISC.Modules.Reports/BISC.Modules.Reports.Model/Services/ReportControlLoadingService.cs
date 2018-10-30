@@ -11,6 +11,7 @@ using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Services;
+using BISC.Modules.Reports.Model.Model;
 
 namespace BISC.Modules.Reports.Model.Services
 {
@@ -82,6 +83,8 @@ namespace BISC.Modules.Reports.Model.Services
             _reportsModelService.DeleteAllReportsOfDevice(device);
             if (!_ldReportsDictionary.Values.Any()) return;
             var dynamicReports = await _ftpReportModelService.GetReportsFromDevice(device.Ip);
+            List<IReportControl> reportControlsToAddInModel = new List<IReportControl>();
+
             foreach (var ldevice in _ldReportsDictionary.Keys)
             {
                 List<IReportControl> reportControls = new List<IReportControl>();
@@ -97,17 +100,39 @@ namespace BISC.Modules.Reports.Model.Services
                         reportControls.AddRange(res.Item);
                     }
                 }
-                reportControls.ForEach((control =>
+
+                var filteredRcs = FilterReportControlsByrptEnaMax(reportControls);
+
+                filteredRcs.ForEach((control =>
                 {
-                    if (dynamicReports.Any((reportControl => reportControl.Name == control.Name.Replace("01",string.Empty))))
+                    if (dynamicReports.Any((reportControl => reportControl.Name == control.Name)))
                     {
                         control.IsDynamic = true;
                     }
-                } ));
-                _reportsModelService.AddReportsToDevice(device, reportControls, ldevice);
+                }));
+
+                _reportsModelService.AddReportsToDevice(device, filteredRcs, ldevice);
+            }
+        }
+
+        public List<IReportControl> FilterReportControlsByrptEnaMax(List<IReportControl> rawReportControls)
+        {
+            List<IReportControl> reportControlsFiltered = new List<IReportControl>();
+
+            var groupedRawRcs =
+                rawReportControls.GroupBy((control => control.RptID.Substring(0, control.RptID.Length - 2))).ToList();
+            
+
+            foreach (var groupedRawRc in groupedRawRcs)
+            {
+                IReportControl rcFiltered = groupedRawRc.First();
+                rcFiltered.RptID = groupedRawRc.Key;
+                rcFiltered.Name = rcFiltered.Name.Substring(0, rcFiltered.Name.Length - 2);
+                rcFiltered.RptEnabled.Value.Max = groupedRawRc.Count();
+               reportControlsFiltered.Add(rcFiltered);
             }
 
-
+            return reportControlsFiltered;
         }
 
         public int Priority => 20;

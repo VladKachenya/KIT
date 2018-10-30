@@ -9,6 +9,7 @@ using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Project;
+using BISC.Model.Infrastructure.Serializing;
 using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
@@ -75,7 +76,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         private async void OnSaveToDevice()
         {
 
-            var proj = _modelElementsRegistryService.SerializeModelElement(_biscProject).ToString();
+            var proj = _modelElementsRegistryService.SerializeModelElement(_biscProject,SerializingType.Extended).ToString();
             var str = _resultFileParser.GetFileStringFromGooseModel(GooseControlBlockViewModels, _device).ToString();
             if (_device.Ip == null)
             {

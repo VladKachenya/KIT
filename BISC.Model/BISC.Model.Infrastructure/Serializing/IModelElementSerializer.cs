@@ -1,16 +1,17 @@
 ﻿using System.Xml.Linq;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Model.Infrastructure.Serializing;
 
 namespace BISC.Model.Infrastructure
 {
     public interface IModelElementSerializer<in T>:IModelElementSerializer where T : IModelElement
     {
-        XElement SerializeModelElement(T modelElement);
+        XElement SerializeModelElement(T modelElement,SerializingType serializingType);
     }
 
     public interface IModelElementSerializer
     {
-        XElement SerializeSimpleModelElement(IModelElement modelElement);
+        XElement SerializeSimpleModelElement(IModelElement modelElement, SerializingType serializingType);
     }
 
 

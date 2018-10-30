@@ -10,9 +10,26 @@ using BISC.Model.Infrastructure.Elements;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using BISC.Model.Infrastructure.Serializing;
 
 namespace BISC.Model.Global.Serializators
 {
+  
+    public class SerializableProperty
+    {
+        public SerializableProperty(string propertyName, string name, SerializingType serializingType)
+        {
+            PropertyName = propertyName;
+            Name = name;
+            SerializingType = serializingType;
+        }
+
+        public string PropertyName { get; }
+        public string Name { get;  }
+        public SerializingType SerializingType { get;  }
+    }
+
+
     public class DefaultModelElementSerializer<T> : IModelSerializer<T> where T : IModelElement
     {
         private readonly IModelElementsRegistryService _modelElementsRegistryService;
@@ -23,11 +40,11 @@ namespace BISC.Model.Global.Serializators
         }
 
       
-        private List<Tuple<string, string>> _properties = new List<Tuple<string, string>>();
+        private List<SerializableProperty> _properties = new List<SerializableProperty>();
 
-        protected void RegisterProperty(string propertyName, string name)
+        protected void RegisterProperty(string propertyName, string name,SerializingType serializingType=SerializingType.Basic)
         {
-            _properties.Add(new Tuple<string, string>(propertyName, name));
+            _properties.Add(new SerializableProperty(propertyName,name,serializingType));
         }
         private string _valuePropertyName = null;
         protected void RegisterValueToProperty(string propertyName)
@@ -41,7 +58,7 @@ namespace BISC.Model.Global.Serializators
         }
 
 
-        public virtual XElement SerializeModelElement(T modelElement)
+        public virtual XElement SerializeModelElement(T modelElement,SerializingType serializingType)
 
         {
             if (!(modelElement is ModelElement))
@@ -58,10 +75,10 @@ namespace BISC.Model.Global.Serializators
             {
                 xElement = new XElement(modelElement.ElementName);
             }
-            FillXElementCustomProperties(xElement, modelElement);
+            FillXElementCustomProperties(xElement, modelElement,serializingType);
             foreach (var modelElementChildElement in modelElement.ChildModelElements)
             {
-                var childElement = _modelElementsRegistryService.SerializeModelElement(modelElementChildElement);
+                var childElement = _modelElementsRegistryService.SerializeModelElement(modelElementChildElement,serializingType);
 
                 xElement.Add(childElement);
             }
@@ -75,7 +92,7 @@ namespace BISC.Model.Global.Serializators
             return xElement;
         }
 
-        private void FillXElementCustomProperties(XElement xElement, T modelElement)
+        private void FillXElementCustomProperties(XElement xElement, T modelElement, SerializingType serializingType)
         {
             var modelElementProperties = modelElement.GetType().GetProperties();
 
@@ -83,10 +100,10 @@ namespace BISC.Model.Global.Serializators
             {
                 foreach (var property in _properties)
                 {
-
+                    if(serializingType==SerializingType.Extended&&property.SerializingType==SerializingType.Basic)continue;
                     foreach (var propertyInfo in modelElementProperties)
                     {
-                        if (property.Item1 != propertyInfo.Name) continue;
+                        if (property.PropertyName != propertyInfo.Name) continue;
                         var propertyValue = propertyInfo.GetValue(modelElement);
                         if (propertyValue is IModelElement)
                         {
@@ -96,7 +113,7 @@ namespace BISC.Model.Global.Serializators
                         }
                         else
                         {
-                            if (TrySetAttributeValue(modelElement, property.Item2,
+                            if (TrySetAttributeValue(modelElement, property.Name,
                                 propertyInfo.GetValue(modelElement)?.ToString()))
                                 break;
                         }
@@ -176,16 +193,16 @@ namespace BISC.Model.Global.Serializators
                 {
                     foreach (var propertyInfo in modelElementProperties)
                     {
-                        if (property.Item1 == propertyInfo.Name)
+                        if (property.PropertyName == propertyInfo.Name)
                         {
                             object value = modelElement.ModelElementAttributes.FirstOrDefault((attribute =>
-                                attribute.Name == property.Item2))?.Value;
+                                attribute.Name == property.Name))?.Value;
                             if (value == null)
                             {
                                 try
                                 {
                                     value = modelElement.ChildModelElements.FirstOrDefault((me =>
-                                        me.ElementName == property.Item2));
+                                        me.ElementName == property.Name));
                                 }
                                 catch (Exception e)
                                 {
@@ -241,9 +258,12 @@ namespace BISC.Model.Global.Serializators
             }
         }
 
-        public XElement SerializeSimpleModelElement(IModelElement modelElement)
+     
+
+        public XElement SerializeSimpleModelElement(IModelElement modelElement, SerializingType serializingType)
         {
-            return SerializeModelElement((T)modelElement);
+            return SerializeModelElement((T)modelElement,serializingType);
         }
+        
     }
 }

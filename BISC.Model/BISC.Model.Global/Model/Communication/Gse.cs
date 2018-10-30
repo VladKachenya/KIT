@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +41,14 @@ namespace BISC.Model.Global.Model.Communication
         {
             get => SclAddress.Value.GetProperty("APPID");
             set => SclAddress.Value.SetProperty("APPID", value);
+        }
+
+        public string AppIdDec
+        {
+            get =>
+                uint.Parse(SclAddress.Value.GetProperty("APPID"),NumberStyles.HexNumber).ToString();
+            set =>
+                SclAddress.Value.SetProperty("APPID", uint.Parse(value).ToString("X4"));
         }
 
         public string LdInst { get; set; }

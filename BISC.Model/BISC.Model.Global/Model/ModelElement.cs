@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Xml.Linq;
+using BISC.Infrastructure.Global.Common;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Elements;
@@ -29,6 +32,13 @@ namespace BISC.Model.Global.Model
             if (obj.Namespace != Namespace) return false;
             return true;
         }
+
+        #region Implementation of ICloneable<out ModelElement>
+
+      
+
+        #endregion
+
     }
 
    

@@ -1,5 +1,6 @@
 ﻿using System.Xml.Linq;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Model.Infrastructure.Serializing;
 
 namespace BISC.Model.Infrastructure
 {
@@ -9,7 +10,7 @@ namespace BISC.Model.Infrastructure
         bool GetIsModelElementRegistered(string elementName);
 
         T DeserializeModelElement<T>(XElement xElement, bool isDefaultSerializatorAllowed = true) where T : IModelElement;
-        XElement SerializeModelElement<T>(T modelElement, bool isDefaultSerializatorAllowed = true) where T : IModelElement;
+        XElement SerializeModelElement<T>(T modelElement, SerializingType serializingType, bool isDefaultSerializatorAllowed = true) where T : IModelElement;
 
 
     }

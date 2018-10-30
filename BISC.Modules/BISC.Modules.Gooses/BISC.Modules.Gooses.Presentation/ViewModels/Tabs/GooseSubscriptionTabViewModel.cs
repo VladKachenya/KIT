@@ -89,7 +89,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             foreach (var gooseControl in _gooseControls)
             {
                 var rowValues=new List<object>();
-                rowValues.Add(gooseControl.AppId);
+                rowValues.Add(gooseControl.Name);
                 foreach (var device in devicesInProject)
                 {
                     if(device==_device)continue;

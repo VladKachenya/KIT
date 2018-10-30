@@ -64,7 +64,7 @@ namespace BISC.Modules.Gooses.Presentation.FileParsers
                         goosesForDevice.First((tuple => tuple.Item2.AppId == gooseControlBlockViewModel.AppId)).Item1;
                     var gses = _sclCommunicationModelService.GetGsesForDevice(deviceForGoose.Name, _biscProject.MainSclModel.Value);
 
-                    var appId = gses.FirstOrDefault((gse => gse.CbName == gooseControlBlockViewModel.Name))?.AppId;
+                    var appId = gses.FirstOrDefault((gse => gse.CbName == gooseControlBlockViewModel.Name))?.AppIdDec;
                     streamWriter.WriteLine($"{gooseControlBlockViewModels.IndexOf(gooseControlBlockViewModel) + 1}:{gooseControlBlockViewModel.GoCbReference},{int.Parse(appId)}");
 
                 }

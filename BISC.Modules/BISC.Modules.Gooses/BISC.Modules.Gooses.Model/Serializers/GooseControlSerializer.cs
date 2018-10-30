@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Serializators;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Model.Infrastructure.Serializing;
 using BISC.Modules.Gooses.Infrastructure.Model;
 using BISC.Modules.Gooses.Model.Model;
 
@@ -18,7 +19,7 @@ namespace BISC.Modules.Gooses.Model.Serializers
             RegisterProperty(nameof(IGooseControl.Name), "name");
             RegisterProperty(nameof(IGooseControl.DataSet), "datSet");
             RegisterProperty(nameof(IGooseControl.ConfRev), "confRev");
-            RegisterProperty(nameof(IGooseControl.IsDynamic), "isDynamic");
+            RegisterProperty(nameof(IGooseControl.IsDynamic), "isDynamic",SerializingType.Extended);
 
             //RegisterModelElementCollection(typeof(ISubscriberDevice));
         }
