@@ -146,7 +146,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         public ICommand DeleteReportCommand { get; }
         public ICommand SaveСhangesCommand { get; }
         public ICommand UpdateReportsCommad { get; }
-        public ICommand TestCommand { get; }
         public ICommand AddNewReportCommand { get; }
         public string ModelRegionKey { get; }
 

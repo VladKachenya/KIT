@@ -131,6 +131,7 @@ namespace BISC.Modules.Reports.Model.Services
 
         public void DeleteReportsFromDevice(IDevice device, List<IReportControl> reportControls)
         {
+            //Возможно тут необходимо брать lNode из удоляемого узла
             var lNode = _infoModelService.GetZeroLDevicesFromDevices(device).LogicalNodeZero.Value;
             var reportsInDevice = GetAllReportControlsOfDevice(device);
             foreach (var toBeDeletedReport in reportControls)

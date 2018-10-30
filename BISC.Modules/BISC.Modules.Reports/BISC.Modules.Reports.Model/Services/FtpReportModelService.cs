@@ -53,13 +53,15 @@ namespace BISC.Modules.Reports.Model.Services
                     {
                         var reportStrings = line.Split(new string[] { "$BR$" }, StringSplitOptions.RemoveEmptyEntries);
                         var reportName = reportStrings[1].Split(' ')[0];
+                        //Почему тут не через фабирику?
                         reportControls.Add(new ReportControl(){Name = reportName,IsDynamic = true});
                     }
                     if (reportRegexRp.IsMatch(line))
                     {
                         var reportStrings = line.Split(new string[] { "$RP$" }, StringSplitOptions.RemoveEmptyEntries);
                         var reportName = reportStrings[1].Split(' ')[0];
-                        reportControls.Add(new ReportControl() { Name = reportName,IsDynamic = true});
+                        //Почему тут не через фабирику?
+                            reportControls.Add(new ReportControl() { Name = reportName,IsDynamic = true});
                     }
                 }
             } while (!string.IsNullOrEmpty(line));

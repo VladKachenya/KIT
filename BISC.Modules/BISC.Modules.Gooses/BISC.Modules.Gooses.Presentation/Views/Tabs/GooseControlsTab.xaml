@@ -25,14 +25,14 @@
             <RowDefinition Height="*"></RowDefinition>
 
         </Grid.RowDefinitions>
-        <ListBox Name="ListBox" ItemsSource="{Binding GooseControlViewModels}">
+        <ListBox Name="ListBox" ItemsSource="{Binding GooseControlViewModels}" HorizontalContentAlignment="Stretch">
 
             <ListBox.ItemTemplate>
                <DataTemplate DataType="gooseControls:GooseControlViewModel">
                    <Grid Background="Transparent">
                        <Grid.ColumnDefinitions>
-                           <ColumnDefinition Width="*"></ColumnDefinition>
-                           <ColumnDefinition Width="Auto"></ColumnDefinition>
+                           <ColumnDefinition Width="1*"></ColumnDefinition>
+                           <ColumnDefinition Width="4*"></ColumnDefinition>
                        </Grid.ColumnDefinitions>
                        <Grid.ContextMenu>
                            <ContextMenu>

@@ -25,11 +25,12 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid HorizontalAlignment="Stretch" Grid.Column="0">
-            <ListBox Name="ListBoxColumn" ItemsSource="{Binding ReportControlViewModels}" HorizontalContentAlignment="Left"
+            <ListBox Name="ListBoxColumn" ItemsSource="{Binding ReportControlViewModels}" 
+                     HorizontalContentAlignment="Stretch"
                      ScrollViewer.HorizontalScrollBarVisibility="Auto" >
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="reportElementsViewModels:ReportControlViewModel">
-                        <Grid Background="Transparent" >
+                            <Grid Background="Transparent" >
                             <Grid.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Удалить" IsEnabled="{Binding IsDynamic}" 
