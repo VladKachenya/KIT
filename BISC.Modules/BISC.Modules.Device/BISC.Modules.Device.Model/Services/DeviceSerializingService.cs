@@ -44,9 +44,11 @@ namespace BISC.Modules.Device.Model.Services
             {
                 File.Delete(filePath);
             }
-            _modelElementsRegistryService.SerializeModelElement(sclModelClone, SerializingType.Basic).Save(new FileStream(filePath, FileMode.CreateNew));
 
-
+            using (var fs = new FileStream(filePath, FileMode.Create))
+            {
+                _modelElementsRegistryService.SerializeModelElement(sclModelClone, SerializingType.Basic).Save(fs);
+            }
         }
 
         private void OrderSclModelElements(ISclModel sclModel)
