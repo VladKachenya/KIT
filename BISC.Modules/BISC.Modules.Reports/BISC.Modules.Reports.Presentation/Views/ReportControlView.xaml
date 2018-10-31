@@ -236,7 +236,7 @@
                 <StackPanel Orientation="Horizontal" 
                             ToolTip="{x:Static ToolTipConstants:StringConstants.ReportControl_configRev_Description}" Grid.Column="0">
                     <TextBlock Text="Configuration revision"  Margin="2" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding ConfigurationRevision}"  Margin="2" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding ConfigurationRevision}"  Margin="2" VerticalAlignment="Center" MinWidth="50"/>
                 </StackPanel>
                 <Button Grid.Column="1" Content="Отменить изменения" Command="{Binding UndoChengestCommand}" Margin="10"/>
             </Grid>

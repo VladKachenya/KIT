@@ -34,7 +34,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private IGlobalEventsService _globalEventsService;
         private ILDevice _lDevice;
         private bool _giBool;
-        private string _configurationRevision;
+        private int _configurationRevision;
 
 
         #region ctor
@@ -71,15 +71,12 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         public string ElementName => "Report";
         public Brush TypeColorBrush => new SolidColorBrush(Color.FromRgb(240, 126, 184));
 
-        public string ConfigurationRevision
+        public int ConfigurationRevision
         {
             get => _configurationRevision;
             set
             {
-                int intValue;
-                if(Int32.TryParse(value, out intValue))
-                    if (intValue == 0)
-                        value = "1";
+                value = value <= 0 ? 1 : value;
                 SetProperty(ref _configurationRevision, value);
             }
         }

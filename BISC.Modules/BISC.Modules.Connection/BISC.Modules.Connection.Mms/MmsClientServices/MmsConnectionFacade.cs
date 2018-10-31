@@ -372,7 +372,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
 
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "ConfRev"));
-                reportDto.ConfRev = dataForReport.Structure.ToArray()[index].Integer.ToString();
+                reportDto.ConfRev = (int)dataForReport.Structure.ToArray()[index].Integer;
 
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "OptFlds"));

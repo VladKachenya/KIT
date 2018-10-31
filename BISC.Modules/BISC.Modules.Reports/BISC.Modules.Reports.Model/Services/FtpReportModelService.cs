@@ -108,11 +108,8 @@ namespace BISC.Modules.Reports.Model.Services
                     int isBuffered = reportObj.Buffered ? 1 : 0;
                     string dsName = reportObj.DataSet;
                     uint confRev = 0;
-                    if (reportObj.ConfRev != null)
-                    {
-                         confRev = uint.Parse(reportObj.ConfRev);
-                    }
-
+                    confRev = (uint)reportObj.ConfRev;
+                    
                     var trgOpt = reportObj.TrgOps.Value.TriggerOptionsToInt();
                         var optFields = reportObj.OptFields.Value.ReportOptionsToInt();
 

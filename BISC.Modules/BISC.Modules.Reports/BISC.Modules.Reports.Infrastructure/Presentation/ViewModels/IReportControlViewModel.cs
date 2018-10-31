@@ -21,7 +21,7 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
         string ElementName { get; }
         Brush TypeColorBrush { get; }
         string Name { get; set; }
-        string ConfigurationRevision { get; set; }
+        int ConfigurationRevision { get; set; }
         string ReportID { get;}
         bool IsBuffered { get; set; }
         int BufferTime { get; set; }

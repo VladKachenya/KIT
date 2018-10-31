@@ -22,7 +22,7 @@ namespace BISC.Modules.Reports.Model.Model
         public int BufTime { get; set; }
         public string DataSet { get; set; }
         public int IntgPd { get; set; }
-        public string ConfRev { get; set; }
+        public int ConfRev { get; set; }
         public bool IsDynamic { get; set; }
 
 
