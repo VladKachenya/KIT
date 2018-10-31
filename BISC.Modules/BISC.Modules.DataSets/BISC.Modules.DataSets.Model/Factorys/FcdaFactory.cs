@@ -61,9 +61,12 @@ namespace BISC.Modules.DataSets.Model.Factorys
         {
             if (modelElement is IDoi doi)
             {
-                return doi.Name+"."+daName;
+                if(daName == "")
+                    return doi.Name;
+                else
+                    return doi.Name+"."+daName;
             }
-           
+
             if (modelElement is IDai dai)
             {
                 
