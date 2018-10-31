@@ -184,6 +184,7 @@ namespace BISC.Modules.Reports.Presentation.Services
             reportControl.BufTime = reportControlViewModel.BufferTime;
             reportControl.DataSet = reportControlViewModel.SelectidDataSetName;
             reportControl.IntgPd = reportControlViewModel.IntegrutyPeriod;
+            reportControl.ConfRev = reportControlViewModel.ConfigurationRevision;
             reportControl.GiBool = reportControlViewModel.GiBool;
             reportControl.OptFields.Value = reportControlViewModel.OprionalFildsViewModel.GetUpdatedModel();
             reportControl.RptEnabled.Value = reportControlViewModel.ReportEnabledViewModel.GetUpdatedModel();
@@ -282,6 +283,15 @@ namespace BISC.Modules.Reports.Presentation.Services
                     .WriteReportDataAsync(device.Name + ldInst, rptPath, "RptID",
                         reportToSave.ReportID);
             }
+
+            // Тут необходимо ещё ConfRevision
+            if (reportControl.ConfRev != reportToSave.ConfigurationRevision)
+            {
+                savingResult = await _connectionPoolService.GetConnection(device.Ip).MmsConnection
+                    .WriteReportDataAsync(device.Name + ldInst, rptPath, "ConfRev",
+                        reportToSave.ConfigurationRevision);
+            }
+
             if (!savingResult.IsSucceed)
             {
                 return savingResult;

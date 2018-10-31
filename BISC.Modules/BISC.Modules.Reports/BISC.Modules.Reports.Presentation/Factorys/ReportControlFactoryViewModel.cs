@@ -52,6 +52,7 @@ namespace BISC.Modules.Reports.Presentation.Factorys
             var model = _reportControlsFactory.GetReportControl();
             model.Name = GetUniqueNameOfReport(reportsName);
             var report = GetNewReportViewModel(_infoModelService.GetZeroLDevicesFromDevices(device), model, device);
+            report.ConfigurationRevision = "1";
             report.ChangeTracker.SetNew();
             return report;
         }

@@ -34,6 +34,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private IGlobalEventsService _globalEventsService;
         private ILDevice _lDevice;
         private bool _giBool;
+        private string _configurationRevision;
 
 
         #region ctor
@@ -70,7 +71,18 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         public string ElementName => "Report";
         public Brush TypeColorBrush => new SolidColorBrush(Color.FromRgb(240, 126, 184));
 
-
+        public string ConfigurationRevision
+        {
+            get => _configurationRevision;
+            set
+            {
+                int intValue;
+                if(Int32.TryParse(value, out intValue))
+                    if (intValue == 0)
+                        value = "1";
+                SetProperty(ref _configurationRevision, value);
+            }
+        }
         public List<string> AvailableDatasets
         {
             get => _availableDatasets;
@@ -194,6 +206,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             reportControl.IntgPd = IntegrutyPeriod;
             reportControl.GiBool = GiBool;
             reportControl.IsDynamic = IsDynamic;
+            reportControl.ConfRev = ConfigurationRevision;
             reportControl.OptFields.Value= OprionalFildsViewModel.GetUpdatedModel();
             reportControl.RptEnabled.Value = ReportEnabledViewModel.GetUpdatedModel();
             reportControl.TrgOps.Value = TriggerOptionsViewModel.GetUpdatedModel();
@@ -209,7 +222,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             this.BufferTime = _model.BufTime;
             this.SelectidDataSetName = _model.DataSet;
             this.IntegrutyPeriod = _model.IntgPd;
-            GiBool = _model.GiBool;
+            this.ConfigurationRevision = Model.ConfRev;
+            this.GiBool = _model.GiBool;
             ReportEnabledViewModel.UpdateViewModel();
             TriggerOptionsViewModel.UpdateViewModel();
             OprionalFildsViewModel.UpdateViewModel();

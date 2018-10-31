@@ -59,7 +59,6 @@ namespace BISC.Model.Global.Serializators
 
 
         public virtual XElement SerializeModelElement(T modelElement,SerializingType serializingType)
-
         {
             if (!(modelElement is ModelElement))
             {
