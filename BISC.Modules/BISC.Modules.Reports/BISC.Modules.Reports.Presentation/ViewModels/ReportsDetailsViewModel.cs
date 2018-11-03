@@ -45,12 +45,13 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private readonly IUserInteractionService _userInteractionService;
 
 
+   
         #region Ctor
         public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService, ISaveCheckingService saveCheckingService,
             IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService, IConnectionPoolService connectionPoolService,
-            ILoggingService loggingService, IReportsSavingService reportsSavingService,IBiscProject biscProject,
-                ReportControlLoadingService reportControlLoadingService,IUserNotificationService userNotificationService,IUserInteractionService userInteractionService)
-             //IReportsLoadingService reportsLoadingService, 
+            ILoggingService loggingService, IReportsSavingService reportsSavingService, IBiscProject biscProject,
+                ReportControlLoadingService reportControlLoadingService, IUserNotificationService userNotificationService, IUserInteractionService userInteractionService)
+        //IReportsLoadingService reportsLoadingService, 
         {
             _reportsModelService = reportsModelService;
             _saveCheckingService = saveCheckingService;
@@ -84,10 +85,12 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         #region private methods
         private async void OnSaveСhangesCommand()
         {
+            BlockViewModelBehavior.SetBlock("Сохранение отчетов",true);
             _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
             await _reportsSavingService.SaveReportsAsync(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             UpdateViewModels();
             ChangeTracker.AcceptChanges();
+            BlockViewModelBehavior.Unlock();
         }
 
         private void ResetAllCollections()
@@ -104,7 +107,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
                     ReportControlViewModels.Select((model => model.ReportID)).ToList(), _device));
         }
 
-        private async void  OnUpdateReports()
+        private async void OnUpdateReports()
         {
             await UpdateReports(true);
         }
@@ -122,7 +125,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             UpdateViewModels();
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"Reports устройства {_device.Name}", SaveСhangesCommand,_device.Name, _regionName));
+                $"Reports устройства {_device.Name}", SaveСhangesCommand, _device.Name, _regionName));
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
         }
@@ -164,7 +167,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             //    "Для дальнейшей работы необходимо перезапустить устройство", new List<string>() { }, "100");
         }
 
-        public override  void OnActivate()
+        public override void OnActivate()
         {
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _userInterfaceComposingService.AddGlobalCommand(UpdateReportsCommad, $"Обновить Report-ы {_device.Name}", IconsKeys.UpdateIconKey, false, true);

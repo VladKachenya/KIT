@@ -122,6 +122,10 @@
     <Compile Include="Interfaces\IShellViewModel.cs" />
     <Compile Include="ViewModel\GlobalCommand.cs" />
     <Compile Include="ViewModel\ShellViewModel.cs" />
+    <Page Include="Dictionaries\MainDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Icons\IconsDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

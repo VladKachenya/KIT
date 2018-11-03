@@ -15,9 +15,8 @@
         <!--<ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />-->
-        <ResourceDictionary Source="Icons/IconsDictionary.xaml">
-
-        </ResourceDictionary>
+                <ResourceDictionary Source="Icons/IconsDictionary.xaml"></ResourceDictionary>
+            <ResourceDictionary Source="Dictionaries/MainDictionary.xaml"></ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>

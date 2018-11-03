@@ -1,0 +1,44 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="BlockedContentStyle" TargetType="ContentControl">
+
+
+        <Style.Setters>
+            <Setter Property="Template" >
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContentControl">
+
+                        <ControlTemplate.Resources>
+                            <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
+                        </ControlTemplate.Resources>
+                        <Grid>
+
+                            <Grid Name="Overlay" Panel.ZIndex="20" Visibility="{Binding DataContext.BlockViewModelBehavior.IsBlocked,Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}}">
+
+                                <Grid.Background>
+                                    <SolidColorBrush Color="Black" Opacity=".5"/>
+                                </Grid.Background>
+                                <Border  VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="Black" Opacity=".6"/>
+                                    </Border.Background>
+                                    <StackPanel>
+                                        <ProgressBar Width="40" Height="40" Margin="10" Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Visibility="{Binding DataContext.BlockViewModelBehavior.IsBusy,Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}}"></ProgressBar>
+                                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Text="{Binding DataContext.BlockViewModelBehavior.BlockingMessage, RelativeSource={RelativeSource TemplatedParent}}"></TextBlock>
+                                    </StackPanel>
+                                </Border>
+                                <!-- Add controls as needed -->
+                            </Grid>
+
+                            <!-- Use whatever layout you need -->
+                            <ContentPresenter  Panel.ZIndex="0" Content="{TemplateBinding Content}"></ContentPresenter>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+        <Style.Triggers>
+
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

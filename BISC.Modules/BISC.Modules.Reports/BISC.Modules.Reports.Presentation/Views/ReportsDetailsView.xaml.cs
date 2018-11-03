@@ -26,12 +26,6 @@ namespace BISC.Modules.Reports.Presentation.Views
             InitializeComponent();
             DataContext = reportsDetailsViewModel;
         }
-
-        private void MainGrid_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            //double controlWidth = MainGrid.Width - GridSplitterColumn.Width;
-            //ListBoxColumn.Width = controlWidth / 3;
-            //ReportColumn.Width = controlWidth * 2 / 3;
-        }
+     
     }
 }

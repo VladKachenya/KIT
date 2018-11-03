@@ -10,6 +10,7 @@
              xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
              xmlns:viewModels="clr-namespace:BISC.Modules.Reports.Presentation.ViewModels"
              xmlns:views="clr-namespace:BISC.Presentation.BaseItems.Views;assembly=BISC.Presentation.BaseItems"
+             xmlns:controls="clr-namespace:BISC.Presentation.BaseItems.Controls;assembly=BISC.Presentation.BaseItems"
              d:DesignHeight="450" d:DesignWidth="800"  d:DataContext="{d:DesignInstance viewModels:ReportsDetailsViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <converters:BoolToHiddenOrVisibleConverter x:Key="BoolToVisConvHidden"/>
@@ -17,8 +18,8 @@
         <converters:IsNullToVisibilityConverter x:Key="IsNullToVisibilityConverter"></converters:IsNullToVisibilityConverter>
         <localConverters:BoolianToBufferidStringConverter x:Key="boolianToBufferidStringConverter"/>
     </UserControl.Resources>
-    <views:BiscDialogHost Identifier="100">
-    <Grid Name="MainGrid" Loaded="MainGrid_OnLoaded">
+    <ContentControl x:Name="blockControl" Style="{DynamicResource BlockedContentStyle}">
+    <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
@@ -75,5 +76,5 @@
             </ScrollViewer>
         </Grid>
         </Grid>
-    </views:BiscDialogHost>
+    </ContentControl>
 </UserControl>

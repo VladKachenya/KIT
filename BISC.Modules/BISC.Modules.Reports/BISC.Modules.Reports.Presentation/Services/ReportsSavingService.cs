@@ -59,9 +59,10 @@ namespace BISC.Modules.Reports.Presentation.Services
         #endregion
 
         #region Implementation of IReportsSavingService
-        public async Task SaveReportsAsync(List<IReportControlViewModel> reportsToSave, IDevice device, bool isSavingInDevice)
+        public async Task<SavingResultEnum> SaveReportsAsync(List<IReportControlViewModel> reportsToSave, IDevice device, bool isSavingInDevice)
         {
             IsLastSavingWasWithFTP = false;
+            bool isWasSavedByMms = false;
             try
             {
                 List<IReportControl> reportControlsInDevice = _reportsModelService.GetAllReportControlsOfDevice(device);
@@ -80,7 +81,7 @@ namespace BISC.Modules.Reports.Presentation.Services
                                 if (isSavingInDevice)
                                 {
                                     //выполнение коммуникации с устройством
-                                    for (int i = 0; i < reportToSave.ReportEnabledViewModel.Max; i++)
+                                    for (int i = 1; i < reportToSave.ReportEnabledViewModel.Max+1; i++)
                                     {
                                         var res = await SaveReportMms(reportToSave, reportControlInDevise, device,
                                             ldevice.Inst, ln.Name,i.ToString("D2"));
@@ -94,6 +95,7 @@ namespace BISC.Modules.Reports.Presentation.Services
                                                 $"Запись Отчета {reportToSave.Name} в устройство {device.Name} по MMS прошла успешно",
                                                 SeverityEnum.Info);
                                             MapViewModelToModel(reportControlInDevise, reportToSave);
+                                            isWasSavedByMms = true;
                                         }
                                     }
                               
@@ -112,39 +114,56 @@ namespace BISC.Modules.Reports.Presentation.Services
                     }
                 }
                var resSavingDynamicReports= await SaveDynamicReports(reportsToSave, device, isSavingInDevice, reportControlsInDevice);
-          
+                await Task.Delay(1000);
                 _projectService.SaveCurrentProject();
                 if (resSavingDynamicReports.IsSucceed)
                 {
+                   
                     _loggingService.LogMessage($"Reports устройства {(device as IDevice).Name} успешно сохранены",
                         SeverityEnum.Info);
+                    if (resSavingDynamicReports.Item == SavingResultEnum.SavedUsingFtp)
+                    {
+                        return SavingResultEnum.SavedUsingFtp;
+                    }
+                    if (isWasSavedByMms)
+                    {
+                        return SavingResultEnum.SavedUsingOnlyMms;
+                    }
+
+                    return SavingResultEnum.SavedInFile;
                 }
                 else
                 {
                     _loggingService.LogMessage($"Reports устройства {(device as IDevice).Name} сохранены с ошибкой",
                         SeverityEnum.Warning);
+                    return SavingResultEnum.SaveUnsuccessful;
                 }
+              
             }
             catch (Exception e)
             {
                 _loggingService.LogMessage($"Reports устройства {(device as IDevice).Name} сохранены c ошибкой: {e.Message}",
                     SeverityEnum.Warning);
+                return SavingResultEnum.SaveUnsuccessful;
             }
+
+          
         }
 
-        private async Task<OperationResult> SaveDynamicReports(List<IReportControlViewModel> reportsToSave, IDevice device,
+       
+
+        private async Task<OperationResult<SavingResultEnum>> SaveDynamicReports(List<IReportControlViewModel> reportsToSave, IDevice device,
             bool isSavingInDevice, List<IReportControl> reportControlsInDevice)
         {
             List<IReportControlViewModel> reportsToSaveDynamic =
                 reportsToSave.Where((model => model.IsDynamic)).ToList();
             List<IReportControl> reportControlsInDeviceToDelete =
                 reportControlsInDevice.Where((model => model.IsDynamic)).ToList();
-
             List<IReportControl> reportControlsToSave =
                 reportsToSaveDynamic.Select((model => model.GetUpdatedModel())).ToList();
             if (!reportsToSaveDynamic.Any() && !reportControlsInDeviceToDelete.Any())
             {
-                return OperationResult.SucceedResult;
+                return new OperationResult<SavingResultEnum>(SavingResultEnum.SavedInFile,true);
             }
             if (isSavingInDevice)
             {
@@ -157,12 +176,13 @@ namespace BISC.Modules.Reports.Presentation.Services
                     _reportsModelService.DeleteReportsFromDevice(device, reportControlsInDeviceToDelete);
                     _reportsModelService.AddReportsToDevice(device, reportControlsToSave);
                     IsLastSavingWasWithFTP = true;
+                    return new OperationResult<SavingResultEnum>(SavingResultEnum.SavedUsingFtp);
                 }
                 else
                 {
                     _loggingService.LogMessage($"Сохранение динамических отчетов по FTP прошло с ошибкой {device.Name} {res.GetFirstError()}",
                         SeverityEnum.Critical);
-                    return new OperationResult(res.GetFirstError());
+                    return new OperationResult<SavingResultEnum>(res.GetFirstError());
                 }
             }
             else
@@ -170,9 +190,8 @@ namespace BISC.Modules.Reports.Presentation.Services
                 _reportsModelService.DeleteReportsFromDevice(device, reportControlsInDeviceToDelete);
                 _reportsModelService.AddReportsToDevice(device, reportControlsToSave);
             }
-
             
-            return OperationResult.SucceedResult;
+            return new OperationResult<SavingResultEnum>(SavingResultEnum.SavedInFile);
         }
 
         public bool IsLastSavingWasWithFTP { get; set; }

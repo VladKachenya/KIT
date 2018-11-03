@@ -9,6 +9,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:infoModelDetails="clr-namespace:BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelDetails"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+             xmlns:interfaces="clr-namespace:BISC.Modules.InformationModel.Presentation.Interfaces"
              mc:Ignorable="d" >
 
     <UserControl.Resources>
@@ -55,14 +56,27 @@
                 <Border Name="dummywidth3" Grid.Column="2" />
 
             </Grid>
-            <ListView
-            Name="SclListView"
-            Width="auto"
+            <TreeView
+                Name="SclTreeView"
+             Width="auto"
             HorizontalAlignment="Stretch"
             ItemsSource="{Binding Path=AllIecTreeItems}"
             dd:DragDrop.IsDragSource="True" 
-            dd:DragDrop.IsDropTarget="False"    
-            SelectedItem="{Binding SelectedTreeItem}">
+            dd:DragDrop.IsDropTarget="False" >
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate DataType="interfaces:IInfoModelItemViewModel" ItemsSource="{Binding ChildInfoModelItemViewModels}">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Margin="2"  Background="{Binding TypeColorBrush}" >
+                                <TextBlock Margin="2"  Text="{Binding TypeName}"></TextBlock>
+                            </Border>
+                            <TextBlock Margin="4" Text="{Binding Header}"></TextBlock>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+            <!--<ListView
+            Name="SclListView"
+       >
                 <i:Interaction.Behaviors>
                     <behaviors:TreeGridBehavior />
                 </i:Interaction.Behaviors>
@@ -128,57 +142,57 @@
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>
-            </ListView>
+            </ListView>-->
         </Grid>
-        <Grid HorizontalAlignment="Stretch" Grid.Row="2" DataContext="{Binding SelectedTreeItem}">
+        <Grid HorizontalAlignment="Stretch" Grid.Row="2" DataContext="{Binding Source={x:Reference Name=SclTreeView},Path=SelectedItem}">
             <Expander Name="expanderBottom" IsExpanded="True" Header="Выбранный элемент">
                 <ListView  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" AlternationCount="2"  Margin="0" ItemsSource="{Binding TreeItemDetails}">
-                <ItemsControl.Resources>
-                    <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
-                        <Style.Triggers>
-                            <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
-                                <Setter Property="Background" Value="{DynamicResource Primary500}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                    <DataTemplate DataType="{x:Type infoModelDetails:BoolInfoModelDetail}">
-                        <Grid Margin="{Binding IsGrouped,Converter={StaticResource GroupedToMarginConverter}}" ToolTip="{Binding ToolTip}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock  Grid.Column="0" Text="{Binding DetailDescription}"></TextBlock>
-                            <CheckBox Grid.Column="1"  IsEnabled="False" IsChecked="{Binding BoolValue,Mode=OneWay}"></CheckBox>
-                        </Grid>
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type infoModelDetails:DefaultInfoModelDetail}">
-                        <Grid Margin="{Binding IsGrouped,Converter={StaticResource GroupedToMarginConverter}}" ToolTip="{Binding ToolTip}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{Binding DetailDescription}"></TextBlock>
-                            <TextBlock Grid.Column="1"  IsEnabled="False" Text="{Binding DetailValue}"></TextBlock>
-                        </Grid>
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type infoModelDetails:GroupInfoModelDetail}">
-                        <Grid Margin="{Binding IsGrouped,Converter={StaticResource GroupedToMarginConverter}}" ToolTip="{Binding ToolTip}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{Binding DetailDescription}"></TextBlock>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.Resources>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical"></StackPanel>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+                    <ItemsControl.Resources>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                            <Style.Triggers>
+                                <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                                    <Setter Property="Background" Value="{DynamicResource Primary500}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                        <DataTemplate DataType="{x:Type infoModelDetails:BoolInfoModelDetail}">
+                            <Grid Margin="{Binding IsGrouped,Converter={StaticResource GroupedToMarginConverter}}" ToolTip="{Binding ToolTip}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock  Grid.Column="0" Text="{Binding DetailDescription}"></TextBlock>
+                                <CheckBox Grid.Column="1"  IsEnabled="False" IsChecked="{Binding BoolValue,Mode=OneWay}"></CheckBox>
+                            </Grid>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type infoModelDetails:DefaultInfoModelDetail}">
+                            <Grid Margin="{Binding IsGrouped,Converter={StaticResource GroupedToMarginConverter}}" ToolTip="{Binding ToolTip}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding DetailDescription}"></TextBlock>
+                                <TextBlock Grid.Column="1"  IsEnabled="False" Text="{Binding DetailValue}"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type infoModelDetails:GroupInfoModelDetail}">
+                            <Grid Margin="{Binding IsGrouped,Converter={StaticResource GroupedToMarginConverter}}" ToolTip="{Binding ToolTip}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding DetailDescription}"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.Resources>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
 
 
-            </ListView>
+                </ListView>
             </Expander>
         </Grid>
     </Grid>

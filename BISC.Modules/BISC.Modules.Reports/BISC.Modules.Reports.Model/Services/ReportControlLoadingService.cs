@@ -120,13 +120,13 @@ namespace BISC.Modules.Reports.Model.Services
             List<IReportControl> reportControlsFiltered = new List<IReportControl>();
 
             var groupedRawRcs =
-                rawReportControls.GroupBy((control => control.RptID.Substring(0, control.RptID.Length - 2))).ToList();
+                rawReportControls.GroupBy((control => control.Name.Substring(0, control.Name.Length - 2))).ToList();
             
 
             foreach (var groupedRawRc in groupedRawRcs)
             {
                 IReportControl rcFiltered = groupedRawRc.First();
-                rcFiltered.RptID = groupedRawRc.Key;
+                rcFiltered.RptID = rcFiltered.RptID;
                 rcFiltered.Name = rcFiltered.Name.Substring(0, rcFiltered.Name.Length - 2);
                 rcFiltered.RptEnabled.Value.Max = groupedRawRc.Count();
                reportControlsFiltered.Add(rcFiltered);

@@ -48,6 +48,7 @@
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\INameableItem.cs" />
     <Compile Include="Common\IParentable.cs" />
+    <Compile Include="Common\SavingResultEnum.cs" />
     <Compile Include="Elements\ChildModelProperty.cs" />
     <Compile Include="Elements\ChildModelsList.cs" />
     <Compile Include="Elements\IModelElement.cs" />

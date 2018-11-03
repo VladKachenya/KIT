@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using BISC.Presentation.BaseItems.ViewModels.Behaviors;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.ViewModel;
 using Prism.Regions;
@@ -17,6 +18,14 @@ namespace BISC.Presentation.BaseItems.ViewModels
     {
         private bool _isActive;
         private bool _isNavigatedTo = false;
+
+        public NavigationViewModelBase()
+        {
+            BlockViewModelBehavior=new BlockViewModelBehavior();
+        }
+
+
+        public BlockViewModelBehavior BlockViewModelBehavior { get; set; }
 
         public bool IsActive
         {
