@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\DeviceWarningsChanged.cs" />
+    <Compile Include="HelpClasses\DeviceWarning.cs" />
     <Compile Include="Keys\DeviceKeys.cs" />
     <Compile Include="Loading\Events\DeviceLoadingEvent.cs" />
     <Compile Include="Model\IDevice.cs" />
@@ -53,6 +55,7 @@
     <Compile Include="Loading\IDeviceLoadingService.cs" />
     <Compile Include="Services\IDeviceModelService.cs" />
     <Compile Include="Services\IDeviceSerializingService.cs" />
+    <Compile Include="Services\IDeviceWarningsService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">

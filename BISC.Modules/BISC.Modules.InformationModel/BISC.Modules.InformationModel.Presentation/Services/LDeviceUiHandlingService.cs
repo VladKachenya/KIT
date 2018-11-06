@@ -23,9 +23,9 @@ namespace BISC.Modules.InformationModel.Presentation.Services
         }
 
 
-        public void HandleModelElement(IModelElement modelElement, TreeItemIdentifier uiParentId, string uiKey)
+        public TreeItemIdentifier HandleModelElement(IModelElement modelElement, TreeItemIdentifier uiParentId, string uiKey)
         {
-            if (uiParentId == null) return;
+            if (uiParentId == null) return null;
             List<ILDevice> lDevices=new List<ILDevice>();
             modelElement.GetAllChildrenOfType(ref lDevices);
             foreach (var lDevice in lDevices)
@@ -35,7 +35,8 @@ namespace BISC.Modules.InformationModel.Presentation.Services
                 var treeItemId = _treeManagementService.AddTreeItem(biscNavigationParameters,
                     InfoModelKeys.LdeviceTreeItemViewKey, uiParentId);
             }
-          
+
+            return null;
         }
     }
 }

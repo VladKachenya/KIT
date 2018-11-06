@@ -7,6 +7,6 @@ namespace BISC.Presentation.Infrastructure.UiFromModel
 {
     public interface IUiFromModelElementService
     {
-        void HandleModelElement(IModelElement modelElement, TreeItemIdentifier uiParentId,string uiKey);
+        TreeItemIdentifier HandleModelElement(IModelElement modelElement, TreeItemIdentifier uiParentId,string uiKey);
     }
 }

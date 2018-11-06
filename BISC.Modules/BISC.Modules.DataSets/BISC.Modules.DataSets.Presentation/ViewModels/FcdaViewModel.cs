@@ -43,7 +43,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             get
             {
                 if (_model.DaName == null)
-                    return $"{_model.LdInst}/{_model.Prefix + _model.LnClass + _model.LnInst + _model.DoName} [{_model.Fc}]";
+                    return $"{_model.LdInst}/{_model.Prefix + _model.LnClass + _model.LnInst }.{_model.DoName} [{_model.Fc}]";
                 else
                     return $"{_model.LdInst}/{_model.Prefix + _model.LnClass + _model.LnInst }.{_model.DoName}.{_model.DaName} [{_model.Fc}]";
             }

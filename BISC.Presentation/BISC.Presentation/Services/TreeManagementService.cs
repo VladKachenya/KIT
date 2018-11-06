@@ -53,10 +53,43 @@ namespace BISC.Presentation.Services
             return treeItemIdentifier;
         }
 
+
+        private bool GetIsChildRecursive(TreeItemIdentifier child, TreeItemIdentifier parent)
+        {
+            if (child.ParenTreeItemIdentifier == null) return false;
+
+            if (parent.ItemId != null && child.ParenTreeItemIdentifier.ItemId != null &&
+                child.ParenTreeItemIdentifier.ItemId.Value == parent.ItemId.Value)
+            {
+                return true;
+            }
+            return GetIsChildRecursive(child.ParenTreeItemIdentifier, parent);
+        }
+
         public void DeleteTreeItem(TreeItemIdentifier treeItemId)
         {
             if (treeItemId.ItemId == null) return;
             if (!_mainTreeViewModels.ContainsKey(treeItemId.ItemId.Value)) return;
+            var parent = _mainTreeViewModels.Values.First((tuple => tuple.Item1.ItemId.Value == treeItemId.ItemId.Value)).Item1;
+            var treeItemIdsToRemove=new List<TreeItemIdentifier>();
+
+            foreach (var mainTreeViewModel in _mainTreeViewModels)
+            {
+                if (GetIsChildRecursive(mainTreeViewModel.Value.Item1, parent))
+                {
+                    treeItemIdsToRemove.Add(mainTreeViewModel.Value.Item1);
+                }
+            }
+
+
+
+            foreach (var treeItemIdentifierToRemove in treeItemIdsToRemove)
+            {
+                _mainTreeViewModels.Remove(treeItemIdentifierToRemove.ItemId.Value);
+                _navigationService.DisposeRegionViewModel(treeItemIdentifierToRemove.ItemId.Value.ToString());
+            }
+
+
             if (treeItemId.ParenTreeItemIdentifier?.ItemId == null)
             {
                 _mainTreeViewModel.ChildItemViewModels.Remove(_mainTreeViewModels[treeItemId.ItemId.Value].Item2);
@@ -66,6 +99,8 @@ namespace BISC.Presentation.Services
                 _mainTreeViewModels[treeItemId.ParenTreeItemIdentifier.ItemId.Value].Item2.ChildItemViewModels
                     .Remove(_mainTreeViewModels[treeItemId.ItemId.Value].Item2);
             }
+            _navigationService.DisposeRegionViewModel(treeItemId.ItemId.Value.ToString());
+
         }
     }
 }

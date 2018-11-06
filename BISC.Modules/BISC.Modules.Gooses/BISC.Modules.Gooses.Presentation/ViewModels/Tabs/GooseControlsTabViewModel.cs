@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Services;
+using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Events;
 using BISC.Modules.Connection.Infrastructure.Services;
@@ -73,6 +74,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         private async Task UpdateGooses(bool updatefromDevice)
         {
+            BlockViewModelBehavior.SetBlock("Обновление данных",true);
             if (updatefromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
             {
                 await _goosesLoadingService.EstimateProgress(_device);
@@ -82,7 +84,9 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             UpdateViewModels();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
+            BlockViewModelBehavior.Unlock();
         }
+
 
         private void OnAddGooseCommand()
         {
@@ -101,10 +105,17 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         private async void OnSaveChangesCommand()
         {
+            BlockViewModelBehavior.SetBlock("Сохранение блоков управления Goose", true);
             _loggingService.LogUserAction($"Пользователь сохряняет изменения в Goose CB устройства {_device.Name})");
-            await _gooseControlSavingService.SaveGooseControls(GooseControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+           var res= await _gooseControlSavingService.SaveGooseControls(GooseControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+          
             UpdateViewModels();
             ChangeTracker.AcceptChanges();
+            BlockViewModelBehavior.Unlock();
+            if (res.IsSucceed && res.Item == SavingResultEnum.SavedUsingFtp)
+            {
+
+            }
         }
 
 

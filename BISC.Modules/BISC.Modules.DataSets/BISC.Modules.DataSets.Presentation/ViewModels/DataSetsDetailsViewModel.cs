@@ -95,6 +95,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         private async Task UpdateDataSets(bool updateFromDevice)
         {
+            BlockViewModelBehavior.SetBlock("Обновление данных",true);
             if (updateFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
             {
                 await _datasetsLoadingService.EstimateProgress(_device);
@@ -108,6 +109,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 $"DataSets устройства {_device.Name}", SaveСhangesCommand,_device.Name, _regionName));
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
+            await Task.Delay(500);
+            BlockViewModelBehavior.Unlock();
         }
 
         private void OnCollapseModel()
@@ -154,6 +157,9 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         private async void OnSaveСhanges()
         {
+
+            BlockViewModelBehavior.SetBlock("Сохранение DataSet-ов",true);
+            await Task.Delay(500);
             _loggingService.LogUserAction($"Пользователь сохраняет изменения DataSets устройства {_device.Name}");
             await _dataSetSavingService.SaveDataSets(DataSets.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             ResetAllDataSetCollections();
@@ -161,6 +167,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             SortDataSetsByIsDynamic();
             DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
             ChangeTracker.AcceptChanges();
+            BlockViewModelBehavior.Unlock();
         }
 
 

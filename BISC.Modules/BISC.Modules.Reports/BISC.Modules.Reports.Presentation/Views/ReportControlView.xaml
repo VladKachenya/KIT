@@ -35,7 +35,7 @@
                 <StackPanel Orientation="Horizontal" ToolTip="{x:Static ToolTipConstants:StringConstants.ReportControl_Dataset_Description}">
                     <TextBlock Text="Data set name:" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <ComboBox Margin="2" SelectedItem="{Binding SelectidDataSetName, UpdateSourceTrigger=PropertyChanged}"
-                                      ItemsSource="{Binding AvailableDatasets}" MinWidth="150">
+                                      ItemsSource="{Binding AvailableDatasets}" MinWidth="150" >
                     </ComboBox>
                 </StackPanel>
             </WrapPanel>

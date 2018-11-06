@@ -7,6 +7,7 @@ using BISC.Infrastructure.Global.Common;
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Global.Model.Communication;
+using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Project.Communication;
 using BISC.Model.Infrastructure.Services.Communication;
@@ -16,6 +17,7 @@ using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Model.Model;
 using BISC.Modules.Gooses.Presentation.ViewModels.GooseControls;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Gooses.Presentation.Services
 {
@@ -44,9 +46,10 @@ namespace BISC.Modules.Gooses.Presentation.Services
 
 
 
-        public async Task<OperationResult> SaveGooseControls(List<GooseControlViewModel> gooseControlViewModelsToSave, IDevice device, bool isInDevice)
+        public async Task<OperationResult<SavingResultEnum>> SaveGooseControls(List<GooseControlViewModel> gooseControlViewModelsToSave, IDevice device, bool isInDevice)
         {
             var goosesExisting = _goosesModelService.GetGooseControlsOfDevice(device);
+            var saveResult = SavingResultEnum.SavedInFile;
             if (isInDevice)
             {
                 List<GooseFtpDto> gooseFtpDtos = gooseControlViewModelsToSave.Where((model => model.IsDynamic)).Select((GetGooseFtpDtosFromViewModel)).ToList();
@@ -56,11 +59,12 @@ namespace BISC.Modules.Gooses.Presentation.Services
                 if (!res.IsSucceed)
                 {
                     _loggingService.LogMessage($"Сохранение блоков управления GOOSE в устройство {device.Name} по FTP {device.Ip} произошло с ошибкой",SeverityEnum.Critical);
-                    return new OperationResult(res.GetFirstError());
+                    return new OperationResult<SavingResultEnum>(res.GetFirstError());
                 }
                 else
                 {
                     _loggingService.LogMessage($"Сохранение блоков управления GOOSE в устройство {device.Name} по FTP {device.Ip} произошло успешно", SeverityEnum.Info);
+                    saveResult = SavingResultEnum.SavedUsingFtp;
                 }
 
             }
@@ -84,7 +88,7 @@ namespace BISC.Modules.Gooses.Presentation.Services
             _projectService.SaveCurrentProject();
             _loggingService.LogMessage($"Сохранение блоков управления GOOSE в устройство {device.Name} произошло успешно", SeverityEnum.Info);
 
-            return OperationResult.SucceedResult;
+            return new OperationResult<SavingResultEnum>(saveResult);
 
 
         }

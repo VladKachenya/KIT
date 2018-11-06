@@ -5,11 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Elements;
 
 namespace BISC.Modules.DataSets.Infrastructure.Factorys
 {
     public interface IFcdaFactory
     {
         IFcda GetFcda(IDai dai);
+        IFcda GetStructFcda(IDoi doiParent,string fc);
+
     }
 }

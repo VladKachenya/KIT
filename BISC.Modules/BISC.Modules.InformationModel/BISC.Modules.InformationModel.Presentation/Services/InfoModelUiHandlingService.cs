@@ -24,19 +24,19 @@ namespace BISC.Modules.InformationModel.Presentation.Services
             _uiFromModelElementRegistryService = uiFromModelElementRegistryService;
         }
 
-        public void HandleModelElement(IModelElement modelElement, TreeItemIdentifier uiParentId, string uiKey)
+        public TreeItemIdentifier HandleModelElement(IModelElement modelElement, TreeItemIdentifier uiParentId, string uiKey)
         {
 
             if (uiParentId == null)
             {
-                return;
+                return null;
             }
-            var treeItemId = _treeManagementService.AddTreeItem(
+            var treeItemId= _treeManagementService.AddTreeItem(
                    new BiscNavigationParameters() { new BiscNavigationParameter("IED", modelElement) },
                    InfoModelKeys.InfoModelTreeItemViewKey, uiParentId);
             _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(modelElement, treeItemId,
                 InfoModelKeys.ModelKeys.LDeviceKey);
-
+            return treeItemId;
 
         }
     }

@@ -20,7 +20,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Reports.Model.Services;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
@@ -29,6 +31,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
     {
         private string _regionName;
         private IDevice _device;
+        
         private List<IReportControl> _reportControlsModel;
         private IReportsModelService _reportsModelService;
         private ISaveCheckingService _saveCheckingService;
@@ -43,14 +46,15 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private readonly ReportControlLoadingService _reportControlLoadingService;
         private readonly IUserNotificationService _userNotificationService;
         private readonly IUserInteractionService _userInteractionService;
+        private readonly IDeviceWarningsService _deviceWarningsService;
 
 
-   
         #region Ctor
         public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService, ISaveCheckingService saveCheckingService,
             IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService, IConnectionPoolService connectionPoolService,
             ILoggingService loggingService, IReportsSavingService reportsSavingService, IBiscProject biscProject,
-                ReportControlLoadingService reportControlLoadingService, IUserNotificationService userNotificationService, IUserInteractionService userInteractionService)
+                ReportControlLoadingService reportControlLoadingService, IUserNotificationService userNotificationService, IUserInteractionService userInteractionService
+                ,IDeviceWarningsService deviceWarningsService)
         //IReportsLoadingService reportsLoadingService, 
         {
             _reportsModelService = reportsModelService;
@@ -63,6 +67,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _reportControlLoadingService = reportControlLoadingService;
             _userNotificationService = userNotificationService;
             _userInteractionService = userInteractionService;
+            _deviceWarningsService = deviceWarningsService;
             //_reportsLoadingService = reportsLoadingService;
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand);
             AddNewReportCommand = commandFactory.CreatePresentationCommand(OnAddNewReportCommand);
@@ -87,11 +92,32 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
             BlockViewModelBehavior.SetBlock("Сохранение отчетов",true);
             _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
-            await _reportsSavingService.SaveReportsAsync(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+          var res=  await _reportsSavingService.SaveReportsAsync(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             UpdateViewModels();
             ChangeTracker.AcceptChanges();
-            BlockViewModelBehavior.Unlock();
+            if (res == SavingResultEnum.SavedUsingFtp)
+            {
+                _deviceWarningsService.SetWarningOfDevice(_device.Name,ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag);
+                ShowFtpBlockMessageIfNeeded();
+            }
+            else
+            {
+                BlockViewModelBehavior.Unlock();
+            }
         }
+
+
+        private void ShowFtpBlockMessageIfNeeded()
+        {
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name,
+                ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag))
+            {
+                BlockViewModelBehavior.SetBlockWithOption(
+                    "Для сохранения изменений по FTP требуется перезагрузка" + Environment.NewLine +
+                    "Имеется несоответствие данных.", "Все равно продолжить");
+            }
+        }
+
 
         private void ResetAllCollections()
         {
@@ -117,6 +143,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         private async Task UpdateReports(bool updateFromDevice)
         {
+            BlockViewModelBehavior.SetBlock("Обновление данных",true);
             if (updateFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
             {
                 await _reportControlLoadingService.EstimateProgress(_device);
@@ -128,6 +155,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
                 $"Reports устройства {_device.Name}", SaveСhangesCommand, _device.Name, _regionName));
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
+            BlockViewModelBehavior.Unlock();
         }
 
         private void UpdateViewModels()
@@ -169,6 +197,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         public override void OnActivate()
         {
+            ShowFtpBlockMessageIfNeeded();
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _userInterfaceComposingService.AddGlobalCommand(UpdateReportsCommad, $"Обновить Report-ы {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewReportCommand, $"Добавить Report {_device.Name}", IconsKeys.AddIconKey, false, true);

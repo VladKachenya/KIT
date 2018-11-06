@@ -28,6 +28,7 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
+    <ContentControl Style="{StaticResource BlockedContentStyle}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition>
@@ -258,5 +259,6 @@
                 </ItemsControl.ItemTemplate>
             </ListBox>
         </GroupBox>
-    </Grid>
+        </Grid>
+    </ContentControl>
 </UserControl>

@@ -48,9 +48,20 @@ namespace BISC.Modules.DataSets.Model.Factorys
             return result;
         }
 
+        public IFcda GetStructFcda(IDoi doiParent, string fc)
+        {
+            IFcda result = new Fcda();
+            result.LdInst = doiParent.GetFirstParentOfType<ILDevice>().Inst;
+            var ln = doiParent.GetFirstParentOfType<ILogicalNode>();
+            result.LnClass = ln.LnClass;
+            result.LnInst = ln.Inst;
+            result.DoName = doiParent.Name;
+            result.Prefix = ln.Prefix;
+            result.Fc =fc;
+            return result;
+        }
 
-
-
+       
 
 
         #region privats methods

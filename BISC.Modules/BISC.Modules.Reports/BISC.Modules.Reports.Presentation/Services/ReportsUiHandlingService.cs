@@ -19,13 +19,13 @@ namespace BISC.Modules.Reports.Presentation.Services
         {
             _treeManagementService = treeManagementService;
         }
-        public void HandleModelElement(IModelElement modelElement, TreeItemIdentifier uiParentId, string uiKey)
+        public TreeItemIdentifier HandleModelElement(IModelElement modelElement, TreeItemIdentifier uiParentId, string uiKey)
         {
             if (uiParentId == null)
             {
-                return;
+                return null;
             }
-            var treeItemId = _treeManagementService.AddTreeItem(
+          return  _treeManagementService.AddTreeItem(
                 new BiscNavigationParameters() { new BiscNavigationParameter("IED", modelElement) },
                 ReportsKeys.ReportsPresentationKeys.ReportsTreeItemView, uiParentId);
         }

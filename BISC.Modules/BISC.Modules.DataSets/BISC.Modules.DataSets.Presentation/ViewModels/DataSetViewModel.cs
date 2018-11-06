@@ -235,6 +235,14 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                     dropInfo.Effects = System.Windows.DragDropEffects.Move;
                 }
             }
+            else if (sourceItem != null && sourceItem.TypeName == InfoModelKeys.ModelKeys.FcSetKey)
+            {
+                if (sourceItem.Header == "ST" || sourceItem.Header == "MX")
+                {
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+                    dropInfo.Effects = System.Windows.DragDropEffects.Move;
+                }
+            }
         }
 
         public void Drop(IDropInfo dropInfo)
@@ -242,27 +250,45 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             if (!IsEditing) return;
             TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;
             //TreeItemViewModelBase targetItem = dropInfo.TargetItem as TreeItemViewModelBase;
-            var elementModel = sourceItem.Model;
-            IFcda fcdaModel = null;
-            if (elementModel is IDai)
-                fcdaModel = _fcdaFactory.GetFcda((elementModel as IDai));
-
-            if (fcdaModel != null)
+            if (sourceItem.TypeName == InfoModelKeys.ModelKeys.DaiKey)
             {
-                var existing =
-                    FcdaViewModels.FirstOrDefault((model => model.GetFcda().ModelElementCompareTo(fcdaModel)));
-                if (existing!=null)
+                var elementModel = sourceItem.Model;
+                IFcda fcdaModel = null;
+                if (elementModel is IDai)
+                    fcdaModel = _fcdaFactory.GetFcda((elementModel as IDai));
+                if (fcdaModel != null)
                 {
-                    _loggingService.LogMessage($"FCDA {existing.FullName} уже есть с списке",SeverityEnum.Warning);
-                    return;
+                    AddFcda(fcdaModel, dropInfo.InsertIndex);
                 }
-                var newFcdaViewModel = _fcdaViewModelFactory.CreateFcdaViewModelElement(fcdaModel);
-                FcdaViewModels.Insert(dropInfo.InsertIndex,newFcdaViewModel);
-                _loggingService.LogUserAction($"Добавлен FCDA {newFcdaViewModel.FullName} через DragDrop");
-
+            }
+            else if (sourceItem.TypeName == InfoModelKeys.ModelKeys.FcSetKey)
+            {
+                IFcda fcdaModel = null;
+                IDoi doiParent=sourceItem.Model as IDoi;
+                
+                if (doiParent!=null)
+                    fcdaModel = _fcdaFactory.GetStructFcda(doiParent,sourceItem.Header);
+                if (fcdaModel != null)
+                {
+                 AddFcda(fcdaModel,dropInfo.InsertIndex);
+                }
             }
         }
 
+        private void AddFcda(IFcda fcda,int insertIdex)
+        {
+            var existing =
+                FcdaViewModels.FirstOrDefault((model => model.GetFcda().ModelElementCompareTo(fcda)));
+            if (existing != null)
+            {
+                _loggingService.LogMessage($"FCDA {existing.FullName} уже есть с списке", SeverityEnum.Warning);
+                return;
+            }
+
+            var newFcdaViewModel = _fcdaViewModelFactory.CreateFcdaViewModelElement(fcda);
+            FcdaViewModels.Insert(insertIdex, newFcdaViewModel);
+            _loggingService.LogUserAction($"Добавлен FCDA {newFcdaViewModel.FullName} через DragDrop");
+        }
         private bool CheckFc(object model)
         {
             return false;

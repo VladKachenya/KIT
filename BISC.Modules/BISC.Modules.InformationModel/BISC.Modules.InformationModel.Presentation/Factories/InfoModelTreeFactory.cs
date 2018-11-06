@@ -90,7 +90,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                     foreach (var fc in fcs)
                     {
                         SetFcTreeItemViewModel fcTreeItemViewModel = _fcSetCreator();
-                        fcTreeItemViewModel.SetModel(fc);
+                        fcTreeItemViewModel.SetFc(fc,doi);
                         GetChildListByFc(doi.DaiCollection.ToList(), doi.SdiCollection.ToList(), fc).ForEach((treeItem =>
                             fcTreeItemViewModel.ChildInfoModelItemViewModels.Add(treeItem)));
                         doiInfoModelItemViewModel.ChildInfoModelItemViewModels.Add(fcTreeItemViewModel);

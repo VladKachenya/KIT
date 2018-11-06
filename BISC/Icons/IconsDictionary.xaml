@@ -124,6 +124,10 @@
     <DataTemplate x:Key="LockResetIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="LockReset" />
     </DataTemplate>
+    <DataTemplate x:Key="MessageAlertIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="MessageAlert" />
+    </DataTemplate>
+
     <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
         <!--<Style.Resources >
             <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#44111121" />

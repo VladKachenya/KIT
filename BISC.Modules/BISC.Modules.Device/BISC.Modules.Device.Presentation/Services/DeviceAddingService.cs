@@ -70,9 +70,9 @@ namespace BISC.Modules.Device.Presentation.Services
 
         }
 
-        public void HandleModelElement(IModelElement modelElement, TreeItemIdentifier parentTreeId,string uiKey)
+        public TreeItemIdentifier HandleModelElement(IModelElement modelElement, TreeItemIdentifier parentTreeId,string uiKey)
         {
-            if(parentTreeId!=null)return;
+            if(parentTreeId!=null)return null;
             var sclModel = modelElement as ISclModel;
             sclModel?.ChildModelElements.ForEach(element =>
             {
@@ -82,6 +82,7 @@ namespace BISC.Modules.Device.Presentation.Services
                 }
             });
             _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(modelElement, parentTreeId, "IED");
+            return null;
         }
     }
 }

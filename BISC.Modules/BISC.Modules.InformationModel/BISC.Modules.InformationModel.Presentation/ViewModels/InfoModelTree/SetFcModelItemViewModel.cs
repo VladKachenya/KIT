@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using BISC.Modules.InformationModel.Infrastucture;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Presentation.Interfaces.Helpers;
 using BISC.Modules.InformationModel.Presentation.Interfaces.InfoModelDetails;
 using BISC.Modules.InformationModel.Presentation.ViewModels.Base;
@@ -26,22 +29,21 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
 
         #region Overrides of TreeItemViewModelBase
 
+        public override Brush TypeColorBrush => new SolidColorBrush(Color.FromArgb(0x70, 0x70, 0x70, 0x70));
 
-
-
-        public override string TypeName => "";
+        public override string TypeName => InfoModelKeys.ModelKeys.FcSetKey;
 
         #endregion
 
 
         #region Overrides of TreeItemViewModelBase
 
-        public new void SetModel(object value)
+        public void SetFc(object value,IDoi doiParent)
         {
             Header = value.ToString();
             _treeItemDetailsBuilder.Reset();
             _treeItemDetails = _treeItemDetailsBuilder.Build();
-            base.SetModel(value);
+            base.SetModel(doiParent);
 
         }
 

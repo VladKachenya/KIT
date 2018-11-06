@@ -38,6 +38,7 @@ namespace BISC.Modules.InformationModel.Infrastucture
             public const string ValKey = "Val";
             public const string ServerKey = "Server";
             public const string AccessPointKey = "AccessPoint";
+            public const string FcSetKey = "FC";
 
         }
 

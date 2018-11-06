@@ -16,6 +16,7 @@
         <converters:BoolToVisConverter Invert="True" x:Key="boolToInVisConverter"></converters:BoolToVisConverter>
 
     </UserControl.Resources>
+    <ContentControl Style="{StaticResource BlockedContentStyle}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="250" Width="Auto"></ColumnDefinition>
@@ -124,5 +125,6 @@
 
             </Grid>
         </GroupBox>
-    </Grid>
+        </Grid>
+    </ContentControl>
 </UserControl>

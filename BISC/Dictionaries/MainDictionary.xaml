@@ -25,7 +25,11 @@
                                     <StackPanel>
                                         <ProgressBar Width="40" Height="40" Margin="10" Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Visibility="{Binding DataContext.BlockViewModelBehavior.IsBusy,Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}}"></ProgressBar>
                                         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Text="{Binding DataContext.BlockViewModelBehavior.BlockingMessage, RelativeSource={RelativeSource TemplatedParent}}"></TextBlock>
-                                    </StackPanel>
+                                        <Button Margin="10,40,10,10" HorizontalAlignment="Center" MinWidth="100"  Style="{StaticResource FlatButtonLight}"
+                                                Visibility="{Binding DataContext.BlockViewModelBehavior.IsUnlockOptionAvailable,Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}}"
+                                                Content="{Binding DataContext.BlockViewModelBehavior.UnlockMessage, RelativeSource={RelativeSource TemplatedParent}}"
+                                                Command="{Binding DataContext.BlockViewModelBehavior.UnlockCommand, RelativeSource={RelativeSource TemplatedParent}}"></Button>
+                                        </StackPanel>
                                 </Border>
                                 <!-- Add controls as needed -->
                             </Grid>
