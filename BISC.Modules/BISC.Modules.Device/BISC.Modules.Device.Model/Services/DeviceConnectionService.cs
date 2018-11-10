@@ -44,7 +44,7 @@ namespace BISC.Modules.Device.Model.Services
             return new OperationResult<IDevice>(device);
         }
 
-        public Task ConnectExistingDevice()
+        public Task ConnectExistingDevice(IDevice existingDevice)
         {
             throw new NotImplementedException();
         }

@@ -13,6 +13,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
+using BISC.Model.Global.Common;
+using BISC.Model.Infrastructure.Common;
+using BISC.Modules.DataSets.Infrastructure.Services;
+using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Reports.Model.Model;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
@@ -32,6 +36,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private ITriggerOptionsViewModel _triggerOptionsViewModel;
         private IOprionalFildsViewModel _oprionalFildsViewModel;
         private IGlobalEventsService _globalEventsService;
+        private readonly IDatasetModelService _datasetModelService;
         private ILDevice _lDevice;
         private bool _giBool;
         private int _configurationRevision;
@@ -39,15 +44,24 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 
         #region ctor
         public ReportControlViewModel(IReportEnabledViewModel reportEnabledViewModel, ITriggerOptionsViewModel triggerOptionsViewModel,
-            IOprionalFildsViewModel oprionalFildsViewModel, IGlobalEventsService globalEventsService, ICommandFactory commandFactory)
+            IOprionalFildsViewModel oprionalFildsViewModel, IGlobalEventsService globalEventsService, ICommandFactory commandFactory,IDatasetModelService datasetModelService)
         {
             ReportEnabledViewModel = reportEnabledViewModel;
             TriggerOptionsViewModel = triggerOptionsViewModel;
             OprionalFildsViewModel = oprionalFildsViewModel;
             _globalEventsService = globalEventsService;
+            _datasetModelService = datasetModelService;
             UndoChengestCommand = commandFactory.CreatePresentationCommand(UpdateViewModel);
             _globalEventsService.Subscribe<SaveCheckEvent>(OnSaveCheck);
+            UpdateAvailableDatasetsCommand = commandFactory.CreatePresentationCommand(OnUpdateAvailableDatasets);
+        }
 
+        private void OnUpdateAvailableDatasets()
+        {
+            var datasets = _datasetModelService.GetAllDataSetOfDevice(_lDevice.GetFirstParentOfType<IDevice>());
+            var selectedDataset = SelectidDataSetName;
+            AvailableDatasets = datasets.Select((ds => ds.Name)).ToList();
+            SelectidDataSetName = AvailableDatasets.FirstOrDefault((s => s == selectedDataset));
         }
 
         private void OnSaveCheck(SaveCheckEvent saveCheckEvent)
@@ -83,7 +97,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         public List<string> AvailableDatasets
         {
             get => _availableDatasets;
-            set { SetProperty(ref _availableDatasets, value); }
+            set { SetProperty(ref _availableDatasets, value,true); }
         }
         public string Name
         {
@@ -132,7 +146,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             get => _dataSetName;
             set
             {
-                var val = AvailableDatasets.Find( item => item == value);
                 SetProperty(ref _dataSetName, value);
             }
         }
@@ -149,6 +162,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         public string ParentLnName { get; protected set; }
         public bool IsDynamic => _model.IsDynamic;
         public ICommand UndoChengestCommand { get; }
+        public ICommand UpdateAvailableDatasetsCommand { get; }
+
         public IReportEnabledViewModel ReportEnabledViewModel
         {
             get => _reportEnabledViewModel;
@@ -240,6 +255,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         {
             _lDevice = lDevice;
             ParentLdName = lDevice.Inst;
+            OnUpdateAvailableDatasets();
             ParentLnName = lDevice.LogicalNodeZero.Value.Name;
             SetRoportID();
         }

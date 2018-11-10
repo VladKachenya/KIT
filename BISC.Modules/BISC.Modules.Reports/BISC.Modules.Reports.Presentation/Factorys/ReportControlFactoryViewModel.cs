@@ -52,6 +52,7 @@ namespace BISC.Modules.Reports.Presentation.Factorys
             var model = _reportControlsFactory.GetReportControl();
             model.Name = GetUniqueNameOfReport(reportsName);
             var report = GetNewReportViewModel(_infoModelService.GetZeroLDevicesFromDevices(device), model, device);
+            report.SelectidDataSetName = report.AvailableDatasets.FirstOrDefault();
             report.ConfigurationRevision = 1;
             report.ChangeTracker.SetNew();
             return report;
@@ -60,8 +61,7 @@ namespace BISC.Modules.Reports.Presentation.Factorys
         private IReportControlViewModel GetNewReportViewModel(ILDevice parientDevice, IReportControl model, IDevice device)
         {
             IReportControlViewModel newReport = _injectionContainer.ResolveType<IReportControlViewModel>();
-            var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
-            newReport.AvailableDatasets = datasets.Select((ds => ds.Name)).ToList();
+        
             newReport.Model = model;
             newReport.SetParentLDevice(parientDevice);
             newReport.ActivateElement();

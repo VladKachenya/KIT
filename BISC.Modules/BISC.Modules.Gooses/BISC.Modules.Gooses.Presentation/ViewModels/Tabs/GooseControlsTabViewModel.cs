@@ -12,6 +12,8 @@ using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Events;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Model.Services;
 using BISC.Modules.Gooses.Presentation.Factories;
@@ -37,6 +39,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private readonly GoosesLoadingService _goosesLoadingService;
         private readonly IBiscProject _biscProject;
+        private readonly IDeviceWarningsService _deviceWarningsService;
         private IDevice _device;
         private ObservableCollection<GooseControlViewModel> _gooseControlViewModels;
         private string _regionName;
@@ -45,7 +48,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             ISaveCheckingService saveCheckingService, ICommandFactory commandFactory, ILoggingService loggingService, GooseControlSavingService gooseControlSavingService,
             IConnectionPoolService connectionPoolService, IGlobalEventsService globalEventsService,
             IUserInterfaceComposingService userInterfaceComposingService, GoosesLoadingService goosesLoadingService,
-            IBiscProject biscProject
+            IBiscProject biscProject,IDeviceWarningsService deviceWarningsService
             )
         {
             _gooseControlViewModelFactory = gooseControlViewModelFactory;
@@ -59,6 +62,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _userInterfaceComposingService = userInterfaceComposingService;
             _goosesLoadingService = goosesLoadingService;
             _biscProject = biscProject;
+            _deviceWarningsService = deviceWarningsService;
             SaveCommand = commandFactory.CreatePresentationCommand(OnSaveChangesCommand);
             DeleteGooseCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteGoose);
             AddGooseCommand = commandFactory.CreatePresentationCommand(OnAddGooseCommand);
@@ -114,7 +118,18 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             BlockViewModelBehavior.Unlock();
             if (res.IsSucceed && res.Item == SavingResultEnum.SavedUsingFtp)
             {
-
+                _deviceWarningsService.SetWarningOfDevice(_device.Name,GooseKeys.GooseWarningKeys.GooseSavedFtpKey);
+            }
+            ShowFtpBlockMessageIfNeeded();
+        }
+        private void ShowFtpBlockMessageIfNeeded()
+        {
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name,
+                GooseKeys.GooseWarningKeys.GooseSavedFtpKey))
+            {
+                BlockViewModelBehavior.SetBlockWithOption(
+                    "Для сохранения изменений по FTP требуется перезагрузка" + Environment.NewLine +
+                    "Имеется несоответствие данных.", "Все равно продолжить");
             }
         }
 
@@ -155,7 +170,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить блоки управления GOOSE устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _userInterfaceComposingService.AddGlobalCommand(UpdateGoosesCommand, $"Обновить GOOSE { _device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddGooseCommand, $"Добавить блок управления GOOSE в устройство { _device.Name}", IconsKeys.AddIconKey, false, true);
-
+            ShowFtpBlockMessageIfNeeded();
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnActivate();
         }

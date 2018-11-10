@@ -125,7 +125,7 @@
             </StackPanel>
         </Grid>
 
-        <ListBox  x:Name="ExpanderItemsControl"
+            <ListBox  x:Name="ExpanderItemsControl" behaviors:ListBoxBehavior.ScrollOnNewItem="true"
                      ItemsSource="{Binding DataSets}"  ScrollViewer.VerticalScrollBarVisibility="Visible" Grid.Column="1" Grid.Row="1">
 
             <ListBox.ItemContainerStyle>
@@ -218,7 +218,7 @@
             </ItemsControl.ItemTemplate>
         </ListBox>
         <GridSplitter Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="7"></GridSplitter>
-        <GroupBox Header="{Binding Path=SelectedItem.Name,Source={x:Reference ExpanderItemsControl}}" Grid.Row="3" Grid.Column="1" BorderThickness="1" >
+            <GroupBox Header="{Binding Path=SelectedItem.EditableNamePart,Source={x:Reference ExpanderItemsControl}}" Grid.Row="3" Grid.Column="1" BorderThickness="1" >
             <ListBox  ScrollViewer.VerticalScrollBarVisibility="Visible" Name="fcdaListBox" DataContext="{Binding Path=SelectedItem,Source={x:Reference ExpanderItemsControl}}"
                                             MinHeight="50"
                                             ItemsSource="{Binding FcdaViewModels}"  

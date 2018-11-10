@@ -19,6 +19,7 @@ namespace BISC.Modules.Device.Infrastructure.Keys
         public const string DeviceConnectingViewKey = "DeviceConnectingView";
         public const string DeviceFromFileAddingViewKey = "DeviceFromFileAddingView";
         public const string DeviceLoadingTreeItemViewKey = "DeviceLoadingTreeItemView";
+        public const string DeviceRestartViewKey = "DeviceRestartView";
 
     }
 }

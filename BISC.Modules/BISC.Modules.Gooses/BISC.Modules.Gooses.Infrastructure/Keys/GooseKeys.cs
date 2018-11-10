@@ -34,5 +34,13 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
 
 
         }
+        public static class GooseWarningKeys
+        {
+
+            public static string GooseSavedFtpKey => "GooseSavedFtp";
+
+
+
+        }
     }
 }

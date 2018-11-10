@@ -41,7 +41,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private readonly ILoggingService _loggingService;
         private readonly IDeviceSerializingService _deviceSerializingService;
         private readonly IDeviceWarningsService _deviceWarningsService;
-        private readonly IDeviceFileWritingServices _fTPfileWritingServices;
+        private readonly IDeviceRestartService _deviceRestartService;
         private Dispatcher _dispatcher;
 
         private string _deviceName;
@@ -50,9 +50,9 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private bool _isDeviceConnected;
 
         public DeviceTreeItemViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService, IGlobalEventsService globalEventsService, IConnectionPoolService connectionPoolService,
-            IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService, IDeviceFileWritingServices fTPfileWritingServices,
+            IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService,
             IGoosesModelService goosesModelService,ISaveCheckingService saveCheckingService,IUserInteractionService userInteractionService,ILoggingService loggingService,
-            IDeviceSerializingService deviceSerializingService,IDeviceWarningsService deviceWarningsService)
+            IDeviceSerializingService deviceSerializingService,IDeviceWarningsService deviceWarningsService, IDeviceRestartService deviceRestartService)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
             _deviceModelService = deviceModelService;
@@ -67,7 +67,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _loggingService = loggingService;
             _deviceSerializingService = deviceSerializingService;
             _deviceWarningsService = deviceWarningsService;
-            _fTPfileWritingServices = fTPfileWritingServices;
+            _deviceRestartService = deviceRestartService;
             DeleteDeviceCommand = commandFactory.CreatePresentationCommand(OnDeleteDeviceExecute);
             NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
             ResetDeviceViaFtpCommand = commandFactory.CreatePresentationCommand(OnResetDeviceViaFtp, () => IsDeviceConnected);
@@ -88,11 +88,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private async void OnResetDeviceViaFtp()
         {
             var res = await _userInteractionService.ShowOptionToUser("Перезагрузка устройства",
-                $"Устройство {_device.Name} ,будет перезагуржено", new List<string> { "Ok", "Отмена" });
+                $"Устройство {_device.Name} будет перезагружено", new List<string> { "Ok", "Отмена" });
             if(res == 1)
                 return;
             _loggingService.LogMessage($"Устройство {_device.Name} перезагружается",SeverityEnum.Info);
-            await _fTPfileWritingServices.ResetDevice(_device.Ip);
+           await _deviceRestartService.RestartDevice(_device,_treeItemIdentifier);
+
         }
 
         private void OnNavigateToDetailsExecute()

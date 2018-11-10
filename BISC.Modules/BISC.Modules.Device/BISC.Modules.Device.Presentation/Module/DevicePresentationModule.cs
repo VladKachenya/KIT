@@ -14,9 +14,12 @@ using BISC.Modules.Device.Presentation.Interfaces.Factories;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
 using BISC.Modules.Device.Presentation.Services;
 using BISC.Modules.Device.Presentation.ViewModels;
+using BISC.Modules.Device.Presentation.ViewModels.Conflicts;
 using BISC.Modules.Device.Presentation.ViewModels.Factories;
+using BISC.Modules.Device.Presentation.ViewModels.Restart;
 using BISC.Modules.Device.Presentation.ViewModels.Tree;
 using BISC.Modules.Device.Presentation.Views;
+using BISC.Modules.Device.Presentation.Views.Restart;
 using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Services;
@@ -43,6 +46,7 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<object, DeviceConnectingView>(DeviceKeys.DeviceConnectingViewKey);
             _injectionContainer.RegisterType<object, DeviceFromFileAddingView>(DeviceKeys.DeviceFromFileAddingViewKey);
             _injectionContainer.RegisterType<object, DeviceLoadingTreeItemView>(DeviceKeys.DeviceLoadingTreeItemViewKey);
+            _injectionContainer.RegisterType<object, DeviceRestartView>(DeviceKeys.DeviceRestartViewKey);
 
             _injectionContainer.RegisterType<DeviceAddingViewModel>();
             _injectionContainer.RegisterType<IFileViewModel, FileViewModel>();
@@ -51,11 +55,20 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<IDeviceViewModel, DeviceViewModel>();
             _injectionContainer.RegisterType<IDeviceWarningsService, DeviceWarningsService>(true);
 
+            _injectionContainer.RegisterType<DeviceConflictViewModel>();
+            _injectionContainer.RegisterType<DeviceConflictsViewModel>();
+
             _injectionContainer.RegisterType<DeviceTreeItemViewModel>();
             _injectionContainer.RegisterType<DeviceDetailsViewModel>();
+            _injectionContainer.RegisterType<IDeviceRestartService, DeviceRestartService>();
 
             _injectionContainer.RegisterType<DeviceFromFileAddingViewModel>();
             _injectionContainer.RegisterType<DeviceConnectingViewModel>();
+
+            _injectionContainer.RegisterType<DeviceRestartViewModel>();
+
+
+
             _injectionContainer.RegisterType<DeviceLoadingTreeItemViewModel>();
             _injectionContainer.RegisterType<IDeviceLoadingService, DeviceLoadingService>();
 

@@ -7,6 +7,7 @@
              xmlns:gooseControls="clr-namespace:BISC.Modules.Gooses.Presentation.ViewModels.GooseControls"
              xmlns:constants="clr-namespace:BISC.Model.Global.Constants;assembly=BISC.Model.Global"
              xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
+             xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d"  Name="UserControl"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -26,7 +27,7 @@
             <RowDefinition Height="*"></RowDefinition>
 
         </Grid.RowDefinitions>
-        <ListBox Name="ListBox" ItemsSource="{Binding GooseControlViewModels}" HorizontalContentAlignment="Stretch">
+            <ListBox Name="ListBox" ItemsSource="{Binding GooseControlViewModels}" HorizontalContentAlignment="Stretch" behaviors:ListBoxBehavior.ScrollOnNewItem="true">
 
             <ListBox.ItemTemplate>
                <DataTemplate DataType="gooseControls:GooseControlViewModel">

@@ -8,6 +8,6 @@ namespace BISC.Modules.Device.Infrastructure.Services
     public interface IDeviceConnectionService
     {
         Task<OperationResult<IDevice>> ConnectDevice(string ip);
-        Task ConnectExistingDevice();
+        Task ConnectExistingDevice(IDevice existingDevice);
     }
 }

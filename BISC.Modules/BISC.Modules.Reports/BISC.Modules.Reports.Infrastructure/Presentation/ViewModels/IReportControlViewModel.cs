@@ -31,7 +31,7 @@ namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
         int IntegrutyPeriod { get; set; }
 
         ICommand UndoChengestCommand { get; }
-
+        ICommand UpdateAvailableDatasetsCommand { get; }
         IReportEnabledViewModel ReportEnabledViewModel { get; }
         ITriggerOptionsViewModel TriggerOptionsViewModel { get; }
         IOprionalFildsViewModel OprionalFildsViewModel { get; }
