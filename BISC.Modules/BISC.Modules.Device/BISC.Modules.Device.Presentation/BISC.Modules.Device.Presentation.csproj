@@ -69,6 +69,7 @@
     <Compile Include="Services\DeviceLoadingService.cs" />
     <Compile Include="Services\DeviceRestartService.cs" />
     <Compile Include="Services\DeviceWarningsService.cs" />
+    <Compile Include="Services\Helpers\RestartDeviceEntity.cs" />
     <Compile Include="ViewModels\Conflicts\DeviceConflictsViewModel.cs" />
     <Compile Include="ViewModels\Conflicts\DeviceConflictViewModel.cs" />
     <Compile Include="ViewModels\DeviceAddingViewModel.cs" />

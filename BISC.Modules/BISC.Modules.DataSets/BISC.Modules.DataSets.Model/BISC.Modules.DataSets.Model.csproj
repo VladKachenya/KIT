@@ -54,6 +54,7 @@
     <Compile Include="Serializers\DataSetSerializer.cs" />
     <Compile Include="Serializers\FcdaSerializer.cs" />
     <Compile Include="Services\DatasetModelService.cs" />
+    <Compile Include="Services\DatasetsConflictResolver.cs" />
     <Compile Include="Services\DatasetsLoadingService.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -13,6 +13,7 @@ namespace BISC.Modules.Device.Infrastructure.Keys
 
 
         public const string DeviceModelKey = "IED";
+        public const string RestartDeviceEntityKey = "RestartDeviceEntity";
 
         public const string DeviceTreeItemViewKey = "DeviceTreeItemView";
         public const string DeviceDetailsViewKey = "DeviceDetailsView";

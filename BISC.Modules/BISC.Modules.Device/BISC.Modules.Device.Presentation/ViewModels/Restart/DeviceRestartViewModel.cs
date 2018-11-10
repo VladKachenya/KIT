@@ -6,7 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Services;
+using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading.Events;
+using BISC.Modules.Device.Presentation.Services.Helpers;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
@@ -22,9 +24,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
         private bool _isRestartingInProgress;
         private bool _haveConflicts;
         private string _deviceName;
-        private CancellationTokenSource _cts;
-        private string _ip;
-
+        private RestartDeviceEntity _restartDeviceEntity;
 
         public DeviceRestartViewModel(IGlobalEventsService globalEventsService,ICommandFactory commandFactory)
         {
@@ -42,9 +42,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
-            DeviceName = navigationContext.BiscNavigationParameters.GetParameterByName<string>("name");
-            _cts = navigationContext.BiscNavigationParameters.GetParameterByName<CancellationTokenSource>("cts");
-            _ip = navigationContext.BiscNavigationParameters.GetParameterByName<string>("ip");
+            _restartDeviceEntity = navigationContext.BiscNavigationParameters.GetParameterByName<RestartDeviceEntity>(DeviceKeys.RestartDeviceEntityKey);
+            DeviceName = _restartDeviceEntity.DeviceName;
             HaveConflicts = false;
             IsRestartingInProgress = true;
             IsIntermetiateProgress = true;
@@ -98,7 +97,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
 
         private void OnDeviceLoadingEvent(DeviceLoadingEvent deviceLoadingEvent)
         {
-           if(_ip!=deviceLoadingEvent.Ip)return;
+           if(_restartDeviceEntity.Ip!=deviceLoadingEvent.Ip)return;
             if (deviceLoadingEvent.TotalProgressCount.HasValue)
             {
                 TotalProgress = deviceLoadingEvent.TotalProgressCount.Value;
