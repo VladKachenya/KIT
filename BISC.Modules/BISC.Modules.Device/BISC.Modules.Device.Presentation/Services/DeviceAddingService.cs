@@ -44,14 +44,14 @@ namespace BISC.Modules.Device.Presentation.Services
             await _navigationService.NavigateViewToGlobalRegion(DeviceKeys.DeviceAddingViewKey);
         }
 
-        public void AddDevicesInProject(List<IDevice> devicesToAdd,ISclModel modelFrom)
+        public void AddDevicesInProject(List<IDevice> devicesToAdd, ISclModel modelFrom)
         {
             foreach (var device in devicesToAdd)
             {
-                var res = _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel.Value, device,modelFrom);
+                var res = _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel.Value, device, modelFrom);
                 if (!res.IsSucceed)
                 {
-                    _loggingService.LogMessage(res.GetFirstError(),SeverityEnum.Warning);
+                    _loggingService.LogMessage(res.GetFirstError(), SeverityEnum.Warning);
                 }
                 else
                 {
@@ -60,19 +60,10 @@ namespace BISC.Modules.Device.Presentation.Services
             }
         }
 
-        private void AddDeviceToTree(IDevice device)
-        {
-            BiscNavigationParameters navigationParameters = new BiscNavigationParameters();
-            navigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, device);
-            var resultTreeItem =
-                _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null);
-            _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(device, resultTreeItem,"IED");
 
-        }
-
-        public TreeItemIdentifier HandleModelElement(IModelElement modelElement, TreeItemIdentifier parentTreeId,string uiKey)
+        public TreeItemIdentifier HandleModelElement(IModelElement modelElement, TreeItemIdentifier parentTreeId, string uiKey)
         {
-            if(parentTreeId!=null)return null;
+            if (parentTreeId != null) return null;
             var sclModel = modelElement as ISclModel;
             sclModel?.ChildModelElements.ForEach(element =>
             {
@@ -83,6 +74,15 @@ namespace BISC.Modules.Device.Presentation.Services
             });
             _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(modelElement, parentTreeId, "IED");
             return null;
+        }
+
+        public void AddDeviceToTree(IDevice device)
+        {
+            BiscNavigationParameters navigationParameters = new BiscNavigationParameters();
+            navigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, device);
+            var resultTreeItem =
+                _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null);
+            _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(device, resultTreeItem, "IED");
         }
     }
 }

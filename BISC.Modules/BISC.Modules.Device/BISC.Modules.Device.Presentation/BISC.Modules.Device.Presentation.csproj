@@ -69,6 +69,7 @@
     <Compile Include="Services\DeviceLoadingService.cs" />
     <Compile Include="Services\DeviceRestartService.cs" />
     <Compile Include="Services\DeviceWarningsService.cs" />
+    <Compile Include="Services\Helpers\DeviceConflictEntity.cs" />
     <Compile Include="Services\Helpers\RestartDeviceEntity.cs" />
     <Compile Include="ViewModels\Conflicts\DeviceConflictsViewModel.cs" />
     <Compile Include="ViewModels\Conflicts\DeviceConflictViewModel.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="ViewModels\DeviceFromFileAddingViewModel.cs" />
     <Compile Include="ViewModels\DeviceLoadingTreeItemViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
+    <Compile Include="ViewModels\Factories\DeviceConflictFactory.cs" />
     <Compile Include="ViewModels\Factories\DeviceViewModelFactory.cs" />
     <Compile Include="ViewModels\Factories\FileViewModelFactory.cs" />
     <Compile Include="ViewModels\FileViewModel.cs" />

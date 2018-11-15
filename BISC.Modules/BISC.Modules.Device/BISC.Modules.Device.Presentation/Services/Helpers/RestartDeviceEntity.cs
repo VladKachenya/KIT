@@ -9,18 +9,19 @@ namespace BISC.Modules.Device.Presentation.Services.Helpers
 {
    public class RestartDeviceEntity
     {
-        public RestartDeviceEntity(string deviceName, CancellationTokenSource cts, string ip, bool haveConflicts)
+        public RestartDeviceEntity(string deviceName, CancellationTokenSource cts, string ip)
         {
             DeviceName = deviceName;
             Cts = cts;
             Ip = ip;
-            HaveConflicts = haveConflicts;
+            HaveConflicts = false;
         }
 
         public string DeviceName { get; }
         public CancellationTokenSource Cts { get; }
         public string Ip { get; }
-        public bool HaveConflicts { get; }
+        public bool HaveConflicts { get; set; }
 
+        public DeviceConflictEntity DeviceConflictEntity { get; set; }
     }
 }

@@ -19,6 +19,7 @@ using BISC.Modules.Device.Presentation.ViewModels.Factories;
 using BISC.Modules.Device.Presentation.ViewModels.Restart;
 using BISC.Modules.Device.Presentation.ViewModels.Tree;
 using BISC.Modules.Device.Presentation.Views;
+using BISC.Modules.Device.Presentation.Views.Conflicts;
 using BISC.Modules.Device.Presentation.Views.Restart;
 using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
@@ -47,6 +48,7 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<object, DeviceFromFileAddingView>(DeviceKeys.DeviceFromFileAddingViewKey);
             _injectionContainer.RegisterType<object, DeviceLoadingTreeItemView>(DeviceKeys.DeviceLoadingTreeItemViewKey);
             _injectionContainer.RegisterType<object, DeviceRestartView>(DeviceKeys.DeviceRestartViewKey);
+            _injectionContainer.RegisterType<object, DeviceConflictsView>(DeviceKeys.DeviceConflictsViewKey);
 
             _injectionContainer.RegisterType<DeviceAddingViewModel>();
             _injectionContainer.RegisterType<IFileViewModel, FileViewModel>();
@@ -57,6 +59,8 @@ namespace BISC.Modules.Device.Presentation.Module
 
             _injectionContainer.RegisterType<DeviceConflictViewModel>();
             _injectionContainer.RegisterType<DeviceConflictsViewModel>();
+            _injectionContainer.RegisterType<DeviceConflictFactory>();
+
 
             _injectionContainer.RegisterType<DeviceTreeItemViewModel>();
             _injectionContainer.RegisterType<DeviceDetailsViewModel>();
@@ -67,7 +71,7 @@ namespace BISC.Modules.Device.Presentation.Module
 
             _injectionContainer.RegisterType<DeviceRestartViewModel>();
 
-
+            
 
             _injectionContainer.RegisterType<DeviceLoadingTreeItemViewModel>();
             _injectionContainer.RegisterType<IDeviceLoadingService, DeviceLoadingService>();

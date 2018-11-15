@@ -4,14 +4,40 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BISC.Modules.Device.Presentation.Views.Conflicts"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-
+             xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
+             xmlns:conflicts="clr-namespace:BISC.Modules.Device.Presentation.ViewModels.Conflicts"
+             mc:Ignorable="d"  Width="500"
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance conflicts:DeviceConflictViewModel}">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
+        <converters:BoolToVisConverter Invert="True" x:Key="boolToInVisConverter"></converters:BoolToVisConverter>
+    </UserControl.Resources>
+    <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
+        <TextBlock Margin="4" Text="{Binding ConflictTitle}"></TextBlock>
+        <TextBlock Margin="4" Visibility="{Binding IsConflictOk,Converter={StaticResource booleanToVisibilityConverter}}" Grid.Column="1" Text="ОК" Foreground="DarkGreen"></TextBlock>
+        <TextBlock Margin="4" Visibility="{Binding IsConflictResolvedAsFromProject,Converter={StaticResource booleanToVisibilityConverter}}" Grid.Column="1" Text="Ок (из проекта)" ToolTip="Данные будут соответствовать данным из проекиа" Foreground="DarkGreen"></TextBlock>
+        <TextBlock Margin="4" Visibility="{Binding IsConflictResolvedAsFromDevice,Converter={StaticResource booleanToVisibilityConverter}}" Grid.Column="1" Text="Ок (из устройства)" ToolTip="Данные будут соответствовать данным из устройства" Foreground="DarkGreen"></TextBlock>
+
+        <TextBlock Margin="4" Grid.Column="1" Visibility="{Binding IsConflictOk,Converter={StaticResource boolToInVisConverter}}" Foreground="Red" Text="Конфликт"></TextBlock>
+        <StackPanel Grid.Column="2" Visibility="{Binding IsConflictOk,Converter={StaticResource boolToInVisConverter}}" Orientation="Horizontal">
+            <Button Width="100" Margin="4" Style="{StaticResource MaterialDesignFlatButton}"  Command="{Binding SelectDeviceOptionCommand}" ToolTip="Выбрать из устройства">
+                <ContentControl ContentTemplate="{DynamicResource DownloadIcon}"></ContentControl>
+            </Button>
+            <Button Width="100" Margin="4" Style="{StaticResource MaterialDesignFlatButton}"  Command="{Binding SelectProjectOptionCommand}" ToolTip="Выбрать из проекта">
+                <ContentControl ContentTemplate="{DynamicResource UploadIcon}"></ContentControl>
+            </Button>
+            <Button Width="100" Margin="4" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding ShowConflictInTool}" ToolTip="Посмотреть различия">
+                <ContentControl ContentTemplate="{DynamicResource MagnifyIcon}"></ContentControl>
+            </Button>
+        </StackPanel>
+        <Button Width="100" Grid.Column="2" Margin="3" Visibility="{Binding IsConflictResolved,Converter={StaticResource booleanToVisibilityConverter}}"  Command="{Binding CancelSelectionCommand}" ToolTip="Отменить различия">
+            <ContentControl ContentTemplate="{DynamicResource CancelIcon}"></ContentControl>
+
+        </Button>
     </Grid>
 </UserControl>

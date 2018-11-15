@@ -12,12 +12,14 @@ using BISC.Modules.Device.Presentation.Services.Helpers;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.ViewModels.Restart
 {
-   public class DeviceRestartViewModel:NavigationViewModelBase
+    public class DeviceRestartViewModel : NavigationViewModelBase
     {
         private readonly IGlobalEventsService _globalEventsService;
+        private readonly INavigationService _navigationService;
         private int _totalProgress;
         private int _currentProgress;
         private bool _isIntermetiateProgress;
@@ -26,15 +28,23 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
         private string _deviceName;
         private RestartDeviceEntity _restartDeviceEntity;
 
-        public DeviceRestartViewModel(IGlobalEventsService globalEventsService,ICommandFactory commandFactory)
+        public DeviceRestartViewModel(IGlobalEventsService globalEventsService, ICommandFactory commandFactory,INavigationService navigationService)
         {
             _globalEventsService = globalEventsService;
+            _navigationService = navigationService;
             CancelLoadingCommand = commandFactory.CreatePresentationCommand(OnCancel);
+            ResolveConflictsCommand = commandFactory.CreatePresentationCommand(OnResolveConflicts);
+        }
+
+        private void OnResolveConflicts()
+        {
+            BiscNavigationParameters biscNavigationParameters=new BiscNavigationParameters().AddParameterByName(DeviceKeys.DeviceConflictEntityKey,_restartDeviceEntity.DeviceConflictEntity);
+            _navigationService.NavigateViewToGlobalRegion(DeviceKeys.DeviceConflictsViewKey,biscNavigationParameters);
         }
 
         private void OnCancel()
         {
-            
+
         }
 
         #region Overrides of NavigationViewModelBase
@@ -65,6 +75,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
         }
 
         public ICommand CancelLoadingCommand { get; }
+        public ICommand ResolveConflictsCommand { get; }
+
 
         public bool IsRestartingInProgress
         {
@@ -97,7 +109,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
 
         private void OnDeviceLoadingEvent(DeviceLoadingEvent deviceLoadingEvent)
         {
-           if(_restartDeviceEntity.Ip!=deviceLoadingEvent.Ip)return;
+            if (_restartDeviceEntity.Ip != deviceLoadingEvent.Ip) return;
             if (deviceLoadingEvent.TotalProgressCount.HasValue)
             {
                 TotalProgress = deviceLoadingEvent.TotalProgressCount.Value;
@@ -110,6 +122,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
             if (deviceLoadingEvent.IsFinished.HasValue)
             {
                 IsRestartingInProgress = !deviceLoadingEvent.IsFinished.Value;
+                HaveConflicts = _restartDeviceEntity.HaveConflicts;
             }
         }
 

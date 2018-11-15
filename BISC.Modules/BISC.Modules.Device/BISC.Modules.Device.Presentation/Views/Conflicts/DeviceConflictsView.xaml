@@ -5,20 +5,31 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BISC.Modules.Device.Presentation.Views.Conflicts"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" MinWidth="550" MinHeight="150">
     <Grid>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+
         </Grid.RowDefinitions>
-        <TextBlock Text="Результаты сопоставления"></TextBlock>
-       <ItemsControl Grid.Row="1" ItemsSource="{Binding DeviceConflictsViewModels}">
-           <ItemsControl.ItemTemplate>
-               <DataTemplate>
-                   <local:DeviceConflictView></local:DeviceConflictView>
-               </DataTemplate>
-           </ItemsControl.ItemTemplate>
-       </ItemsControl>
+        <TextBlock Margin="5" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="Результаты сопоставления"></TextBlock>
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding DeviceConflictViewModels}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <local:DeviceConflictView></local:DeviceConflictView>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Margin="5" Content="Применить" Command="{Binding ApplyCommand}" IsEnabled="{Binding IsApplyButtonEnabled}"></Button>
+            <Button Margin="5" Content="Отмена" Command="{Binding CancelCommand}"></Button>
+
+        </Grid>
     </Grid>
 </UserControl>

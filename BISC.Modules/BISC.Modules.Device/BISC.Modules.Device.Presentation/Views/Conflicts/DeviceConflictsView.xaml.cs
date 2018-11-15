@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BISC.Modules.Device.Presentation.ViewModels.Conflicts;
 
 namespace BISC.Modules.Device.Presentation.Views.Conflicts
 {
@@ -20,9 +21,10 @@ namespace BISC.Modules.Device.Presentation.Views.Conflicts
     /// </summary>
     public partial class DeviceConflictsView : UserControl
     {
-        public DeviceConflictsView()
+        public DeviceConflictsView(DeviceConflictsViewModel deviceConflictsViewModel)
         {
             InitializeComponent();
+            DataContext = deviceConflictsViewModel;
         }
     }
 }

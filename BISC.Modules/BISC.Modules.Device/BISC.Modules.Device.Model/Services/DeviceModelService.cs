@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
 using BISC.Model.Global.Common;
+using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Project.Communication;
 using BISC.Model.Infrastructure.Services.Communication;
@@ -41,6 +42,13 @@ namespace BISC.Modules.Device.Model.Services
             }
 
             return devices;
+        }
+
+        public IDevice GetDeviceByName(ISclModel sclModel,string deviceName)
+        {
+            List<IDevice> devices=new List<IDevice>();
+            sclModel.GetAllChildrenOfType<IDevice>(ref devices);
+            return devices.FirstOrDefault((device => device.Name==deviceName ));
         }
 
         public OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device,ISclModel modelFrom)

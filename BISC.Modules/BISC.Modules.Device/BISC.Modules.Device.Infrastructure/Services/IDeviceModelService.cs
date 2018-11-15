@@ -8,7 +8,7 @@ namespace BISC.Modules.Device.Infrastructure.Services
     public interface IDeviceModelService
     {
         List<IDevice> GetDevicesFromModel(ISclModel sclModel);
-        
+        IDevice GetDeviceByName(ISclModel sclModel, string deviceName);
         OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device,ISclModel modelFrom);
         OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device);
         OperationResult DeleteDeviceFromModel(ISclModel sclModel, string deviceName);

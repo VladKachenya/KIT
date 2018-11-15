@@ -15,6 +15,7 @@ using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Loading.Events;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Device.Presentation.Interfaces.Services;
 using BISC.Modules.Device.Presentation.Services.Helpers;
 using BISC.Modules.FTP.Infrastructure.Serviсes;
 using BISC.Presentation.BaseItems.Commands;
@@ -23,7 +24,7 @@ using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.Services
 {
-   public class DeviceRestartService:IDeviceRestartService
+    public class DeviceRestartService : IDeviceRestartService
     {
         private readonly IDeviceFileWritingServices _deviceFileWritingServices;
         private readonly IDeviceConnectionService _deviceConnectionService;
@@ -38,12 +39,16 @@ namespace BISC.Modules.Device.Presentation.Services
         private List<IElementConflictResolver> _elementConflictResolvers;
 
         private Func<ISclModel> _sclModelCreator;
+        private readonly IBiscProject _biscProject;
+        private readonly IDeviceAddingService _deviceAddingService;
+        private readonly IDeviceWarningsService _deviceWarningsService;
 
         public DeviceRestartService(IDeviceFileWritingServices deviceFileWritingServices,
-            IDeviceConnectionService deviceConnectionService,IDeviceModelService deviceModelService,
+            IDeviceConnectionService deviceConnectionService, IDeviceModelService deviceModelService,
             ITreeManagementService treeManagementService, IConnectionPoolService connectionPoolService,
-            ITabManagementService tabManagementService, ILoggingService loggingService,IGlobalEventsService globalEventsService,
-            INavigationService navigationService, IInjectionContainer injectionContainer, Func<ISclModel> sclModelCreator)
+            ITabManagementService tabManagementService, ILoggingService loggingService, IGlobalEventsService globalEventsService,
+            INavigationService navigationService, IInjectionContainer injectionContainer, Func<ISclModel> sclModelCreator,
+            IBiscProject biscProject, IDeviceAddingService deviceAddingService,IDeviceWarningsService deviceWarningsService)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
             _deviceConnectionService = deviceConnectionService;
@@ -55,6 +60,9 @@ namespace BISC.Modules.Device.Presentation.Services
             _globalEventsService = globalEventsService;
             _navigationService = navigationService;
             _sclModelCreator = sclModelCreator;
+            _biscProject = biscProject;
+            _deviceAddingService = deviceAddingService;
+            _deviceWarningsService = deviceWarningsService;
             _elementLoadingServices = injectionContainer.ResolveAll(typeof(IDeviceElementLoadingService))
                 .Cast<IDeviceElementLoadingService>().ToList();
             _elementConflictResolvers = injectionContainer.ResolveAll(typeof(IElementConflictResolver))
@@ -67,72 +75,90 @@ namespace BISC.Modules.Device.Presentation.Services
         public async Task RestartDevice(IDevice existingDevice, TreeItemIdentifier treeItemIdOfExistingDevice)
         {
             await _deviceFileWritingServices.ResetDevice(existingDevice.Ip);
-          //  _treeManagementService.DeleteTreeItem(treeItemIdOfExistingDevice);
-          //  _connectionPoolService.GetConnection(existingDevice.Ip).StopConnection();
-          //  _tabManagementService.CloseTabWithChildren(treeItemIdOfExistingDevice.ItemId.ToString());
+            _treeManagementService.DeleteTreeItem(treeItemIdOfExistingDevice);
+            _connectionPoolService.GetConnection(existingDevice.Ip).StopConnection();
+            _tabManagementService.CloseTabWithChildren(treeItemIdOfExistingDevice.ItemId.ToString());
 
 
 
-          //  var sortedElements = _elementLoadingServices.OrderBy((service => service.Priority));
+            var sortedElements = _elementLoadingServices.OrderBy((service => service.Priority));
 
-          //  CancellationTokenSource cts = new CancellationTokenSource();
-          //  BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
-          //  RestartDeviceEntity restartDeviceEntity =
-          //      new RestartDeviceEntity(existingDevice.Name, cts, existingDevice.Ip, false);
-          //  biscNavigationParameters.AddParameterByName(DeviceKeys.RestartDeviceEntityKey,restartDeviceEntity);
+            CancellationTokenSource cts = new CancellationTokenSource();
+            BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
+            RestartDeviceEntity restartDeviceEntity =
+                new RestartDeviceEntity(existingDevice.Name, cts, existingDevice.Ip);
+            biscNavigationParameters.AddParameterByName(DeviceKeys.RestartDeviceEntityKey, restartDeviceEntity);
 
-          //  DialogCommands.CloseDialogCommand.Execute(null, null);
-          //  var treeItemId = _treeManagementService.AddTreeItem(biscNavigationParameters,
-          //      DeviceKeys.DeviceRestartViewKey,
-          //      null);
-          //  await Task.Delay(3000, cts.Token);
-          //  var deviceConnectResult = await _deviceConnectionService.ConnectDevice(existingDevice.Ip);
-          //  var device = deviceConnectResult.Item;
-          //  var sclModel = _sclModelCreator();
-          //  var itemsCount = 0;
-          //  try
-          //  {
-          //      foreach (var sortedElement in sortedElements)
-          //      {
-          //          itemsCount += await sortedElement.EstimateProgress(device);
-          //      }
+            DialogCommands.CloseDialogCommand.Execute(null, null);
+            var treeItemId = _treeManagementService.AddTreeItem(biscNavigationParameters,
+                DeviceKeys.DeviceRestartViewKey,
+                null);
+            await Task.Delay(3000, cts.Token);
+            var deviceConnectResult = await _deviceConnectionService.ConnectDevice(existingDevice.Ip);
+            var device = deviceConnectResult.Item;
+            var sclModel = _sclModelCreator();
+            var itemsCount = 0;
+            try
+            {
+                foreach (var sortedElement in sortedElements)
+                {
+                    itemsCount += await sortedElement.EstimateProgress(device);
+                }
 
-          //      _deviceModelService.AddDeviceInModel(sclModel, device);
+                _deviceModelService.AddDeviceInModel(sclModel, device);
 
-          //      int currentElementsCount = 0;
-
-
-          //      foreach (var sortedElement in sortedElements)
-          //      {
-          //          await sortedElement.Load(device,
-          //              new Progress<object>(deviceLoadingEvent =>
-          //              {
-          //                  _globalEventsService.SendMessage(new DeviceLoadingEvent(device.Ip, device.Name,
-          //                      itemsCount, ++currentElementsCount));
-          //              }), sclModel, cts.Token);
-          //      }
-          //  }
-          //  catch (Exception e)
-          //  {
-          //      if (cts.IsCancellationRequested)
-          //      {
-          //          _connectionPoolService.GetConnection(device.Ip).StopConnection();
-          //          _loggingService.LogUserAction($"Загрузка устройства отменена пользователем {device.Name}");
-          //          //  return new OperationResult($"Загрузка устройства отменена пользователем {device.Name}");
-          //      }
-          //      else
-          //      {
-          //          _loggingService.LogMessage($"Ошибка загрузки устройства {e.Message + Environment.NewLine + e.StackTrace}", SeverityEnum.Critical);
-          //          // return new OperationResult($"Ошибка загрузка устройства {device.Name}");
-          //      }
-          //  }
-
-          ////  _i
-          // // restartDeviceEntity.HaveConflicts=
+                int currentElementsCount = 0;
 
 
-          //  _globalEventsService.SendMessage(new DeviceLoadingEvent(device.Ip) { IsFinished = true });
-          //  //_treeManagementService.DeleteTreeItem(treeItemId);
+                foreach (var sortedElement in sortedElements)
+                {
+                    await sortedElement.Load(device,
+                        new Progress<object>(deviceLoadingEvent =>
+                        {
+                            _globalEventsService.SendMessage(new DeviceLoadingEvent(device.Ip, device.Name,
+                                itemsCount, ++currentElementsCount));
+                        }), sclModel, cts.Token);
+                }
+            }
+            catch (Exception e)
+            {
+                if (cts.IsCancellationRequested)
+                {
+                    _connectionPoolService.GetConnection(device.Ip).StopConnection();
+                    _loggingService.LogUserAction($"Загрузка устройства отменена пользователем {device.Name}");
+                    //  return new OperationResult($"Загрузка устройства отменена пользователем {device.Name}");
+                }
+                else
+                {
+                    _loggingService.LogMessage(
+                        $"Ошибка загрузки устройства {e.Message + Environment.NewLine + e.StackTrace}",
+                        SeverityEnum.Critical);
+                    // return new OperationResult($"Ошибка загрузка устройства {device.Name}");
+                }
+            }
+
+            var hasConflics = false;
+            _elementConflictResolvers.ForEach((resolver =>
+            {
+                if (resolver.GetIfConflictsExists(device.Name, sclModel, _biscProject.MainSclModel.Value))
+                {
+                    hasConflics = true;
+                    return;
+                }
+            }));
+            restartDeviceEntity.HaveConflicts = hasConflics;
+            _globalEventsService.SendMessage(new DeviceLoadingEvent(device.Ip) {IsFinished = true});
+            if (!hasConflics)
+            {
+                _treeManagementService.DeleteTreeItem(treeItemId);
+                _deviceAddingService.AddDeviceToTree(existingDevice);
+                _deviceWarningsService.ClearDeviceWarningsOfDevice(existingDevice.Name);
+            }
+            else
+            {
+                restartDeviceEntity.DeviceConflictEntity=new DeviceConflictEntity(_biscProject.MainSclModel.Value,sclModel,existingDevice.Name);
+            }
+
         }
 
 

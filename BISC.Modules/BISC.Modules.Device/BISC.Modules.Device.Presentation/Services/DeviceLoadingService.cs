@@ -100,12 +100,14 @@ namespace BISC.Modules.Device.Presentation.Services
             {
                 if (cts.IsCancellationRequested)
                 {
+                    _treeManagementService.DeleteTreeItem(treeItemId);
                     _connectionPoolService.GetConnection(device.Ip).StopConnection();
                     _loggingService.LogUserAction($"Загрузка устройства отменена пользователем {device.Name}");
                     return new OperationResult($"Загрузка устройства отменена пользователем {device.Name}");
                 }
                 else
                 {
+                    _treeManagementService.DeleteTreeItem(treeItemId);
                     _loggingService.LogMessage($"Ошибка загрузка устройства {e.Message + Environment.NewLine + e.StackTrace}",SeverityEnum.Critical);
                     return new OperationResult($"Ошибка загрузка устройства {device.Name}");
                 }

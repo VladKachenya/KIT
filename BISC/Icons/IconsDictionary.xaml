@@ -127,7 +127,15 @@
     <DataTemplate x:Key="MessageAlertIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="MessageAlert" />
     </DataTemplate>
-
+    <DataTemplate x:Key="DownloadIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Download" />
+    </DataTemplate>
+    <DataTemplate x:Key="UploadIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Upload" />
+    </DataTemplate>
+    <DataTemplate x:Key="MagnifyIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Magnify" />
+    </DataTemplate>
     <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
         <!--<Style.Resources >
             <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#44111121" />

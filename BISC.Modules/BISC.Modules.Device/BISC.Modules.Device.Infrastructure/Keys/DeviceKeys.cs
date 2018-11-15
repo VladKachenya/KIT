@@ -14,6 +14,9 @@ namespace BISC.Modules.Device.Infrastructure.Keys
 
         public const string DeviceModelKey = "IED";
         public const string RestartDeviceEntityKey = "RestartDeviceEntity";
+        public const string DeviceConflictEntityKey = "DeviceConflictEntity";
+
+
 
         public const string DeviceTreeItemViewKey = "DeviceTreeItemView";
         public const string DeviceDetailsViewKey = "DeviceDetailsView";
@@ -21,6 +24,7 @@ namespace BISC.Modules.Device.Infrastructure.Keys
         public const string DeviceFromFileAddingViewKey = "DeviceFromFileAddingView";
         public const string DeviceLoadingTreeItemViewKey = "DeviceLoadingTreeItemView";
         public const string DeviceRestartViewKey = "DeviceRestartView";
+        public const string DeviceConflictsViewKey = "DeviceConflictsView";
 
     }
 }

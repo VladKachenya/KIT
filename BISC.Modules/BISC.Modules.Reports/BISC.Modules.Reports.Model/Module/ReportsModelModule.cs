@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Modules.Device.Infrastructure.Loading;
+using BISC.Modules.Device.Infrastructure.Services;
 
 namespace BISC.Modules.Reports.Model.Module
 {
@@ -41,6 +42,7 @@ namespace BISC.Modules.Reports.Model.Module
             
             _injectionContainer.RegisterType<IFtpReportModelService, FtpReportModelService>();
             _injectionContainer.RegisterType<IDeviceElementLoadingService, ReportControlLoadingService>(Guid.NewGuid().ToString());
+            _injectionContainer.RegisterType<IElementConflictResolver, ReportsConflictResolver>(Guid.NewGuid().ToString());
 
 
         }
