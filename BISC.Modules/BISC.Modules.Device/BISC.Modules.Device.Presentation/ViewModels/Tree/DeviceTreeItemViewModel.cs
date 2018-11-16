@@ -42,6 +42,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private readonly IDeviceSerializingService _deviceSerializingService;
         private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly IDeviceRestartService _deviceRestartService;
+        private readonly IDeviceManufacturerService _deviceManufacturerService;
         private Dispatcher _dispatcher;
 
         private string _deviceName;
@@ -52,7 +53,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         public DeviceTreeItemViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService, IGlobalEventsService globalEventsService, IConnectionPoolService connectionPoolService,
             IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService,
             IGoosesModelService goosesModelService,ISaveCheckingService saveCheckingService,IUserInteractionService userInteractionService,ILoggingService loggingService,
-            IDeviceSerializingService deviceSerializingService,IDeviceWarningsService deviceWarningsService, IDeviceRestartService deviceRestartService)
+            IDeviceSerializingService deviceSerializingService,IDeviceWarningsService deviceWarningsService, IDeviceRestartService deviceRestartService,
+            IDeviceManufacturerService deviceManufacturerService)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
             _deviceModelService = deviceModelService;
@@ -68,9 +70,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _deviceSerializingService = deviceSerializingService;
             _deviceWarningsService = deviceWarningsService;
             _deviceRestartService = deviceRestartService;
+            _deviceManufacturerService = deviceManufacturerService;
             DeleteDeviceCommand = commandFactory.CreatePresentationCommand(OnDeleteDeviceExecute);
             NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
-            ResetDeviceViaFtpCommand = commandFactory.CreatePresentationCommand(OnResetDeviceViaFtp, () => IsDeviceConnected);
+            ResetDeviceViaFtpCommand = commandFactory.CreatePresentationCommand(OnResetDeviceViaFtp, IsResetDeviceViaFtp);
             ExportCidDeviceCommand = commandFactory.CreatePresentationCommand(OnExportCidDevice);
         }
 
@@ -94,6 +97,13 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _loggingService.LogMessage($"Устройство {_device.Name} перезагружается",SeverityEnum.Info);
            await _deviceRestartService.RestartDevice(_device,_treeItemIdentifier);
 
+        }
+
+        private bool IsResetDeviceViaFtp()
+        {
+            if (!IsDeviceConnected) return false;
+            if (_device.Manufacturer != DeviceKeys.DeviceManufacturer.BemnManufacturer) return false;
+            return true;
         }
 
         private void OnNavigateToDetailsExecute()
@@ -164,6 +174,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
                 navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key);
             DeviceName = device.Name;
             _device = device;
+            if (_device.Manufacturer == null) _deviceManufacturerService.GetManufacturerOfDevice(_device);
             IsDeviceConnected = _connectionPoolService.GetConnection(_device.Ip).IsConnected;
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChangedEvent);
             base.OnNavigatedTo(navigationContext);

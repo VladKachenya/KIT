@@ -237,7 +237,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
            
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
-            _userInterfaceComposingService.AddGlobalCommand(UpdateDataSetsCommand, $"Обновить DataSet-ы {_device.Name}", IconsKeys.UpdateIconKey, false, true);
+            _userInterfaceComposingService.AddGlobalCommand(UpdateDataSetsCommand, $"Обновить DataSets {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewDataSetCommand,$"Добавить DataSet {_device.Name}",IconsKeys.AddIconKey,false,true);
 
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);

@@ -34,7 +34,7 @@
             </Grid>
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" ToolTip="{x:Static ToolTipConstants:StringConstants.ReportControl_Dataset_Description}">
-                    <TextBlock Text="Data set name:" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="DataSet name:" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <ComboBox Margin="2" SelectedItem="{Binding SelectidDataSetName, UpdateSourceTrigger=PropertyChanged}"
                                       ItemsSource="{Binding AvailableDatasets}" MinWidth="150" >
                         <i:Interaction.Triggers>
@@ -57,7 +57,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <GroupBox Grid.Column="0" Margin="5" Header="Oprional fild" >
+                <GroupBox Grid.Column="0" Margin="5" Header="Optional filds" >
                     <StackPanel Orientation="Vertical" >
                         <Border BorderThickness="0, 0, 0, 1" BorderBrush="#FF5B5D5B">
                             <StackPanel  Orientation="Horizontal">
@@ -95,7 +95,7 @@
                                             ToolTip="{x:Static ToolTipConstants:StringConstants.ReportControl_isDataset_Description}">
                                     <CheckBox IsChecked="{Binding  OprionalFildsViewModel.DataSetName}" 
                                                 VerticalAlignment="Center" IsEnabled="True"/>
-                                    <TextBlock Text="Data set name"  Margin="2"/>
+                                    <TextBlock Text="DataSet name"  Margin="2"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
@@ -201,7 +201,7 @@
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Orientation="Horizontal"
                                 ToolTip="{x:Static ToolTipConstants:StringConstants.ReportControl_intgPd_Description}">
-                        <TextBlock Text="Integruty period (мс):" Margin="5" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Integrity period (мс):" Margin="5" HorizontalAlignment="Center"/>
                         <TextBox Text="{Binding IntegrutyPeriod, UpdateSourceTrigger=PropertyChanged}" Margin="5, 0" TextAlignment="Left" 
                                          Padding="5,0" Width="120"/>
                     </StackPanel>

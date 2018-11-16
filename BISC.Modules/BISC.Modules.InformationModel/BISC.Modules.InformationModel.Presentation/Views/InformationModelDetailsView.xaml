@@ -39,7 +39,7 @@
                 </RowDefinition.Style>
             </RowDefinition>
         </Grid.RowDefinitions>
-        <CheckBox HorizontalAlignment="Left" Content="Групировать по FC" IsChecked="{Binding IsFcSortChecked}"></CheckBox>
+        <CheckBox HorizontalAlignment="Left" Content="Группировать по FC" IsChecked="{Binding IsFcSortChecked}"></CheckBox>
         <Grid Grid.Row="1">
             <Grid
             Name="dummygrid"

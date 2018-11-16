@@ -11,7 +11,7 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <GroupBox MinHeight="300" MinWidth="200" Header="Посление открытые">
+        <GroupBox MinHeight="300" MinWidth="200" Header="Последние открытые">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>

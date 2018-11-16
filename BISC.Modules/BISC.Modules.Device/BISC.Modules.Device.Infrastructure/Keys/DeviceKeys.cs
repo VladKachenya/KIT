@@ -26,5 +26,11 @@ namespace BISC.Modules.Device.Infrastructure.Keys
         public const string DeviceRestartViewKey = "DeviceRestartView";
         public const string DeviceConflictsViewKey = "DeviceConflictsView";
 
+        public static class DeviceManufacturer
+        {
+            public const string BemnManufacturer = "BEMN";
+            public const string UnknowManufacturer = "Unknow";
+
+        }
     }
 }

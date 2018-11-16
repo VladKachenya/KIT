@@ -29,7 +29,7 @@
                     </ContentControl.Style>
                 </ContentControl>
             </Grid>
-            <Button Margin="4" ToolTip="Проверить, сонхронизирована ли матрица проекта с устройством" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding CheckCommand}">
+            <Button Margin="4" ToolTip="Проверить, синхронизирована ли матрица проекта с устройством" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding CheckCommand}">
                 <ContentControl ContentTemplate="{DynamicResource CheckIcon}"></ContentControl>
             </Button>
             <Button Margin="4" ToolTip="Закачать матрицу в устройство по FTP" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding SaveToDeviceCommand}">
