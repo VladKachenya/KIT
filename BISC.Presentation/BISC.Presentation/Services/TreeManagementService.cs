@@ -37,7 +37,7 @@ namespace BISC.Presentation.Services
             newItemViewModel.DynamicRegionId = newTreeItemGuid;
 
             parameters.AddParameterByName(TreeItemIdentifier.Key, treeItemIdentifier);
-            if (parentTreeItemIdentifier != null&& parentTreeItemIdentifier.ItemId.HasValue)
+            if (parentTreeItemIdentifier != null && parentTreeItemIdentifier.ItemId.HasValue)
             {
                 if (_mainTreeViewModels.ContainsKey(parentTreeItemIdentifier.ItemId.Value))
                 {

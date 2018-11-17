@@ -86,6 +86,22 @@
       <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
       <Name>BISC.Infrastructure.Global</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Connection\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
+      <Project>{84925CA6-959A-4094-9688-622DC28B7452}</Project>
+      <Name>BISC.Modules.Connection.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Device\BISC.Modules.Device.Infrastructure\BISC.Modules.Device.Infrastructure.csproj">
+      <Project>{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}</Project>
+      <Name>BISC.Modules.Device.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Gooses\BISC.Modules.Gooses.Infrastructure\BISC.Modules.Gooses.Infrastructure.csproj">
+      <Project>{7FD15BE3-633C-4063-8948-B1663736523D}</Project>
+      <Name>BISC.Modules.Gooses.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Presentation\BISC.Presentation.Infrastructure\BISC.Presentation.Infrastructure.csproj">
+      <Project>{D4FEAC3B-C8F9-4DE7-8953-988C75F0F9AA}</Project>
+      <Name>BISC.Presentation.Infrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
       <Name>BISC.Model.Infrastructure</Name>

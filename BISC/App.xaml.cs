@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,9 +21,19 @@ namespace BISC
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            ShellBootstrapper shellBootstrapper = new ShellBootstrapper();
-            shellBootstrapper.Run(true);
-            base.OnStartup(e);
+            Process[] processes = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
+            if (processes.Length > 1)
+            {
+                MessageBox.Show("Приложение \"BISC\" уже запущено", "Внимание", MessageBoxButton.OK,
+                    MessageBoxImage.Exclamation);
+                Current.Shutdown();
+            }
+            else
+            {
+                ShellBootstrapper shellBootstrapper = new ShellBootstrapper();
+                shellBootstrapper.Run(true);
+                base.OnStartup(e);
+            }
         }
 
         private void App_OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

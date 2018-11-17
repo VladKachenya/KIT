@@ -1,7 +1,9 @@
-﻿using BISC.Infrastructure.Global.IoC;
+﻿using BISC.Infrastructure.Global.Common;
+using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
+using BISC.Presentation.BaseItems.Common;
 using BISC.Presentation.BaseItems.Events;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Keys;
@@ -46,6 +48,8 @@ namespace BISC.Presentation.Module
             _globalEventsService.Subscribe<ShellLoadedEvent>((args =>
             {
                 _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject), "Сохранить все изменения в проект", IconsKeys.ContentSaveAllKey,true,true);
+                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProjectAs), "Сохранить проект как...", null, true, false);
+                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnOpenProjectAs), "Открыть проект", null, true, false);
                 _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки",null,true,false);
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTreeViewName,
                     KeysForNavigation.RegionNames.MainTreeRegionKey);
@@ -67,6 +71,26 @@ namespace BISC.Presentation.Module
             _projectService.SaveCurrentProject();
             await _saveCheckingService.SaveAllUnsavedEntities(false);
             _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
+        }
+
+        private async void OnSaveProjectAs()
+        {
+            Maybe<string> listOfPaths = FileHelper.SelectFilePathToSave("Сохранение файла", null, null, "New project");
+            if (!listOfPaths.Any()) return;
+            _projectService.SaveProjectAs(listOfPaths.GetFirstValue());
+            await _saveCheckingService.SaveAllUnsavedEntities(false);
+            _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
+        }
+
+        private async void OnOpenProjectAs()
+        {
+            var fileMaybe = FileHelper.SelectFileToOpen("Открыть файл с устройствами", "BISC Files (*.bisc)|*.bisc|" +
+                                                                                       "All Files (*.*)|*.*");
+            if (!fileMaybe.Any()) return;
+            _projectService.OpenProjectAs(fileMaybe.GetFirstValue().FullName);
+            _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(_biscProject.MainSclModel.Value, null, "SCL");
+            await _saveCheckingService.SaveAllUnsavedEntities(false);
+            _loggingService.LogMessage($"Проект открыт {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
         }
 
         private void OnApplicatoinSettingsAdding()

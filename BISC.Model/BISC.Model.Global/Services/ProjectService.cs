@@ -12,6 +12,10 @@ using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Keys;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Serializing;
+using BISC.Modules.Connection.Infrastructure.Services;
+using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Gooses.Infrastructure.Services;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Model.Global.Services
 {
@@ -20,6 +24,9 @@ namespace BISC.Model.Global.Services
         private readonly IConfigurationService _configurationService;
         private readonly IBiscProject _biscProject;
         private readonly IModelElementsRegistryService _modelElementsRegistryService;
+
+
+
         private string _currentProjectPath;
         public ProjectService(IConfigurationService configurationService, IBiscProject biscProject,
             IModelElementsRegistryService modelElementsRegistryService)
@@ -35,13 +42,12 @@ namespace BISC.Model.Global.Services
             {
                 _currentProjectPath = path;
                 _configurationService.LastProjectPath = path;
-
             }
             else
             {
-
                 path = _configurationService.LastProjectPath;
             }
+
             IBiscProject biscProject;
 
             _currentProjectPath = path;
@@ -63,7 +69,6 @@ namespace BISC.Model.Global.Services
                     biscProject =
                         _modelElementsRegistryService.DeserializeModelElement<IBiscProject>(
                             XElement.Load(_currentProjectPath));
-
                 }
                 catch (Exception e)
                 {
@@ -85,13 +90,46 @@ namespace BISC.Model.Global.Services
 
         public void OpenProjectAs(string fileName)
         {
-            throw new NotImplementedException();
+            IBiscProject biscProject;
+            _currentProjectPath = fileName;
+            FileInfo fileInfo = new FileInfo(_currentProjectPath);
+            ClearCurrentProject();
+            if (!fileInfo.Exists)
+            {
+                throw new FileNotFoundException();
+            }
+            else
+            {
+                try
+                {
+                    biscProject =
+                        _modelElementsRegistryService.DeserializeModelElement<IBiscProject>(
+                            XElement.Load(_currentProjectPath));
+                }
+                catch (Exception e)
+                {
+                    biscProject = new BiscProject();
+                    biscProject.MainSclModel.Value = new SclModel();
+                    biscProject.CustomElements.Value = new ModelElement() { ElementName = "CustomElements" };
+                }
+            }
+
+            _biscProject.MainSclModel.Value = biscProject.MainSclModel.Value;
+            _biscProject.CustomElements.Value = biscProject.CustomElements.Value;
         }
 
         public void SaveProjectAs(string fileName)
         {
-            throw new NotImplementedException();
+            var xProjectElement = _modelElementsRegistryService.SerializeModelElement(_biscProject, SerializingType.Extended);
+            xProjectElement.Save(fileName);
+            _currentProjectPath = fileName;
         }
+
+        public void ClearCurrentProject()
+        {
+            
+        }
+
 
         public string GetCurrentProjectPath(bool isFull)
         {
