@@ -20,6 +20,7 @@ using BISC.Modules.Gooses.Presentation.Factories;
 using BISC.Modules.Gooses.Presentation.Services;
 using BISC.Modules.Gooses.Presentation.ViewModels.GooseControls;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
@@ -65,7 +66,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _deviceWarningsService = deviceWarningsService;
             SaveCommand = commandFactory.CreatePresentationCommand(OnSaveChangesCommand);
             DeleteGooseCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteGoose);
-            AddGooseCommand = commandFactory.CreatePresentationCommand(OnAddGooseCommand);
+            AddGooseCommand = commandFactory.CreatePresentationCommand(OnAddGooseCommand, IsAddGoose);
             UpdateGoosesCommand = commandFactory.CreatePresentationCommand(OnUpdateGooses);
         }
 
@@ -86,6 +87,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                     new CancellationToken());
             }
             UpdateViewModels();
+            AddGooseCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
             BlockViewModelBehavior.Unlock();
@@ -97,6 +99,14 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _loggingService.LogUserAction($"Пользователь добавляет Goose CB (устройство {_device.Name})");
 
             GooseControlViewModels.Add(_gooseControlViewModelFactory.CreateGooseControlViewModel(_device));
+            AddGooseCommand.RaiseCanExecute();
+        }
+
+        private bool IsAddGoose()
+        {
+            var isDynamicGooses = GooseControlViewModels.Where(gse => gse.IsDynamic);
+            if (isDynamicGooses.Count() >= 10) return false;
+            return true;
         }
 
         private void OnDeleteGoose(object obj)
@@ -105,6 +115,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             if (gooseCbVm == null) return;
             _loggingService.LogUserAction($"Пользователь удаляет Goose CB {gooseCbVm.Name} (устройство {_device.Name})");
             GooseControlViewModels.Remove(gooseCbVm);
+            AddGooseCommand.RaiseCanExecute();
         }
 
         private async void OnSaveChangesCommand()
@@ -159,7 +170,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             set { SetProperty(ref _gooseControlViewModels, value); }
         }
         public ICommand DeleteGooseCommand { get; }
-        public ICommand AddGooseCommand { get; }
+        public IPresentationCommand AddGooseCommand { get; }
 
         public ICommand UpdateGoosesCommand { get; }
 

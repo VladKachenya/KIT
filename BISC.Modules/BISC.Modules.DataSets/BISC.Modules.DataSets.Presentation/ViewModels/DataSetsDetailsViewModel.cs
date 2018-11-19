@@ -34,6 +34,7 @@ using BISC.Modules.DataSets.Infrastructure.Factorys;
 using BISC.Modules.DataSets.Presentation.Services.Interfaces;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.DataSets.Model.Services;
+using BISC.Presentation.Infrastructure.Commands;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -81,7 +82,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhanges);
             ExpandModelCommand = commandFactory.CreatePresentationCommand(OnExpandModel);
             CollapseModelCommand = commandFactory.CreatePresentationCommand(OnCollapseModel);
-            AddNewDataSetCommand = commandFactory.CreatePresentationCommand(OnAddNewDataSet);
+            AddNewDataSetCommand = commandFactory.CreatePresentationCommand(OnAddNewDataSet, IsAddNewDataSet);
             DeleteDataSetViewModelCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteDataSetViewModel);
             ModelRegionKey = Guid.NewGuid().ToString();
             UpdateDataSetsCommand = commandFactory.CreatePresentationCommand(OnUpdateDataSets);
@@ -107,6 +108,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
                 $"DataSets устройства {_device.Name}", SaveСhangesCommand,_device.Name, _regionName));
+            AddNewDataSetCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
             await Task.Delay(500);
@@ -131,11 +133,20 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             var element = dataSetViewModel as IDataSetViewModel;
             _loggingService.LogUserAction($"Пользователь удаляет DataSet {element.SelectedParentLd + "." + element.SelectedParentLn+"."+element.EditableNamePart}");
             DataSets.Remove(element);
+            AddNewDataSetCommand.RaiseCanExecute();
         }
         private void OnAddNewDataSet()
         {
             _loggingService.LogUserAction($"Пользователь добавляет новый датасет в устройстве {_device.Name}");
             DataSets.Add(_datasetViewModelFactory.CreateDataSetViewModel(DataSets.Select((model => model.EditableNamePart)).ToList(), _device));
+            AddNewDataSetCommand.RaiseCanExecute();
+        }
+
+        private bool IsAddNewDataSet()
+        {
+            var isEditebleDs = DataSets.Where(ds => ds.IsEditeble);
+            if (isEditebleDs.Count() >= 10) return false;
+            return true;
         }
         private void OnDeployAllExpanders()
         {
@@ -206,7 +217,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public ICommand UpdateDataSetsCommand { get; }
 
-        public ICommand AddNewDataSetCommand { get; }
+        public IPresentationCommand AddNewDataSetCommand { get; }
         public ICommand DeleteDataSetViewModelCommand { get; }
 
         public bool IsModelShowed

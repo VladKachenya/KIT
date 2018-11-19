@@ -24,6 +24,7 @@ using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Reports.Model.Services;
+using BISC.Presentation.Infrastructure.Commands;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
 {
@@ -70,7 +71,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _deviceWarningsService = deviceWarningsService;
             //_reportsLoadingService = reportsLoadingService;
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand);
-            AddNewReportCommand = commandFactory.CreatePresentationCommand(OnAddNewReportCommand);
+            AddNewReportCommand = commandFactory.CreatePresentationCommand(OnAddNewReportCommand, IsAddNewReport);
             UpdateReportsCommad = commandFactory.CreatePresentationCommand(OnUpdateReports);
             DeleteReportCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteReport);
             _loggingService = loggingService;
@@ -82,6 +83,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             if (obj is IReportControlViewModel reportControlViewModel)
             {
                 ReportControlViewModels.Remove(reportControlViewModel);
+                AddNewReportCommand.RaiseCanExecute();
             }
         }
 
@@ -131,6 +133,14 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             ReportControlViewModels.Add(
                 _reportControlFactoryViewModel.CreateReportViewModel(
                     ReportControlViewModels.Select((model => model.ReportID)).ToList(), _device));
+            AddNewReportCommand.RaiseCanExecute();
+        }
+
+        private bool IsAddNewReport()
+        {
+            var editingReport = ReportControlViewModels.Where(rep => rep.IsDynamic);
+            if (editingReport.Count() >= 10) return false;
+            return true;
         }
 
         private async void OnUpdateReports()
@@ -153,6 +163,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
                 $"Reports устройства {_device.Name}", SaveСhangesCommand, _device.Name, _regionName));
+            AddNewReportCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
             BlockViewModelBehavior.Unlock();
@@ -177,7 +188,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         public ICommand DeleteReportCommand { get; }
         public ICommand SaveСhangesCommand { get; }
         public ICommand UpdateReportsCommad { get; }
-        public ICommand AddNewReportCommand { get; }
+        public IPresentationCommand AddNewReportCommand { get; }
         public string ModelRegionKey { get; }
 
         #endregion
