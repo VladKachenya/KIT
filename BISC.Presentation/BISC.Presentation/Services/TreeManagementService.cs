@@ -18,15 +18,18 @@ namespace BISC.Presentation.Services
 
         private readonly IMainTreeViewModel _mainTreeViewModel;
         private readonly INavigationService _navigationService;
+        private readonly ITabManagementService _tabManagementService;
         private Dictionary<Guid, Tuple<TreeItemIdentifier, ITreeItemViewModel>> _mainTreeViewModels
             = new Dictionary<Guid, Tuple<TreeItemIdentifier, ITreeItemViewModel>>();
 
 
 
-        public TreeManagementService(IMainTreeViewModel mainTreeViewModel, INavigationService navigationService)
+        public TreeManagementService(IMainTreeViewModel mainTreeViewModel, INavigationService navigationService,
+            ITabManagementService tabManagementService)
         {
             _mainTreeViewModel = mainTreeViewModel;
             _navigationService = navigationService;
+            _tabManagementService = tabManagementService;
         }
 
         public TreeItemIdentifier AddTreeItem(BiscNavigationParameters parameters, string viewName, TreeItemIdentifier parentTreeItemIdentifier)
@@ -80,9 +83,6 @@ namespace BISC.Presentation.Services
                     treeItemIdsToRemove.Add(mainTreeViewModel.Value.Item1);
                 }
             }
-
-
-
             foreach (var treeItemIdentifierToRemove in treeItemIdsToRemove)
             {
                 _mainTreeViewModels.Remove(treeItemIdentifierToRemove.ItemId.Value);
@@ -101,6 +101,17 @@ namespace BISC.Presentation.Services
             }
             _navigationService.DisposeRegionViewModel(treeItemId.ItemId.Value.ToString());
 
+        }
+
+        public void ClearMainTree()
+        {
+            while (_mainTreeViewModel.ChildItemViewModels.Count != 0)
+            {
+                var element = _mainTreeViewModel.ChildItemViewModels.First();
+                var itemId = _mainTreeViewModels[element.DynamicRegionId].Item1;
+                _tabManagementService.CloseTabWithChildren(itemId.ItemId.ToString());
+                DeleteTreeItem(itemId);
+            }
         }
     }
 }

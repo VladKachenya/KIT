@@ -22,5 +22,7 @@ namespace BISC.Presentation.Infrastructure.Services
         TreeItemIdentifier AddTreeItem(BiscNavigationParameters parameters,string viewName, TreeItemIdentifier parentTreeItemIdentifier);
         void DeleteTreeItem(TreeItemIdentifier treeItemId);
 
+        void ClearMainTree();
+
     }
 }

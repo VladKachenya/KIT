@@ -20,7 +20,7 @@ namespace BISC.Presentation.Module
         private readonly IInjectionContainer _injectionContainer;
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly INavigationService _navigationService;
-        private readonly IProjectService _projectService;
+        private IProjectService _projectService;
         private readonly IUiFromModelElementRegistryService _uiFromModelElementRegistryService;
         private readonly IBiscProject _biscProject;
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
@@ -29,28 +29,29 @@ namespace BISC.Presentation.Module
         private readonly ILoggingService _loggingService;
 
         public PresentationInitialization(IGlobalEventsService globalEventsService,
-            INavigationService navigationService, IProjectService projectService
-            , IUiFromModelElementRegistryService uiFromModelElementRegistryService, IBiscProject biscProject
+            INavigationService navigationService, IUiFromModelElementRegistryService uiFromModelElementRegistryService, IBiscProject biscProject
             , IUserInterfaceComposingService userInterfaceComposingService, ICommandFactory commandFactory,
-            IMainTreeViewModel mainTreeViewModel, ILoggingService loggingService, IInjectionContainer injectionContainer, ISaveCheckingService saveCheckingService)
+            IMainTreeViewModel mainTreeViewModel, ILoggingService loggingService, IInjectionContainer injectionContainer, ISaveCheckingService saveCheckingService,
+            IProjectService projectService)
         {
             _globalEventsService = globalEventsService;
             _injectionContainer = injectionContainer;
             _saveCheckingService = saveCheckingService;
             _navigationService = navigationService;
-            _projectService = projectService;
             _uiFromModelElementRegistryService = uiFromModelElementRegistryService;
             _biscProject = biscProject;
             _userInterfaceComposingService = userInterfaceComposingService;
             _commandFactory = commandFactory;
             _mainTreeViewModel = mainTreeViewModel;
             _loggingService = loggingService;
+            _projectService = projectService;
             _globalEventsService.Subscribe<ShellLoadedEvent>((args =>
             {
-                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject), "Сохранить все изменения в проект", IconsKeys.ContentSaveAllKey,true,true);
+                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject), "Сохранить все изменения в проект", IconsKeys.ContentSaveAllKey, true, true);
                 _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProjectAs), "Сохранить проект как...", null, true, false);
                 _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnOpenProjectAs), "Открыть проект", null, true, false);
-                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки",null,true,false);
+                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnClearProject), "Отчистить проект", null, true, false);
+                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки", null, true, false);
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTreeViewName,
                     KeysForNavigation.RegionNames.MainTreeRegionKey);
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTabHostViewName,
@@ -66,6 +67,13 @@ namespace BISC.Presentation.Module
 
         }
 
+        private async void OnClearProject()
+        {
+            _projectService.ClearCurrentProject();
+            await _saveCheckingService.SaveAllUnsavedEntities(false);
+            _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
+        }
+
         private async void OnSaveProject()
         {
             _projectService.SaveCurrentProject();
@@ -75,7 +83,8 @@ namespace BISC.Presentation.Module
 
         private async void OnSaveProjectAs()
         {
-            Maybe<string> listOfPaths = FileHelper.SelectFilePathToSave("Сохранение файла", null, null, "New project");
+            Maybe<string> listOfPaths = FileHelper.SelectFilePathToSave("Сохранение файла", ".bisc", "BISC Files (*.bisc)|*.bisc|" +
+                                                                                                  "All Files (*.*)|*.*", "New project");
             if (!listOfPaths.Any()) return;
             _projectService.SaveProjectAs(listOfPaths.GetFirstValue());
             await _saveCheckingService.SaveAllUnsavedEntities(false);

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Global.Model;
 using BISC.Model.Global.Project;
@@ -24,17 +25,77 @@ namespace BISC.Model.Global.Services
         private readonly IConfigurationService _configurationService;
         private readonly IBiscProject _biscProject;
         private readonly IModelElementsRegistryService _modelElementsRegistryService;
-
-
-
+        private readonly IInjectionContainer _injectionContainer;
         private string _currentProjectPath;
+
+
+        #region Lazy Initialization
+
+        private IDeviceModelService _deviceModelService;
+        private ITreeManagementService _treeManagementService;
+        private IGoosesModelService _goosesModelService;
+        private IConnectionPoolService _connectionPoolService;
+        private ITabManagementService _tabManagementService;
+        private IDeviceWarningsService _deviceWarningsService;
+
+
+        private IDeviceModelService GetDeviceModelService()
+        {
+            _deviceModelService = 
+                _deviceModelService ?? _injectionContainer.ResolveType<IDeviceModelService>();
+            return _deviceModelService;
+        }
+
+        private ITreeManagementService GetTreeManagementService()
+        {
+            _treeManagementService =
+                _treeManagementService ?? _injectionContainer.ResolveType<ITreeManagementService>();
+            return _treeManagementService;
+        }
+
+        private IGoosesModelService GetGoosesModelService()
+        {
+            _goosesModelService =
+                _goosesModelService ?? _injectionContainer.ResolveType<IGoosesModelService>();
+            return _goosesModelService;
+        }
+
+        private IConnectionPoolService GetConnectionPoolService()
+        {
+            _connectionPoolService =
+                _connectionPoolService ?? _injectionContainer.ResolveType<IConnectionPoolService>();
+            return _connectionPoolService;
+        }
+
+        private ITabManagementService GetTabManagementService()
+        {
+            _tabManagementService =
+                _tabManagementService ?? _injectionContainer.ResolveType<ITabManagementService>();
+            return _tabManagementService;
+        }
+
+        private IDeviceWarningsService GetDeviceWarningsService()
+        {
+            _deviceWarningsService =
+                _deviceWarningsService ?? _injectionContainer.ResolveType<IDeviceWarningsService>();
+            return _deviceWarningsService;
+        }
+
+        #endregion
+
+        #region ctor
         public ProjectService(IConfigurationService configurationService, IBiscProject biscProject,
-            IModelElementsRegistryService modelElementsRegistryService)
+            IModelElementsRegistryService modelElementsRegistryService, IInjectionContainer injectionContainer)
         {
             _configurationService = configurationService;
             _biscProject = biscProject;
             _modelElementsRegistryService = modelElementsRegistryService;
+            _injectionContainer = injectionContainer;
         }
+        #endregion
+
+
+
         public void OpenDefaultProject()
         {
             var path = "TempProject";
@@ -56,7 +117,7 @@ namespace BISC.Model.Global.Services
             {
                 biscProject = new BiscProject();
                 biscProject.MainSclModel.Value = new SclModel();
-                biscProject.CustomElements.Value = new ModelElement(){ElementName = "CustomElements"};
+                biscProject.CustomElements.Value = new ModelElement() { ElementName = "CustomElements" };
                 var stream = File.Create(path);
                 stream.Close();
                 _currentProjectPath = path;
@@ -84,16 +145,16 @@ namespace BISC.Model.Global.Services
 
         public void SaveCurrentProject()
         {
-            var xProjectElement = _modelElementsRegistryService.SerializeModelElement(_biscProject,SerializingType.Extended);
+            var xProjectElement = _modelElementsRegistryService.SerializeModelElement(_biscProject, SerializingType.Extended);
             xProjectElement.Save(_currentProjectPath);
         }
 
         public void OpenProjectAs(string fileName)
         {
             IBiscProject biscProject;
+            ClearCurrentProject();
             _currentProjectPath = fileName;
             FileInfo fileInfo = new FileInfo(_currentProjectPath);
-            ClearCurrentProject();
             if (!fileInfo.Exists)
             {
                 throw new FileNotFoundException();
@@ -127,7 +188,19 @@ namespace BISC.Model.Global.Services
 
         public void ClearCurrentProject()
         {
-            
+            var devices = GetDeviceModelService().GetDevicesFromModel(_biscProject.MainSclModel.Value);
+            GetTreeManagementService().ClearMainTree();
+            foreach (var device in devices)
+            {
+                var result = GetDeviceModelService().DeleteDeviceFromModel(_biscProject.MainSclModel.Value, device.Name);
+                if (result.IsSucceed)
+                {
+                    GetGoosesModelService().DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject.MainSclModel.Value, device.Name);
+                    GetConnectionPoolService().GetConnection(device.Ip).StopConnection();
+                    GetDeviceWarningsService().ClearDeviceWarningsOfDevice(device.Name);
+                }
+            }
+            _currentProjectPath = "TempProject";
         }
 
 
