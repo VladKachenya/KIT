@@ -99,14 +99,15 @@ namespace BISC.Model.Global.Services
         public void OpenDefaultProject()
         {
             var path = "TempProject";
-            if (String.IsNullOrEmpty(_configurationService.LastProjectPath))
+            FileInfo lastProject = new FileInfo(_configurationService.LastProjectPath);
+            if (lastProject.Exists)
             {
-                _currentProjectPath = path;
-                _configurationService.LastProjectPath = path;
+                path = _configurationService.LastProjectPath;
             }
             else
             {
-                path = _configurationService.LastProjectPath;
+                _currentProjectPath = path;
+                _configurationService.LastProjectPath = path;
             }
 
             IBiscProject biscProject;
@@ -166,6 +167,7 @@ namespace BISC.Model.Global.Services
                     biscProject =
                         _modelElementsRegistryService.DeserializeModelElement<IBiscProject>(
                             XElement.Load(_currentProjectPath));
+                    _configurationService.LastProjectPath = _currentProjectPath;
                 }
                 catch (Exception e)
                 {
@@ -184,6 +186,7 @@ namespace BISC.Model.Global.Services
             var xProjectElement = _modelElementsRegistryService.SerializeModelElement(_biscProject, SerializingType.Extended);
             xProjectElement.Save(fileName);
             _currentProjectPath = fileName;
+            _configurationService.LastProjectPath = _currentProjectPath;
         }
 
         public void ClearCurrentProject()
@@ -201,6 +204,7 @@ namespace BISC.Model.Global.Services
                 }
             }
             _currentProjectPath = "TempProject";
+            _configurationService.LastProjectPath = _currentProjectPath;
         }
 
 
