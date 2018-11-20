@@ -4,24 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.Services.Helpers
 {
    public class RestartDeviceEntity
     {
-        public RestartDeviceEntity(string deviceName, CancellationTokenSource cts, string ip)
+        public RestartDeviceEntity(IDevice device, CancellationTokenSource cts)
         {
-            DeviceName = deviceName;
+            Device = device;
             Cts = cts;
-            Ip = ip;
             HaveConflicts = false;
         }
 
-        public string DeviceName { get; }
+        public IDevice Device { get; }
         public CancellationTokenSource Cts { get; }
-        public string Ip { get; }
         public bool HaveConflicts { get; set; }
-
+        public TreeItemIdentifier TreeItemIdentifier { get; set; }
         public DeviceConflictEntity DeviceConflictEntity { get; set; }
     }
 }

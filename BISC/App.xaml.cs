@@ -22,7 +22,7 @@ namespace BISC
         protected override void OnStartup(StartupEventArgs e)
         {
             Process[] processes = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
-            if (processes.Length > 1)
+            if (processes.Length > 2)
             {
                 MessageBox.Show("Приложение \"BISC\" уже запущено", "Внимание", MessageBoxButton.OK,
                     MessageBoxImage.Exclamation);

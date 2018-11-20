@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Common;
 using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Device.Infrastructure.HelpClasses;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Services;
@@ -57,6 +59,12 @@ namespace BISC.Modules.Reports.Model.Services
             return false;
 
         }
+
+        public Task<ResolvingResult> ResolveConflict(bool isFromDevice, string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        {
+            throw new NotImplementedException();
+        }
+        
 
         #endregion
     }

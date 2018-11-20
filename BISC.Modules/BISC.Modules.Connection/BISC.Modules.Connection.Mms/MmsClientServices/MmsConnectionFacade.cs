@@ -484,7 +484,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
         {
             try
             {
-               await new DataSetClientService(_state).SendDeleteNVLAsync(new Dto.DataSetDto()
+               var res=await new DataSetClientService(_state).SendDeleteNVLAsync(new Dto.DataSetDto()
                 {
                     Ied = ied,
                     Ld = ld,

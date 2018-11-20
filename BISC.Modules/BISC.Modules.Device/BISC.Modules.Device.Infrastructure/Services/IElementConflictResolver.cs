@@ -1,4 +1,7 @@
-﻿using BISC.Model.Infrastructure.Project;
+﻿using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Common;
+using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Device.Infrastructure.HelpClasses;
 
 namespace BISC.Modules.Device.Infrastructure.Services
 {
@@ -6,6 +9,6 @@ namespace BISC.Modules.Device.Infrastructure.Services
     {
         string ConflictName { get; }
         bool GetIfConflictsExists(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject);
-
+        Task<ResolvingResult> ResolveConflict(bool isFromDevice, string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject);
     }
 }

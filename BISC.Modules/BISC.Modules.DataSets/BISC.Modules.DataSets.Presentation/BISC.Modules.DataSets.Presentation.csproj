@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Factorys\DatasetViewModelFactory.cs" />
     <Compile Include="Factorys\FcdaViewModelFactory.cs" />
+    <Compile Include="Interfaces\IDataSetSavingService.cs" />
     <Compile Include="Interfaces\ViewModels\Base\IDataSetElementBaseViewModel.cs" />
     <Compile Include="Interfaces\ViewModels\Factorys\IDatasetViewModelFactory.cs" />
     <Compile Include="Interfaces\ViewModels\Factorys\IFcdaViewModelFactory.cs" />
@@ -68,7 +69,6 @@
     <Compile Include="Services\DataSetSavingService.cs" />
     <Compile Include="Services\DataSetsUiHandlingService.cs" />
     <Compile Include="Services\FcdaAdderViewModelService.cs" />
-    <Compile Include="Interfaces\IDataSetSavingService.cs" />
     <Compile Include="ViewModels\DataSetsDetailsViewModel.cs" />
     <Compile Include="ViewModels\DataSetsTreeItemViewModel.cs" />
     <Compile Include="ViewModels\DataSetViewModel.cs" />

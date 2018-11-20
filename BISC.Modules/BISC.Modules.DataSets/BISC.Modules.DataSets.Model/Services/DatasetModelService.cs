@@ -43,7 +43,7 @@ namespace BISC.Modules.DataSets.Model.Services
                     if (logicalNode == null)
                     {
                         foreach (ILogicalNode ln in lDevice.LogicalNodes)
-                            if (ln.Name == ldName)
+                            if (ln.Name == lnName)
                             {
                                 logicalNode = ln;
                                 break;

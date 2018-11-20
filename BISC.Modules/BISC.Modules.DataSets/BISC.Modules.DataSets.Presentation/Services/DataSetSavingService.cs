@@ -16,6 +16,7 @@ using BISC.Modules.DataSets.Infrastructure.Factorys;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.ViewModels;
+using BISC.Modules.DataSets.Model.Mappers;
 using BISC.Modules.DataSets.Presentation.Services.Interfaces;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
@@ -146,33 +147,9 @@ namespace BISC.Modules.DataSets.Presentation.Services
                             dataSetToSave.FcdaViewModels.Select((model => model.GetFcda())).ToList());
                         if (isSavingInDevice)
                         {
-                            List<FcdaDto> fcdaDtos = new List<FcdaDto>();
-                            foreach (var fcda in dataSet.FcdaList)
-                            {
-                                FcdaDto fcdaDto = new FcdaDto();
-                                List<string> pathList = new List<string>();
-                                if (fcda.DoName.Contains("."))
-                                {
-                                    pathList.AddRange(fcda.DoName.Split('.'));
-                                }
-                                else
-                                {
-                                    pathList.Add(fcda.DoName);
-                                }
-                                if (fcda.DaName != null)
-                                {
-                                    pathList.Add(fcda.DaName);
-                                }
-                                fcdaDto.DaDoPathParts = pathList.ToArray();
-                                fcdaDto.Fc = fcda.Fc.ToString();
-                                fcdaDto.Ied = (device as IDevice).Name;
-                                fcdaDto.Ld = fcda.LdInst;
-                                fcdaDto.Ln = fcda.Prefix + fcda.LnClass + fcda.LnInst;
-                                fcdaDtos.Add(fcdaDto);
-                            }
                           var res=  await _connectionPoolService
                                   .GetConnection(_sclCommunicationModelService.GetIpOfDevice((device as IDevice).Name,
-                                      _biscProject.MainSclModel.Value)).MmsConnection.AddDataSet(ln.Name, ldevice.Inst, (device as IDevice).Name, dataSetToSave.EditableNamePart, fcdaDtos);
+                                      _biscProject.MainSclModel.Value)).MmsConnection.AddDataSet(ln.Name, ldevice.Inst, (device as IDevice).Name, dataSetToSave.EditableNamePart, dataSet.FcdaList.ToDtos((device as IDevice).Name));
                             if (!res.IsSucceed)
                             {
                                 _loggingService.LogMessage($"Не удалось добавить DataSet в устройстве: {res.GetFirstError()}", SeverityEnum.Warning);

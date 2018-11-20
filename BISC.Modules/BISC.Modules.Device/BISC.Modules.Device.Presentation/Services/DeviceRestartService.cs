@@ -86,13 +86,14 @@ namespace BISC.Modules.Device.Presentation.Services
             CancellationTokenSource cts = new CancellationTokenSource();
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
             RestartDeviceEntity restartDeviceEntity =
-                new RestartDeviceEntity(existingDevice.Name, cts, existingDevice.Ip);
+                new RestartDeviceEntity(existingDevice, cts);
             biscNavigationParameters.AddParameterByName(DeviceKeys.RestartDeviceEntityKey, restartDeviceEntity);
 
             DialogCommands.CloseDialogCommand.Execute(null, null);
             var treeItemId = _treeManagementService.AddTreeItem(biscNavigationParameters,
                 DeviceKeys.DeviceRestartViewKey,
                 null);
+            restartDeviceEntity.TreeItemIdentifier = treeItemId;
             await Task.Delay(3000, cts.Token);
             var deviceConnectResult = await _deviceConnectionService.ConnectDevice(existingDevice.Ip);
             var device = deviceConnectResult.Item;

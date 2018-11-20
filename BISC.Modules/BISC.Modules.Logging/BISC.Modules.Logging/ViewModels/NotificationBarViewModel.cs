@@ -45,7 +45,11 @@ namespace BISC.Modules.Logging
         {
             LastMessage = logEvent.Message.Message;
             _lastMessageHidingTimer.Change(15000, Timeout.Infinite);
-            LogMessages.Insert(0,new LogMessageViewModel(logEvent.Message));
+            Application.Current.Dispatcher.BeginInvoke(new Action((() =>
+            {
+                LogMessages.Insert(0, new LogMessageViewModel(logEvent.Message));
+
+            })));
         }
 
         private void OnExpandedChange()

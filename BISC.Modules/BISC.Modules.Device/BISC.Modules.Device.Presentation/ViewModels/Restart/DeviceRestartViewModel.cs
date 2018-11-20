@@ -5,9 +5,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading.Events;
+using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Device.Presentation.Interfaces.Services;
 using BISC.Modules.Device.Presentation.Services.Helpers;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
@@ -20,6 +23,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
     {
         private readonly IGlobalEventsService _globalEventsService;
         private readonly INavigationService _navigationService;
+        private readonly IDeviceAddingService _deviceAddingService;
+        private readonly IDeviceWarningsService _deviceWarningsService;
+        private readonly IInjectionContainer _injectionContainer;
+        private readonly ITreeManagementService _treeManagementService;
         private int _totalProgress;
         private int _currentProgress;
         private bool _isIntermetiateProgress;
@@ -27,19 +34,43 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
         private bool _haveConflicts;
         private string _deviceName;
         private RestartDeviceEntity _restartDeviceEntity;
+        private List<IElementConflictResolver> _elementConflictResolvers;
 
-        public DeviceRestartViewModel(IGlobalEventsService globalEventsService, ICommandFactory commandFactory,INavigationService navigationService)
+        public DeviceRestartViewModel(IGlobalEventsService globalEventsService, ICommandFactory commandFactory, INavigationService navigationService
+            ,IDeviceAddingService deviceAddingService,IDeviceWarningsService deviceWarningsService,IInjectionContainer injectionContainer,ITreeManagementService treeManagementService)
         {
             _globalEventsService = globalEventsService;
             _navigationService = navigationService;
+            _deviceAddingService = deviceAddingService;
+            _deviceWarningsService = deviceWarningsService;
+            _injectionContainer = injectionContainer;
+            _treeManagementService = treeManagementService;
             CancelLoadingCommand = commandFactory.CreatePresentationCommand(OnCancel);
             ResolveConflictsCommand = commandFactory.CreatePresentationCommand(OnResolveConflicts);
+            _elementConflictResolvers = injectionContainer.ResolveAll(typeof(IElementConflictResolver))
+                .Cast<IElementConflictResolver>().ToList();
         }
 
-        private void OnResolveConflicts()
+        private async void OnResolveConflicts()
         {
-            BiscNavigationParameters biscNavigationParameters=new BiscNavigationParameters().AddParameterByName(DeviceKeys.DeviceConflictEntityKey,_restartDeviceEntity.DeviceConflictEntity);
-            _navigationService.NavigateViewToGlobalRegion(DeviceKeys.DeviceConflictsViewKey,biscNavigationParameters);
+            BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters().AddParameterByName(DeviceKeys.DeviceConflictEntityKey, _restartDeviceEntity.DeviceConflictEntity);
+            await _navigationService.NavigateViewToGlobalRegion(DeviceKeys.DeviceConflictsViewKey, biscNavigationParameters);
+            var hasConflics = false;
+            _elementConflictResolvers.ForEach((resolver =>
+            {
+                if (resolver.GetIfConflictsExists(_restartDeviceEntity.Device.Name,
+                    _restartDeviceEntity.DeviceConflictEntity.SclModelDevice, _restartDeviceEntity.DeviceConflictEntity.SclModelProject))
+                {
+                    hasConflics = true;
+                }
+            }));
+            if (!hasConflics)
+            {
+                _treeManagementService.DeleteTreeItem(_restartDeviceEntity.TreeItemIdentifier);
+
+                _deviceAddingService.AddDeviceToTree(_restartDeviceEntity.Device);
+                _deviceWarningsService.ClearDeviceWarningsOfDevice(_restartDeviceEntity.Device.Name);
+            }
         }
 
         private void OnCancel()
@@ -53,7 +84,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
         {
             base.OnNavigatedTo(navigationContext);
             _restartDeviceEntity = navigationContext.BiscNavigationParameters.GetParameterByName<RestartDeviceEntity>(DeviceKeys.RestartDeviceEntityKey);
-            DeviceName = _restartDeviceEntity.DeviceName;
+            DeviceName = _restartDeviceEntity.Device.Name;
             HaveConflicts = false;
             IsRestartingInProgress = true;
             IsIntermetiateProgress = true;
@@ -109,7 +140,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
 
         private void OnDeviceLoadingEvent(DeviceLoadingEvent deviceLoadingEvent)
         {
-            if (_restartDeviceEntity.Ip != deviceLoadingEvent.Ip) return;
+            if (_restartDeviceEntity.Device.Ip != deviceLoadingEvent.Ip) return;
             if (deviceLoadingEvent.TotalProgressCount.HasValue)
             {
                 TotalProgress = deviceLoadingEvent.TotalProgressCount.Value;

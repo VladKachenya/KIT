@@ -19,6 +19,7 @@ namespace BISC.Modules.Device.Presentation.Services.Helpers
         public ISclModel SclModelProject { get; }
         public ISclModel SclModelDevice { get; }
         public string DeviceName { get; }
+        public bool IsRestartNeeded { get; set; }
 
     }
 

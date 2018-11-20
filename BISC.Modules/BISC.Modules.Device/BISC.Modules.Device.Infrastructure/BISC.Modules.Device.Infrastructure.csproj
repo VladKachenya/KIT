@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Events\DeviceWarningsChanged.cs" />
     <Compile Include="HelpClasses\DeviceWarning.cs" />
+    <Compile Include="HelpClasses\ResolvingResult.cs" />
     <Compile Include="Keys\DeviceKeys.cs" />
     <Compile Include="Loading\Events\DeviceLoadingEvent.cs" />
     <Compile Include="Model\IDevice.cs" />

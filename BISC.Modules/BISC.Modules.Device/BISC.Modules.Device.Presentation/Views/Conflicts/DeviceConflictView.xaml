@@ -36,7 +36,7 @@
             </Button>
         </StackPanel>
         <Border Grid.Column="2" Visibility="{Binding IsConflictOk,Converter={StaticResource boolToInVisConverter}}" >
-        <Button Width="40" Style="{StaticResource MaterialDesignFlatButton}" Margin="3" Visibility="{Binding IsConflictResolved,Converter={StaticResource booleanToVisibilityConverter}}"  Command="{Binding CancelSelectionCommand}" ToolTip="Отменить выбор">
+            <Button Width="40" Padding="1" Style="{StaticResource MaterialDesignFlatButton}" Margin="3" Visibility="{Binding IsConflictResolved,Converter={StaticResource booleanToVisibilityConverter}}"  Command="{Binding CancelSelectionCommand}" ToolTip="Отменить выбор">
             <ContentControl Width="20" Height="20" ContentTemplate="{DynamicResource CancelIcon}"></ContentControl>
 
         </Button>

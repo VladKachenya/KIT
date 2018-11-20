@@ -51,8 +51,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 
         public DeviceTreeItemViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService, IGlobalEventsService globalEventsService, IConnectionPoolService connectionPoolService,
             IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService,
-            IGoosesModelService goosesModelService,ISaveCheckingService saveCheckingService,IUserInteractionService userInteractionService,ILoggingService loggingService,
-            IDeviceSerializingService deviceSerializingService,IDeviceWarningsService deviceWarningsService, IDeviceRestartService deviceRestartService)
+            IGoosesModelService goosesModelService, ISaveCheckingService saveCheckingService, IUserInteractionService userInteractionService, ILoggingService loggingService,
+            IDeviceSerializingService deviceSerializingService, IDeviceWarningsService deviceWarningsService, IDeviceRestartService deviceRestartService)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
             _deviceModelService = deviceModelService;
@@ -76,12 +76,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 
         private void OnExportCidDevice()
         {
-           var filePath= FileHelper.SelectFilePathToSave($"Сохранение устройства {_device.Name} в файл", ".cid", "Cid SCL files (*.cid)|*.cid",
-                $"BISC_{_device.Name}.cid");
+            var filePath = FileHelper.SelectFilePathToSave($"Сохранение устройства {_device.Name} в файл", ".cid", "Cid SCL files (*.cid)|*.cid",
+                 $"BISC_{_device.Name}.cid");
             if (filePath.Any())
             {
                 _deviceSerializingService.SerializeCidSingleDevice(_device, filePath.GetFirstValue());
-                _loggingService.LogMessage($"Модель устройства {_device.Name} записана в файл {filePath.GetFirstValue()}",SeverityEnum.Info);
+                _loggingService.LogMessage($"Модель устройства {_device.Name} записана в файл {filePath.GetFirstValue()}", SeverityEnum.Info);
             }
         }
 
@@ -89,11 +89,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         {
             var res = await _userInteractionService.ShowOptionToUser("Перезагрузка устройства",
                 $"Устройство {_device.Name} будет перезагружено", new List<string> { "Ok", "Отмена" });
-            if(res == 1)
+            if (res == 1)
                 return;
-            _loggingService.LogMessage($"Устройство {_device.Name} перезагружается",SeverityEnum.Info);
-           await _deviceRestartService.RestartDevice(_device,_treeItemIdentifier);
-
+            _loggingService.LogMessage($"Устройство {_device.Name} перезагружается", SeverityEnum.Info);
+            await _deviceRestartService.RestartDevice(_device, _treeItemIdentifier);
         }
 
         private bool IsResetDeviceViaFtp()
@@ -116,20 +115,20 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             set
             {
                 SetProperty(ref _isDeviceConnected, value);
-                _dispatcher.Invoke( () => (ResetDeviceViaFtpCommand as IPresentationCommand)?.RaiseCanExecute());
+                _dispatcher.Invoke(() => (ResetDeviceViaFtpCommand as IPresentationCommand)?.RaiseCanExecute());
             }
         }
 
         private async void OnDeleteDeviceExecute()
         {
             Dispose();
-            _loggingService.LogUserAction("Пользователь удаляет устройство "+_device.Name);
-            var isSaved=await _saveCheckingService.GetIsDeviceEntitiesSaved(_device.Name);
+            _loggingService.LogUserAction("Пользователь удаляет устройство " + _device.Name);
+            var isSaved = await _saveCheckingService.GetIsDeviceEntitiesSaved(_device.Name);
             if (!isSaved)
             {
-              var res= await _userInteractionService.ShowOptionToUser("Несохраненные изменения",
-                    "В устройстве имеются несохраненные изменения." + Environment.NewLine + "Все равно удалить?",
-                    new List<string>() {"Удалить", "Отмена"});
+                var res = await _userInteractionService.ShowOptionToUser("Несохраненные изменения",
+                      "В устройстве имеются несохраненные изменения." + Environment.NewLine + "Все равно удалить?",
+                      new List<string>() { "Удалить", "Отмена" });
                 if (res == 1)
                 {
                     return;
@@ -140,7 +139,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             {
                 _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject.MainSclModel.Value,
                     _device.Name);
-                
+
                 _treeManagementService.DeleteTreeItem(_treeItemIdentifier);
                 _connectionPoolService.GetConnection(_device.Ip).StopConnection();
                 _tabManagementService.CloseTabWithChildren(_treeItemIdentifier.ItemId.ToString());

@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Factorys\DataSetFactory.cs" />
     <Compile Include="Factorys\FcdaFactory.cs" />
+    <Compile Include="Mappers\FcdaMapper.cs" />
     <Compile Include="Model\DataSet.cs" />
     <Compile Include="Model\Fcda.cs" />
     <Compile Include="Module\DatasetsModelModule.cs" />

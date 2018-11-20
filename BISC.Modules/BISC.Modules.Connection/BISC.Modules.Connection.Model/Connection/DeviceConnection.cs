@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Connection.Infrastructure.Connection;
 using BISC.Modules.Connection.Infrastructure.Events;
@@ -13,12 +14,14 @@ namespace BISC.Modules.Connection.Model.Connection
     public class DeviceConnection : IDeviceConnection
     {
         private readonly IGlobalEventsService _globalEventsService;
+        private readonly ILoggingService _loggingService;
         private Timer _connectionCheckingTimer;
         private bool _isConnected;
 
-        public DeviceConnection(IMmsConnectionFacade mmsConnectionFacade,IGlobalEventsService globalEventsService)
+        public DeviceConnection(IMmsConnectionFacade mmsConnectionFacade,IGlobalEventsService globalEventsService,ILoggingService loggingService)
         {
             _globalEventsService = globalEventsService;
+            _loggingService = loggingService;
             MmsConnection = mmsConnectionFacade;
         }
 
@@ -50,6 +53,8 @@ namespace BISC.Modules.Connection.Model.Connection
             {
                 _connectionCheckingTimer?.Dispose();
                 IsConnected = false;
+
+                _loggingService.LogMessage($"Связь с [{Ip}] потеряна",SeverityEnum.Info);
             }
         }
 
