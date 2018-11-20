@@ -99,8 +99,17 @@ namespace BISC.Model.Global.Services
         public void OpenDefaultProject()
         {
             var path = "TempProject";
-            FileInfo lastProject = new FileInfo(_configurationService.LastProjectPath);
-            if (lastProject.Exists)
+            FileInfo lastProject;
+            try
+            {
+                lastProject = new FileInfo(_configurationService.LastProjectPath);
+            }
+            catch
+            {
+                lastProject = null;
+            }
+
+            if (lastProject != null && lastProject.Exists)
             {
                 path = _configurationService.LastProjectPath;
             }
@@ -147,6 +156,26 @@ namespace BISC.Model.Global.Services
         public void SaveCurrentProject()
         {
             var xProjectElement = _modelElementsRegistryService.SerializeModelElement(_biscProject, SerializingType.Extended);
+            var path = "TempProject";
+            FileInfo lastProject;
+            try
+            {
+                lastProject = new FileInfo(_configurationService.LastProjectPath);
+            }
+            catch
+            {
+                lastProject = null;
+            }
+
+            if (lastProject != null && lastProject.Exists)
+            {
+                path = _configurationService.LastProjectPath;
+            }
+            else
+            {
+                _currentProjectPath = path;
+                _configurationService.LastProjectPath = path;
+            }
             xProjectElement.Save(_currentProjectPath);
         }
 
@@ -154,8 +183,18 @@ namespace BISC.Model.Global.Services
         {
             IBiscProject biscProject;
             ClearCurrentProject();
+            FileInfo fileInfo;
+            try
+            {
+                fileInfo = new FileInfo(fileName);
+            }
+            catch
+            {
+                fileInfo = null;
+            }
+            if(fileInfo == null)
+                return;
             _currentProjectPath = fileName;
-            FileInfo fileInfo = new FileInfo(_currentProjectPath);
             if (!fileInfo.Exists)
             {
                 throw new FileNotFoundException();
