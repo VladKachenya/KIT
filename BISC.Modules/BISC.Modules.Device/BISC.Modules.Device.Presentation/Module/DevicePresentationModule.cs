@@ -56,7 +56,6 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<IDeviceViewModelFactory, DeviceViewModelFactory>();
             _injectionContainer.RegisterType<IDeviceViewModel, DeviceViewModel>();
             _injectionContainer.RegisterType<IDeviceWarningsService, DeviceWarningsService>(true);
-            _injectionContainer.RegisterType<IDeviceManufacturerService, DeviceManufacturerService>(true);
 
             _injectionContainer.RegisterType<DeviceConflictViewModel>();
             _injectionContainer.RegisterType<DeviceConflictsViewModel>();

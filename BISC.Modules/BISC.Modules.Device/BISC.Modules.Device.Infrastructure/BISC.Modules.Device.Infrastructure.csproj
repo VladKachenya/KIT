@@ -54,7 +54,6 @@
     <Compile Include="Services\IDeviceConflictsService.cs" />
     <Compile Include="Services\IDeviceConnectionService.cs" />
     <Compile Include="Loading\IDeviceLoadingService.cs" />
-    <Compile Include="Services\IDeviceManufacturerService.cs" />
     <Compile Include="Services\IDeviceModelService.cs" />
     <Compile Include="Services\IDeviceRestartService.cs" />
     <Compile Include="Services\IDeviceSerializingService.cs" />

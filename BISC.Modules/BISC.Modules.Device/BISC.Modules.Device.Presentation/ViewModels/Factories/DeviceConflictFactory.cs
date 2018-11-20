@@ -28,6 +28,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Factories
             DeviceConflictViewModel deviceConflictViewModel = _deviceConflictViewModelFunc();
             deviceConflictViewModel.ConflictTitle = elementConflictResolver.ConflictName;
             deviceConflictViewModel.IsConflictOk = !haveConflict;
+            deviceConflictViewModel.IsConflictResolved = !haveConflict;
             return deviceConflictViewModel;
         }
     }

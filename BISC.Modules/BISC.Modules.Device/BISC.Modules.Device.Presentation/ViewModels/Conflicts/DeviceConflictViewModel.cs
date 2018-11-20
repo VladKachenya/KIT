@@ -40,7 +40,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
         private void OnSelectDeviceOption()
         {
             IsConflictResolved = true;
-            IsConflictResolvedAsFromProject = true;
+            IsConflictResolvedAsFromDevice = true;
         }
 
         public string ConflictTitle { get; set; }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
+using BISC.Model.Global.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Infrastructure.Services;
@@ -37,8 +38,12 @@ namespace BISC.Modules.Device.Model.Services
             {
                 return new OperationResult<IDevice>("Identify запрос прошел с ошибкой");
             }
-
+            
             IDevice device = new Model.Device();
+            device.Manufacturer = identValues.Item[0];
+            device.Type = identValues.Item[1];
+            device.Revision = identValues.Item[2];
+
             device.Name = "New Device";
             device.Ip = ip;
             return new OperationResult<IDevice>(device);
