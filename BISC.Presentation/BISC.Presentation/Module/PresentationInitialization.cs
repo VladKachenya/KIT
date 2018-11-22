@@ -61,7 +61,7 @@ namespace BISC.Presentation.Module
                 fileCommandsName.Add("Очистить проект");
                 _userInterfaceComposingService.AddGlobalCommandGroup(fileCommands, fileCommandsName, "ПРОЕКТ", IconsKeys.BookMultipleIconKey);
                 _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject), "Сохранить все изменения в проект", IconsKeys.ContentSaveAllKey, false, true);
-                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки", null, true, false);
+                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки", IconsKeys.SettingsIconKey, true, false);
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTreeViewName,
                     KeysForNavigation.RegionNames.MainTreeRegionKey);
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTabHostViewName,

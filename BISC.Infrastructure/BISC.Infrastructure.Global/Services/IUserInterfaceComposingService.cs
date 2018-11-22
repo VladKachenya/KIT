@@ -16,8 +16,7 @@ namespace BISC.Infrastructure.Global.Services
         public const string CloseCircleIconKey ="CloseCircleIcon";
         public const string UpdateIconKey = "ReloadIcon";
         public const string BookMultipleIconKey = "BookMultipleIcon";
-
-
+        public const string SettingsIconKey = "SettingsIcon";
     }
 
     public interface IUserInterfaceComposingService
