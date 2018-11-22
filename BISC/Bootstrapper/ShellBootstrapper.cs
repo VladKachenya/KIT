@@ -51,6 +51,7 @@ namespace BISC.Bootstrapper
             Container.RegisterType<IUserInterfaceComposingService,UserInterfaceComposingService>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IShellViewModel, ShellViewModel>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IGlobalCommand, GlobalCommand>();
+            Container.RegisterType<IGlobalCommandGroup, GlobalCommandGroup>();
             Container.RegisterType<IUserNotificationService, UserNotificationService>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IConfigurationService, ConfigurationService>(new ContainerControlledLifetimeManager());
             Container.RegisterType<ShellLoadedService>(new ContainerControlledLifetimeManager());

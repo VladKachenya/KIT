@@ -6,5 +6,8 @@ namespace BISC.Presentation.Interfaces.Menu
     public interface IHamburgerMenuViewModel
     {
         ObservableCollection<IGlobalCommand> GlobalCommands { get; }
+
+        ObservableCollection<IGlobalCommandGroup> GlobalCommandGroups { get; }
+
     }
 }

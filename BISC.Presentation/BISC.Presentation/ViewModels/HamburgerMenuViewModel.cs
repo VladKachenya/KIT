@@ -12,13 +12,15 @@ namespace BISC.Presentation.ViewModels
 {
    public class HamburgerMenuViewModel: IHamburgerMenuViewModel
     {
-        private readonly IUserInterfaceComposingService _userInterfaceComposingService;
-
         public HamburgerMenuViewModel(IUserInterfaceComposingService userInterfaceComposingService)
         {
-            _userInterfaceComposingService = userInterfaceComposingService;
-            GlobalCommands = _userInterfaceComposingService.GetMenuCommands();
+            GlobalCommands = userInterfaceComposingService.GetMenuCommands();
+            GlobalCommandGroups = userInterfaceComposingService.GetToolBarCommandGroups();
+
         }
         public ObservableCollection<IGlobalCommand> GlobalCommands { get; }
+
+        public ObservableCollection<IGlobalCommandGroup> GlobalCommandGroups { get; }
+
     }
 }

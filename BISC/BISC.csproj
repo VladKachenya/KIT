@@ -121,6 +121,7 @@
     <Compile Include="GlobalServices\UserInterfaceComposingService.cs" />
     <Compile Include="Interfaces\IShellViewModel.cs" />
     <Compile Include="ViewModel\GlobalCommand.cs" />
+    <Compile Include="ViewModel\GlobalCommandGroup.cs" />
     <Compile Include="ViewModel\ShellViewModel.cs" />
     <Page Include="Dictionaries\MainDictionary.xaml">
       <SubType>Designer</SubType>

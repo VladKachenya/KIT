@@ -16,13 +16,17 @@ namespace BISC.GlobalServices
     {
         private readonly IShellViewModel _shellViewModel;
         private readonly Func<IGlobalCommand> _globalCommandFactory;
+        private readonly Func<IGlobalCommandGroup> _globalCommandGroupFactoryFunc;
         private readonly ObservableCollection<IGlobalCommand> _globalMenuCommands = new ObservableCollection<IGlobalCommand>();
         private readonly ObservableCollection<IGlobalCommand> _globalToolbarCommands = new ObservableCollection<IGlobalCommand>();
+        private readonly ObservableCollection<IGlobalCommandGroup> _globalToolbarCommandGroups = new ObservableCollection<IGlobalCommandGroup>();
 
-        public UserInterfaceComposingService(IShellViewModel shellViewModel, Func<IGlobalCommand> globalCommandFactory)
+
+        public UserInterfaceComposingService(IShellViewModel shellViewModel, Func<IGlobalCommand> globalCommandFactory, Func<IGlobalCommandGroup> globalCommandGroupFactoryFunc)
         {
             _shellViewModel = shellViewModel;
             _globalCommandFactory = globalCommandFactory;
+            _globalCommandGroupFactoryFunc = globalCommandGroupFactoryFunc;
         }
         
 
@@ -41,6 +45,31 @@ namespace BISC.GlobalServices
                 _globalMenuCommands.Add(globalCommand);
             }
         }
+
+        public void AddGlobalCommandGroup(List<ICommand> commands, List<string> names, string groupName, string iconId = null, 
+            List<string> iconIds = null, bool isAddToMenu = false, bool isAddToToolBar = false)
+        {
+            IGlobalCommandGroup globalCommandGroup = _globalCommandGroupFactoryFunc.Invoke();
+            globalCommandGroup.CommandsName = groupName;
+            globalCommandGroup.IconId = iconId;
+            while (commands.Count != 0)
+            {
+                IGlobalCommand globalCommand = _globalCommandFactory();
+                globalCommand.Command = commands.First();
+                commands.Remove(globalCommand.Command);
+                globalCommand.CommandName = names.FirstOrDefault();
+                names.Remove(globalCommand.CommandName);
+                if (iconIds != null)
+                {
+                    globalCommand.IconId = iconIds.FirstOrDefault();
+                    iconIds.Remove(globalCommand.IconId);
+                }
+                globalCommandGroup.GlobalCommandsGroup.Add(globalCommand);
+            }
+            _globalToolbarCommandGroups.Add(globalCommandGroup);
+        }
+
+
 
         public void DeleteGlobalCommand(ICommand command)
         {
@@ -100,6 +129,11 @@ namespace BISC.GlobalServices
         public ObservableCollection<IGlobalCommand> GetMenuCommands()
         {
             return _globalMenuCommands;
+        }
+
+        public ObservableCollection<IGlobalCommandGroup> GetToolBarCommandGroups()
+        {
+            return _globalToolbarCommandGroups;
         }
     }
 }

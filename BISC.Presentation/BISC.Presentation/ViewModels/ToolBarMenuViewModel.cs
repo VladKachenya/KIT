@@ -21,5 +21,6 @@ namespace BISC.Presentation.ViewModels
             GlobalCommands = _userInterfaceComposingService.GetToolBarCommands();
         }
         public ObservableCollection<IGlobalCommand> GlobalCommands { get; }
+
     }
 }

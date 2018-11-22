@@ -8,17 +8,64 @@
              xmlns:converters="clr-namespace:BISC.Presentation.Converters"
              xmlns:attachedCommandBehavior="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <ListBox  ItemsSource="{Binding GlobalCommands}" DisplayMemberPath="CommandName">
-        <ListBox.ItemContainerStyle>
-            <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                <Setter
-                    Property="attachedCommandBehavior:CommandBehavior.Event" 
-                    Value="PreviewMouseLeftButtonDown"/>
-                <Setter
-                    Property="attachedCommandBehavior:CommandBehavior.Command"
-                    Value="{Binding DataContext.Command,RelativeSource={RelativeSource Self}}"/>
-            </Style>
-        </ListBox.ItemContainerStyle>
-    </ListBox>
+             d:DesignHeight="300" d:DesignWidth="300"
+             x:Name="HamburgerMenu">
+    <UserControl.Resources>
+        <converters:StringToResourceConverter x:Key="StringToResourceConverter"></converters:StringToResourceConverter>
+        <CollectionViewSource x:Key="MultipleComands" Source="{Binding GlobalCommandGroups}"/>
+        <CollectionViewSource x:Key="SingleComands" Source="{Binding GlobalCommands}"/>
+        <Style x:Key="MenuItemStyle" TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+            <Setter Property="Header" Value="{Binding CommandName}"/>
+            <Setter Property="Command" Value="{Binding Command}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="IsCheckable" Value="False"/>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel>
+        <ItemsControl >
+            <ItemsControl.ItemsSource>
+                <CompositeCollection>
+                    <CollectionContainer Collection="{Binding Source={StaticResource MultipleComands}}" />
+                </CompositeCollection>
+            </ItemsControl.ItemsSource>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type modularity:IGlobalCommandGroup}">
+                    <MenuItem Header="{Binding CommandsName}" ItemsSource="{Binding GlobalCommandsGroup}" ItemContainerStyle ="{DynamicResource MenuItemStyle}"
+                                MouseLeave="UIElement_OnLostFocus"
+                              PreviewMouseLeftButtonDown = "MenuItem_OnClick"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <ItemsControl >
+            <ItemsControl.ItemsSource>
+                <CompositeCollection>
+                    <CollectionContainer Collection="{Binding Source={StaticResource SingleComands}}" />
+                </CompositeCollection>
+            </ItemsControl.ItemsSource>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <MenuItem  Style="{Binding Source={StaticResource MenuItemStyle}}">
+                        <MenuItem.Icon>
+                            <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!--<ListBox  ItemsSource="{Binding GlobalCommands}" DisplayMemberPath="CommandName">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                    <Setter
+                        Property="attachedCommandBehavior:CommandBehavior.Event" 
+                        Value="PreviewMouseLeftButtonDown"/>
+                    <Setter
+                        Property="attachedCommandBehavior:CommandBehavior.Command"
+                        Value="{Binding DataContext.Command,RelativeSource={RelativeSource Self}}"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>-->
+    </StackPanel>
 </UserControl>
+

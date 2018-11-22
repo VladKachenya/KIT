@@ -1,4 +1,6 @@
-﻿using BISC.Infrastructure.Global.Common;
+﻿using System.Collections.Generic;
+using System.Windows.Input;
+using BISC.Infrastructure.Global.Common;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
@@ -47,10 +49,18 @@ namespace BISC.Presentation.Module
             _projectService = projectService;
             _globalEventsService.Subscribe<ShellLoadedEvent>((args =>
             {
-                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject), "Сохранить все изменения в проект", IconsKeys.ContentSaveAllKey, true, true);
-                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProjectAs), "Сохранить проект как...", null, true, false);
-                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnOpenProjectAs), "Открыть проект", null, true, false);
-                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnClearProject), "Отчистить проект", null, true, false);
+                var fileCommands = new List<ICommand>();
+                var fileCommandsName = new List<string>();
+                fileCommands.Add(_commandFactory.CreatePresentationCommand(OnSaveProject));
+                fileCommandsName.Add("Сохранить все изменения в проект");
+                fileCommands.Add(_commandFactory.CreatePresentationCommand(OnSaveProjectAs));
+                fileCommandsName.Add("Сохранить проект как...");
+                fileCommands.Add(_commandFactory.CreatePresentationCommand(OnOpenProjectAs));
+                fileCommandsName.Add("Открыть проект");
+                fileCommands.Add(_commandFactory.CreatePresentationCommand(OnClearProject));
+                fileCommandsName.Add("Очистить проект");
+                _userInterfaceComposingService.AddGlobalCommandGroup(fileCommands, fileCommandsName, "ПРОЕКТ");
+                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject), "Сохранить все изменения в проект", IconsKeys.ContentSaveAllKey, false, true);
                 _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки", null, true, false);
                 _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTreeViewName,
                     KeysForNavigation.RegionNames.MainTreeRegionKey);
@@ -71,7 +81,7 @@ namespace BISC.Presentation.Module
         {
             _projectService.ClearCurrentProject();
             await _saveCheckingService.SaveAllUnsavedEntities(false);
-            _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
+            _loggingService.LogMessage($"Проект очистен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
         }
 
         private async void OnSaveProject()

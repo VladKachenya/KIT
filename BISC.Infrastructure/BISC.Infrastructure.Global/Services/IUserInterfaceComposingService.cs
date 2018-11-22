@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Modularity;
@@ -20,6 +21,10 @@ namespace BISC.Infrastructure.Global.Services
     public interface IUserInterfaceComposingService
     {
         void AddGlobalCommand(ICommand command,string name,string iconId=null, bool isAddToMenu = false, bool isAddToToolBar = false);
+        void AddGlobalCommandGroup( List<ICommand> commands, List<string> names, string groupName, string iconId = null,
+            List<string> iconIds = null, bool isAddToMenu = false, bool isAddToToolBar = false);
+
+
         void DeleteGlobalCommand(ICommand command);
 
         void SetCurrentSaveCommand(ICommand command, string name,bool isToDevice);
@@ -27,6 +32,8 @@ namespace BISC.Infrastructure.Global.Services
 
         ObservableCollection<IGlobalCommand> GetToolBarCommands();
         ObservableCollection<IGlobalCommand> GetMenuCommands();
+        ObservableCollection<IGlobalCommandGroup> GetToolBarCommandGroups();
+
 
     }
 }

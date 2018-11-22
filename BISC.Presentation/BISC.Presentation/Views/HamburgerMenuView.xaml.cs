@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using BISC.Presentation.Interfaces.Menu;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace BISC.Presentation.Views
 {
@@ -21,10 +22,30 @@ namespace BISC.Presentation.Views
     /// </summary>
     public partial class HamburgerMenuView : UserControl
     {
+
         public HamburgerMenuView(IHamburgerMenuViewModel hamburgerMenuViewModel)
         {
             InitializeComponent();
             DataContext = hamburgerMenuViewModel;
+        }
+
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem)
+            {
+                var sentMenuItem = sender as MenuItem;
+                sentMenuItem.IsSubmenuOpen = true;
+            }
+        }
+
+
+        private void UIElement_OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem)
+            {
+                var sentMenuItem = sender as MenuItem;
+                sentMenuItem.IsSubmenuOpen = false;
+            }
         }
     }
 }
