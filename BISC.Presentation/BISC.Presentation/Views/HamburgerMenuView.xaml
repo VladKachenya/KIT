@@ -14,11 +14,13 @@
         <converters:StringToResourceConverter x:Key="StringToResourceConverter"></converters:StringToResourceConverter>
         <CollectionViewSource x:Key="MultipleComands" Source="{Binding GlobalCommandGroups}"/>
         <CollectionViewSource x:Key="SingleComands" Source="{Binding GlobalCommands}"/>
+        <!--<ContentControl x:Key="IconContentControl" ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>-->
         <Style x:Key="MenuItemStyle" TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
             <Setter Property="Header" Value="{Binding CommandName}"/>
             <Setter Property="Command" Value="{Binding Command}"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="IsCheckable" Value="False"/>
+            <!--<Setter Property="Icon" Value="{DynamicResource IconContentControl}"/>-->
         </Style>
     </UserControl.Resources>
     <StackPanel>
@@ -30,9 +32,13 @@
             </ItemsControl.ItemsSource>
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type modularity:IGlobalCommandGroup}">
-                    <MenuItem Header="{Binding CommandsName}" ItemsSource="{Binding GlobalCommandsGroup}" ItemContainerStyle ="{DynamicResource MenuItemStyle}"
-                                MouseLeave="UIElement_OnLostFocus"
-                              PreviewMouseLeftButtonDown = "MenuItem_OnClick"/>
+                    <MenuItem Header="{Binding CommandsName}" ItemsSource="{Binding GlobalCommandsGroup}" ItemContainerStyle="{Binding Source={StaticResource MenuItemStyle}}"
+                              MouseLeave="UIElement_OnLostFocus" 
+                              PreviewMouseLeftButtonDown = "MenuItem_OnClick">
+                            <MenuItem.Icon>
+                                <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
@@ -45,7 +51,7 @@
             </ItemsControl.ItemsSource>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <MenuItem  Style="{Binding Source={StaticResource MenuItemStyle}}">
+                    <MenuItem  Style="{DynamicResource MenuItemStyle}">
                         <MenuItem.Icon>
                             <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>
                         </MenuItem.Icon>
