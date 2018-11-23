@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Linq.Expressions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -85,6 +86,10 @@
     <ProjectReference Include="..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
       <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
       <Name>BISC.Infrastructure.Global</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Infrastructure\BISC.Infrastructure.Shell\BISC.Infrastructure.Shell\BISC.Infrastructure.Shell.csproj">
+      <Project>{7712601B-0023-4094-AD65-6A2941AC6C86}</Project>
+      <Name>BISC.Infrastructure.Shell</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Connection\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
       <Project>{84925CA6-959A-4094-9688-622DC28B7452}</Project>

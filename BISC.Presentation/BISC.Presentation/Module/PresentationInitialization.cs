@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Common;
 using BISC.Infrastructure.Global.IoC;
@@ -47,34 +49,35 @@ namespace BISC.Presentation.Module
             _mainTreeViewModel = mainTreeViewModel;
             _loggingService = loggingService;
             _projectService = projectService;
-            _globalEventsService.Subscribe<ShellLoadedEvent>((args =>
-            {
-                var fileCommands = new List<ICommand>();
-                var fileCommandsName = new List<string>();
-                fileCommands.Add(_commandFactory.CreatePresentationCommand(OnSaveProject));
-                fileCommandsName.Add("Сохранить все изменения в проект");
-                fileCommands.Add(_commandFactory.CreatePresentationCommand(OnSaveProjectAs));
-                fileCommandsName.Add("Сохранить проект как...");
-                fileCommands.Add(_commandFactory.CreatePresentationCommand(OnOpenProjectAs));
-                fileCommandsName.Add("Открыть проект");
-                fileCommands.Add(_commandFactory.CreatePresentationCommand(OnClearProject));
-                fileCommandsName.Add("Очистить проект");
-                _userInterfaceComposingService.AddGlobalCommandGroup(fileCommands, fileCommandsName, "ПРОЕКТ", IconsKeys.BookMultipleIconKey);
-                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject), "Сохранить все изменения в проект", IconsKeys.ContentSaveAllKey, false, true);
-                _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки", IconsKeys.SettingsIconKey, true, false);
-                _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTreeViewName,
-                    KeysForNavigation.RegionNames.MainTreeRegionKey);
-                _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTabHostViewName,
-                    KeysForNavigation.RegionNames.MainTabHostRegionKey);
-                _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.HamburgerMenuViewName,
-                    KeysForNavigation.RegionNames.HamburgerMenuKey);
-                _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.ToolBarMenuViewName,
-                    KeysForNavigation.RegionNames.ToolBarMenuKey);
-                _projectService.OpenDefaultProject();
-                _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(_biscProject.MainSclModel.Value, null, "SCL");
-                _mainTreeViewModel.ChangeTracker.SetTrackingEnabled(true);
-            }));
+            _globalEventsService.Subscribe<ShellLoadedEvent>(ActivatePresentation);
+        }
 
+        private void ActivatePresentation(ShellLoadedEvent loadedEvent)
+        {
+            var fileCommands = new List<ICommand>();
+            var fileCommandsName = new List<string>();
+            fileCommands.Add(_commandFactory.CreatePresentationCommand(OnSaveProject));
+            fileCommandsName.Add("Сохранить все изменения в проект");
+            fileCommands.Add(_commandFactory.CreatePresentationCommand(OnSaveProjectAs));
+            fileCommandsName.Add("Сохранить проект как...");
+            fileCommands.Add(_commandFactory.CreatePresentationCommand(OnOpenProjectAs));
+            fileCommandsName.Add("Открыть проект");
+            fileCommands.Add(_commandFactory.CreatePresentationCommand(OnClearProject));
+            fileCommandsName.Add("Очистить проект");
+            _userInterfaceComposingService.AddGlobalCommandGroup(fileCommands, fileCommandsName, "ПРОЕКТ", IconsKeys.BookMultipleIconKey);
+            _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject), "Сохранить все изменения в проект", IconsKeys.ContentSaveAllKey, false, true);
+            _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки", IconsKeys.SettingsIconKey, true, false);
+            _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTreeViewName,
+                KeysForNavigation.RegionNames.MainTreeRegionKey);
+            _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTabHostViewName,
+                KeysForNavigation.RegionNames.MainTabHostRegionKey);
+            _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.HamburgerMenuViewName,
+                KeysForNavigation.RegionNames.HamburgerMenuKey);
+            _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.ToolBarMenuViewName,
+                KeysForNavigation.RegionNames.ToolBarMenuKey);
+            _projectService.OpenDefaultProject();
+            _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(_biscProject.MainSclModel.Value, null, "SCL");
+            _mainTreeViewModel.ChangeTracker.SetTrackingEnabled(true);
         }
 
         private async void OnClearProject()
@@ -86,9 +89,18 @@ namespace BISC.Presentation.Module
 
         private async void OnSaveProject()
         {
-            _projectService.SaveCurrentProject();
-            await _saveCheckingService.SaveAllUnsavedEntities(false);
-            _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
+            try
+            {
+                _projectService.SaveCurrentProject();
+                await _saveCheckingService.SaveAllUnsavedEntities(false);
+                _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
+            }
+            catch (Exception e)
+            {
+                OnSaveProjectAs();
+            }
+            //await _saveCheckingService.SaveAllUnsavedEntities(false);
+            //_loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
         }
 
         private async void OnSaveProjectAs()
@@ -96,6 +108,16 @@ namespace BISC.Presentation.Module
             Maybe<string> listOfPaths = FileHelper.SelectFilePathToSave("Сохранение файла", ".bisc", "BISC Files (*.bisc)|*.bisc|" +
                                                                                                   "All Files (*.*)|*.*", "New project");
             if (!listOfPaths.Any()) return;
+            FileInfo projectToOpen;
+            try
+            {
+                projectToOpen = new FileInfo(listOfPaths.GetFirstValue());
+            }
+            catch
+            {
+                projectToOpen = null;
+            }
+
             _projectService.SaveProjectAs(listOfPaths.GetFirstValue());
             await _saveCheckingService.SaveAllUnsavedEntities(false);
             _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);

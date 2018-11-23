@@ -8,6 +8,7 @@ using BISC.GlobalServices;
 using BISC.Infrastructure.CompositionRoot.Bootstraper;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Infrastructure.Global.Services;
+using BISC.Infrastructure.Shell.ViewModels;
 using BISC.Interfaces;
 using BISC.ViewModel;
 using Microsoft.Practices.ServiceLocation;
@@ -55,8 +56,8 @@ namespace BISC.Bootstrapper
             Container.RegisterType<IUserNotificationService, UserNotificationService>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IConfigurationService, ConfigurationService>(new ContainerControlledLifetimeManager());
             Container.RegisterType<ShellLoadedService>(new ContainerControlledLifetimeManager());
-
             base.ConfigureContainer();
+            Container.RegisterInstance<IApplicationTitle>(Container.Resolve<IShellViewModel>());
             Container.RegisterType<Shell>();
         }
     }

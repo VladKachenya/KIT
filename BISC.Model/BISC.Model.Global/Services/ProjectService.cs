@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Services;
+using BISC.Infrastructure.Shell.ViewModels;
+using BISC.Model.Global.Constants;
 using BISC.Model.Global.Model;
 using BISC.Model.Global.Project;
 using BISC.Model.Infrastructure;
@@ -22,15 +24,26 @@ namespace BISC.Model.Global.Services
 {
     public class ProjectService : IProjectService
     {
+
         private readonly IConfigurationService _configurationService;
         private readonly IBiscProject _biscProject;
         private readonly IModelElementsRegistryService _modelElementsRegistryService;
         private readonly IInjectionContainer _injectionContainer;
         private string _currentProjectPath;
 
+        #region ctor
+        public ProjectService(IConfigurationService configurationService, IBiscProject biscProject,
+            IModelElementsRegistryService modelElementsRegistryService, IInjectionContainer injectionContainer)
+        {
+            _configurationService = configurationService;
+            _biscProject = biscProject;
+            _modelElementsRegistryService = modelElementsRegistryService;
+            _injectionContainer = injectionContainer;
+        }
 
         #region Lazy Initialization
 
+        private IApplicationTitle _applicationTitle;
         private IDeviceModelService _deviceModelService;
         private ITreeManagementService _treeManagementService;
         private IGoosesModelService _goosesModelService;
@@ -39,9 +52,16 @@ namespace BISC.Model.Global.Services
         private IDeviceWarningsService _deviceWarningsService;
 
 
+        private IApplicationTitle GetApplicationTitle()
+        {
+            _applicationTitle =
+                _applicationTitle ?? _injectionContainer.ResolveType<IApplicationTitle>();
+            return _applicationTitle;
+        }
+
         private IDeviceModelService GetDeviceModelService()
         {
-            _deviceModelService = 
+            _deviceModelService =
                 _deviceModelService ?? _injectionContainer.ResolveType<IDeviceModelService>();
             return _deviceModelService;
         }
@@ -83,54 +103,50 @@ namespace BISC.Model.Global.Services
 
         #endregion
 
-        #region ctor
-        public ProjectService(IConfigurationService configurationService, IBiscProject biscProject,
-            IModelElementsRegistryService modelElementsRegistryService, IInjectionContainer injectionContainer)
-        {
-            _configurationService = configurationService;
-            _biscProject = biscProject;
-            _modelElementsRegistryService = modelElementsRegistryService;
-            _injectionContainer = injectionContainer;
-        }
         #endregion
 
-
+        private string CurrentProjectPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_currentProjectPath))
+                    _currentProjectPath = _configurationService.LastProjectPath;
+                return _currentProjectPath;
+            }
+            set
+            {
+                _currentProjectPath = value;
+                if (_configurationService.LastProjectPath != value)
+                    _configurationService.LastProjectPath = value;
+                SetApplicationTitle();
+            }
+        }
 
         public void OpenDefaultProject()
         {
-            var path = "TempProject";
             FileInfo lastProject;
             try
             {
-                lastProject = new FileInfo(_configurationService.LastProjectPath);
+                lastProject = new FileInfo(CurrentProjectPath);
             }
             catch
             {
                 lastProject = null;
             }
 
-            if (lastProject != null && lastProject.Exists)
-            {
-                path = _configurationService.LastProjectPath;
-            }
-            else
-            {
-                _currentProjectPath = path;
-                _configurationService.LastProjectPath = path;
-            }
+            if (lastProject == null || !lastProject.Exists)
+                CurrentProjectPath = StringConstants.ProjectConstants.DefaultProjectPath;
 
             IBiscProject biscProject;
 
-            _currentProjectPath = path;
-            FileInfo fileInfo = new FileInfo(_currentProjectPath);
+            FileInfo fileInfo = new FileInfo(CurrentProjectPath);
             if (!fileInfo.Exists)
             {
                 biscProject = new BiscProject();
                 biscProject.MainSclModel.Value = new SclModel();
                 biscProject.CustomElements.Value = new ModelElement() { ElementName = "CustomElements" };
-                var stream = File.Create(path);
+                var stream = File.Create(CurrentProjectPath);
                 stream.Close();
-                _currentProjectPath = path;
                 SaveCurrentProject();
             }
             else
@@ -139,7 +155,7 @@ namespace BISC.Model.Global.Services
                 {
                     biscProject =
                         _modelElementsRegistryService.DeserializeModelElement<IBiscProject>(
-                            XElement.Load(_currentProjectPath));
+                            XElement.Load(CurrentProjectPath));
                 }
                 catch (Exception e)
                 {
@@ -149,6 +165,7 @@ namespace BISC.Model.Global.Services
                 }
             }
 
+            SetApplicationTitle();
             _biscProject.MainSclModel.Value = biscProject.MainSclModel.Value;
             _biscProject.CustomElements.Value = biscProject.CustomElements.Value;
         }
@@ -156,27 +173,20 @@ namespace BISC.Model.Global.Services
         public void SaveCurrentProject()
         {
             var xProjectElement = _modelElementsRegistryService.SerializeModelElement(_biscProject, SerializingType.Extended);
-            var path = "TempProject";
             FileInfo lastProject;
             try
             {
-                lastProject = new FileInfo(_configurationService.LastProjectPath);
+                lastProject = new FileInfo(CurrentProjectPath);
             }
             catch
             {
-                lastProject = null;
+                throw new Exception();
             }
-
-            if (lastProject != null && lastProject.Exists)
-            {
-                path = _configurationService.LastProjectPath;
-            }
-            else
-            {
-                _currentProjectPath = path;
-                _configurationService.LastProjectPath = path;
-            }
-            xProjectElement.Save(_currentProjectPath);
+            
+            if ( !lastProject.Exists)
+                throw new Exception();
+            SetApplicationTitle();
+            xProjectElement.Save(CurrentProjectPath);
         }
 
         public void OpenProjectAs(string fileName)
@@ -261,6 +271,11 @@ namespace BISC.Model.Global.Services
                 FileInfo fileInfo = new FileInfo(_currentProjectPath);
                 return fileInfo.Name;
             }
+        }
+
+        private void SetApplicationTitle()
+        {
+            GetApplicationTitle().ApplicationTitle = $"Bemn Intellectual Substation Control (Текущий проект: {GetCurrentProjectPath(false)})";
         }
     }
 }
