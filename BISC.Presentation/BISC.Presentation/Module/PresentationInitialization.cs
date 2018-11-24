@@ -6,6 +6,7 @@ using BISC.Infrastructure.Global.Common;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
+using BISC.Model.Infrastructure.Constants;
 using BISC.Model.Infrastructure.Project;
 using BISC.Presentation.BaseItems.Common;
 using BISC.Presentation.BaseItems.Events;
@@ -20,118 +21,64 @@ namespace BISC.Presentation.Module
 {
     public class PresentationInitialization
     {
-        private readonly IGlobalEventsService _globalEventsService;
         private readonly IInjectionContainer _injectionContainer;
-        private readonly ISaveCheckingService _saveCheckingService;
-        private readonly INavigationService _navigationService;
-        private IProjectService _projectService;
-        private readonly IUiFromModelElementRegistryService _uiFromModelElementRegistryService;
-        private readonly IBiscProject _biscProject;
-        private readonly IUserInterfaceComposingService _userInterfaceComposingService;
-        private readonly ICommandFactory _commandFactory;
-        private readonly IMainTreeViewModel _mainTreeViewModel;
-        private readonly ILoggingService _loggingService;
 
-        public PresentationInitialization(IGlobalEventsService globalEventsService,
-            INavigationService navigationService, IUiFromModelElementRegistryService uiFromModelElementRegistryService, IBiscProject biscProject
-            , IUserInterfaceComposingService userInterfaceComposingService, ICommandFactory commandFactory,
-            IMainTreeViewModel mainTreeViewModel, ILoggingService loggingService, IInjectionContainer injectionContainer, ISaveCheckingService saveCheckingService,
-            IProjectService projectService)
+
+        public PresentationInitialization(IGlobalEventsService globalEventsService, IInjectionContainer injectionContainer)
         {
-            _globalEventsService = globalEventsService;
             _injectionContainer = injectionContainer;
-            _saveCheckingService = saveCheckingService;
-            _navigationService = navigationService;
-            _uiFromModelElementRegistryService = uiFromModelElementRegistryService;
-            _biscProject = biscProject;
-            _userInterfaceComposingService = userInterfaceComposingService;
-            _commandFactory = commandFactory;
-            _mainTreeViewModel = mainTreeViewModel;
-            _loggingService = loggingService;
-            _projectService = projectService;
-            _globalEventsService.Subscribe<ShellLoadedEvent>(ActivatePresentation);
+            globalEventsService.Subscribe<ShellLoadedEvent>(ActivatePresentation);
         }
 
         private void ActivatePresentation(ShellLoadedEvent loadedEvent)
         {
+            var mainTreeViewModel =
+                _injectionContainer.ResolveType<IMainTreeViewModel>();
+            var navigationService =
+                _injectionContainer.ResolveType<INavigationService>();
+            var uiFromModelElementRegistryService = 
+                _injectionContainer.ResolveType<IUiFromModelElementRegistryService>();
+            var biscProject =
+                _injectionContainer.ResolveType<IBiscProject>();
+            var userInterfaceComposingService =
+                _injectionContainer.ResolveType<IUserInterfaceComposingService>();
+            var commandFactory =
+                _injectionContainer.ResolveType<ICommandFactory>();
+            var projectManagementService =
+                _injectionContainer.ResolveType<IProjectManagementService>();
+
             var fileCommands = new List<ICommand>();
             var fileCommandsName = new List<string>();
-            fileCommands.Add(_commandFactory.CreatePresentationCommand(OnSaveProject));
+            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.СreateNewProject));
+            fileCommandsName.Add("Новый проект");
+            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.SaveProject));
             fileCommandsName.Add("Сохранить все изменения в проект");
-            fileCommands.Add(_commandFactory.CreatePresentationCommand(OnSaveProjectAs));
+            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.SaveProjectAs));
             fileCommandsName.Add("Сохранить проект как...");
-            fileCommands.Add(_commandFactory.CreatePresentationCommand(OnOpenProjectAs));
+            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.OpenProjectAs));
             fileCommandsName.Add("Открыть проект");
-            fileCommands.Add(_commandFactory.CreatePresentationCommand(OnClearProject));
-            fileCommandsName.Add("Очистить проект");
-            _userInterfaceComposingService.AddGlobalCommandGroup(fileCommands, fileCommandsName, "ПРОЕКТ", IconsKeys.BookMultipleIconKey);
-            _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnSaveProject), "Сохранить все изменения в проект", IconsKeys.ContentSaveAllKey, false, true);
-            _userInterfaceComposingService.AddGlobalCommand(_commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки", IconsKeys.SettingsIconKey, true, false);
-            _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTreeViewName,
+            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.ClearCurrentProject));
+            fileCommandsName.Add("Очистить текущий проект");
+            userInterfaceComposingService.AddGlobalCommandGroup(fileCommands, fileCommandsName, "ПРОЕКТ", IconsKeys.BookMultipleIconKey);
+
+            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(projectManagementService.SaveProject), 
+                "Сохранить все изменения в проект", IconsKeys.ContentSaveAllKey, false, true);
+            userInterfaceComposingService.AddGlobalCommand
+                (commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки", IconsKeys.SettingsIconKey, true, false);
+
+            navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTreeViewName,
                 KeysForNavigation.RegionNames.MainTreeRegionKey);
-            _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTabHostViewName,
+            navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.MainTabHostViewName,
                 KeysForNavigation.RegionNames.MainTabHostRegionKey);
-            _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.HamburgerMenuViewName,
+            navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.HamburgerMenuViewName,
                 KeysForNavigation.RegionNames.HamburgerMenuKey);
-            _navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.ToolBarMenuViewName,
+            navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.ToolBarMenuViewName,
                 KeysForNavigation.RegionNames.ToolBarMenuKey);
-            _projectService.OpenDefaultProject();
-            _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(_biscProject.MainSclModel.Value, null, "SCL");
-            _mainTreeViewModel.ChangeTracker.SetTrackingEnabled(true);
-        }
 
-        private async void OnClearProject()
-        {
-            _projectService.ClearCurrentProject();
-            await _saveCheckingService.SaveAllUnsavedEntities(false);
-            _loggingService.LogMessage($"Проект очистен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
-        }
+            projectManagementService.OpenDefaultProject();
 
-        private async void OnSaveProject()
-        {
-            try
-            {
-                _projectService.SaveCurrentProject();
-                await _saveCheckingService.SaveAllUnsavedEntities(false);
-                _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
-            }
-            catch (Exception e)
-            {
-                OnSaveProjectAs();
-            }
-            //await _saveCheckingService.SaveAllUnsavedEntities(false);
-            //_loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
-        }
-
-        private async void OnSaveProjectAs()
-        {
-            Maybe<string> listOfPaths = FileHelper.SelectFilePathToSave("Сохранение файла", ".bisc", "BISC Files (*.bisc)|*.bisc|" +
-                                                                                                  "All Files (*.*)|*.*", "New project");
-            if (!listOfPaths.Any()) return;
-            FileInfo projectToOpen;
-            try
-            {
-                projectToOpen = new FileInfo(listOfPaths.GetFirstValue());
-            }
-            catch
-            {
-                projectToOpen = null;
-            }
-
-            _projectService.SaveProjectAs(listOfPaths.GetFirstValue());
-            await _saveCheckingService.SaveAllUnsavedEntities(false);
-            _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
-        }
-
-        private async void OnOpenProjectAs()
-        {
-            var fileMaybe = FileHelper.SelectFileToOpen("Открыть файл с устройствами", "BISC Files (*.bisc)|*.bisc|" +
-                                                                                       "All Files (*.*)|*.*");
-            if (!fileMaybe.Any()) return;
-            _projectService.OpenProjectAs(fileMaybe.GetFirstValue().FullName);
-            _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(_biscProject.MainSclModel.Value, null, "SCL");
-            await _saveCheckingService.SaveAllUnsavedEntities(false);
-            _loggingService.LogMessage($"Проект открыт {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
+            uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(biscProject.MainSclModel.Value, null, "SCL");
+            mainTreeViewModel.ChangeTracker.SetTrackingEnabled(true);
         }
 
         private void OnApplicatoinSettingsAdding()

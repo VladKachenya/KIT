@@ -19,22 +19,40 @@
             <Setter Property="Command" Value="{Binding Command}"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="IsCheckable" Value="False"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+
+            <!--<Setter Property="Icon" Value="{DynamicResource IconContentControl}"/>-->
+        </Style>
+        <Style x:Key="GroupMenuItem" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="IsCheckable" Value="False"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+
             <!--<Setter Property="Icon" Value="{DynamicResource IconContentControl}"/>-->
         </Style>
     </UserControl.Resources>
     <StackPanel>
-        <Menu HorizontalContentAlignment="Stretch" ItemContainerStyle="{StaticResource MenuItemStyle}" ItemsSource="{Binding GlobalCommandGroups}">
+        <Menu ItemContainerStyle="{StaticResource GroupMenuItem}" ItemsSource="{Binding GlobalCommandGroups}">
             <!--<ItemsControl.ItemsSource>
                 <CompositeCollection>
                     <CollectionContainer Collection="{Binding Source={StaticResource MultipleComands}}" />
                 </CompositeCollection>
             </ItemsControl.ItemsSource>-->
             <ItemsControl.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type modularity:IGlobalCommandGroup}" ItemsSource="{Binding GlobalCommandsGroup}">
-                    <StackPanel Orientation="Horizontal">
-                        <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>
-                        <TextBlock Text="{Binding CommandsName}"></TextBlock>
+                <HierarchicalDataTemplate DataType="{x:Type modularity:IGlobalCommandGroup}" 
+                                          ItemsSource="{Binding GlobalCommandsGroup}" ItemContainerStyle="{StaticResource MenuItemStyle}">
+                    <StackPanel Orientation="Horizontal" >
+                        <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="10" Width="20" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding CommandsName}"  VerticalAlignment="Center"/>
                     </StackPanel>
+                    <HierarchicalDataTemplate.ItemTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type modularity:IGlobalCommand}" >
+                            <StackPanel Orientation="Horizontal">
+                                <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>
+                                <TextBlock Text="{Binding CommandName}"/>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </HierarchicalDataTemplate.ItemTemplate>
                 </HierarchicalDataTemplate>
             </ItemsControl.ItemTemplate>
         </Menu>
@@ -47,7 +65,7 @@
             </ItemsControl.ItemsSource>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <MenuItem  Style="{DynamicResource MenuItemStyle}">
+                    <MenuItem  Style="{DynamicResource MenuItemStyle}" Header="{Binding CommandName}">
                         <MenuItem.Icon>
                             <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>
                         </MenuItem.Icon>

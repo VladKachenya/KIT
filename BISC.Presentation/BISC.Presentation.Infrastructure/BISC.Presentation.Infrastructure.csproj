@@ -74,6 +74,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IApplicationSettingsAddingService.cs" />
     <Compile Include="Services\INavigationService.cs" />
+    <Compile Include="Services\IProjectManagementService.cs" />
     <Compile Include="Services\ISaveCheckingService.cs" />
     <Compile Include="Services\ITabManagementService.cs" />
     <Compile Include="Services\ITreeManagementService.cs" />

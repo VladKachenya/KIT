@@ -4,9 +4,11 @@
     {
         void OpenDefaultProject();
         void SaveCurrentProject();
-        void ClearCurrentProject();
         void OpenProjectAs(string fileName);
         void SaveProjectAs(string fileName);
         string GetCurrentProjectPath(bool isFull);
+        void SetDefaultProjectPath();
+        void СreateNewProject();
+
     }
 }

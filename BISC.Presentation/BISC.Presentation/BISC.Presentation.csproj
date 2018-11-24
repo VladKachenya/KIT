@@ -97,6 +97,7 @@
     <Compile Include="Services\ApplicationSettingsAddingService.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Module\PresentationInitialization.cs" />
+    <Compile Include="Services\ProjectManagementService.cs" />
     <Compile Include="Services\SaveCheckingService.cs" />
     <Compile Include="Services\TabManagementService.cs" />
     <Compile Include="Services\TreeManagementService.cs" />
@@ -186,6 +187,18 @@
     <ProjectReference Include="..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
       <Name>BISC.Model.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Connection\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
+      <Project>{84925CA6-959A-4094-9688-622DC28B7452}</Project>
+      <Name>BISC.Modules.Connection.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Device\BISC.Modules.Device.Infrastructure\BISC.Modules.Device.Infrastructure.csproj">
+      <Project>{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}</Project>
+      <Name>BISC.Modules.Device.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules\BISC.Modules.Gooses\BISC.Modules.Gooses.Infrastructure\BISC.Modules.Gooses.Infrastructure.csproj">
+      <Project>{7FD15BE3-633C-4063-8948-B1663736523D}</Project>
+      <Name>BISC.Modules.Gooses.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\BISC.Presentation.BaseItems\BISC.Presentation.BaseItems.csproj">
       <Project>{02377dcb-bf54-4343-a7c2-15b9af8e5605}</Project>

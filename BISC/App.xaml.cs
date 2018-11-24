@@ -38,7 +38,7 @@ namespace BISC
 
         private void App_OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            StaticContainer.CurrentContainer.ResolveType<ILoggingService>()?.LogMessage(
+             StaticContainer.CurrentContainer.ResolveType<ILoggingService>()?.LogMessage(
                 e.Exception.Message + Environment.NewLine + Environment.NewLine + e.Exception.StackTrace,
                 SeverityEnum.Critical);
             MessageBox.Show(e.Exception.Message + Environment.NewLine + Environment.NewLine + e.Exception.StackTrace,

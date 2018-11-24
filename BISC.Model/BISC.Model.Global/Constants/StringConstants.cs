@@ -115,11 +115,5 @@ namespace BISC.Model.Global.Constants
             public const string ConfRev =
                 "Номер ревизии конфигурации";
         }
-
-        public static class ProjectConstants
-        {
-            public const string DefaultProjectPath = "TempProject.bisc";
-
-        }
     }
 }

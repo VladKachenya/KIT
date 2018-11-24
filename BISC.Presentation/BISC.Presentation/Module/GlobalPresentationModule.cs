@@ -45,8 +45,8 @@ namespace BISC.Presentation.Module
             _injectionContainer.RegisterType<IApplicationSettingsViewModel, ApplicationSettingsViewModel>();
             _injectionContainer.RegisterType<IApplicationSettingsAddingService, ApplicationSettingsAddingService>(true);
             _injectionContainer.RegisterType<IUserInteractionService, UserInteractionService>(true);
-            _injectionContainer.RegisterType<UserInteractionOptionsViewModel
-            >();
+            _injectionContainer.RegisterType<IUserInteractionService, UserInteractionService>(true);
+            _injectionContainer.RegisterType<IProjectManagementService, ProjectManagementService>(true);
 
             _injectionContainer.RegisterType<object,TabHostView>(KeysForNavigation.ViewNames.MainTabHostViewName);
             _injectionContainer.RegisterType<object, MainTreeView>(KeysForNavigation.ViewNames.MainTreeViewName);

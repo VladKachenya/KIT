@@ -61,6 +61,7 @@ namespace BISC.Infrastructure.CompositionRoot.Bootstraper
 
             Container.RegisterType(typeof(IAppModule), typeof(GlobalPresentationModule),nameof(GlobalPresentationModule));
             Container.RegisterType(typeof(IAppModule), typeof(InformationModelModule),nameof(InformationModelModule));
+
             Container.RegisterType(typeof(IAppModule), typeof(InformationModelPresentationModule),nameof(InformationModelPresentationModule));
 
             Container.RegisterType(typeof(IAppModule), typeof(DeviceModelModule), nameof(DeviceModelModule));

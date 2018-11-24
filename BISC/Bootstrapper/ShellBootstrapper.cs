@@ -56,6 +56,7 @@ namespace BISC.Bootstrapper
             Container.RegisterType<IUserNotificationService, UserNotificationService>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IConfigurationService, ConfigurationService>(new ContainerControlledLifetimeManager());
             Container.RegisterType<ShellLoadedService>(new ContainerControlledLifetimeManager());
+
             base.ConfigureContainer();
             Container.RegisterInstance<IApplicationTitle>(Container.Resolve<IShellViewModel>());
             Container.RegisterType<Shell>();
