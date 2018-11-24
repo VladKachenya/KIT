@@ -9,6 +9,7 @@ using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
+using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading;
@@ -24,7 +25,7 @@ using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.Services
 {
-    public class DeviceRestartService : IDeviceRestartService
+    public class DeviceReconnectionService : IDeviceReconnectionService
     {
         private readonly IDeviceFileWritingServices _deviceFileWritingServices;
         private readonly IDeviceConnectionService _deviceConnectionService;
@@ -42,13 +43,14 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly IBiscProject _biscProject;
         private readonly IDeviceAddingService _deviceAddingService;
         private readonly IDeviceWarningsService _deviceWarningsService;
+        private readonly ISclCommunicationModelService _sclCommunicationModelService;
 
-        public DeviceRestartService(IDeviceFileWritingServices deviceFileWritingServices,
+        public DeviceReconnectionService(IDeviceFileWritingServices deviceFileWritingServices,
             IDeviceConnectionService deviceConnectionService, IDeviceModelService deviceModelService,
             ITreeManagementService treeManagementService, IConnectionPoolService connectionPoolService,
             ITabManagementService tabManagementService, ILoggingService loggingService, IGlobalEventsService globalEventsService,
             INavigationService navigationService, IInjectionContainer injectionContainer, Func<ISclModel> sclModelCreator,
-            IBiscProject biscProject, IDeviceAddingService deviceAddingService,IDeviceWarningsService deviceWarningsService)
+            IBiscProject biscProject, IDeviceAddingService deviceAddingService,IDeviceWarningsService deviceWarningsService,ISclCommunicationModelService sclCommunicationModelService)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
             _deviceConnectionService = deviceConnectionService;
@@ -63,6 +65,7 @@ namespace BISC.Modules.Device.Presentation.Services
             _biscProject = biscProject;
             _deviceAddingService = deviceAddingService;
             _deviceWarningsService = deviceWarningsService;
+            _sclCommunicationModelService = sclCommunicationModelService;
             _elementLoadingServices = injectionContainer.ResolveAll(typeof(IDeviceElementLoadingService))
                 .Cast<IDeviceElementLoadingService>().ToList();
             _elementConflictResolvers = injectionContainer.ResolveAll(typeof(IElementConflictResolver))
@@ -72,29 +75,35 @@ namespace BISC.Modules.Device.Presentation.Services
 
         #region Implementation of IDeviceRestartService
 
-        public async Task RestartDevice(IDevice existingDevice, TreeItemIdentifier treeItemIdOfExistingDevice)
+        public async Task ReconnectDevice(IDevice existingDevice, TreeItemIdentifier treeItemIdToRemove)
         {
-            await _deviceFileWritingServices.ResetDevice(existingDevice.Ip);
-            _treeManagementService.DeleteTreeItem(treeItemIdOfExistingDevice);
-            _connectionPoolService.GetConnection(existingDevice.Ip).StopConnection();
-            _tabManagementService.CloseTabWithChildren(treeItemIdOfExistingDevice.ItemId.ToString());
+           await Reconnect(existingDevice, treeItemIdToRemove,false);
+        }
 
-
+        private async Task Reconnect(IDevice existingDevice, TreeItemIdentifier treeItemIdToRemove, bool isRestarting)
+        {
+;
+            _treeManagementService.DeleteTreeItem(treeItemIdToRemove);
+            
+            _tabManagementService.CloseTabWithChildren(treeItemIdToRemove.ItemId.ToString());
 
             var sortedElements = _elementLoadingServices.OrderBy((service => service.Priority));
 
             CancellationTokenSource cts = new CancellationTokenSource();
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
-            RestartDeviceEntity restartDeviceEntity =
-                new RestartDeviceEntity(existingDevice, cts);
-            biscNavigationParameters.AddParameterByName(DeviceKeys.RestartDeviceEntityKey, restartDeviceEntity);
+            RestartDeviceContext restartDeviceContext =
+                new RestartDeviceContext(existingDevice, cts);
+            biscNavigationParameters.AddParameterByName(DeviceKeys.RestartDeviceContextKey, restartDeviceContext);
 
-            DialogCommands.CloseDialogCommand.Execute(null, null);
+          
             var treeItemId = _treeManagementService.AddTreeItem(biscNavigationParameters,
                 DeviceKeys.DeviceRestartViewKey,
                 null);
-            restartDeviceEntity.TreeItemIdentifier = treeItemId;
-            await Task.Delay(3000, cts.Token);
+            restartDeviceContext.TreeItemIdentifier = treeItemId;
+           if(isRestarting){await Task.Delay(3000, cts.Token);}
+
+            existingDevice.Ip =
+                _sclCommunicationModelService.GetIpOfDevice(existingDevice.Name, _biscProject.MainSclModel.Value);
             var deviceConnectResult = await _deviceConnectionService.ConnectDevice(existingDevice.Ip);
             var device = deviceConnectResult.Item;
             var sclModel = _sclModelCreator();
@@ -147,8 +156,8 @@ namespace BISC.Modules.Device.Presentation.Services
                     return;
                 }
             }));
-            restartDeviceEntity.HaveConflicts = hasConflics;
-            _globalEventsService.SendMessage(new DeviceLoadingEvent(device.Ip) {IsFinished = true});
+            restartDeviceContext.HaveConflicts = hasConflics;
+            _globalEventsService.SendMessage(new DeviceLoadingEvent(device.Ip) { IsFinished = true });
             if (!hasConflics)
             {
                 _treeManagementService.DeleteTreeItem(treeItemId);
@@ -157,9 +166,15 @@ namespace BISC.Modules.Device.Presentation.Services
             }
             else
             {
-                restartDeviceEntity.DeviceConflictEntity=new DeviceConflictEntity(_biscProject.MainSclModel.Value,sclModel,existingDevice.Name);
+                restartDeviceContext.DeviceConflictContext = new DeviceConflictContext(_biscProject.MainSclModel.Value, sclModel, existingDevice.Name);
             }
 
+        }
+        public async Task RestartDevice(IDevice existingDevice, TreeItemIdentifier treeItemIdToRemove)
+        {
+            await _deviceFileWritingServices.ResetDevice(existingDevice.Ip);
+            _connectionPoolService.GetConnection(existingDevice.Ip).StopConnection();
+            await Reconnect(existingDevice, treeItemIdToRemove, true);
         }
 
 

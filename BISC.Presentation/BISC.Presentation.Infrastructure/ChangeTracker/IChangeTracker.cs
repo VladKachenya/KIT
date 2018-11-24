@@ -8,6 +8,6 @@ namespace BISC.Presentation.Infrastructure.ChangeTracker
         void SetTrackingEnabled(bool isTrackingEnabled);
         void AcceptChanges();
         bool GetIsModifiedRecursive();
-        void SetNew();
+        void SetModified();
     }
 }

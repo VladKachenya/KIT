@@ -69,11 +69,15 @@
     <Compile Include="Services\DataSetSavingService.cs" />
     <Compile Include="Services\DataSetsUiHandlingService.cs" />
     <Compile Include="Services\FcdaAdderViewModelService.cs" />
+    <Compile Include="ViewModels\DataSetsConflictsViewModel.cs" />
     <Compile Include="ViewModels\DataSetsDetailsViewModel.cs" />
     <Compile Include="ViewModels\DataSetsTreeItemViewModel.cs" />
     <Compile Include="ViewModels\DataSetViewModel.cs" />
     <Compile Include="ViewModels\FcdaAdderViewModel.cs" />
     <Compile Include="ViewModels\FcdaViewModel.cs" />
+    <Compile Include="Views\DatasetConflictsWindow.xaml.cs">
+      <DependentUpon>DatasetConflictsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DataSetsDetailsView.xaml.cs">
       <DependentUpon>DataSetsDetailsView.xaml</DependentUpon>
     </Compile>
@@ -85,6 +89,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\DatasetConflictsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DataSetsDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

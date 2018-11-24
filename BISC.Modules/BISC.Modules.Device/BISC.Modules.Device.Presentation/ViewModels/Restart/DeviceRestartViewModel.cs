@@ -27,17 +27,19 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
         private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly IInjectionContainer _injectionContainer;
         private readonly ITreeManagementService _treeManagementService;
+        private readonly IDeviceReconnectionService _deviceReconnectionService;
         private int _totalProgress;
         private int _currentProgress;
         private bool _isIntermetiateProgress;
         private bool _isRestartingInProgress;
         private bool _haveConflicts;
         private string _deviceName;
-        private RestartDeviceEntity _restartDeviceEntity;
+        private RestartDeviceContext _restartDeviceContext;
         private List<IElementConflictResolver> _elementConflictResolvers;
 
         public DeviceRestartViewModel(IGlobalEventsService globalEventsService, ICommandFactory commandFactory, INavigationService navigationService
-            ,IDeviceAddingService deviceAddingService,IDeviceWarningsService deviceWarningsService,IInjectionContainer injectionContainer,ITreeManagementService treeManagementService)
+            ,IDeviceAddingService deviceAddingService,IDeviceWarningsService deviceWarningsService,IInjectionContainer injectionContainer,
+            ITreeManagementService treeManagementService,IDeviceReconnectionService deviceReconnectionService)
         {
             _globalEventsService = globalEventsService;
             _navigationService = navigationService;
@@ -45,6 +47,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
             _deviceWarningsService = deviceWarningsService;
             _injectionContainer = injectionContainer;
             _treeManagementService = treeManagementService;
+            _deviceReconnectionService = deviceReconnectionService;
             CancelLoadingCommand = commandFactory.CreatePresentationCommand(OnCancel);
             ResolveConflictsCommand = commandFactory.CreatePresentationCommand(OnResolveConflicts);
             _elementConflictResolvers = injectionContainer.ResolveAll(typeof(IElementConflictResolver))
@@ -53,29 +56,37 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
 
         private async void OnResolveConflicts()
         {
-            BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters().AddParameterByName(DeviceKeys.DeviceConflictEntityKey, _restartDeviceEntity.DeviceConflictEntity);
+            BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters().AddParameterByName(DeviceKeys.DeviceConflictContextKey, _restartDeviceContext.DeviceConflictContext);
             await _navigationService.NavigateViewToGlobalRegion(DeviceKeys.DeviceConflictsViewKey, biscNavigationParameters);
             var hasConflics = false;
+            if (_restartDeviceContext.DeviceConflictContext.IsRestartNeeded)
+            {
+               await _deviceReconnectionService.RestartDevice(_restartDeviceContext.Device,
+                    _restartDeviceContext.TreeItemIdentifier);
+                return;
+            }
             _elementConflictResolvers.ForEach((resolver =>
             {
-                if (resolver.GetIfConflictsExists(_restartDeviceEntity.Device.Name,
-                    _restartDeviceEntity.DeviceConflictEntity.SclModelDevice, _restartDeviceEntity.DeviceConflictEntity.SclModelProject))
+                if (resolver.GetIfConflictsExists(_restartDeviceContext.Device.Name,
+                    _restartDeviceContext.DeviceConflictContext.SclModelDevice, _restartDeviceContext.DeviceConflictContext.SclModelProject))
                 {
                     hasConflics = true;
                 }
             }));
             if (!hasConflics)
             {
-                _treeManagementService.DeleteTreeItem(_restartDeviceEntity.TreeItemIdentifier);
+                _treeManagementService.DeleteTreeItem(_restartDeviceContext.TreeItemIdentifier);
 
-                _deviceAddingService.AddDeviceToTree(_restartDeviceEntity.Device);
-                _deviceWarningsService.ClearDeviceWarningsOfDevice(_restartDeviceEntity.Device.Name);
+                _deviceAddingService.AddDeviceToTree(_restartDeviceContext.Device);
+                _deviceWarningsService.ClearDeviceWarningsOfDevice(_restartDeviceContext.Device.Name);
             }
         }
 
         private void OnCancel()
         {
-
+            _restartDeviceContext.Cts.Cancel();
+            _treeManagementService.DeleteTreeItem(_restartDeviceContext.TreeItemIdentifier);
+            _deviceAddingService.AddDeviceToTree(_restartDeviceContext.Device);
         }
 
         #region Overrides of NavigationViewModelBase
@@ -83,8 +94,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
-            _restartDeviceEntity = navigationContext.BiscNavigationParameters.GetParameterByName<RestartDeviceEntity>(DeviceKeys.RestartDeviceEntityKey);
-            DeviceName = _restartDeviceEntity.Device.Name;
+            _restartDeviceContext = navigationContext.BiscNavigationParameters.GetParameterByName<RestartDeviceContext>(DeviceKeys.RestartDeviceContextKey);
+            DeviceName = _restartDeviceContext.Device.Name;
             HaveConflicts = false;
             IsRestartingInProgress = true;
             IsIntermetiateProgress = true;
@@ -140,7 +151,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
 
         private void OnDeviceLoadingEvent(DeviceLoadingEvent deviceLoadingEvent)
         {
-            if (_restartDeviceEntity.Device.Ip != deviceLoadingEvent.Ip) return;
+            if (_restartDeviceContext.Device.Ip != deviceLoadingEvent.Ip) return;
             if (deviceLoadingEvent.TotalProgressCount.HasValue)
             {
                 TotalProgress = deviceLoadingEvent.TotalProgressCount.Value;
@@ -153,7 +164,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
             if (deviceLoadingEvent.IsFinished.HasValue)
             {
                 IsRestartingInProgress = !deviceLoadingEvent.IsFinished.Value;
-                HaveConflicts = _restartDeviceEntity.HaveConflicts;
+                HaveConflicts = _restartDeviceContext.HaveConflicts;
             }
         }
 

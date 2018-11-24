@@ -54,7 +54,7 @@ namespace BISC.Modules.Reports.Presentation.Factorys
             var report = GetNewReportViewModel(_infoModelService.GetZeroLDevicesFromDevices(device), model, device);
             report.SelectidDataSetName = report.AvailableDatasets.FirstOrDefault();
             report.ConfigurationRevision = 1;
-            report.ChangeTracker.SetNew();
+            report.ChangeTracker.SetModified();
             return report;
         }
 

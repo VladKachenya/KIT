@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Presentation.Infrastructure.Commands;
 using Prism.Commands;
 
 namespace BISC.Presentation.BaseItems.ViewModels.Behaviors
@@ -18,7 +20,7 @@ namespace BISC.Presentation.BaseItems.ViewModels.Behaviors
 
         public BlockViewModelBehavior()
         {
-            UnlockCommand=new DelegateCommand(OnUnlock);
+            UnlockCommands=new ObservableCollection<UnlockCommandEntity>();
         }
 
         private void OnUnlock()
@@ -44,12 +46,6 @@ namespace BISC.Presentation.BaseItems.ViewModels.Behaviors
             get => _blockingMessage;
             set =>SetProperty(ref _blockingMessage, value,true);
         }
-        public string UnlockMessage
-        {
-            get => _unlockMessage;
-            set { SetProperty(ref _unlockMessage, value); }
-        }
-
         public bool IsUnlockOptionAvailable
         {
             get => _isUnlockOptionAvailable;
@@ -63,20 +59,43 @@ namespace BISC.Presentation.BaseItems.ViewModels.Behaviors
             IsBusy = isBusy;
             IsUnlockOptionAvailable = false;
         }
-        public void SetBlockWithOption(string message, string unlockOption)
+        public void SetBlockWithOption(string message, params UnlockCommandEntity[] unlockOptions)
         {
             BlockingMessage = message;
-            UnlockMessage = unlockOption;
+            foreach (var unlockCommandEntity in unlockOptions)
+            {
+                unlockCommandEntity.UnlockCommand=new DelegateCommand((() =>
+                {
+                    OnUnlock();
+                    unlockCommandEntity.UnlockCustomCommand?.Execute(null);
+                }));
+                UnlockCommands.Add(unlockCommandEntity);
+            }
             IsBlocked = true;
             IsUnlockOptionAvailable = true;
             IsBusy = false;
         }
 
-        public ICommand UnlockCommand { get; }
+        public ObservableCollection<UnlockCommandEntity> UnlockCommands { get; }
         public void Unlock()
         {
             IsBusy = false;
             IsBlocked = false;
+            UnlockCommands.Clear();
         }
+    }
+
+    public class UnlockCommandEntity
+    {
+        public UnlockCommandEntity(string unlockOptionHeader, ICommand unlockCustomCommand=null)
+        {
+         
+            UnlockOptionHeader = unlockOptionHeader;
+            UnlockCustomCommand = unlockCustomCommand;
+        }
+
+        public string UnlockOptionHeader { get; }
+        public ICommand UnlockCustomCommand { get; }
+        public ICommand UnlockCommand { get; set; }
     }
 }

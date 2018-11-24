@@ -110,7 +110,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             gooseControlViewModel.LdInst = ldevice.Inst;
             gooseControlViewModel.GseType = "GOOSE";
             gooseControlViewModel.FixedOffs = false;
-            gooseControlViewModel.ChangeTracker.SetNew();
+            gooseControlViewModel.ChangeTracker.SetModified();
 
 
             //var lds = _infoModelService.GetLDevicesFromDevices(device);

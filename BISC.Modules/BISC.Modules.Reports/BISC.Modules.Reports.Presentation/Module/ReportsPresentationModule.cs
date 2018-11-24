@@ -15,6 +15,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Reports.Model.Services;
 
 namespace BISC.Modules.Reports.Presentation.Module
 {
@@ -35,6 +37,7 @@ namespace BISC.Modules.Reports.Presentation.Module
             _injectionContainer.RegisterType<IReportControlViewModel, ReportControlViewModel>();
             _injectionContainer.RegisterType<object, ReportsDetailsView>(ReportsKeys.ReportsPresentationKeys.ReportsDetailsView);
             _injectionContainer.RegisterType<object, ReportsTreeItemView>(ReportsKeys.ReportsPresentationKeys.ReportsTreeItemView);
+            _injectionContainer.RegisterType<IElementConflictResolver, ReportsConflictResolver>(Guid.NewGuid().ToString());
 
             _injectionContainer.RegisterType<ReportsTreeItemViewModel>();
             _injectionContainer.RegisterType<ReportsDetailsViewModel>();

@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BISC.Modules.Device.Presentation"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             mc:Ignorable="d" 
+             xmlns:tree="clr-namespace:BISC.Modules.Device.Presentation.ViewModels.Tree"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance tree:DeviceTreeItemViewModel}"
              d:DesignHeight="300" d:DesignWidth="300" >
     <!--<i:Interaction.Triggers>
         <i:EventTrigger EventName="MouseDoubleClick" >
@@ -21,6 +22,8 @@
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Экспорт в .cid-файл" Command="{Binding ExportCidDeviceCommand}"></MenuItem>
+                <MenuItem Header="Подключить" Command="{Binding ConnectDeviceCommand}"></MenuItem>
+                <MenuItem Header="Отключить" Command="{Binding DisconnectDeviceCommand}"></MenuItem>
                 <MenuItem Header="Удалить" Command="{Binding DeleteDeviceCommand}"></MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>

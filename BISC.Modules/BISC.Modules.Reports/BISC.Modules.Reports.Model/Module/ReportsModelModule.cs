@@ -42,7 +42,6 @@ namespace BISC.Modules.Reports.Model.Module
             
             _injectionContainer.RegisterType<IFtpReportModelService, FtpReportModelService>();
             _injectionContainer.RegisterType<IDeviceElementLoadingService, ReportControlLoadingService>(Guid.NewGuid().ToString());
-            _injectionContainer.RegisterType<IElementConflictResolver, ReportsConflictResolver>(Guid.NewGuid().ToString());
 
 
         }

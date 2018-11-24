@@ -15,6 +15,7 @@ using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces;
+using BISC.Modules.Device.Presentation.Services.Helpers;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
@@ -41,7 +42,9 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private readonly ILoggingService _loggingService;
         private readonly IDeviceSerializingService _deviceSerializingService;
         private readonly IDeviceWarningsService _deviceWarningsService;
-        private readonly IDeviceRestartService _deviceRestartService;
+        private readonly IDeviceReconnectionService _deviceReconnectionService;
+        private readonly IDeviceConnectionService _deviceConnectionService;
+        private readonly INavigationService _navigationService;
         private Dispatcher _dispatcher;
 
         private string _deviceName;
@@ -52,7 +55,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         public DeviceTreeItemViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService, IGlobalEventsService globalEventsService, IConnectionPoolService connectionPoolService,
             IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService,
             IGoosesModelService goosesModelService, ISaveCheckingService saveCheckingService, IUserInteractionService userInteractionService, ILoggingService loggingService,
-            IDeviceSerializingService deviceSerializingService, IDeviceWarningsService deviceWarningsService, IDeviceRestartService deviceRestartService)
+            IDeviceSerializingService deviceSerializingService, IDeviceWarningsService deviceWarningsService, IDeviceReconnectionService deviceReconnectionService,
+            IDeviceConnectionService deviceConnectionService,INavigationService navigationService)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
             _deviceModelService = deviceModelService;
@@ -67,11 +71,37 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _loggingService = loggingService;
             _deviceSerializingService = deviceSerializingService;
             _deviceWarningsService = deviceWarningsService;
-            _deviceRestartService = deviceRestartService;
+            _deviceReconnectionService = deviceReconnectionService;
+            _deviceConnectionService = deviceConnectionService;
+            _navigationService = navigationService;
             DeleteDeviceCommand = commandFactory.CreatePresentationCommand(OnDeleteDeviceExecute);
             NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
             ResetDeviceViaFtpCommand = commandFactory.CreatePresentationCommand(OnResetDeviceViaFtp, IsResetDeviceViaFtp);
             ExportCidDeviceCommand = commandFactory.CreatePresentationCommand(OnExportCidDevice);
+            DisconnectDeviceCommand = commandFactory.CreatePresentationCommand(OnDisconnectDevice,CanDisconnectDevice);
+            ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDevice, CanConnectDevice);
+        }
+
+        private void OnConnectDevice()
+        {
+            _navigationService.NavigateViewToGlobalRegion(DeviceKeys.ReconnectDeviceViewKey,
+                new BiscNavigationParameters().AddParameterByName(DeviceKeys.ReconnectDeviceContextKey,
+                    new ReconnectDeviceContext(_device,_treeItemIdentifier)));
+        }
+
+        private bool CanConnectDevice()
+        {
+            return !IsDeviceConnected;
+        }
+
+        private bool CanDisconnectDevice()
+        {
+            return IsDeviceConnected;
+        }
+
+        private async void OnDisconnectDevice()
+        {
+            await _deviceConnectionService.DisconnectDevice(_device.Ip);
         }
 
         private void OnExportCidDevice()
@@ -92,7 +122,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             if (res == 1)
                 return;
             _loggingService.LogMessage($"Устройство {_device.Name} перезагружается", SeverityEnum.Info);
-            await _deviceRestartService.RestartDevice(_device, _treeItemIdentifier);
+            await _deviceReconnectionService.RestartDevice(_device, _treeItemIdentifier);
         }
 
         private bool IsResetDeviceViaFtp()
@@ -180,6 +210,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             if (ea.Ip == _device.Ip)
             {
                 IsDeviceConnected = ea.IsConnected;
+                (DisconnectDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
+                (ConnectDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
             }
         }
 
@@ -192,7 +224,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         }
 
         #endregion
-
+        public ICommand DisconnectDeviceCommand { get; }
+        public ICommand ConnectDeviceCommand { get; }
         public ICommand DeleteDeviceCommand { get; }
         public ICommand NavigateToDetailsCommand { get; }
         public ICommand ResetDeviceViaFtpCommand { get; }

@@ -7,9 +7,9 @@ using BISC.Model.Infrastructure.Project;
 
 namespace BISC.Modules.Device.Presentation.Services.Helpers
 {
-  public  class DeviceConflictEntity
+  public  class DeviceConflictContext
     {
-        public DeviceConflictEntity(ISclModel sclModelProject, ISclModel sclModelDevice, string deviceName)
+        public DeviceConflictContext(ISclModel sclModelProject, ISclModel sclModelDevice, string deviceName)
         {
             SclModelProject = sclModelProject;
             SclModelDevice = sclModelDevice;

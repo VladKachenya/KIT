@@ -40,7 +40,7 @@ namespace BISC.Modules.DataSets.Presentation.Factorys
             newDataSetViewModel.SelectedParentLd = newDataSetViewModel.ParentLdList.First();
             newDataSetViewModel.IsEditeble = true;
             newDataSetViewModel.IsEditing = true;
-            newDataSetViewModel.ChangeTracker.SetNew();
+            newDataSetViewModel.ChangeTracker.SetModified();
             return newDataSetViewModel;
         }
         private string GetUniqueNameOfDataSet(List<string> existingNames)

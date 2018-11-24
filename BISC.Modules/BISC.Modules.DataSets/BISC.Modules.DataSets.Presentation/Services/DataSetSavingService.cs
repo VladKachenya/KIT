@@ -106,7 +106,11 @@ namespace BISC.Modules.DataSets.Presentation.Services
                                     _biscProject.MainSclModel.Value)).MmsConnection.DeleteDataSet(ln.Name, ldevice.Inst, (device as IDevice).Name, dataSetExiting.Name);
                             if (!res.IsSucceed)
                             {
-                                _loggingService.LogMessage($"Не удалось удалить DataSet в устройстве: {res.GetFirstError()}", SeverityEnum.Warning);
+                                _loggingService.LogMessage($"Не удалось удалить DataSet {dataSetExiting.Name} в устройстве: {res.GetFirstError()}", SeverityEnum.Warning);
+                            }
+                            else
+                            {
+                                _loggingService.LogMessage($"DataSet {dataSetExiting.Name} удален в устройстве: {(device as IDevice).Name}", SeverityEnum.Info);
                             }
                         }
                         ln.ChildModelElements.Remove(dataSetsExisting.First((set =>
@@ -135,7 +139,11 @@ namespace BISC.Modules.DataSets.Presentation.Services
                                          _biscProject.MainSclModel.Value)).MmsConnection.DeleteDataSet(ln.Name, ldevice.Inst, (device as IDevice).Name, dataSetToSave.EditableNamePart);
                                 if (!res.IsSucceed)
                                 {
-                                    _loggingService.LogMessage($"Не удалось удалить DataSet в устройстве: {res.GetFirstError()}", SeverityEnum.Warning);
+                                    _loggingService.LogMessage($"Не удалось удалить DataSet {dataSetToSave.EditableNamePart} в устройстве: {res.GetFirstError()}", SeverityEnum.Warning);
+                                }
+                                else
+                                {
+                                    _loggingService.LogMessage($"DataSet {dataSetToSave.EditableNamePart} удален в устройстве: {(device as IDevice).Name}", SeverityEnum.Info);
                                 }
                             }
                             ln.ChildModelElements.Remove(dataSetsExisting.First((set =>
@@ -152,7 +160,11 @@ namespace BISC.Modules.DataSets.Presentation.Services
                                       _biscProject.MainSclModel.Value)).MmsConnection.AddDataSet(ln.Name, ldevice.Inst, (device as IDevice).Name, dataSetToSave.EditableNamePart, dataSet.FcdaList.ToDtos((device as IDevice).Name));
                             if (!res.IsSucceed)
                             {
-                                _loggingService.LogMessage($"Не удалось добавить DataSet в устройстве: {res.GetFirstError()}", SeverityEnum.Warning);
+                                _loggingService.LogMessage($"Не удалось {dataSetToSave.EditableNamePart} добавить DataSet в устройстве: {res.GetFirstError()}", SeverityEnum.Warning);
+                            }
+                            else
+                            {
+                                _loggingService.LogMessage($"DataSet {dataSetToSave.EditableNamePart} добавлен в устройство: {(device as IDevice).Name}", SeverityEnum.Info);
                             }
                         }
                     }

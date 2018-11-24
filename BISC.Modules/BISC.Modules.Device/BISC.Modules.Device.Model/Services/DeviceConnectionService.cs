@@ -53,5 +53,18 @@ namespace BISC.Modules.Device.Model.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<OperationResult<bool>> DisconnectDevice(string ip)
+        {
+            try
+            {
+                _connectionPoolService.GetConnection(ip).StopConnection();
+            }
+            catch (Exception e)
+            {
+               return new OperationResult<bool>(e.Message);
+            }
+            return new OperationResult<bool>(true);
+        }
     }
 }

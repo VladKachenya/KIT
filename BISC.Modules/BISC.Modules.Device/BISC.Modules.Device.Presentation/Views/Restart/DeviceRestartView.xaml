@@ -11,7 +11,12 @@
         <converters:BoolToVisConverter x:Key="boolToVisConverter"></converters:BoolToVisConverter>
 
     </UserControl.Resources>
-    <Grid>
+    <Grid Background="Transparent">
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Отменить процедуру перезагрузки" Command="{Binding CancelLoadingCommand}"></MenuItem>
+            </ContextMenu>
+        </Grid.ContextMenu>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>

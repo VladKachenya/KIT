@@ -24,6 +24,7 @@ using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Reports.Model.Services;
+using BISC.Presentation.BaseItems.ViewModels.Behaviors;
 using BISC.Presentation.Infrastructure.Commands;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
@@ -34,6 +35,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private IDevice _device;
         
         private List<IReportControl> _reportControlsModel;
+        private readonly ICommandFactory _commandFactory;
         private IReportsModelService _reportsModelService;
         private ISaveCheckingService _saveCheckingService;
         private IReportControlFactoryViewModel _reportControlFactoryViewModel;
@@ -48,6 +50,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private readonly IUserNotificationService _userNotificationService;
         private readonly IUserInteractionService _userInteractionService;
         private readonly IDeviceWarningsService _deviceWarningsService;
+        private readonly IDeviceReconnectionService _deviceReconnectionService;
 
 
         #region Ctor
@@ -55,9 +58,10 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService, IConnectionPoolService connectionPoolService,
             ILoggingService loggingService, IReportsSavingService reportsSavingService, IBiscProject biscProject,
                 ReportControlLoadingService reportControlLoadingService, IUserNotificationService userNotificationService, IUserInteractionService userInteractionService
-                ,IDeviceWarningsService deviceWarningsService)
+                ,IDeviceWarningsService deviceWarningsService,IDeviceReconnectionService deviceReconnectionService)
         //IReportsLoadingService reportsLoadingService, 
         {
+            _commandFactory = commandFactory;
             _reportsModelService = reportsModelService;
             _saveCheckingService = saveCheckingService;
             _reportControlFactoryViewModel = reportControlFactoryViewModel;
@@ -69,6 +73,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _userNotificationService = userNotificationService;
             _userInteractionService = userInteractionService;
             _deviceWarningsService = deviceWarningsService;
+            _deviceReconnectionService = deviceReconnectionService;
             //_reportsLoadingService = reportsLoadingService;
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand);
             AddNewReportCommand = commandFactory.CreatePresentationCommand(OnAddNewReportCommand, IsAddNewReport);
@@ -116,7 +121,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             {
                 BlockViewModelBehavior.SetBlockWithOption(
                     "Для сохранения изменений по FTP требуется перезагрузка" + Environment.NewLine +
-                    "Имеется несоответствие данных.", "Все равно продолжить");
+                    "Имеется несоответствие данных.", new UnlockCommandEntity("Все равно продолжить"));
+                //new UnlockCommandEntity("Перезагрузить устройство",_commandFactory.CreatePresentationCommand((async () => { await _deviceRestartService.RestartDevice(_device,)}))));
             }
         }
 

@@ -20,6 +20,7 @@ using BISC.Modules.Gooses.Presentation.Factories;
 using BISC.Modules.Gooses.Presentation.Services;
 using BISC.Modules.Gooses.Presentation.ViewModels.GooseControls;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.BaseItems.ViewModels.Behaviors;
 using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
@@ -140,7 +141,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
                 BlockViewModelBehavior.SetBlockWithOption(
                     "Для сохранения изменений по FTP требуется перезагрузка" + Environment.NewLine +
-                    "Имеется несоответствие данных.", "Все равно продолжить");
+                    "Имеется несоответствие данных.", new UnlockCommandEntity("Все равно продолжить"));
             }
         }
 

@@ -9,9 +9,9 @@ using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.Services.Helpers
 {
-   public class RestartDeviceEntity
+   public class RestartDeviceContext
     {
-        public RestartDeviceEntity(IDevice device, CancellationTokenSource cts)
+        public RestartDeviceContext(IDevice device, CancellationTokenSource cts)
         {
             Device = device;
             Cts = cts;
@@ -22,6 +22,6 @@ namespace BISC.Modules.Device.Presentation.Services.Helpers
         public CancellationTokenSource Cts { get; }
         public bool HaveConflicts { get; set; }
         public TreeItemIdentifier TreeItemIdentifier { get; set; }
-        public DeviceConflictEntity DeviceConflictEntity { get; set; }
+        public DeviceConflictContext DeviceConflictContext { get; set; }
     }
 }

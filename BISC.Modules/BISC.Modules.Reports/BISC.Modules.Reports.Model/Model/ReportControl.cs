@@ -39,7 +39,7 @@ namespace BISC.Modules.Reports.Model.Model
             if (!(obj is IReportControl)) return false;
             var element = obj as IReportControl;
             if (element.Name != Name) return false;
-            if (element.RptID != RptID) return false;
+            //if (element.RptID != RptID) return false;
             if (element.Buffered != Buffered) return false;
             if (element.BufTime != BufTime) return false;
             if (element.DataSet != DataSet) return false;

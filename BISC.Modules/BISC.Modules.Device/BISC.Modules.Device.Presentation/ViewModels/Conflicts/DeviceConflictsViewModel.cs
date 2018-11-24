@@ -24,7 +24,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
         private readonly DeviceConflictFactory _deviceConflictFactory;
         private readonly List<IElementConflictResolver> _elementConflictResolvers;
         private bool _isApplyButtonEnabled;
-        private DeviceConflictEntity _conflictEntity;
+        private DeviceConflictContext _conflictContext;
 
         public DeviceConflictsViewModel(ICommandFactory commandFactory,IInjectionContainer injectionContainer, DeviceConflictFactory deviceConflictFactory)
         {
@@ -50,11 +50,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
                 if(deviceConflictViewModel.IsConflictOk)continue;
                 var res= await _elementConflictResolvers.FirstOrDefault((resolver =>
                         resolver.ConflictName == deviceConflictViewModel.ConflictTitle))?
-                    .ResolveConflict(deviceConflictViewModel.IsConflictResolvedAsFromDevice, _conflictEntity.DeviceName,
-                        _conflictEntity.SclModelDevice, _conflictEntity.SclModelProject);
+                    .ResolveConflict(deviceConflictViewModel.IsConflictResolvedAsFromDevice, _conflictContext.DeviceName,
+                        _conflictContext.SclModelDevice, _conflictContext.SclModelProject);
                 if (res.IsRestartNeeded)
                 {
-                    _conflictEntity.IsRestartNeeded = true;
+                    _conflictContext.IsRestartNeeded = true;
                 }
             }
 
@@ -70,12 +70,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
-            _conflictEntity =
-                navigationContext.BiscNavigationParameters.GetParameterByName<DeviceConflictEntity>(DeviceKeys
-                    .DeviceConflictEntityKey);
+            _conflictContext =
+                navigationContext.BiscNavigationParameters.GetParameterByName<DeviceConflictContext>(DeviceKeys
+                    .DeviceConflictContextKey);
             foreach (var elementConflictResolver in _elementConflictResolvers)
             {
-               var conflictViewModel= _deviceConflictFactory.CreateDeviceConflictViewModel(_conflictEntity,elementConflictResolver);
+               var conflictViewModel= _deviceConflictFactory.CreateDeviceConflictViewModel(_conflictContext,elementConflictResolver);
                 DeviceConflictViewModels.Add(conflictViewModel);
             }
             foreach (DeviceConflictViewModel deviceConflictViewModel in DeviceConflictViewModels)

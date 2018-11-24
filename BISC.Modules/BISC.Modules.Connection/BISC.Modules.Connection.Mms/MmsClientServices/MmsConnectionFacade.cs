@@ -491,6 +491,11 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                     Ln = ln,
                     Name = name
                 });
+                if (res?.Confirmed_ResponsePDU?.Service?.DeleteNamedVariableList == null ||
+                    res.Confirmed_ResponsePDU.Service.DeleteNamedVariableList.NumberDeleted.Value != 1)
+                {
+                    return new OperationResult("Датасет не был удален");
+                }
                 return OperationResult.SucceedResult;
             }
             catch (Exception e)
@@ -503,13 +508,17 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
         {
             try
             {
-                await new DataSetClientService(_state).SendDefineNVLAsync(new Dto.DataSetDto()
+               var res= await new DataSetClientService(_state).SendDefineNVLAsync(new Dto.DataSetDto()
                 {
                     Ied = ied,
                     Ld = ld,
                     Ln = ln,
                     Name = nameDataSet
                 },fcdaDtos);
+                if (res?.Confirmed_ResponsePDU?.Service?.DefineNamedVariableList == null)
+                {
+                    return new OperationResult("Датасет не был добавлен");
+                }
                 return OperationResult.SucceedResult;
             }
             catch (Exception e)

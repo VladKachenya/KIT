@@ -22,14 +22,34 @@
                                     <Border.Background>
                                         <SolidColorBrush Color="Black" Opacity=".6"/>
                                     </Border.Background>
-                                    <StackPanel>
-                                        <ProgressBar Width="40" Height="40" Margin="10" Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Visibility="{Binding DataContext.BlockViewModelBehavior.IsBusy,Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}}"></ProgressBar>
-                                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Text="{Binding DataContext.BlockViewModelBehavior.BlockingMessage, RelativeSource={RelativeSource TemplatedParent}}"></TextBlock>
-                                        <Button Margin="10,40,10,10" HorizontalAlignment="Center" MinWidth="100"  Style="{StaticResource FlatButtonLight}"
-                                                Visibility="{Binding DataContext.BlockViewModelBehavior.IsUnlockOptionAvailable,Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}}"
-                                                Content="{Binding DataContext.BlockViewModelBehavior.UnlockMessage, RelativeSource={RelativeSource TemplatedParent}}"
-                                                Command="{Binding DataContext.BlockViewModelBehavior.UnlockCommand, RelativeSource={RelativeSource TemplatedParent}}"></Button>
-                                        </StackPanel>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        
+                                        <ProgressBar Grid.Row="0" Width="40" Height="40" Margin="10" Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Visibility="{Binding DataContext.BlockViewModelBehavior.IsBusy,Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}}"></ProgressBar>
+                                        <TextBlock   Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Text="{Binding DataContext.BlockViewModelBehavior.BlockingMessage, RelativeSource={RelativeSource TemplatedParent}}"></TextBlock>
+
+                                        <ItemsControl Grid.Row="2"
+                                                      ItemsSource="{Binding DataContext.BlockViewModelBehavior.UnlockCommands, RelativeSource={RelativeSource TemplatedParent}}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button Margin="10,40,10,10" HorizontalAlignment="Center" MinWidth="100"  Style="{StaticResource FlatButtonLight}"
+                                                        Content="{Binding UnlockOptionHeader}"
+                                                        Command="{Binding UnlockCommand}"></Button>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Vertical"></StackPanel>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
+
+                                    </Grid>
                                 </Border>
                                 <!-- Add controls as needed -->
                             </Grid>

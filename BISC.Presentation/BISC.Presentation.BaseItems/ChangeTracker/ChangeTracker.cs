@@ -169,7 +169,7 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
             return false;
         }
 
-        public void SetNew()
+        public void SetModified()
         {
             ChangeTrackerState = ChangeTrackerState.Modified;
         }

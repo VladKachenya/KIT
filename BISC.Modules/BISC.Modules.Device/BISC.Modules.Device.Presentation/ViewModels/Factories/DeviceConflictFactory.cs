@@ -21,10 +21,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Factories
             _commandFactory = commandFactory;
         }
 
-        public DeviceConflictViewModel CreateDeviceConflictViewModel(DeviceConflictEntity deviceConflictEntity,IElementConflictResolver elementConflictResolver)
+        public DeviceConflictViewModel CreateDeviceConflictViewModel(DeviceConflictContext deviceConflictContext,IElementConflictResolver elementConflictResolver)
         {
-            var haveConflict = elementConflictResolver.GetIfConflictsExists(deviceConflictEntity.DeviceName,
-                deviceConflictEntity.SclModelDevice, deviceConflictEntity.SclModelProject);
+            var haveConflict = elementConflictResolver.GetIfConflictsExists(deviceConflictContext.DeviceName,
+                deviceConflictContext.SclModelDevice, deviceConflictContext.SclModelProject);
             DeviceConflictViewModel deviceConflictViewModel = _deviceConflictViewModelFunc();
             deviceConflictViewModel.ConflictTitle = elementConflictResolver.ConflictName;
             deviceConflictViewModel.IsConflictOk = !haveConflict;
