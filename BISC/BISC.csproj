@@ -184,10 +184,6 @@
       <Project>{e28fb4bb-b14a-441a-a1b7-2ec9e37a33df}</Project>
       <Name>BISC.Infrastructure.Global</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BISC.Infrastructure\BISC.Infrastructure.Shell\BISC.Infrastructure.Shell\BISC.Infrastructure.Shell.csproj">
-      <Project>{7712601B-0023-4094-AD65-6A2941AC6C86}</Project>
-      <Name>BISC.Infrastructure.Shell</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BISC.Presentation\BISC.Presentation.BaseItems\BISC.Presentation.BaseItems.csproj">
       <Project>{02377DCB-BF54-4343-A7C2-15B9AF8E5605}</Project>
       <Name>BISC.Presentation.BaseItems</Name>

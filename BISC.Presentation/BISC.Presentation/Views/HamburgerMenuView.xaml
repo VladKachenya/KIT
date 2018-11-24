@@ -15,8 +15,7 @@
         <CollectionViewSource x:Key="MultipleComands" Source="{Binding GlobalCommandGroups}"/>
         <CollectionViewSource x:Key="SingleComands" Source="{Binding GlobalCommands}"/>
         <!--<ContentControl x:Key="IconContentControl" ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>-->
-        <Style x:Key="MenuItemStyle" TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
-            <Setter Property="Header" Value="{Binding CommandName}"/>
+        <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
             <Setter Property="Command" Value="{Binding Command}"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="IsCheckable" Value="False"/>
@@ -24,24 +23,21 @@
         </Style>
     </UserControl.Resources>
     <StackPanel>
-        <ItemsControl >
-            <ItemsControl.ItemsSource>
+        <Menu HorizontalContentAlignment="Stretch" ItemContainerStyle="{StaticResource MenuItemStyle}" ItemsSource="{Binding GlobalCommandGroups}">
+            <!--<ItemsControl.ItemsSource>
                 <CompositeCollection>
                     <CollectionContainer Collection="{Binding Source={StaticResource MultipleComands}}" />
                 </CompositeCollection>
-            </ItemsControl.ItemsSource>
+            </ItemsControl.ItemsSource>-->
             <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type modularity:IGlobalCommandGroup}">
-                    <MenuItem Header="{Binding CommandsName}" ItemsSource="{Binding GlobalCommandsGroup}" ItemContainerStyle="{Binding Source={StaticResource MenuItemStyle}}"
-                              MouseLeave="UIElement_OnLostFocus" 
-                              PreviewMouseLeftButtonDown = "MenuItem_OnClick">
-                            <MenuItem.Icon>
-                                <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                </DataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type modularity:IGlobalCommandGroup}" ItemsSource="{Binding GlobalCommandsGroup}">
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>
+                        <TextBlock Text="{Binding CommandsName}"></TextBlock>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
             </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        </Menu>
 
         <ItemsControl >
             <ItemsControl.ItemsSource>

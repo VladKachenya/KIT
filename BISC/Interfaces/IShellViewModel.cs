@@ -1,5 +1,5 @@
-﻿using BISC.Infrastructure.Shell.ViewModels;
-using System.Windows;
+﻿using System.Windows;
+using BISC.Presentation.Infrastructure.ViewModel;
 
 namespace BISC.Interfaces
 {

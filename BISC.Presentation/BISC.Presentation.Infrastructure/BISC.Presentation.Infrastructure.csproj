@@ -82,6 +82,7 @@
     <Compile Include="UiFromModel\IUiFromModelElementService.cs" />
     <Compile Include="Tab\IDraggableTab.cs" />
     <Compile Include="Tree\TreeCommands\ITreeCommand.cs" />
+    <Compile Include="ViewModel\IApplicationTitle.cs" />
     <Compile Include="ViewModel\ICheckBeforeClosingViewModel.cs" />
     <Compile Include="ViewModel\IEditableViewModel.cs" />
     <Compile Include="ViewModel\ISelectableViewModel.cs" />

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Services;
-using BISC.Infrastructure.Shell.ViewModels;
 using BISC.Model.Global.Constants;
 using BISC.Model.Global.Model;
 using BISC.Model.Global.Project;
@@ -19,6 +18,7 @@ using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.Services;
+using BISC.Presentation.Infrastructure.ViewModel;
 
 namespace BISC.Model.Global.Services
 {
