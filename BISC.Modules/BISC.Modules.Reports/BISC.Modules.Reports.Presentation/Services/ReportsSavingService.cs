@@ -71,7 +71,7 @@ namespace BISC.Modules.Reports.Presentation.Services
                     var ln = reportControlInDevise.ParentModelElement as ILogicalNode;
                     var ldevice = ln.ParentModelElement as ILDevice;
                     var reportToSave = reportsToSave.FirstOrDefault(element => element.Name == reportControlInDevise.Name);
-                    if (reportToSave != null || !reportControlInDevise.IsDynamic)
+                    if (reportToSave != null && !reportControlInDevise.IsDynamic)
                     {
                         if (!reportToSave.ChangeTracker.GetIsModifiedRecursive()) continue;
                         if (!reportToSave.IsDynamic)

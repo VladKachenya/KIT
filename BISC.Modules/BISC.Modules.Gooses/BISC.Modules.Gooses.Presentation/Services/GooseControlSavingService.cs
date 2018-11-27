@@ -146,7 +146,7 @@ namespace BISC.Modules.Gooses.Presentation.Services
             relatedGse.AppIdDec = gooseControlViewModel.AppId.ToString();
             relatedGse.LdInst = gooseControlViewModel.LdInst;
             relatedGse.MacAddress = gooseControlViewModel.MacAddress;
-            relatedGse.MaxTime.Value = new DurationInMilliSec("MinTime")
+            relatedGse.MaxTime.Value = new DurationInMilliSec("MaxTime")
             {
                 Multiplier = "m",
                 Value = (int)gooseControlViewModel.MaxTime,

@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
+using BISC.Infrastructure.Global.Services;
+using BISC.Modules.Device.Infrastructure.Events;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
@@ -12,22 +16,37 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
     public class GooseGroupTreeItemViewModel : NavigationViewModelBase
     {
         private readonly ITabManagementService _tabManagementService;
+        private readonly IDeviceWarningsService _deviceWarningsService;
+        private readonly IGlobalEventsService _globalEventsService;
         private IDevice _device;
 
         private TreeItemIdentifier _subscriptionIdentifier;
         private TreeItemIdentifier _matrixIdentifier;
         private TreeItemIdentifier _gooseEditIdentifier;
+        private bool _isReportWarning;
 
 
-        public GooseGroupTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService)
+        public GooseGroupTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService, IDeviceWarningsService deviceWarningsService,IGlobalEventsService globalEventsService)
         {
             _tabManagementService = tabManagementService;
+            _deviceWarningsService = deviceWarningsService;
+            _globalEventsService = globalEventsService;
             NavigateToGooseControlsCommand = commandFactory.CreatePresentationCommand(NavigateToGooseControls);
             NavigateToSubscriptionCommand = commandFactory.CreatePresentationCommand(OnNavigateToSubscription);
             NavigateToMatrixCommand = commandFactory.CreatePresentationCommand(OnNavigateToMatrix);
+            WarningsCollection=new ObservableCollection<string>();
+        }
+        private void OnDeviceWarningsChanged(DeviceWarningsChanged deviceWarningsChanged)
+        {
+            if (deviceWarningsChanged.DeviceNameOfWarning != _device.Name) return;
+            WarningsCollection.Clear();
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name, GooseKeys.GooseWarningKeys.GooseSavedFtpKey))
+            {
+                IsReportWarning = true;
+                WarningsCollection.Add("Не сохранены результаты редактирования блоков управления Goose. Требуется перезагрузка устройства");
+            }
 
         }
-
         private void OnNavigateToMatrix()
         {
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
@@ -52,7 +71,12 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
         public ICommand NavigateToGooseControlsCommand { get; }
         public ICommand NavigateToSubscriptionCommand { get; }
         public ICommand NavigateToMatrixCommand { get; }
-
+        public bool IsReportWarning
+        {
+            get => _isReportWarning;
+            set { SetProperty(ref _isReportWarning, value); }
+        }
+        public ObservableCollection<string> WarningsCollection { get; }
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
@@ -62,9 +86,18 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
             _subscriptionIdentifier=new TreeItemIdentifier(Guid.NewGuid(),treeItemIdentifier);
             _matrixIdentifier = new TreeItemIdentifier(Guid.NewGuid(), treeItemIdentifier);
             _gooseEditIdentifier = new TreeItemIdentifier(Guid.NewGuid(), treeItemIdentifier);
+            _globalEventsService.Subscribe<DeviceWarningsChanged>(OnDeviceWarningsChanged);
 
             base.OnNavigatedTo(navigationContext);
         }
-       
+        #region Overrides of ViewModelBase
+
+        protected override void OnDisposing()
+        {
+            _globalEventsService.Unsubscribe<DeviceWarningsChanged>(OnDeviceWarningsChanged);
+            base.OnDisposing();
+        }
+
+        #endregion
     }
 }

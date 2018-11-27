@@ -96,7 +96,7 @@ namespace BISC.Modules.Reports.Presentation.Services
             if (isFromDevice)
             {
                 deviceOnlyReportViewModels.ForEach((model =>model.ChangeTracker.SetModified() ));
-               savingResult = await _reportsSavingService.SaveReportsAsync(reportViewmodelsInDevice.ToList(), deviceInsclModelInDevice, _connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).IsConnected);
+               savingResult = await _reportsSavingService.SaveReportsAsync(reportViewmodelsInDevice.ToList(), devicesclModelInProject, _connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).IsConnected);
                
             }
             else

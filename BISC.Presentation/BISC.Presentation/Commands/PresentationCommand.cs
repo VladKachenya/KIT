@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using BISC.Presentation.Infrastructure.Commands;
 using Prism.Commands;
 
@@ -66,7 +67,11 @@ namespace BISC.Presentation.Commands
 
         public void RaiseCanExecute()
         {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            });
             //_delegateCommand.RaiseCanExecuteChanged();
         }
 

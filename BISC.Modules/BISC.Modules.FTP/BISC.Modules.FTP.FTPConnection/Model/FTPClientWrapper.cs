@@ -56,9 +56,14 @@ namespace BISC.Modules.FTP.FTPConnection.Model
                 throw new Exception("Ошибка загрузки файла по FTP: требуемой директории не существует");
             }
             _ftpClient.SetWorkingDirectory(dirPath);
-            var cfgDir = _ftpClient.GetNameListing();
+            List<string> dirCfg=new List<string>();
 
-            if (!cfgDir.Contains(fileNamesWithExt))
+            await Task.Run((() =>
+            {
+                dirCfg = _ftpClient.GetNameListing().ToList();
+            }));
+
+            if (!dirCfg.Contains(fileNamesWithExt))
             {
                 throw new Exception($"В устройстве отсутствует требуемый файл {fileNamesWithExt}");
             }

@@ -69,49 +69,49 @@ namespace BISC.Modules.Gooses.Model.Services
 
         public async Task<ResolvingResult> ResolveConflict(bool isFromDevice, string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
-            //var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
-            //var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
 
 
-            //var gooseControlsInDevice = _goosesModelService.GetGooseControlsOfDevice(deviceInsclModelInDevice);
-            //var gooseControlsInProject = _goosesModelService.GetGooseControlsOfDevice(devicesclModelInProject);
+            var gooseControlsInDevice = _goosesModelService.GetGooseControlsOfDevice(deviceInsclModelInDevice);
+            var gooseControlsInProject = _goosesModelService.GetGooseControlsOfDevice(devicesclModelInProject);
 
 
-            //var projectOnlyGooseControls = GetProjectOnlyGooseControls(gooseControlsInProject, gooseControlsInDevice);
-            //var deviceOnlyGooseControls = GetDeviceOnlyGooseControls(gooseControlsInProject, gooseControlsInDevice);
+            var projectOnlyGooseControls = GetProjectOnlyGooseControls(gooseControlsInProject, gooseControlsInDevice);
+            var deviceOnlyGooseControls = GetDeviceOnlyGooseControls(gooseControlsInProject, gooseControlsInDevice);
 
-            //if (isFromDevice)
-            //{
-            //    foreach (var deviceOnlyGooseControl in deviceOnlyGooseControls)
-            //    {
-            //        _goosesModelService.AddGseControl(deviceOnlyGooseControl.GetFirstParentOfType<ILogicalNode>().Name, deviceOnlyGooseControl.GetFirstParentOfType<ILDevice>().Inst,devicesclModelInProject,deviceOnlyGooseControl);
-            //        var gseToAdd= _sclCommunicationModelService.GetGsesForDevice(deviceInsclModelInDevice.Name, sclModelInProject)
-            //            .FirstOrDefault((gse => gse.CbName == deviceOnlyGooseControl.Name));
-            //        _sclCommunicationModelService.AddGse(gseToAdd,sclModelInProject,deviceName);
-            //    }
+            if (isFromDevice)
+            {
+                foreach (var projectOnlyGooseControl in projectOnlyGooseControls)
+                {
+                    _goosesModelService.DeleteGooseCbAndGseByName(projectOnlyGooseControl.Name, devicesclModelInProject);
+                }
+                foreach (var deviceOnlyGooseControl in deviceOnlyGooseControls)
+                {
+                    _goosesModelService.AddGseControl(deviceOnlyGooseControl.GetFirstParentOfType<ILogicalNode>().Name, deviceOnlyGooseControl.GetFirstParentOfType<ILDevice>().Inst, devicesclModelInProject, deviceOnlyGooseControl);
+                    var gseToAdd = _sclCommunicationModelService.GetGsesForDevice(deviceInsclModelInDevice.Name, sclModelInDevice)
+                        .FirstOrDefault((gse => gse.CbName == deviceOnlyGooseControl.Name));
+                    _sclCommunicationModelService.AddGse(gseToAdd, sclModelInProject, deviceName);
+                }
 
-            //    foreach (var projectOnlyGooseControl in projectOnlyGooseControls)
-            //    {
-            //        _goosesModelService.DeleteGooseCbAndGseByName(projectOnlyGooseControl.Name,devicesclModelInProject);
-            //    }
-            //}
-            //else
-            //{
-            //    var gooseFtpDtos=new List<GooseFtpDto>();
-            //    foreach (var projectOnlyGooseControl in projectOnlyGooseControls)
-            //    {
-            //        var gses = _sclCommunicationModelService.GetGsesForDevice(devicesclModelInProject.Name,
-            //            sclModelInProject);
-            //        gooseFtpDtos.Add(GetGooseFtpDto(projectOnlyGooseControl,gses.FirstOrDefault((gse => gse.CbName == projectOnlyGooseControl.Name))));
-            //    }
+            }
+            else
+            {
+                var gooseFtpDtos = new List<GooseFtpDto>();
+                foreach (var projectOnlyGooseControl in projectOnlyGooseControls)
+                {
+                    var gses = _sclCommunicationModelService.GetGsesForDevice(devicesclModelInProject.Name,
+                        sclModelInProject);
+                    gooseFtpDtos.Add(GetGooseFtpDto(projectOnlyGooseControl, gses.FirstOrDefault((gse => gse.CbName == projectOnlyGooseControl.Name))));
+                }
 
-            //    var res=await _ftpGooseModelService.WriteGooseDtosToDevice(deviceInsclModelInDevice.Ip, gooseFtpDtos);
-            //    if (!res.IsSucceed)
-            //    {
-            //        return new ResolvingResult(res.GetFirstError());
-            //    }
-            //    return new ResolvingResult(){IsRestartNeeded = true};
-            //}
+                var res = await _ftpGooseModelService.WriteGooseDtosToDevice(deviceInsclModelInDevice.Ip, gooseFtpDtos);
+                if (!res.IsSucceed)
+                {
+                    return new ResolvingResult(res.GetFirstError());
+                }
+                return new ResolvingResult() { IsRestartNeeded = true };
+            }
             return ResolvingResult.SucceedResult;
         }
 

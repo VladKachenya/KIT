@@ -81,6 +81,9 @@
     <Compile Include="Views\DataSetsDetailsView.xaml.cs">
       <DependentUpon>DataSetsDetailsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DatasetsReadonlyView.xaml.cs">
+      <DependentUpon>DatasetsReadonlyView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DataSetsTreeItemView.xaml.cs">
       <DependentUpon>DataSetsTreeItemView.xaml</DependentUpon>
     </Compile>
@@ -94,6 +97,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DataSetsDetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DatasetsReadonlyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
