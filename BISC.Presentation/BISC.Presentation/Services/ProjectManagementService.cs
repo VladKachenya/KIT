@@ -180,7 +180,7 @@ namespace BISC.Presentation.Services
             _projectService.СreateNewProject();
             _projectService.SetDefaultProjectPath();
             await _saveCheckingService.SaveAllUnsavedEntities(false);
-            _loggingService.LogMessage($"Проект {_projectService.GetCurrentProjectPath(true)} очистен", SeverityEnum.Info);
+            _loggingService.LogMessage($"Проект {_projectService.GetCurrentProjectPath(true)} очищен", SeverityEnum.Info);
         }
 
 

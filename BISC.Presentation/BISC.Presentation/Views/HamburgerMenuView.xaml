@@ -30,6 +30,7 @@
             <Setter Property="AttachedPropertys:PlacementProperty.MenuPlacement" Value="Left"/>
             <Setter Property="VerticalContentAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch"></Setter>
         </Style>
 
     </UserControl.Resources>

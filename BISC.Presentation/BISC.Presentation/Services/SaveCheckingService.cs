@@ -88,7 +88,7 @@ namespace BISC.Presentation.Services
              await  _navigationService.NavigateViewToGlobalRegion(KeysForNavigation.ViewNames.SaveChangesViewName,navigationParameters);
             }
 
-            if (saveResultEnum.IsSaved)
+            if (saveResultEnum.IsSaved||!isNeedToAsk)
             {
                 modifiedEntities.ForEach((entity =>
                 {

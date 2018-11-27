@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Services;
 
 namespace BISC.Modules.Reports.Presentation.Factorys
 {
@@ -24,13 +25,16 @@ namespace BISC.Modules.Reports.Presentation.Factorys
         private readonly IReportControlsFactory _reportControlsFactory;
         private readonly IDatasetModelService _datasetModelService;
         private readonly IInfoModelService _infoModelService;
+        private readonly IUniqueNameService _uniqueNameService;
 
-        public ReportControlFactoryViewModel(IInjectionContainer injectionContainer, IReportControlsFactory reportControlsFactory, IDatasetModelService datasetModelService, IInfoModelService infoModelService)
+        public ReportControlFactoryViewModel(IInjectionContainer injectionContainer, IReportControlsFactory reportControlsFactory, IDatasetModelService datasetModelService, 
+            IInfoModelService infoModelService, IUniqueNameService uniqueNameService)
         {
             _injectionContainer = injectionContainer;
             _reportControlsFactory = reportControlsFactory;
             _datasetModelService = datasetModelService;
             _infoModelService = infoModelService;
+            _uniqueNameService = uniqueNameService;
         }
         public ObservableCollection<IReportControlViewModel> GetReportControlsViewModel(List<IReportControl> modelsList, IDevice device)
         {
@@ -49,8 +53,9 @@ namespace BISC.Modules.Reports.Presentation.Factorys
         public IReportControlViewModel CreateReportViewModel(List<string> existingNames, IDevice device)
         {
             var reportsName = existingNames.Select(repId => repId.Split('$','/','.')[2]);
+
             var model = _reportControlsFactory.GetReportControl();
-            model.Name = GetUniqueNameOfReport(reportsName);
+            model.Name = _uniqueNameService.GetUniqueName(reportsName.ToList(), "NewReport");
             var report = GetNewReportViewModel(_infoModelService.GetZeroLDevicesFromDevices(device), model, device);
             report.SelectidDataSetName = report.AvailableDatasets.FirstOrDefault();
             report.ConfigurationRevision = 1;
@@ -66,28 +71,6 @@ namespace BISC.Modules.Reports.Presentation.Factorys
             newReport.SetParentLDevice(parientDevice);
             newReport.ActivateElement();
             return newReport;
-        }
-
-
-        private string GetUniqueNameOfReport(IEnumerable<string> existingNames)
-        {
-            string nameBody = "NewReport";
-            string result;
-            int i = 0;
-            bool isFind;
-            do
-            {
-                i++;
-                result = nameBody + i.ToString();
-                isFind = false;
-                foreach (var element in existingNames)
-                {
-                    if (result == element)
-                        isFind = true;
-                }
-            } while (isFind);
-
-            return result;
         }
 
         private ILDevice GetLDeviceOfReportControlRecursive(IModelElement reportControl)

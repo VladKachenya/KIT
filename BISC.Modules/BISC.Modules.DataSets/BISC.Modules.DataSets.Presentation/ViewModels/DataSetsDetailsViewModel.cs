@@ -154,8 +154,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         private bool IsAddNewDataSet()
         {
-            var isEditebleDs = DataSets.Where(ds => ds.IsEditeble);
-            if (isEditebleDs.Count() >= 10) return false;
+            //var isEditebleDs = DataSets.Where(ds => ds.IsEditeble);
+            //if (isEditebleDs.Count() >= 10) return false;
             return true;
         }
         private void OnDeployAllExpanders()

@@ -144,8 +144,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         private bool IsAddNewReport()
         {
-            var editingReport = ReportControlViewModels.Where(rep => rep.IsDynamic);
-            if (editingReport.Count() >= 10) return false;
+            //var editingReport = ReportControlViewModels.Where(rep => rep.IsDynamic);
+            //if (editingReport.Count() >= 10) return false;
             return true;
         }
 

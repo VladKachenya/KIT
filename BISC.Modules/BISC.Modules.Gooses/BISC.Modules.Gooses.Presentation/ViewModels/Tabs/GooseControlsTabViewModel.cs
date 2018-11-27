@@ -105,8 +105,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         private bool IsAddGoose()
         {
-            var isDynamicGooses = GooseControlViewModels.Where(gse => gse.IsDynamic);
-            if (isDynamicGooses.Count() >= 10) return false;
+            //var isDynamicGooses = GooseControlViewModels.Where(gse => gse.IsDynamic);
+            //if (isDynamicGooses.Count() >= 10) return false;
             return true;
         }
 
