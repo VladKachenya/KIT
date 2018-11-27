@@ -111,7 +111,17 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser
         {
             _globalEventsService.SendMessage(new FTPActionMassageEvent { Status = null, Message = "Перечитывание файловой системы" });
             if (_fileBrowser == null) return;
-            await _fileBrowser.LoadRootDirectory();
+            try
+            {
+                await _fileBrowser.LoadRootDirectory();
+            }
+            catch (Exception e)
+            {
+                _globalEventsService.SendMessage(new FTPActionMassageEvent { Status = false, Message = "Ошибка перечитывания файловой системы" });
+                _rootDeviceDirectoryViewModel = null;
+                OnPropertyChanged(nameof(RootDeviceDirectoryViewModel));
+                return;
+            }
             _rootDeviceDirectoryViewModel =
                 _browserElementViewModelFactory.CreateBrowserElementViewModelBase(_fileBrowser.RootDeviceDirectory, null) as
                     IDeviceDirectoryViewModel;

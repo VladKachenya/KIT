@@ -169,6 +169,13 @@ namespace BISC.Presentation.Services
 
         public async void СreateNewProject()
         {
+            var res = await _userInteractionService.ShowOptionToUser("Сохранение проекта",
+                $"При создании нового проекта изменения текущего проекта будут утеряны!  \n" +
+                $"Не желаете сохранить текущий проект?", new List<string> { "Сохранить", "НЕТ" });
+            if (res == 0)
+            {
+                SaveProject();
+            }
             ClearCurrentProject();
             _projectService.СreateNewProject();
             _projectService.SetDefaultProjectPath();

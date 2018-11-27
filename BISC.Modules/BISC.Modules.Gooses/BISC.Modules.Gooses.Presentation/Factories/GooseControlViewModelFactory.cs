@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
@@ -25,17 +26,20 @@ namespace BISC.Modules.Gooses.Presentation.Factories
         private readonly IDatasetModelService _datasetModelService;
         private readonly IBiscProject _biscProject;
         private readonly IInfoModelService _infoModelService;
+        private readonly IUniqueNameService _uniqueNameService;
+
 
 
         public GooseControlViewModelFactory(IGoosesModelService goosesModelService,
             ISclCommunicationModelService sclCommunicationModelService,
-            IDatasetModelService datasetModelService, IBiscProject biscProject, IInfoModelService infoModelService)
+            IDatasetModelService datasetModelService, IBiscProject biscProject, IInfoModelService infoModelService, IUniqueNameService uniqueNameService)
         {
             _goosesModelService = goosesModelService;
             _sclCommunicationModelService = sclCommunicationModelService;
             _datasetModelService = datasetModelService;
             _biscProject = biscProject;
             _infoModelService = infoModelService;
+            _uniqueNameService = uniqueNameService;
         }
 
         public List<GooseControlViewModel> CreateGooseControlViewModel(IDevice device,
@@ -84,13 +88,12 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             return gooseControlViewModels;
         }
 
-        public GooseControlViewModel CreateGooseControlViewModel(IDevice device)
+        public GooseControlViewModel CreateGooseControlViewModel(IDevice device, List<string> existingNames)
         {
             var gooseControlViewModel = new GooseControlViewModel();
 
-
-            gooseControlViewModel.GoId = "NewGoose";
-            gooseControlViewModel.Name = "NewGoose";
+            gooseControlViewModel.Name = _uniqueNameService.GetUniqueName(existingNames, "NewGoose");
+            gooseControlViewModel.GoId = gooseControlViewModel.Name;
             gooseControlViewModel.IsDynamic = true;
             gooseControlViewModel.AppId = 0;
             gooseControlViewModel.MacAddress = "01-0C-CD-01-00-00";

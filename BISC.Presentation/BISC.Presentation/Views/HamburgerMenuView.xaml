@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:BISC.Presentation.Views"
              xmlns:modularity="clr-namespace:BISC.Infrastructure.Global.Modularity;assembly=BISC.Infrastructure.Global"
              xmlns:converters="clr-namespace:BISC.Presentation.Converters"
+             xmlns:AttachedPropertys="clr-namespace:BISC.Presentation.AttachedPropertys"
+
              xmlns:attachedCommandBehavior="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -14,38 +16,47 @@
         <converters:StringToResourceConverter x:Key="StringToResourceConverter"></converters:StringToResourceConverter>
         <CollectionViewSource x:Key="MultipleComands" Source="{Binding GlobalCommandGroups}"/>
         <CollectionViewSource x:Key="SingleComands" Source="{Binding GlobalCommands}"/>
-        <!--<ContentControl x:Key="IconContentControl" ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>-->
+        <ContentControl x:Key="Control" ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="10, 0" Width="15" VerticalAlignment="Center"
+                        Grid.Column="0"/>
         <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
             <Setter Property="Command" Value="{Binding Command}"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="IsCheckable" Value="False"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
-
-            <!--<Setter Property="Icon" Value="{DynamicResource IconContentControl}"/>-->
         </Style>
+
         <Style x:Key="GroupMenuItem" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
-            <Setter Property="Background" Value="White"/>
             <Setter Property="IsCheckable" Value="False"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-
-            <!--<Setter Property="Icon" Value="{DynamicResource IconContentControl}"/>-->
+            <Setter Property="AttachedPropertys:PlacementProperty.MenuPlacement" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         </Style>
+
     </UserControl.Resources>
     <StackPanel>
-        <Menu ItemContainerStyle="{StaticResource GroupMenuItem}" ItemsSource="{Binding GlobalCommandGroups}">
-            <!--<ItemsControl.ItemsSource>
-                <CompositeCollection>
-                    <CollectionContainer Collection="{Binding Source={StaticResource MultipleComands}}" />
-                </CompositeCollection>
-            </ItemsControl.ItemsSource>-->
+        <Menu ItemContainerStyle="{StaticResource GroupMenuItem}" ItemsSource="{Binding GlobalCommandGroups}" HorizontalContentAlignment="Center">
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="1" HorizontalAlignment="Stretch" />
+
+                    <!--<VirtualizingStackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VirtualizationMode ="Recycling"/>-->
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
             <ItemsControl.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type modularity:IGlobalCommandGroup}" 
+                <HierarchicalDataTemplate DataType="{x:Type modularity:IGlobalCommandGroup}"  
                                           ItemsSource="{Binding GlobalCommandsGroup}" ItemContainerStyle="{StaticResource MenuItemStyle}">
-                    <StackPanel Orientation="Horizontal" >
-                        <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="10" Width="20" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding CommandsName}"  VerticalAlignment="Center"/>
-                    </StackPanel>
-                    <HierarchicalDataTemplate.ItemTemplate>
+                    <Grid >
+                        <Grid.ColumnDefinitions >
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="10, 0" Width="15" VerticalAlignment="Center"
+                                        Grid.Column="0"/>
+                        <Label Content="{Binding CommandsName}"  VerticalAlignment="Center" Grid.Column="1"/>
+                        <ContentControl  ContentTemplate="{DynamicResource ChevronRightIcon}" Margin="10, 0" Width="20" VerticalAlignment="Center"  Grid.Column="2"/>
+                    </Grid>
+                    <HierarchicalDataTemplate.ItemTemplate >
                         <HierarchicalDataTemplate DataType="{x:Type modularity:IGlobalCommand}" >
                             <StackPanel Orientation="Horizontal">
                                 <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>
@@ -73,19 +84,6 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-
-        <!--<ListBox  ItemsSource="{Binding GlobalCommands}" DisplayMemberPath="CommandName">
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                    <Setter
-                        Property="attachedCommandBehavior:CommandBehavior.Event" 
-                        Value="PreviewMouseLeftButtonDown"/>
-                    <Setter
-                        Property="attachedCommandBehavior:CommandBehavior.Command"
-                        Value="{Binding DataContext.Command,RelativeSource={RelativeSource Self}}"/>
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>-->
     </StackPanel>
 </UserControl>
 

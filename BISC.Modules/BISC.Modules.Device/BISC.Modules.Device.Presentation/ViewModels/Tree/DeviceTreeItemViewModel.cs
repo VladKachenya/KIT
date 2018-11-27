@@ -118,7 +118,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private async void OnResetDeviceViaFtp()
         {
             var res = await _userInteractionService.ShowOptionToUser("Перезагрузка устройства",
-                $"Устройство {_device.Name} /n будет перезагружено", new List<string> { "OK", "Отмена" });
+                $"Устройство {_device.Name} \n будет перезагружено", new List<string> { "OK", "Отмена" });
             if (res == 1) return;
             _loggingService.LogMessage($"Устройство {_device.Name} перезагружается", SeverityEnum.Info);
             await _deviceReconnectionService.RestartDevice(_device, _treeItemIdentifier);

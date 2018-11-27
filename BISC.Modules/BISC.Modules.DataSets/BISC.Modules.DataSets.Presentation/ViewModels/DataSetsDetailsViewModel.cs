@@ -25,6 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Connection.Infrastructure.Events;
 using BISC.Modules.Connection.Infrastructure.Services;
@@ -99,8 +100,17 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             BlockViewModelBehavior.SetBlock("Обновление данных",true);
             if (updateFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
             {
-                await _datasetsLoadingService.EstimateProgress(_device);
-                await _datasetsLoadingService.Load(_device, null, _biscProject.MainSclModel.Value, new CancellationToken());
+                try
+                {
+                    await _datasetsLoadingService.EstimateProgress(_device);
+                    await _datasetsLoadingService.Load(_device, null, _biscProject.MainSclModel.Value,
+                        new CancellationToken());
+                    _loggingService.LogMessage($"DataSets устройства {_device.Name} вычитанны успешно", SeverityEnum.Info);
+                }
+                catch (Exception e)
+                {
+                    _loggingService.LogMessage($"Ошибка вычитывания DataSets устройства {_device.Name}", SeverityEnum.Warning);
+                }
             }
             _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
             SortDataSetsByIsDynamic();

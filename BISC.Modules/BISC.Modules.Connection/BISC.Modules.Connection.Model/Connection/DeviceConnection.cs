@@ -18,7 +18,7 @@ namespace BISC.Modules.Connection.Model.Connection
         private Timer _connectionCheckingTimer;
         private bool _isConnected;
 
-        public DeviceConnection(IMmsConnectionFacade mmsConnectionFacade,IGlobalEventsService globalEventsService,ILoggingService loggingService)
+        public DeviceConnection(IMmsConnectionFacade mmsConnectionFacade, IGlobalEventsService globalEventsService, ILoggingService loggingService)
         {
             _globalEventsService = globalEventsService;
             _loggingService = loggingService;
@@ -42,7 +42,7 @@ namespace BISC.Modules.Connection.Model.Connection
 
         public async Task OpenConnection()
         {
-            if(Ip==null)throw new Exception("Ip is empty");
+            if (Ip == null) throw new Exception("Ip is empty");
             IsConnected = await MmsConnection.TryOpenConnection(Ip);
             _connectionCheckingTimer = new Timer(CheckConnection, null, 0, 1000);
         }
@@ -54,7 +54,7 @@ namespace BISC.Modules.Connection.Model.Connection
                 _connectionCheckingTimer?.Dispose();
                 IsConnected = false;
 
-                _loggingService.LogMessage($"Связь с [{Ip}] потеряна",SeverityEnum.Info);
+                if (!String.IsNullOrEmpty(Ip)) _loggingService.LogMessage($"Связь с [{Ip}] потеряна", SeverityEnum.Info);
             }
         }
 

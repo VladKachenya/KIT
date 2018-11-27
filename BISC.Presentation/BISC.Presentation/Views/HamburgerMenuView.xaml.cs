@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -29,23 +30,6 @@ namespace BISC.Presentation.Views
             DataContext = hamburgerMenuViewModel;
         }
 
-        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (sender is MenuItem)
-            {
-                var sentMenuItem = sender as MenuItem;
-                sentMenuItem.IsSubmenuOpen = true;
-            }
-        }
-
-
-        private void UIElement_OnLostFocus(object sender, RoutedEventArgs e)
-        {
-            if (sender is MenuItem)
-            {
-                var sentMenuItem = sender as MenuItem;
-                sentMenuItem.IsSubmenuOpen = false;
-            }
-        }
+        
     }
 }

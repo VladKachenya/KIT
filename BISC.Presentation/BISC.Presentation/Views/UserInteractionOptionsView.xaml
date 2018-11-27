@@ -19,18 +19,17 @@
 
         </Grid.RowDefinitions>
 
-        <TextBlock Margin="15" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding Title}"></TextBlock>
-        <TextBlock Margin="15,50,15,10" Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Message}">
-        </TextBlock>
-        <ItemsControl Margin="1" Grid.Row="2" ItemsSource="{Binding OptionCollection}">
+        <TextBlock Margin="15" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding Title}"/>
+        <TextBlock Margin="15,50,15,10" Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Message}"/>
+        <ItemsControl Margin="1" Grid.Row="2" ItemsSource="{Binding OptionCollection}" >
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="viewModels:OptionSelectionCommand">
-                        <Button Margin="5" MinWidth="100" Content="{Binding OptionSignature}" Command="{Binding SelectionCommand}"></Button>
+                        <Button Margin="5" MinWidth="100" Content="{Binding OptionSignature}" Command="{Binding SelectionCommand}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"></StackPanel>
+                    <UniformGrid Rows="1" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>

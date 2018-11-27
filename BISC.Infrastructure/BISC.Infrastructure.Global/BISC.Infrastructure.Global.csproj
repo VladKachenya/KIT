@@ -61,6 +61,7 @@
     <Compile Include="Services\IGlobalEventsService.cs" />
     <Compile Include="Services\ILoggingService.cs" />
     <Compile Include="Services\IProjectService.cs" />
+    <Compile Include="Services\IUniqueNameService.cs" />
     <Compile Include="Services\IUserInteractionService.cs" />
     <Compile Include="Services\IUserInterfaceComposingService.cs" />
     <Compile Include="Services\IUserNotificationService.cs" />

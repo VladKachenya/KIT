@@ -108,8 +108,8 @@ namespace BISC.Modules.Device.Presentation.Services
                 else
                 {
                     _treeManagementService.DeleteTreeItem(treeItemId);
-                    _loggingService.LogMessage($"Ошибка загрузка устройства {e.Message + Environment.NewLine + e.StackTrace}",SeverityEnum.Critical);
-                    return new OperationResult($"Ошибка загрузка устройства {device.Name}");
+                    _loggingService.LogMessage($"Ошибка загрузки устройства {e.Message + Environment.NewLine + e.StackTrace}",SeverityEnum.Critical);
+                    return new OperationResult($"Ошибка загрузки устройства {device.Name}");
                 }
             }
 

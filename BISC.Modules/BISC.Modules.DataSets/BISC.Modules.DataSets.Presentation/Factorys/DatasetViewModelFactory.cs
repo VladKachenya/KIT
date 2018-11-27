@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Infrastructure.Global.IoC;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
@@ -22,17 +23,19 @@ namespace BISC.Modules.DataSets.Presentation.Factorys
         private readonly IInjectionContainer _injectionContainer;
         private readonly Func<IDataSetViewModel> _datasetViewModelCreator;
         private readonly IInfoModelService _infoModelService;
+        private readonly IUniqueNameService _uniqueNameService;
 
-        public DatasetViewModelFactory(IInjectionContainer injectionContainer,Func<IDataSetViewModel> datasetViewModelCreator,IInfoModelService infoModelService)
+        public DatasetViewModelFactory(IInjectionContainer injectionContainer,Func<IDataSetViewModel> datasetViewModelCreator,IInfoModelService infoModelService, IUniqueNameService uniqueNameService)
         {
             _injectionContainer = injectionContainer;
             _datasetViewModelCreator = datasetViewModelCreator;
             _infoModelService = infoModelService;
+            _uniqueNameService = uniqueNameService;
         }
 
         public IDataSetViewModel CreateDataSetViewModel(List<string> existingNames, IModelElement device)
         {
-            var name = GetUniqueNameOfDataSet(existingNames);
+            var name = _uniqueNameService.GetUniqueName(existingNames, "NewDataset");
             IDataSetViewModel newDataSetViewModel = _datasetViewModelCreator();
             newDataSetViewModel.SetParentDevice(device);
             newDataSetViewModel.EditableNamePart = name;
@@ -43,26 +46,7 @@ namespace BISC.Modules.DataSets.Presentation.Factorys
             newDataSetViewModel.ChangeTracker.SetModified();
             return newDataSetViewModel;
         }
-        private string GetUniqueNameOfDataSet(List<string> existingNames)
-        {
-            string nameBody = "NewDataSet";
-            string result;
-            int i = 0;
-            bool isFind;
-            do
-            {
-                i++;
-                result = nameBody + i.ToString();
-                isFind = false;
-                foreach (var element in existingNames)
-                {
-                    if (result ==  element)
-                        isFind = true;
-                }
-            } while (isFind);
-
-            return result;
-        }
+        
 
         public ObservableCollection<IDataSetViewModel> GetDataSetsViewModel(List<IDataSet> dataSets)
         {

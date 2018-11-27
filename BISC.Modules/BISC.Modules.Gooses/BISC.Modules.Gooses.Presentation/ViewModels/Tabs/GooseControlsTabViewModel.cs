@@ -99,7 +99,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         {
             _loggingService.LogUserAction($"Пользователь добавляет Goose CB (устройство {_device.Name})");
 
-            GooseControlViewModels.Add(_gooseControlViewModelFactory.CreateGooseControlViewModel(_device));
+            GooseControlViewModels.Add(_gooseControlViewModelFactory.CreateGooseControlViewModel(_device, GooseControlViewModels.Where(goose => goose.IsDynamic).Select(goose => goose.Name).ToList()));
             AddGooseCommand.RaiseCanExecute();
         }
 

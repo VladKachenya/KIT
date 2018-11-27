@@ -74,6 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AttachedPropertys\PlacementProperty.cs" />
     <Compile Include="Commands\AsyncCommand.cs" />
     <Compile Include="Commands\PresentationCommand.cs" />
     <Compile Include="Commands\TrackableCommand.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Services\TabManagementService.cs" />
     <Compile Include="Services\TreeManagementService.cs" />
     <Compile Include="Services\UiCommandService.cs" />
+    <Compile Include="Services\UniqueNameService.cs" />
     <Compile Include="UiFromModel\UiFromModelElementRegistryService.cs" />
     <Compile Include="ViewModels\ApplicationSettingsViewModel.cs" />
     <Compile Include="ViewModels\DynamicRegionViewModel.cs" />
