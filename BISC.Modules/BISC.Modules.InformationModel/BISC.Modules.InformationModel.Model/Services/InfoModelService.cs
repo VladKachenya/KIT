@@ -67,5 +67,12 @@ namespace BISC.Modules.InformationModel.Model.Services
             var lDevices = GetLDevicesFromDevices(device);
             return lDevices.FirstOrDefault(ld => ld.Inst == "LD0");
         }
+
+        public List<ISettingControl> GetSettingControlsOfDevice(IModelElement device)
+        {
+            List<ISettingControl> settingControls=new List<ISettingControl>();
+            device.GetAllChildrenOfType(ref settingControls);
+            return settingControls;
+        }
     }
 }

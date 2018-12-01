@@ -16,7 +16,9 @@ using BISC.Modules.InformationModel.Presentation.Interfaces.Helpers;
 using BISC.Modules.InformationModel.Presentation.Services;
 using BISC.Modules.InformationModel.Presentation.ViewModels;
 using BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree;
+using BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl;
 using BISC.Modules.InformationModel.Presentation.Views;
+using BISC.Modules.InformationModel.Presentation.Views.SettingsControl;
 using BISC.Presentation.Infrastructure.UiFromModel;
 
 namespace BISC.Modules.InformationModel.Presentation.Module
@@ -49,6 +51,8 @@ namespace BISC.Modules.InformationModel.Presentation.Module
             _injectionContainer.RegisterType<DaiInfoModelItemViewModel>();
             _injectionContainer.RegisterType<SdiInfoModelItemViewModel>();
             _injectionContainer.RegisterType<SetFcTreeItemViewModel>();
+            _injectionContainer.RegisterType<SettingControlDetailsViewModel>();
+            _injectionContainer.RegisterType<SettingsControlTreeItemViewModel>();
 
             _injectionContainer.RegisterType<IDeviceElementLoadingService, InfoModelLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<InfoModelLoadingTreeItemViewModel>();
@@ -56,6 +60,8 @@ namespace BISC.Modules.InformationModel.Presentation.Module
             _injectionContainer.RegisterType<object, InfoModelTreeItemView>(InfoModelKeys.InfoModelTreeItemViewKey);
             _injectionContainer.RegisterType<object, InformationModelDetailsView>(InfoModelKeys.InfoModelTreeItemDetailsViewKey);
             _injectionContainer.RegisterType<object, LDeviceTreeItemView>(InfoModelKeys.LdeviceTreeItemViewKey);
+            _injectionContainer.RegisterType<object, SettingControlDetailsView>(InfoModelKeys.SettingControlDetailsViewKey);
+            _injectionContainer.RegisterType<object, SettingsControlTreeItemView>(InfoModelKeys.SettingsControlTreeItemViewKey);
 
             InitializeUiServices(_injectionContainer.ResolveType<IUiFromModelElementRegistryService>());
         }

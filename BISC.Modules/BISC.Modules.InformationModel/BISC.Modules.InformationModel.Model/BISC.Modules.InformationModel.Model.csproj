@@ -62,6 +62,7 @@
     <Compile Include="Elements\LogicalNode.cs" />
     <Compile Include="Elements\LogicalNodeZero.cs" />
     <Compile Include="Elements\Sdi.cs" />
+    <Compile Include="Elements\SettingControl.cs" />
     <Compile Include="Elements\Val.cs" />
     <Compile Include="LoadingFromConnection\LogicalNodeDTO.cs" />
     <Compile Include="Extensions\MappingExtensions.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Serializers\Model\LogicalNodeSerializer.cs" />
     <Compile Include="Serializers\Model\LogicalNodeZeroSerializer.cs" />
     <Compile Include="Serializers\Model\SdiSerializer.cs" />
+    <Compile Include="Serializers\Model\SettingControlSerializer.cs" />
     <Compile Include="Serializers\Model\ValSerializer.cs" />
     <Compile Include="Services\DataTypeTemplatesModelService.cs" />
     <Compile Include="Services\InfoModelService.cs" />

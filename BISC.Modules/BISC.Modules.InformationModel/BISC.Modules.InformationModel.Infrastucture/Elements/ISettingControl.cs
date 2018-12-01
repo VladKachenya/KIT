@@ -2,9 +2,9 @@
 
 namespace BISC.Modules.InformationModel.Infrastucture.Elements
 {
-    public interface ILogicalNodeZero:ILogicalNode
+    public interface ISettingControl:IModelElement
     {
-         ChildModelProperty<ISettingControl> SettingControl { get; }
-
+       int NumOfSGs { get; set; }
+        int ActSG { get; set; }
     }
 }

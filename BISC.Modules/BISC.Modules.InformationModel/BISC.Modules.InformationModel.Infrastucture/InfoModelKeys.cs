@@ -39,10 +39,12 @@ namespace BISC.Modules.InformationModel.Infrastucture
             public const string ServerKey = "Server";
             public const string AccessPointKey = "AccessPoint";
             public const string FcSetKey = "FC";
-
+            public const string SettingControlKey = "SettingControl";
         }
 
 
+        public static string SettingControlDetailsViewKey = "SettingControlDetailsView";
+        public static string SettingsControlTreeItemViewKey = "SettingsControlTreeItemView";
 
 
         public static string InfoModelTreeItemViewKey = "InfoModelTreeItemView";

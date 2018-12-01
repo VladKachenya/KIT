@@ -74,6 +74,7 @@
     <Compile Include="Converters\LevelToMarginConverter.cs" />
     <Compile Include="Converters\TypeNameToIsDragSourceConverter.cs" />
     <Compile Include="Factories\InfoModelTreeFactory.cs" />
+    <Compile Include="Factories\SettingControlViewModelFactory.cs" />
     <Compile Include="Helpers\TreeItemDetailsBuilder.cs" />
     <Compile Include="Interfaces\Factories\IInfoModelTreeFactory.cs" />
     <Compile Include="Interfaces\Helpers\ITreeItemDetailsBuilder.cs" />
@@ -103,6 +104,9 @@
     <Compile Include="ViewModels\InfoModelTree\SdiInfoModelItemViewModel.cs" />
     <Compile Include="ViewModels\InfoModelTree\SetFcModelItemViewModel.cs" />
     <Compile Include="ViewModels\LDeviceTreeItemViewModel.cs" />
+    <Compile Include="ViewModels\SettingControl\SettingControlDetailsViewModel.cs" />
+    <Compile Include="ViewModels\SettingControl\SettingControlViewModel.cs" />
+    <Compile Include="ViewModels\SettingControl\SettingsControlTreeItemViewModel.cs" />
     <Compile Include="Views\InfoModelLoadingTreeItemView.xaml.cs">
       <DependentUpon>InfoModelLoadingTreeItemView.xaml</DependentUpon>
     </Compile>
@@ -114,6 +118,12 @@
     </Compile>
     <Compile Include="Views\LDeviceTreeItemView.xaml.cs">
       <DependentUpon>LDeviceTreeItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsControl\SettingControlDetailsView.xaml.cs">
+      <DependentUpon>SettingControlDetailsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsControl\SettingsControlTreeItemView.xaml.cs">
+      <DependentUpon>SettingsControlTreeItemView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +173,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\LDeviceTreeItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsControl\SettingControlDetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsControl\SettingsControlTreeItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

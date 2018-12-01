@@ -63,6 +63,7 @@
     <Compile Include="Elements\ILogicalNode.cs" />
     <Compile Include="Elements\ILogicalNodeZero.cs" />
     <Compile Include="Elements\ISdi.cs" />
+    <Compile Include="Elements\ISettingControl.cs" />
     <Compile Include="Elements\IVal.cs" />
     <Compile Include="InfoModelKeys.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

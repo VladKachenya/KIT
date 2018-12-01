@@ -31,12 +31,15 @@ namespace BISC.Modules.InformationModel.Presentation.Services
             {
                 return null;
             }
-            var treeItemId= _treeManagementService.AddTreeItem(
+            var treeItemIdInfoModel= _treeManagementService.AddTreeItem(
                    new BiscNavigationParameters() { new BiscNavigationParameter("IED", modelElement) },
                    InfoModelKeys.InfoModelTreeItemViewKey, uiParentId);
-            _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(modelElement, treeItemId,
+            var treeItemIdSettingsControl = _treeManagementService.AddTreeItem(
+                new BiscNavigationParameters() { new BiscNavigationParameter("IED", modelElement) },
+                InfoModelKeys.SettingsControlTreeItemViewKey, uiParentId);
+            _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(modelElement, treeItemIdInfoModel,
                 InfoModelKeys.ModelKeys.LDeviceKey);
-            return treeItemId;
+            return treeItemIdInfoModel;
 
         }
     }

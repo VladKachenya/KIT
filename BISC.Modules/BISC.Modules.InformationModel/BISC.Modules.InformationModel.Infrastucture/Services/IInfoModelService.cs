@@ -12,5 +12,6 @@ public interface IInfoModelService
         List<ILDevice> GetLDevicesFromDevices(IModelElement device);
 
         ILDevice GetZeroLDevicesFromDevices(IModelElement device);
+        List<ISettingControl> GetSettingControlsOfDevice(IModelElement device);
     }
 }

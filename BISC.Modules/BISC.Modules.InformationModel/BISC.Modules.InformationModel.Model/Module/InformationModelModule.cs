@@ -41,6 +41,7 @@ namespace BISC.Modules.InformationModel.Model.Module
             modelElementsRegistryService.RegisterModelElement(new EnumTypeSerializer(),  InfoModelKeys.DataTypeTemplateKeys.EnumTypeModelItemKey);
             modelElementsRegistryService.RegisterModelElement(new EnumValSerializer(), InfoModelKeys.DataTypeTemplateKeys.EnumValItemKey);
             modelElementsRegistryService.RegisterModelElement(new SdoSerializer(), InfoModelKeys.DataTypeTemplateKeys.SdoItemKey);
+            modelElementsRegistryService.RegisterModelElement(new SettingControlSerializer(), InfoModelKeys.ModelKeys.SettingControlKey);
 
             modelElementsRegistryService.RegisterModelElement(new LDeviceSerializer(), InfoModelKeys.ModelKeys.LDeviceKey);
             modelElementsRegistryService.RegisterModelElement(new LogicalNodeSerializer(), InfoModelKeys.ModelKeys.LogicalNodeKey);
