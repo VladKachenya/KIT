@@ -62,6 +62,7 @@ namespace BISC.Presentation.BaseItems.ViewModels.Behaviors
         public void SetBlockWithOption(string message, params UnlockCommandEntity[] unlockOptions)
         {
             BlockingMessage = message;
+        UnlockCommands.Clear();
             foreach (var unlockCommandEntity in unlockOptions)
             {
                 unlockCommandEntity.UnlockCommand=new DelegateCommand((() =>

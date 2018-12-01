@@ -56,17 +56,25 @@
     <Compile Include="Services\ReportsConflictResolver.cs" />
     <Compile Include="Services\ReportsSavingService.cs" />
     <Compile Include="Services\ReportsUiHandlingService.cs" />
+    <Compile Include="ViewModels\Helpers\ReportsConflictsContext.cs" />
     <Compile Include="ViewModels\ReportElementsViewModels\OprionalFildsViewModel.cs" />
     <Compile Include="ViewModels\ReportElementsViewModels\ReportControlViewModel.cs" />
     <Compile Include="ViewModels\ReportElementsViewModels\ReportEnabledViewModel.cs" />
     <Compile Include="ViewModels\ReportElementsViewModels\TriggerOptionsViewModel.cs" />
+    <Compile Include="ViewModels\ReportsConflictsViewModel.cs" />
     <Compile Include="ViewModels\ReportsDetailsViewModel.cs" />
     <Compile Include="ViewModels\ReportsTreeItemViewModel.cs" />
     <Compile Include="Views\ReportControlView.xaml.cs">
       <DependentUpon>ReportControlView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ReportsConflictsWindow.xaml.cs">
+      <DependentUpon>ReportsConflictsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ReportsDetailsView.xaml.cs">
       <DependentUpon>ReportsDetailsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReportsReadonlyView.xaml.cs">
+      <DependentUpon>ReportsReadonlyView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ReportsTreeItemView.xaml.cs">
       <DependentUpon>ReportsTreeItemView.xaml</DependentUpon>
@@ -78,7 +86,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ReportsConflictsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ReportsDetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ReportsReadonlyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

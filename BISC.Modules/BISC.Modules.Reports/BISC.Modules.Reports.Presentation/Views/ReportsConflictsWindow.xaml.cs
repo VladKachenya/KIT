@@ -12,19 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using BISC.Modules.DataSets.Presentation.ViewModels;
+using BISC.Modules.Reports.Presentation.ViewModels;
 
-namespace BISC.Modules.DataSets.Presentation.Views
+namespace BISC.Modules.Reports.Presentation.Views
 {
     /// <summary>
-    /// Логика взаимодействия для DatasetConflictsWindow.xaml
+    /// Логика взаимодействия для ReportsConflictsWindow.xaml
     /// </summary>
-    public partial class DatasetConflictsWindow : UserControl
+    public partial class ReportsConflictsWindow : UserControl
     {
-        public DatasetConflictsWindow(DataSetsConflictsViewModel dataSetsConflictsViewModel)
+        public ReportsConflictsWindow(ReportsConflictsViewModel reportsConflictsViewModel)
         {
             InitializeComponent();
-            DataContext = dataSetsConflictsViewModel;
+            DataContext = reportsConflictsViewModel;
         }
     }
 }

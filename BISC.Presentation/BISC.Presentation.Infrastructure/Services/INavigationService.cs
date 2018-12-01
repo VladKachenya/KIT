@@ -12,6 +12,7 @@ namespace BISC.Presentation.Infrastructure.Services
         void DeactivateRegion(string regionId);
         void ActivateRegion(string regionName);
         void DisposeRegionViewModel(string regionName);
+        void OpenInWindow(string viewName,string windowHeader, BiscNavigationParameters navigationParameters = null);
 
     }
 }

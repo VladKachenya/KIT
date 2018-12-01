@@ -7,8 +7,15 @@
              xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
              xmlns:viewModels="clr-namespace:BISC.Modules.DataSets.Presentation.ViewModels"
              xmlns:dd="urn:gong-wpf-dragdrop"
-             mc:Ignorable="d" 
+             xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
+        <converters:BoolToVisConverter Invert="True" x:Key="boolToInVisConverter"></converters:BoolToVisConverter>
+        <converters:BoolToVisConverter Invert="False" FalseVisibility="Hidden" x:Key="BoolToVisConvHidden"></converters:BoolToVisConverter>
+
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -20,7 +27,7 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <ListBox  x:Name="ExpanderItemsControl" behaviors:ListBoxBehavior.ScrollOnNewItem="true"
-                     ItemsSource="{Binding DataSets}"  ScrollViewer.VerticalScrollBarVisibility="Visible" Grid.Column="1" Grid.Row="1">
+                     ItemsSource="{Binding }"  ScrollViewer.VerticalScrollBarVisibility="Visible" Grid.Column="1" Grid.Row="1">
 
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
@@ -44,10 +51,10 @@
 
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <Label HorizontalAlignment="Center" Height="25" Width="25" 
-                                           VerticalAlignment="Center" Grid.Column="0" Visibility="{Binding IsChenged, Converter={StaticResource BoolToVisConvHidden}}">
+                                <Label ToolTip="Есть конфликт в этом Dataset" HorizontalAlignment="Center" Height="35" Width="35" 
+                                           VerticalAlignment="Center" Grid.Column="0" Visibility="{Binding IsChanged, Converter={StaticResource BoolToVisConvHidden}}">
                                     <Label.Content>
-                                        <ContentControl  ContentTemplate="{DynamicResource SaveIcon}"/>
+                                        <ContentControl  Width="20" Height="20" ContentTemplate="{DynamicResource AlertBoxIcon}"/>
                                     </Label.Content>
                                 </Label>
                                 <ContentControl Grid.Column="1" Content="{Binding .}">
@@ -95,24 +102,11 @@
                                     </ContentControl.Style>
                                 </ContentControl>
 
-                                <StackPanel  Grid.Column="2" Orientation="Horizontal">
-                                    <Button Margin="5" Padding="3" Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"
-                                                            Command="{Binding DataContext.DeleteDataSetViewModelCommand,Source={x:Reference ExpanderItemsControl}}"
-                                                            CommandParameter="{Binding .}"
-                                                            IsEnabled="{Binding ElementName = EditToggleButton, Path= IsChecked}"
-                                                            Style="{DynamicResource MaterialDesignRaisedButton}"
-                                                            Width="20" Height="20"
-                                                            Grid.Column="1">
-                                        <Button.Content>
-                                            <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
-                                        </Button.Content>
-                                    </Button>
-                                    <ToggleButton x:Name="EditToggleButton" IsChecked="{Binding IsEditing}" 
-                                                      IsEnabled="{Binding IsEditeble}"
-                                                           Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"   
-                                                      Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                                                      ToolTip="Разрешить редактирование датасета"/>
-                                </StackPanel>
+                                <ContentControl Grid.Column="2" x:Name="EditToggleButton" Width="17" Height="17"
+                                                    ContentTemplate="{DynamicResource PencilIcon}"
+                                                           Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}" 
+                                                      ToolTip="Динамический Dataset"/>
+
                             </Grid>
                         </Grid>
                     </Border>

@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Services;
+using BISC.Presentation.BaseItems.Views;
 using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
@@ -124,6 +125,18 @@ namespace BISC.Presentation.Services
                 }
                 _regionManager.Regions.Remove(regionName);
             }
+        }
+
+        public void OpenInWindow(string viewName,string windowHeader, BiscNavigationParameters navigationParameters = null)
+        {
+            Window newWindow=new Window();
+            var region=new DynamicRegion();
+            var regionId = Guid.NewGuid();
+            region.SetValue(DynamicRegion.RegionKeyProperty,regionId.ToString());
+            newWindow.Content = region;
+            newWindow.Show();
+            newWindow.Title = windowHeader;
+            NavigateViewToRegion(viewName,regionId.ToString(),navigationParameters);
         }
 
         public async Task NavigateViewToGlobalRegion(string viewName, BiscNavigationParameters navigationParameters = null, string idOfDialogHost = null)

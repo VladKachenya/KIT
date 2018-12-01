@@ -54,6 +54,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private bool _isEditing;
         private bool _isEditeble;
         private IModelElement _device;
+        private bool _isChanged;
 
         #endregion
 
@@ -160,6 +161,11 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             get => _isEditeble;
             set { SetProperty(ref _isEditeble , value,true); }
+        }
+        public bool IsChanged
+        {
+            get => _isChanged;
+            set { SetProperty(ref _isChanged, value, true); }
         }
 
         #endregion

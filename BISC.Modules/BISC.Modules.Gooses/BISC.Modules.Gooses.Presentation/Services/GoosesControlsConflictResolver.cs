@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +11,16 @@ using BISC.Model.Infrastructure.Project.Communication;
 using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Device.Infrastructure.HelpClasses;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 using BISC.Modules.Gooses.Infrastructure.Services;
+using BISC.Modules.Gooses.Presentation.Factories;
+using BISC.Modules.Gooses.Presentation.ViewModels.GooseControls;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.LNodeType;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Presentation.Infrastructure.Navigation;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Gooses.Model.Services
 {
@@ -22,15 +28,20 @@ namespace BISC.Modules.Gooses.Model.Services
     {
         private readonly IDeviceModelService _deviceModelService;
         private readonly IGoosesModelService _goosesModelService;
+        private readonly GooseControlViewModelFactory _gooseControlViewModelFactory;
         private readonly IFtpGooseModelService _ftpGooseModelService;
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
+        private readonly INavigationService _navigationService;
 
-        public GoosesControlsConflictResolver(IDeviceModelService deviceModelService,IGoosesModelService goosesModelService,IFtpGooseModelService ftpGooseModelService,ISclCommunicationModelService sclCommunicationModelService)
+        public GoosesControlsConflictResolver(IDeviceModelService deviceModelService,IGoosesModelService goosesModelService, GooseControlViewModelFactory gooseControlViewModelFactory,
+            IFtpGooseModelService ftpGooseModelService,ISclCommunicationModelService sclCommunicationModelService,INavigationService navigationService)
         {
             _deviceModelService = deviceModelService;
             _goosesModelService = goosesModelService;
+            _gooseControlViewModelFactory = gooseControlViewModelFactory;
             _ftpGooseModelService = ftpGooseModelService;
             _sclCommunicationModelService = sclCommunicationModelService;
+            _navigationService = navigationService;
         }
 
 
@@ -113,6 +124,51 @@ namespace BISC.Modules.Gooses.Model.Services
                 return new ResolvingResult() { IsRestartNeeded = true };
             }
             return ResolvingResult.SucceedResult;
+        }
+
+        public void ShowConflicts(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        {
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+
+
+            var gooseControlsInDevice = _goosesModelService.GetGooseControlsOfDevice(deviceInsclModelInDevice);
+            var gooseControlsInProject = _goosesModelService.GetGooseControlsOfDevice(devicesclModelInProject);
+
+
+            var projectOnlyGooseControls = GetProjectOnlyGooseControls(gooseControlsInProject, gooseControlsInDevice);
+            var deviceOnlyGooseControls = GetDeviceOnlyGooseControls(gooseControlsInProject, gooseControlsInDevice);
+
+            var gooseControlsInDeviceVms =
+                _gooseControlViewModelFactory.CreateGooseControlViewModel(deviceInsclModelInDevice,
+                    gooseControlsInDevice);
+            var gooseControlsInProjectVms =
+                _gooseControlViewModelFactory.CreateGooseControlViewModel(devicesclModelInProject,
+                    gooseControlsInProject);
+
+            foreach (var gooseControlsInDeviceVm in gooseControlsInDeviceVms)
+            {
+                gooseControlsInDeviceVm.ChangeTracker.AcceptChanges();
+            }
+
+            foreach (var gooseControlsInProjectVm in gooseControlsInProjectVms)
+            {
+                gooseControlsInProjectVm.ChangeTracker.AcceptChanges();
+            }
+
+            projectOnlyGooseControls.ForEach((goose =>
+                gooseControlsInProjectVms.FirstOrDefault((model => model.Name == goose.Name))?.ChangeTracker
+                    .SetModified()));
+            deviceOnlyGooseControls.ForEach((goose =>
+                gooseControlsInDeviceVms.FirstOrDefault((model => model.Name == goose.Name))?.ChangeTracker
+                    .SetModified()));
+            _navigationService.OpenInWindow(GooseKeys.GoosePresentationKeys.GooseControlsConflictsView,
+                $"Конфликты в блоках управления Goose устройства {deviceName}",
+                new BiscNavigationParameters().AddParameterByName(
+                    GooseKeys.GoosePresentationKeys.GooseControlsConflictContext,
+                    new GooseControlsConflictContext(
+                        new ObservableCollection<GooseControlViewModel>(gooseControlsInDeviceVms),
+                        new ObservableCollection<GooseControlViewModel>(gooseControlsInProjectVms))));
         }
 
 

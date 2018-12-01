@@ -21,7 +21,7 @@ using BISC.Modules.Reports.Model.Model;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 {
-    public class ReportControlViewModel : ViewModelBase, IReportControlViewModel
+    public class ReportControlViewModel : ComplexViewModelBase, IReportControlViewModel
     {
         private IReportControl _model;
         private string _name;

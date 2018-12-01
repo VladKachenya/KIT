@@ -21,7 +21,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
             SelectDeviceOptionCommand = commandFactory.CreatePresentationCommand(OnSelectDeviceOption);
             SelectProjectOptionCommand = commandFactory.CreatePresentationCommand(OnSelectProjectOption);
             CancelSelectionCommand = commandFactory.CreatePresentationCommand(OnCancelSelection);
-
+            
         }
 
         private void OnCancelSelection()
@@ -68,8 +68,9 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
             get => _isConflictResolvedAsFromProject;
             set => SetProperty(ref _isConflictResolvedAsFromProject, value);
         }
+        
 
-        public ICommand ShowConflictInTool { get; }
+        public ICommand ShowConflictInTool { get; set; }
         public ICommand SelectDeviceOptionCommand { get; }
         public ICommand SelectProjectOptionCommand { get;  }
         public ICommand CancelSelectionCommand { get; }

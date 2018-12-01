@@ -10,5 +10,6 @@ namespace BISC.Modules.Device.Infrastructure.Services
         string ConflictName { get; }
         bool GetIfConflictsExists(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject);
         Task<ResolvingResult> ResolveConflict(bool isFromDevice, string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject);
+        void ShowConflicts(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject);
     }
 }

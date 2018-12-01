@@ -9,11 +9,13 @@ using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.ViewModels;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Services;
+using BISC.Modules.DataSets.Model.Services;
 using BISC.Modules.DataSets.Presentation.Factorys;
 using BISC.Modules.DataSets.Presentation.Services;
 using BISC.Modules.DataSets.Presentation.Services.Interfaces;
 using BISC.Modules.DataSets.Presentation.ViewModels;
 using BISC.Modules.DataSets.Presentation.Views;
+using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.UiFromModel;
 
 namespace BISC.Modules.DataSets.Presentation.Module
@@ -38,6 +40,9 @@ namespace BISC.Modules.DataSets.Presentation.Module
             _injectionContainer.RegisterType<object, DataSetsTreeItemView>(DatasetKeys.DatasetViewModelKeys.DataSetsTreeItemView);
             _injectionContainer.RegisterType<object, DataSetsDetailsView>(DatasetKeys.DatasetViewModelKeys.DataSetsDetailsView);
             _injectionContainer.RegisterType<object, FcdaAdderView>(DatasetKeys.DatasetViewModelKeys.FcdaAdderViewModel);
+            _injectionContainer.RegisterType<object, DatasetConflictsWindow>(DatasetKeys.DatasetViewModelKeys.DatasetConflictsWindow);
+
+            _injectionContainer.RegisterType<IElementConflictResolver, DatasetsConflictResolver>(Guid.NewGuid().ToString());
 
             _injectionContainer.RegisterType<IFcdaAdderViewModelService, FcdaAdderViewModelService>();
             _injectionContainer.RegisterType<IFcdaViewModelFactory, FcdaViewModelFactory>(true);
@@ -48,6 +53,8 @@ namespace BISC.Modules.DataSets.Presentation.Module
             _injectionContainer.RegisterType<IDataSetViewModel, DataSetViewModel>();
             _injectionContainer.RegisterType<IFcdaAdderViewModel, FcdaAdderViewModel>();
             _injectionContainer.RegisterType<IDataSetSavingService, DataSetSavingService>();
+            _injectionContainer.RegisterType<DataSetsConflictsViewModel>();
+
 
         }
 

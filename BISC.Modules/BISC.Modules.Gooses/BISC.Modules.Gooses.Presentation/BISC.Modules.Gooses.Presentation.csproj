@@ -66,7 +66,10 @@
     <Compile Include="Module\GoosesPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\GooseControlSavingService.cs" />
+    <Compile Include="Services\GoosesControlsConflictResolver.cs" />
     <Compile Include="Services\GoosesUiHandlingService.cs" />
+    <Compile Include="ViewModels\GooseControls\GooseControlsConflictContext.cs" />
+    <Compile Include="ViewModels\GooseControls\GooseControlsConflictsViewModel.cs" />
     <Compile Include="ViewModels\GooseControls\GooseControlViewModel.cs" />
     <Compile Include="ViewModels\Matrix\Entities\GooseControlBlockAssignmentItem.cs" />
     <Compile Include="ViewModels\Matrix\Entities\SelectableValueViewModel.cs" />
@@ -79,6 +82,12 @@
     <Compile Include="ViewModels\Tabs\GooseControlsTabViewModel.cs" />
     <Compile Include="ViewModels\Tabs\GooseMatrixTabViewModel.cs" />
     <Compile Include="ViewModels\Tabs\GooseSubscriptionTabViewModel.cs" />
+    <Compile Include="Views\GooseControlsConflictsView.xaml.cs">
+      <DependentUpon>GooseControlsConflictsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GooseControlsReadonlyView.xaml.cs">
+      <DependentUpon>GooseControlsReadonlyView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Matrix\GooseControlAssignmentView.xaml.cs">
       <DependentUpon>GooseControlAssignmentView.xaml</DependentUpon>
     </Compile>
@@ -110,6 +119,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\GooseControlsConflictsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GooseControlsReadonlyView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Matrix\GooseControlAssignmentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

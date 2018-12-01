@@ -7,12 +7,17 @@ using BISC.Infrastructure.Global.Common;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Services;
+using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
+using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
 using BISC.Modules.DataSets.Model.Mappers;
+using BISC.Modules.DataSets.Presentation.ViewModels.Helpers;
 using BISC.Modules.Device.Infrastructure.HelpClasses;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Presentation.Infrastructure.Navigation;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.DataSets.Model.Services
 {
@@ -21,12 +26,17 @@ namespace BISC.Modules.DataSets.Model.Services
         private readonly IDatasetModelService _datasetModelService;
         private readonly IDeviceModelService _deviceModelService;
         private readonly IConnectionPoolService _connectionPoolService;
+        private readonly INavigationService _navigationService;
+        private readonly IDatasetViewModelFactory _datasetViewModelFactory;
 
-        public DatasetsConflictResolver(IDatasetModelService datasetModelService, IDeviceModelService deviceModelService, IConnectionPoolService connectionPoolService)
+        public DatasetsConflictResolver(IDatasetModelService datasetModelService, IDeviceModelService deviceModelService, IConnectionPoolService connectionPoolService,
+            INavigationService navigationService,IDatasetViewModelFactory datasetViewModelFactory)
         {
             _datasetModelService = datasetModelService;
             _deviceModelService = deviceModelService;
             _connectionPoolService = connectionPoolService;
+            _navigationService = navigationService;
+            _datasetViewModelFactory = datasetViewModelFactory;
         }
 
 
@@ -121,6 +131,38 @@ namespace BISC.Modules.DataSets.Model.Services
                 }
             }
             return ResolvingResult.SucceedResult;
+
+        }
+
+        public void ShowConflicts(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        {
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+
+            var datasetsInDevice = _datasetModelService.GetAllDataSetOfDevice(deviceInsclModelInDevice);
+            var datasetsInProject = _datasetModelService.GetAllDataSetOfDevice(devicesclModelInProject);
+
+            var projectOnlydatasets = GetProjectOnlyList(datasetsInDevice, datasetsInProject);
+            var deviceOnlydatasets = GetDeviceOnlyList(datasetsInDevice, datasetsInProject);
+
+            var datasetsInDeviceVms = _datasetViewModelFactory.GetDataSetsViewModel(datasetsInDevice);
+            var datasetsInProjectVms = _datasetViewModelFactory.GetDataSetsViewModel(datasetsInProject);
+
+            foreach (var datasetsInProjectVm in datasetsInProjectVms)
+            {
+                datasetsInProjectVm.ChangeTracker.AcceptChanges();
+            }
+            foreach (var datasetsInDeviceVm in datasetsInDeviceVms)
+            {
+                datasetsInDeviceVm.ChangeTracker.AcceptChanges();
+            }
+
+            projectOnlydatasets.ForEach((set => datasetsInProjectVms.FirstOrDefault((model =>model.EditableNamePart==set.Name ))?.ChangeTracker.SetModified()));
+            deviceOnlydatasets.ForEach((set => datasetsInDeviceVms.FirstOrDefault((model => model.EditableNamePart == set.Name))?.ChangeTracker.SetModified()));
+
+            _navigationService.OpenInWindow(DatasetKeys.DatasetViewModelKeys.DatasetConflictsWindow,$"Dataset конфликты в устройстве {deviceName}",
+                new BiscNavigationParameters().AddParameterByName(DatasetKeys.DatasetViewModelKeys.DatasetsConflictContextKey,
+                    new DatasetsConflictContext(datasetsInDeviceVms,datasetsInProjectVms)));
 
         }
 

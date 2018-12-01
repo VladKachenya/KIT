@@ -12,19 +12,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using BISC.Modules.DataSets.Presentation.ViewModels;
+using BISC.Modules.Gooses.Presentation.ViewModels.GooseControls;
 
-namespace BISC.Modules.DataSets.Presentation.Views
+namespace BISC.Modules.Gooses.Presentation.Views
 {
     /// <summary>
-    /// Логика взаимодействия для DatasetConflictsWindow.xaml
+    /// Логика взаимодействия для GooseControlsConflictsView.xaml
     /// </summary>
-    public partial class DatasetConflictsWindow : UserControl
+    public partial class GooseControlsConflictsView : System.Windows.Controls.UserControl
     {
-        public DatasetConflictsWindow(DataSetsConflictsViewModel dataSetsConflictsViewModel)
+        public GooseControlsConflictsView(GooseControlsConflictsViewModel gooseControlsConflictsViewModel)
         {
             InitializeComponent();
-            DataContext = dataSetsConflictsViewModel;
+            DataContext = gooseControlsConflictsViewModel;
+
+
         }
     }
 }

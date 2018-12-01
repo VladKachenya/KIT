@@ -10,10 +10,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using BISC.Presentation.Infrastructure.ChangeTracker;
+using BISC.Presentation.Infrastructure.ViewModel;
 
 namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
 {
-    public interface IReportControlViewModel : IReportElementBase<IReportControl>,IObjectWithChangeTracker
+    public interface IReportControlViewModel : IReportElementBase<IReportControl>,IObjectWithChangeTracker,IEditableViewModel
     {
         string ParentLdName { get;}
         string ParentLnName { get;}

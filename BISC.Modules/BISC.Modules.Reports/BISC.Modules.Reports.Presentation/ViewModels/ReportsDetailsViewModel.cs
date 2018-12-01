@@ -221,7 +221,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         public override void OnActivate()
         {
-            //ShowFtpBlockMessageIfNeeded();
+            ShowFtpBlockMessageIfNeeded();
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _userInterfaceComposingService.AddGlobalCommand(UpdateReportsCommad, $"Обновить Report-ы {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewReportCommand, $"Добавить Report {_device.Name}", IconsKeys.AddIconKey, false, true);

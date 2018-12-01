@@ -36,7 +36,6 @@ namespace BISC.Modules.DataSets.Model.Module
             modelElementsRegistryService.RegisterModelElement(new FcdaSerializer(), DatasetKeys.DatasetModelKeys.FcdaModelKey);
             _injectionContainer.RegisterType<IDeviceElementLoadingService,DatasetsLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IDatasetModelService, DatasetModelService>();
-            _injectionContainer.RegisterType<IElementConflictResolver, DatasetsConflictResolver>(Guid.NewGuid().ToString());
 
             _injectionContainer.RegisterType<IFcdaFactory, FcdaFactory>(true);
             _injectionContainer.RegisterType<IDataSetFactory, DataSetFactory>(true);

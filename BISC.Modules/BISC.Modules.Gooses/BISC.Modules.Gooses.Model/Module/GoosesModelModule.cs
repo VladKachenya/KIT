@@ -37,7 +37,6 @@ namespace BISC.Modules.Gooses.Model.Module
             modelElementsRegistryService.RegisterModelElement(new GooseRowSerializer(), GooseKeys.GooseModelKeys.GooseRowKey);
             modelElementsRegistryService.RegisterModelElement(new GooseMatrixSerializer(), GooseKeys.GooseModelKeys.GooseMatrixKey);
 
-            _injectionContainer.RegisterType<IElementConflictResolver, GoosesControlsConflictResolver>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IDeviceElementLoadingService, GoosesLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IGoosesModelService, GoosesModelService>();
             _injectionContainer.RegisterType<IFtpGooseModelService, FtpGooseModelService>();

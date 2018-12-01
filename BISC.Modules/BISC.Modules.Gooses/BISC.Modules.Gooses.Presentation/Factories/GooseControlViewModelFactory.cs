@@ -81,7 +81,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 gooseControlViewModel.ConfRev = gooseControl.ConfRev;
                 gooseControlViewModel.FixedOffs = gooseControl.FixedOffs;
                 gooseControlViewModel.GseType = gooseControl.GooseType;
-
+                gooseControlViewModel.IsEditable = true;
                 gooseControlViewModels.Add(gooseControlViewModel);
             }
 
@@ -102,7 +102,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             gooseControlViewModel.MaxTime = 2000;
             gooseControlViewModel.MinTime = 10;
             gooseControlViewModel.ConfRev = 0;
-
+            gooseControlViewModel.IsEditable = true;
             var ldevices = new List<ILDevice>();
             device.GetAllChildrenOfType(ref ldevices);
             var ldevice = ldevices.FirstOrDefault((lDevice => lDevice.Inst == "LD0"));

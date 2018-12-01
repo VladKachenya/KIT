@@ -5,16 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
+using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Keys;
+using BISC.Modules.Gooses.Model.Services;
 using BISC.Modules.Gooses.Presentation.Factories;
 using BISC.Modules.Gooses.Presentation.FileParsers;
 using BISC.Modules.Gooses.Presentation.Interfaces;
 using BISC.Modules.Gooses.Presentation.Interfaces.Factories;
 using BISC.Modules.Gooses.Presentation.Services;
+using BISC.Modules.Gooses.Presentation.ViewModels.GooseControls;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities;
 using BISC.Modules.Gooses.Presentation.ViewModels.Tabs;
 using BISC.Modules.Gooses.Presentation.ViewModels.Tree;
+using BISC.Modules.Gooses.Presentation.Views;
 using BISC.Modules.Gooses.Presentation.Views.Matrix;
 using BISC.Modules.Gooses.Presentation.Views.Tabs;
 using BISC.Modules.Gooses.Presentation.Views.Tree;
@@ -49,6 +53,8 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<GooseMatrixViewModel>();
             _injectionContainer.RegisterType<IGooseControlBlockViewModelFactory, GooseControlBlockViewModelFactory>();
             _injectionContainer.RegisterType<GooseControlSavingService>();
+            _injectionContainer.RegisterType<GooseControlsConflictsViewModel>();
+            _injectionContainer.RegisterType<IElementConflictResolver, GoosesControlsConflictResolver>(Guid.NewGuid().ToString());
 
             _injectionContainer.RegisterType<object,GooseGroupTreeItemView>(GooseKeys.GoosePresentationKeys.GooseGroupTreeItemViewKey);
             _injectionContainer.RegisterType<object, GooseSubscriptionTab>(GooseKeys.GoosePresentationKeys.GooseSubscriptionTabKey);
@@ -56,6 +62,7 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<object, GooseMatrixTab>(GooseKeys.GoosePresentationKeys.GooseMatrixTabKey);
             _injectionContainer.RegisterType<object, GooseMatrixView>(GooseKeys.GoosePresentationKeys.GooseMatrixViewKey);
             _injectionContainer.RegisterType<object, GooseControlAssignmentView>(GooseKeys.GoosePresentationKeys.GooseControlAssignmentViewKey);
+            _injectionContainer.RegisterType<object, GooseControlsConflictsView>(GooseKeys.GoosePresentationKeys.GooseControlsConflictsView);
 
         }
 

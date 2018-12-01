@@ -66,7 +66,7 @@ namespace BISC.Modules.Reports.Presentation.Factorys
         private IReportControlViewModel GetNewReportViewModel(ILDevice parientDevice, IReportControl model, IDevice device)
         {
             IReportControlViewModel newReport = _injectionContainer.ResolveType<IReportControlViewModel>();
-        
+        newReport.SetIsEditable(true);
             newReport.Model = model;
             newReport.SetParentLDevice(parientDevice);
             newReport.ActivateElement();

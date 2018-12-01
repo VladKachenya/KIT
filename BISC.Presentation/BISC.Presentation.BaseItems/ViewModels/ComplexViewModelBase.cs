@@ -15,7 +15,7 @@ namespace BISC.Presentation.BaseItems.ViewModels
         public bool IsEditable
         {
             get => _isEditable;
-            set =>SetProperty(ref _isEditable,value);
+            set =>SetProperty(ref _isEditable,value,true);
         }
 
         public virtual void SetIsEditable(bool isEditable)
@@ -26,7 +26,7 @@ namespace BISC.Presentation.BaseItems.ViewModels
         public bool IsSelected
         {
             get => _isSelected;
-            set => SetProperty(ref _isSelected, value);
+            set => SetProperty(ref _isSelected, value,true);
         }
 
        public virtual void SetIsSelected(bool isSelected)

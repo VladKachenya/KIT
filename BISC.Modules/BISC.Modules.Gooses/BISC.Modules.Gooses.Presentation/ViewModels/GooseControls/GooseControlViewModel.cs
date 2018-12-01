@@ -7,7 +7,7 @@ using BISC.Presentation.BaseItems.ViewModels;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
 {
-   public class GooseControlViewModel:ViewModelBase
+   public class GooseControlViewModel:ComplexViewModelBase
     {
         private bool _fixedOffs;
         private uint _minTime;
@@ -22,6 +22,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
         private string _goId;
         private List<string> _availableDatasets;
         private int _confRev;
+        private bool _isChanged;
 
         public string Name
         {
@@ -148,5 +149,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
         }
 
         public string LdInst { get; set; }
+
+        public bool IsChanged
+        {
+            get => _isChanged;
+            set => SetProperty(ref _isChanged , value,true);
+        }
     }
 }

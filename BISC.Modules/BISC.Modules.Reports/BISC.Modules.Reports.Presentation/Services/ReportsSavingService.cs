@@ -157,12 +157,13 @@ namespace BISC.Modules.Reports.Presentation.Services
         {
             List<IReportControlViewModel> reportsToSaveDynamic =
                 reportsToSave.Where((model => model.IsDynamic)).ToList();
-            if (!reportsToSaveDynamic.Any(model => model.ChangeTracker.GetIsModifiedRecursive()))
+          
+            List<IReportControl> reportControlsInDeviceToDelete =
+                reportControlsInDevice.Where((model => model.IsDynamic)).ToList();
+            if (!reportsToSaveDynamic.Any(model => model.ChangeTracker.GetIsModifiedRecursive())&&reportControlsInDeviceToDelete.Count== reportsToSaveDynamic.Count)
             {
                 return new OperationResult<SavingResultEnum>(SavingResultEnum.SavedInFile, true);
             }
-            List<IReportControl> reportControlsInDeviceToDelete =
-                reportControlsInDevice.Where((model => model.IsDynamic)).ToList();
             List<IReportControl> reportControlsToSave =
                 reportsToSaveDynamic.Select((model => model.GetUpdatedModel())).ToList();
             if (!reportsToSaveDynamic.Any() && !reportControlsInDeviceToDelete.Any())

@@ -29,6 +29,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Factories
             deviceConflictViewModel.ConflictTitle = elementConflictResolver.ConflictName;
             deviceConflictViewModel.IsConflictOk = !haveConflict;
             deviceConflictViewModel.IsConflictResolved = !haveConflict;
+            deviceConflictViewModel.ShowConflictInTool = _commandFactory.CreatePresentationCommand((() => { elementConflictResolver.ShowConflicts(deviceConflictContext.DeviceName, deviceConflictContext.SclModelDevice, deviceConflictContext.SclModelProject);}));
             return deviceConflictViewModel;
         }
     }
