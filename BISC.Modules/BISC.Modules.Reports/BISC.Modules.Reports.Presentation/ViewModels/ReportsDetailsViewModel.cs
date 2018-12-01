@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Device.Infrastructure.Events;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Reports.Model.Services;
 using BISC.Presentation.BaseItems.ViewModels.Behaviors;
@@ -33,7 +34,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
     {
         private string _regionName;
         private IDevice _device;
-        
+
         private List<IReportControl> _reportControlsModel;
         private readonly ICommandFactory _commandFactory;
         private IReportsModelService _reportsModelService;
@@ -51,14 +52,16 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private readonly IUserInteractionService _userInteractionService;
         private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly IDeviceReconnectionService _deviceReconnectionService;
+        private readonly IGlobalEventsService _globalEventsService;
+
 
 
         #region Ctor
         public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService, ISaveCheckingService saveCheckingService,
             IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService, IConnectionPoolService connectionPoolService,
             ILoggingService loggingService, IReportsSavingService reportsSavingService, IBiscProject biscProject,
-                ReportControlLoadingService reportControlLoadingService, IUserNotificationService userNotificationService, IUserInteractionService userInteractionService
-                ,IDeviceWarningsService deviceWarningsService,IDeviceReconnectionService deviceReconnectionService)
+                ReportControlLoadingService reportControlLoadingService, IUserNotificationService userNotificationService, IUserInteractionService userInteractionService,
+                IDeviceWarningsService deviceWarningsService, IDeviceReconnectionService deviceReconnectionService, IGlobalEventsService globalEventsService)
         //IReportsLoadingService reportsLoadingService, 
         {
             _commandFactory = commandFactory;
@@ -74,6 +77,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _userInteractionService = userInteractionService;
             _deviceWarningsService = deviceWarningsService;
             _deviceReconnectionService = deviceReconnectionService;
+            _globalEventsService = globalEventsService;
             //_reportsLoadingService = reportsLoadingService;
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand);
             AddNewReportCommand = commandFactory.CreatePresentationCommand(OnAddNewReportCommand, IsAddNewReport);
@@ -97,15 +101,18 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         #region private methods
         private async void OnSaveСhangesCommand()
         {
-            BlockViewModelBehavior.SetBlock("Сохранение отчетов",true);
+            BlockViewModelBehavior.SetBlock("Сохранение отчетов", true);
             _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
-          var res=  await _reportsSavingService.SaveReportsAsync(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            var res = await _reportsSavingService.SaveReportsAsync(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             UpdateViewModels();
             ChangeTracker.AcceptChanges();
             if (res == SavingResultEnum.SavedUsingFtp)
             {
-                _deviceWarningsService.SetWarningOfDevice(_device.Name,ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag);
-                ShowFtpBlockMessageIfNeeded();
+                if (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
+                {
+                    _deviceWarningsService.SetWarningOfDevice(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag);
+                    ShowFtpBlockMessageIfNeeded();
+                }
             }
             else
             {
@@ -121,8 +128,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             {
                 BlockViewModelBehavior.SetBlockWithOption(
                     "Для сохранения изменений по FTP требуется перезагрузка" + Environment.NewLine +
-                    "Имеется несоответствие данных.", new UnlockCommandEntity("Все равно продолжить"));
-                //new UnlockCommandEntity("Перезагрузить устройство",_commandFactory.CreatePresentationCommand((async () => { await _deviceRestartService.RestartDevice(_device,)}))));
+                    "Имеется несоответствие данных.", new UnlockCommandEntity("Все равно продолжить"), 
+                    new UnlockCommandEntity("Перезагрузить устройство", _commandFactory.CreatePresentationCommand(() => _globalEventsService.SendMessage( new ResetByFtpEvent{DeviceName = _device.Name, Ip = _device.Ip}))));
             }
         }
 
@@ -159,7 +166,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         private async Task UpdateReports(bool updateFromDevice)
         {
-            BlockViewModelBehavior.SetBlock("Обновление данных",true);
+            BlockViewModelBehavior.SetBlock("Обновление данных", true);
             if (updateFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
             {
                 await _reportControlLoadingService.EstimateProgress(_device);
@@ -214,7 +221,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         public override void OnActivate()
         {
-            ShowFtpBlockMessageIfNeeded();
+            //ShowFtpBlockMessageIfNeeded();
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _userInterfaceComposingService.AddGlobalCommand(UpdateReportsCommad, $"Обновить Report-ы {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewReportCommand, $"Добавить Report {_device.Name}", IconsKeys.AddIconKey, false, true);

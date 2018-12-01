@@ -11,6 +11,7 @@ using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Events;
 using BISC.Modules.Connection.Infrastructure.Services;
+using BISC.Modules.Device.Infrastructure.Events;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Keys;
@@ -141,7 +142,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
                 BlockViewModelBehavior.SetBlockWithOption(
                     "Для сохранения изменений по FTP требуется перезагрузка" + Environment.NewLine +
-                    "Имеется несоответствие данных.", new UnlockCommandEntity("Все равно продолжить"));
+                    "Имеется несоответствие данных.", new UnlockCommandEntity("Все равно продолжить"),
+                    new UnlockCommandEntity("Перезагрузить устройство", _commandFactory.CreatePresentationCommand(() => _globalEventsService.SendMessage( new ResetByFtpEvent{DeviceName = _device.Name, Ip = _device.Ip}))));
             }
         }
 
@@ -182,7 +184,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить блоки управления GOOSE устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _userInterfaceComposingService.AddGlobalCommand(UpdateGoosesCommand, $"Обновить GOOSE { _device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddGooseCommand, $"Добавить блок управления GOOSE в устройство { _device.Name}", IconsKeys.AddIconKey, false, true);
-            ShowFtpBlockMessageIfNeeded();
+            //ShowFtpBlockMessageIfNeeded();
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnActivate();
         }

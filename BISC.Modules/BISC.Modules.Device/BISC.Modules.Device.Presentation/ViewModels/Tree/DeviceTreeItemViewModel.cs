@@ -11,6 +11,7 @@ using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Events;
 using BISC.Modules.Connection.Infrastructure.Services;
+using BISC.Modules.Device.Infrastructure.Events;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
@@ -120,6 +121,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             var res = await _userInteractionService.ShowOptionToUser("Перезагрузка устройства",
                 $"Устройство {_device.Name} \n будет перезагружено", new List<string> { "OK", "Отмена" });
             if (res == 1) return;
+            ResetDeviceByFtp();
+        }
+
+        private async void ResetDeviceByFtp()
+        {
             _loggingService.LogMessage($"Устройство {_device.Name} перезагружается", SeverityEnum.Info);
             await _deviceReconnectionService.RestartDevice(_device, _treeItemIdentifier);
         }
@@ -201,6 +207,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _device = device;
             IsDeviceConnected = _connectionPoolService.GetConnection(_device.Ip).IsConnected;
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChangedEvent);
+            _globalEventsService.Subscribe<ResetByFtpEvent>(OnResetByFtpEvent);
+
             base.OnNavigatedTo(navigationContext);
         }
 
@@ -214,11 +222,22 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             }
         }
 
+        private void OnResetByFtpEvent(ResetByFtpEvent ea)
+        {
+            if (ea.Ip == _device.Ip && ea.DeviceName == _device.Name && IsDeviceConnected)
+            {
+                ResetDeviceByFtp();
+            }
+        }
+
 
         #region Overrides of ViewModelBase
 
         protected override void OnDisposing()
         {
+            _globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChangedEvent);
+            _globalEventsService.Unsubscribe<ResetByFtpEvent>(OnResetByFtpEvent);
+
             base.OnDisposing();
         }
 
