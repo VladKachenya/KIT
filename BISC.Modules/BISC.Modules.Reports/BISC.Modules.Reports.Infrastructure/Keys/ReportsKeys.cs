@@ -26,6 +26,8 @@ namespace BISC.Modules.Reports.Infrastructure.Keys
             //public const string ReportsAddingView = "ReportsAddingView";
             public const string ReportsFtpIncostistancyWarningTag = "ReportsFtpIncostistancyWarningTag";
             public const string ReportsIncostistancyWarningTag = "ReportsProjectAndDeviceIncostistancyWarningTag";
+            public const string ReportsLoadErrorWarningTag = "ReportsLoadErrorWarningTag";
+
 
         }
     }

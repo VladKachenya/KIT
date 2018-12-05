@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
@@ -74,9 +75,16 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         private async void OnUpdateGooses()
         {
-            await UpdateGooses(true);
-            _loggingService.LogUserAction($"Пользователь обновил состояние Goose CB (устройство {_device.Name})");
+            try
+            {
+                await UpdateGooses(true);
+                _loggingService.LogUserAction($"Пользователь обновил состояние Goose CB (устройство {_device.Name})");
+            }
+            catch (Exception e)
+            {
+                _loggingService.LogMessage("Goose update error", SeverityEnum.Warning);
 
+            }
         }
 
         private async Task UpdateGooses(bool updatefromDevice)
@@ -131,7 +139,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             BlockViewModelBehavior.Unlock();
             if (res.IsSucceed && res.Item == SavingResultEnum.SavedUsingFtp)
             {
-                _deviceWarningsService.SetWarningOfDevice(_device.Name,GooseKeys.GooseWarningKeys.GooseSavedFtpKey);
+                _deviceWarningsService.SetWarningOfDevice(_device.Name,GooseKeys.GooseWarningKeys.GooseSavedFtpKey, "Goose сохранены по FTP");
             }
             ShowFtpBlockMessageIfNeeded();
         }

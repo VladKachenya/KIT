@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Infrastructure.Global.Logging;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Events;
@@ -110,7 +111,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             {
                 if (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
                 {
-                    _deviceWarningsService.SetWarningOfDevice(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag);
+                    _deviceWarningsService.SetWarningOfDevice(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag, "Reports сохрандены с использование FTP");
                     ShowFtpBlockMessageIfNeeded();
                 }
             }
@@ -158,7 +159,15 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         private async void OnUpdateReports()
         {
-            await UpdateReports(true);
+            try
+            {
+                await UpdateReports(true);
+            }
+            catch (Exception e)
+            {
+                _loggingService.LogMessage("Ошибка обновления Reports", SeverityEnum.Warning);
+                BlockViewModelBehavior.Unlock();
+            }
         }
 
 

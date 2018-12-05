@@ -43,7 +43,12 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
             if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name, GooseKeys.GooseWarningKeys.GooseSavedFtpKey))
             {
                 IsReportWarning = true;
-                WarningsCollection.Add("Не сохранены результаты редактирования блоков управления Goose. Требуется перезагрузка устройства");
+                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.Name, GooseKeys.GooseWarningKeys.GooseSavedFtpKey));
+            }
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name, GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey))
+            {
+                IsReportWarning = true;
+                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.Name, GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey));
             }
 
         }

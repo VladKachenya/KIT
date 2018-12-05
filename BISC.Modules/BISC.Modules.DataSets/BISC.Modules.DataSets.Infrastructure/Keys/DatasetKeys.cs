@@ -25,5 +25,10 @@ namespace BISC.Modules.DataSets.Infrastructure.Keys
             public const string DatasetsConflictContextKey = "DatasetsConflictContext";
 
         }
+
+        public static class DataSetWarningKeys
+        {
+            public const string DataSetLoadErrorWarningTagKey = "DataSetLoadErrorWarningTag";
+        }
     }
 }

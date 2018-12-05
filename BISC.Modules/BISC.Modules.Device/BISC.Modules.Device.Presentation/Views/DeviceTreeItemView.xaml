@@ -13,10 +13,12 @@
             <i:InvokeCommandAction Command="{Binding NavigateToDetailsCommand}" ></i:InvokeCommandAction>
         </i:EventTrigger>
     </i:Interaction.Triggers>-->
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
+    </UserControl.Resources>
     <Grid Background="Transparent">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.ContextMenu>
@@ -50,12 +52,26 @@
                 </ContentControl.Style>
             </ContentControl>
         </StackPanel>
-        <Button Grid.Column="1" Width="15" Height="15" ToolTip="Перезагрузить устройство по FTP" Margin="10,0"
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <Button Width="20" Height="20" Padding="0" Margin="1,1,5,1" Foreground="OrangeRed" Style="{DynamicResource FlatButtonLight}" Visibility="{Binding IsReportWarning,Converter={StaticResource booleanToVisibilityConverter}}">
+                <Button.ToolTip>
+                    <ListBox ItemsSource="{Binding WarningsCollection}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding .}" Foreground="White"></TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Button.ToolTip>
+                <ContentControl  ContentTemplate="{DynamicResource MessageAlertIcon}"/>
+            </Button>
+            <Button  Width="15" Height="15" ToolTip="Перезагрузить устройство по FTP" Margin="10,0"
                 Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding ResetDeviceViaFtpCommand}">
-            <ContentControl ContentTemplate="{DynamicResource LockResetIcon}"></ContentControl>
-        </Button>
-        <Button Grid.Column="2" Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToDetailsCommand}">
-            <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}"></ContentControl>
-        </Button>
+                <ContentControl ContentTemplate="{DynamicResource LockResetIcon}"></ContentControl>
+            </Button>
+            <Button  Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToDetailsCommand}">
+                <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}"></ContentControl>
+            </Button>
+        </StackPanel>
     </Grid>
 </UserControl>

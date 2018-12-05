@@ -6,14 +6,32 @@
              xmlns:local="clr-namespace:BISC.Modules.DataSets.Presentation.Views"
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="200">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
+
         <TextBlock Text="DATASETS" Margin="5" Grid.Column="0"/>
-        <Button Grid.Column="1" Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToDetailsCommand}">
-            <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}"/>
-        </Button>
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <Button Grid.Column="0" Width="20" Height="20" Padding="0" Margin="1,1,5,1" Foreground="OrangeRed" Style="{DynamicResource FlatButtonLight}" Visibility="{Binding IsReportWarning,Converter={StaticResource booleanToVisibilityConverter}}">
+                <Button.ToolTip>
+                    <ListBox ItemsSource="{Binding WarningsCollection}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding .}" Foreground="White"></TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Button.ToolTip>
+                <ContentControl  ContentTemplate="{DynamicResource MessageAlertIcon}"/>
+            </Button>
+            <Button  Width="15" Height="15" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToDetailsCommand}">
+                <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}"/>
+            </Button>
+        </StackPanel>
     </Grid>
 </UserControl>

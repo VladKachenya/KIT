@@ -23,7 +23,7 @@ namespace BISC.Modules.Device.Presentation.Services
 
         #region Implementation of IDeviceWarningsService
 
-        public void SetWarningOfDevice(string deviceName, string warningTag)
+        public void SetWarningOfDevice(string deviceName, string warningTag, string deviceMassage = null)
         {
             if (GetIsDeviceWarningRegistered(deviceName, warningTag))
             {
@@ -31,7 +31,7 @@ namespace BISC.Modules.Device.Presentation.Services
             }
             else
             {
-                _deviceWarnings.Add(new DeviceWarning(deviceName, warningTag));
+                _deviceWarnings.Add(new DeviceWarning(deviceName, warningTag, deviceMassage));
                 _globalEventsService.SendMessage(new DeviceWarningsChanged(deviceName));
             }
         }
@@ -67,6 +67,23 @@ namespace BISC.Modules.Device.Presentation.Services
         {
             return _deviceWarnings.Any(
                 (warning => warning.DeviceName == deviceName && warning.WarningTag == warningTag));
+        }
+
+        public bool GetIsDeviceWarningRegistered(string deviceName)
+        {
+            return _deviceWarnings.Any( (warning => warning.DeviceName == deviceName) );
+        }
+
+        public string GetWarningMassage(string deviceName, string warningTag)
+        {
+            return _deviceWarnings
+                .FirstOrDefault(warning => warning.DeviceName == deviceName && warning.WarningTag == warningTag)
+                ?.WarningMasage;
+        }
+
+        public List<string> GetWarningMassagesOfDevice(string deviceName)
+        {
+            return _deviceWarnings.Where(warning => warning.DeviceName == deviceName).Select(warning => warning.WarningMasage).ToList();
         }
 
         #endregion

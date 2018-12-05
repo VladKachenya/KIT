@@ -9,6 +9,8 @@ using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Reports.Infrastructure.Keys;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Services;
 using BISC.Modules.Reports.Model.Model;
@@ -21,15 +23,18 @@ namespace BISC.Modules.Reports.Model.Services
         private readonly IReportsModelService _reportsModelService;
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IFtpReportModelService _ftpReportModelService;
+        private readonly IDeviceWarningsService _deviceWarningsService;
         private Dictionary<string, List<string>> _ldReportsDictionary = new Dictionary<string, List<string>>();
 
         public ReportControlLoadingService(IConnectionPoolService connectionPoolService,
-            IReportsModelService reportsModelService, ISclCommunicationModelService sclCommunicationModelService, IFtpReportModelService ftpReportModelService)
+            IReportsModelService reportsModelService, ISclCommunicationModelService sclCommunicationModelService, IFtpReportModelService ftpReportModelService,
+            IDeviceWarningsService deviceWarningsService)
         {
             _connectionPoolService = connectionPoolService;
             _reportsModelService = reportsModelService;
             _sclCommunicationModelService = sclCommunicationModelService;
             _ftpReportModelService = ftpReportModelService;
+            _deviceWarningsService = deviceWarningsService;
         }
 
         #region Implementation of IDisposable
@@ -86,33 +91,41 @@ namespace BISC.Modules.Reports.Model.Services
 
             List<IReportControl> reportControlsToAddInModel = new List<IReportControl>();
 
-            foreach (var ldevice in _ldReportsDictionary.Keys)
+            try
             {
-                List<IReportControl> reportControls = new List<IReportControl>();
-
-                foreach (var reportString in _ldReportsDictionary[ldevice])
+                foreach (var ldevice in _ldReportsDictionary.Keys)
                 {
-                    var reportStringParts = reportString.Split('$');
-                    if (reportStringParts.Length != 2) continue;
-                    var res = await connection.MmsConnection.GetListReportsAsync(ldevice, reportStringParts[0],
-                        device.Name, reportStringParts[1]);
-                    if (res.IsSucceed)
+                    List<IReportControl> reportControls = new List<IReportControl>();
+
+                    foreach (var reportString in _ldReportsDictionary[ldevice])
                     {
-                        reportControls.AddRange(res.Item);
+                        var reportStringParts = reportString.Split('$');
+                        if (reportStringParts.Length != 2) continue;
+                        var res = await connection.MmsConnection.GetListReportsAsync(ldevice, reportStringParts[0],
+                            device.Name, reportStringParts[1]);
+                        if (res.IsSucceed)
+                        {
+                            reportControls.AddRange(res.Item);
+                        }
                     }
+
+                    var filteredRcs = FilterReportControlsByrptEnaMax(reportControls);
+
+                    filteredRcs.ForEach((control =>
+                    {
+                        if (dynamicReports.Any((reportControl => reportControl.Name == control.Name)))
+                        {
+                            control.IsDynamic = true;
+                        }
+                    }));
+
+                    _reportsModelService.AddReportsToDevice(device, filteredRcs, ldevice);
                 }
-
-                var filteredRcs = FilterReportControlsByrptEnaMax(reportControls);
-
-                filteredRcs.ForEach((control =>
-                {
-                    if (dynamicReports.Any((reportControl => reportControl.Name == control.Name)))
-                    {
-                        control.IsDynamic = true;
-                    }
-                }));
-
-                _reportsModelService.AddReportsToDevice(device, filteredRcs, ldevice);
+            }
+            catch (Exception e)
+            {
+                _deviceWarningsService.SetWarningOfDevice(device.Name, ReportsKeys.ReportsPresentationKeys.ReportsLoadErrorWarningTag, "Ошибка вычитывания Reports из устройства");
+                throw;
             }
         }
 
@@ -122,7 +135,7 @@ namespace BISC.Modules.Reports.Model.Services
 
             var groupedRawRcs =
                 rawReportControls.GroupBy((control => control.Name.Substring(0, control.Name.Length - 2))).ToList();
-            
+
 
             foreach (var groupedRawRc in groupedRawRcs)
             {
@@ -130,7 +143,7 @@ namespace BISC.Modules.Reports.Model.Services
                 rcFiltered.RptID = rcFiltered.RptID;
                 rcFiltered.Name = rcFiltered.Name.Substring(0, rcFiltered.Name.Length - 2);
                 rcFiltered.RptEnabled.Value.Max = groupedRawRc.Count();
-               reportControlsFiltered.Add(rcFiltered);
+                reportControlsFiltered.Add(rcFiltered);
             }
 
             return reportControlsFiltered;

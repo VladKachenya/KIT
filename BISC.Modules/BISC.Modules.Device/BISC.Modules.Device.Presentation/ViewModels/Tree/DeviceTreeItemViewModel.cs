@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
 using BISC.Infrastructure.Global.Logging;
@@ -52,12 +53,13 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private IDevice _device;
         private TreeItemIdentifier _treeItemIdentifier;
         private bool _isDeviceConnected;
+        private bool _isReportWarning;
 
         public DeviceTreeItemViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService, IGlobalEventsService globalEventsService, IConnectionPoolService connectionPoolService,
             IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService,
             IGoosesModelService goosesModelService, ISaveCheckingService saveCheckingService, IUserInteractionService userInteractionService, ILoggingService loggingService,
             IDeviceSerializingService deviceSerializingService, IDeviceWarningsService deviceWarningsService, IDeviceReconnectionService deviceReconnectionService,
-            IDeviceConnectionService deviceConnectionService,INavigationService navigationService)
+            IDeviceConnectionService deviceConnectionService, INavigationService navigationService)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
             _deviceModelService = deviceModelService;
@@ -79,15 +81,17 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
             ResetDeviceViaFtpCommand = commandFactory.CreatePresentationCommand(OnResetDeviceViaFtp, IsResetDeviceViaFtp);
             ExportCidDeviceCommand = commandFactory.CreatePresentationCommand(OnExportCidDevice);
-            DisconnectDeviceCommand = commandFactory.CreatePresentationCommand(OnDisconnectDevice,CanDisconnectDevice);
+            DisconnectDeviceCommand = commandFactory.CreatePresentationCommand(OnDisconnectDevice, CanDisconnectDevice);
             ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDevice, CanConnectDevice);
+            WarningsCollection = new ObservableCollection<string>();
+
         }
 
         private void OnConnectDevice()
         {
             _navigationService.NavigateViewToGlobalRegion(DeviceKeys.ReconnectDeviceViewKey,
                 new BiscNavigationParameters().AddParameterByName(DeviceKeys.ReconnectDeviceContextKey,
-                    new ReconnectDeviceContext(_device,_treeItemIdentifier)));
+                    new ReconnectDeviceContext(_device, _treeItemIdentifier)));
         }
 
         private bool CanConnectDevice()
@@ -154,6 +158,20 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             }
         }
 
+        private void OnDeviceWarningsChanged(DeviceWarningsChanged deviceWarningsChanged)
+        {
+            if (deviceWarningsChanged.DeviceNameOfWarning != _device.Name) return;
+            WarningsCollection.Clear();
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name))
+            {
+                List<string> warningList =
+                    _deviceWarningsService.GetWarningMassagesOfDevice(deviceWarningsChanged.DeviceNameOfWarning);
+                if (warningList == null) return;
+                IsReportWarning = true;
+                warningList.ForEach(warningMassage => WarningsCollection.Add(warningMassage));
+            }
+        }
+
         private async void OnDeleteDeviceExecute()
         {
             Dispose();
@@ -208,6 +226,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             IsDeviceConnected = _connectionPoolService.GetConnection(_device.Ip).IsConnected;
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChangedEvent);
             _globalEventsService.Subscribe<ResetByFtpEvent>(OnResetByFtpEvent);
+            _globalEventsService.Subscribe<DeviceWarningsChanged>(OnDeviceWarningsChanged);
+
 
             base.OnNavigatedTo(navigationContext);
         }
@@ -237,6 +257,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         {
             _globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChangedEvent);
             _globalEventsService.Unsubscribe<ResetByFtpEvent>(OnResetByFtpEvent);
+            _globalEventsService.Unsubscribe<DeviceWarningsChanged>(OnDeviceWarningsChanged);
+
 
             base.OnDisposing();
         }
@@ -249,6 +271,13 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         public ICommand ResetDeviceViaFtpCommand { get; }
 
         public ICommand ExportCidDeviceCommand { get; }
+
+        public bool IsReportWarning
+        {
+            get => _isReportWarning;
+            set { SetProperty(ref _isReportWarning, value); }
+        }
+        public ObservableCollection<string> WarningsCollection { get; }
 
     }
 }

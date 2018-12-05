@@ -40,6 +40,7 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
         {
 
             public static string GooseSavedFtpKey => "GooseSavedFtp";
+            public static string ErrorGettingGooseOutOfDeviceKey => "ErrorGettingGooseOutOfDevice";
 
 
 

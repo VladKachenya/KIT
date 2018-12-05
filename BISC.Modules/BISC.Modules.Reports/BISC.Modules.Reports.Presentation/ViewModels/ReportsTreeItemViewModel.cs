@@ -79,12 +79,17 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name,ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag))
             {
                 IsReportWarning = true;
-                WarningsCollection.Add("Не сохранены результаты редактирования отчетов. Требуется перезагрузка устройства");
+                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag));
             }
             if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsIncostistancyWarningTag))
             {
                 IsReportWarning = true;
-                WarningsCollection.Add("Отчеты устройства не соответствуют отчетам проекта. Требуется участие пользователя");
+                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsIncostistancyWarningTag));
+            }
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsLoadErrorWarningTag))
+            {
+                IsReportWarning = true;
+                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsLoadErrorWarningTag));
             }
 
         }

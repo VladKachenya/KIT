@@ -12,6 +12,8 @@ using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Model.Model;
@@ -24,14 +26,16 @@ namespace BISC.Modules.Gooses.Model.Services
         private readonly IGoosesModelService _goosesModelService;
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IFtpGooseModelService _ftpGooseModelService;
+        private readonly IDeviceWarningsService _deviceWarningsService;
         private Dictionary<string,List<string>> _ldGoosesDictionary=new Dictionary<string, List<string>>();
         public GoosesLoadingService(IConnectionPoolService connectionPoolService,
-            IGoosesModelService goosesModelService,ISclCommunicationModelService sclCommunicationModelService,IFtpGooseModelService ftpGooseModelService)
+            IGoosesModelService goosesModelService,ISclCommunicationModelService sclCommunicationModelService,IFtpGooseModelService ftpGooseModelService, IDeviceWarningsService deviceWarningsService)
         {
             _connectionPoolService = connectionPoolService;
             _goosesModelService = goosesModelService;
             _sclCommunicationModelService = sclCommunicationModelService;
             _ftpGooseModelService = ftpGooseModelService;
+            _deviceWarningsService = deviceWarningsService;
         }
 
         #region Implementation of IDisposable
@@ -85,8 +89,13 @@ namespace BISC.Modules.Gooses.Model.Services
             if (_ldGoosesDictionary.Values.Any())
             {
 
-                var dynamicGooseControls =await _ftpGooseModelService.GetGooseDtosFromDevice(device.Ip);
-               
+                var res =await _ftpGooseModelService.GetGooseDtosFromDevice(device.Ip);
+                // Работать сдесь
+                if (!res.IsSucceed)
+                {
+                    _deviceWarningsService.SetWarningOfDevice(device.Name, GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey, "Ошибка вычитывания Goose из устройства");
+                }
+                var dynamicGooseControls = res.Item;
 
 
                 foreach (var ldevice in _ldGoosesDictionary.Keys)

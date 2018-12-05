@@ -13,11 +13,11 @@ using BISC.Modules.Gooses.Infrastructure.Services;
 
 namespace BISC.Modules.Gooses.Model.Services
 {
-   public class FtpGooseModelService: IFtpGooseModelService
+    public class FtpGooseModelService : IFtpGooseModelService
     {
         private readonly IDeviceFileWritingServices _deviceFileWritingServices;
 
-        public FtpGooseModelService(IDeviceFileWritingServices deviceFileWritingServices )
+        public FtpGooseModelService(IDeviceFileWritingServices deviceFileWritingServices)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
         }
@@ -25,27 +25,27 @@ namespace BISC.Modules.Gooses.Model.Services
 
         #region Implementation of IFtpGooseModelService
 
-        public async Task<List<GooseFtpDto>> GetGooseDtosFromDevice(string ip)
+        public async Task<OperationResult<List<GooseFtpDto>>> GetGooseDtosFromDevice(string ip)
         {
-            string fileInDevice =await _deviceFileWritingServices.ReadFileStringFromDevice(ip, "1:/CFG", "GOOSETR.CFG");
+            string fileInDevice = await _deviceFileWritingServices.ReadFileStringFromDevice(ip, "1:/CFG", "GOOSETR.CFG");
             try
             {
 
-         
-            var gooseStrings = GetGooseNamesListFromFile(fileInDevice);
+
+                var gooseStrings = GetGooseNamesListFromFile(fileInDevice);
 
 
-            List<GooseFtpDto> gooseFtpDtos=new List<GooseFtpDto>();
-            foreach (var gooseString in gooseStrings)
-            {
-                gooseFtpDtos.Add(new GooseFtpDto(){Name = gooseString});
-            }
+                List<GooseFtpDto> gooseFtpDtos = new List<GooseFtpDto>();
+                foreach (var gooseString in gooseStrings)
+                {
+                    gooseFtpDtos.Add(new GooseFtpDto() { Name = gooseString });
+                }
 
-            return gooseFtpDtos;
+                return new OperationResult<List<GooseFtpDto>>(gooseFtpDtos);
             }
             catch (Exception e)
             {
-                return new List<GooseFtpDto>();
+                return new OperationResult<List<GooseFtpDto>>(new List<GooseFtpDto>(), false, "Goose write error");
             }
         }
 
@@ -58,8 +58,8 @@ namespace BISC.Modules.Gooses.Model.Services
                 Write(gooseDtos, streamWriter);
                 string fileString = sb.ToString();
 
-                var res= await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() {fileString},
-                    new List<string>() {"GOOSETR.CFG"});
+                var res = await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() { fileString },
+                    new List<string>() { "GOOSETR.CFG" });
                 if (res)
                 {
                     return OperationResult.SucceedResult;
@@ -72,7 +72,7 @@ namespace BISC.Modules.Gooses.Model.Services
             }
             catch (Exception e)
             {
-            return new OperationResult("Не удалось обновить блоки управления GOOSE по FTP");
+                return new OperationResult("Не удалось обновить блоки управления GOOSE по FTP");
             }
         }
 
@@ -97,7 +97,7 @@ namespace BISC.Modules.Gooses.Model.Services
                     string VlanPriority = gooseDtoObj.VlanPriority.ToString();
                     string VlanId = gooseDtoObj.VlanId.ToString();
                     string AppId = gooseDtoObj.AppId.ToString();
-                    string MacAddress = gooseDtoObj.MacAddress.Replace("-",String.Empty);
+                    string MacAddress = gooseDtoObj.MacAddress.Replace("-", String.Empty);
 
                     streamWriter.WriteLine($"GoCB({ld} {goCBName} {goId} {dataSet} {confRev} {fixedOffs} {minTime} {maxTime})");
                     streamWriter.WriteLine($"GoDA({VlanPriority} {VlanId} {AppId} {MacAddress})");
