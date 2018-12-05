@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
 {
@@ -27,7 +28,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
         public string Name
         {
             get => _name;
-            set { SetProperty(ref _name , value); }
+            set
+            {
+                if (!StaticStringValidationService.NameValidation(value)) return;
+                SetProperty(ref _name , value);
+            }
         }
 
         public string GoId

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -184,7 +185,11 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public string EditableNamePart
         {
             get => _editableNamePart;
-            set { SetProperty(ref _editableNamePart, value); }
+            set
+            {
+                if(!StaticStringValidationService.NameValidation(value)) return;
+                SetProperty(ref _editableNamePart, value);
+            }
         }
 
         public string SelectedParentLd

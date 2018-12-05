@@ -18,6 +18,7 @@ using BISC.Model.Infrastructure.Common;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Reports.Model.Model;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 {
@@ -105,6 +106,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             set
             {
                 if (value.Length > 20) return;
+                if (!StaticStringValidationService.NameValidation(value)) return;
                 SetProperty(ref _name, value);
                 SetRoportID();
             }
