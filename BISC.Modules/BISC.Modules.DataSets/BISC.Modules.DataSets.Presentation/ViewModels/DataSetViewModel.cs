@@ -312,13 +312,37 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                     AddFcda(fcdaModel, dropInfo.InsertIndex);
                 }
             }
-            else if (sourceItem.TypeName == InfoModelKeys.ModelKeys.FcSetKey || sourceItem.TypeName == InfoModelKeys.ModelKeys.DoiKey)
+            else if (sourceItem.TypeName == InfoModelKeys.ModelKeys.FcSetKey )
             {
                 IFcda fcdaModel = null;
                 IDoi doiParent = sourceItem.Model as IDoi;
 
                 if (doiParent != null)
                     fcdaModel = _fcdaFactory.GetStructFcda(doiParent, sourceItem.Header);
+                if (fcdaModel != null)
+                {
+                    AddFcda(fcdaModel, dropInfo.InsertIndex);
+                }
+            }
+            else if (sourceItem.TypeName == InfoModelKeys.ModelKeys.DoiKey)
+            {
+                string header = "";
+                IFcda fcdaModel = null;
+                IDoi doiParent = sourceItem.Model as IDoi;
+
+                if (sourceItem.ChildInfoModelItemViewModels[0].TypeName == InfoModelKeys.ModelKeys.DaiKey)
+                {
+                    IDai daiElement = sourceItem.ChildInfoModelItemViewModels[0].Model as IDai;
+                    IDa daElement = _dataTypeTemplatesModelService.GetDaOfDai(daiElement, _biscProject.MainSclModel.Value);
+                    header = daElement.Fc;
+                }
+                else
+                {
+                    header = sourceItem.ChildInfoModelItemViewModels[0].Header;
+                }
+
+                if (doiParent != null)
+                    fcdaModel = _fcdaFactory.GetStructFcda(doiParent, header);
                 if (fcdaModel != null)
                 {
                     AddFcda(fcdaModel, dropInfo.InsertIndex);
