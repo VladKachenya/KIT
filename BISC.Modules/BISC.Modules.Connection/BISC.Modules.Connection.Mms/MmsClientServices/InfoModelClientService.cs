@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BISC.Modules.Connection.Infrastructure.Connection;
+using BISC.Modules.Connection.Infrastructure.Connection.Dto;
+using BISC.Modules.Connection.MMS.Dto;
 using BISC.Modules.Connection.MMS.MMS_ASN1_Model;
 
 namespace BISC.Modules.Connection.MMS.MmsClientServices
 {
-    public class InfoModelClientService:MmsClientServiceBase
+    public class InfoModelClientService : MmsClientServiceBase
     {
         public InfoModelClientService(Iec61850State state) : base(state)
         {
@@ -91,7 +95,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
         }
 
 
-        public async Task<MMSpdu> SendGetVariableAccessAttributesAsync(string ldName, string lnName, CancellationToken? cancellationToken=null)
+        public async Task<MMSpdu> SendGetVariableAccessAttributesAsync(string ldName, string lnName, CancellationToken? cancellationToken = null)
         {
             MMSpdu mymmspdu = new MMSpdu();
             _state.msMMSout = new MemoryStream();
@@ -159,6 +163,46 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             }
             return mmSpdu;
 
+        }
+
+
+
+        public async Task<SettingsControlDto> ReadSettingsControls(MmsTypeDescription lnMmsTypeDescription, string fc, string iedName, string lnName, string ldName)
+        {
+            try
+            {
+                var typeDescriptionForFc = lnMmsTypeDescription.Components
+                    .FirstOrDefault((type => type.Name == fc));
+                if (typeDescriptionForFc == null) return null;
+                MMSpdu recievedMmSpdu = await (new ReadingValuesClientService(_state)).SendReadAsync(iedName + ldName, lnName, fc);
+                if (recievedMmSpdu.Confirmed_ResponsePDU.Service.Read == null) return null;
+                var sgcbTypeDescr = typeDescriptionForFc.Components.ToArray()[0];
+                AccessResult accessResult = recievedMmSpdu.Confirmed_ResponsePDU.Service.Read.ListOfAccessResult.First();
+
+                if (accessResult.Success == null && !accessResult.Success.isStructureSelected()) return null;
+                var sgcbData = accessResult.Success.Structure.ToArray()[0];
+
+
+                SettingsControlDto settingControl = new SettingsControlDto();
+
+
+                int index = Array.FindIndex(sgcbTypeDescr.Components.ToArray(),
+                    (type =>
+                        type.Name == "NumOfSG"));
+                settingControl.NumOfSGs = (uint)sgcbData.Structure.ToArray()[index].Unsigned;
+
+                index = Array.FindIndex(sgcbTypeDescr.Components.ToArray(),
+                    (type =>
+                        type.Name == "ActSG"));
+                settingControl.ActSG = (uint)sgcbData.Structure.ToArray()[index].Unsigned;
+
+                return settingControl;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+         
         }
 
     }

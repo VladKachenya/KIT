@@ -26,41 +26,50 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
         private bool _isApplyButtonEnabled;
         private DeviceConflictContext _conflictContext;
 
-        public DeviceConflictsViewModel(ICommandFactory commandFactory,IInjectionContainer injectionContainer, DeviceConflictFactory deviceConflictFactory)
+        public DeviceConflictsViewModel(ICommandFactory commandFactory, IInjectionContainer injectionContainer, DeviceConflictFactory deviceConflictFactory)
         {
             _commandFactory = commandFactory;
             _deviceConflictFactory = deviceConflictFactory;
             ApplyCommand = commandFactory.CreatePresentationCommand(OnApply);
-            DeviceConflictViewModels=new ObservableCollection<DeviceConflictViewModel>();
+            DeviceConflictViewModels = new ObservableCollection<DeviceConflictViewModel>();
             _elementConflictResolvers = injectionContainer.ResolveAll(typeof(IElementConflictResolver)).Cast<IElementConflictResolver>().ToList();
             CancelCommand = commandFactory.CreatePresentationCommand(OnCancel);
-            BlockViewModelBehavior=new BlockViewModelBehavior();
+            BlockViewModelBehavior = new BlockViewModelBehavior();
         }
 
         private void OnCancel()
         {
-            DialogCommands.CloseDialogCommand.Execute(null,null);
+            DialogCommands.CloseDialogCommand.Execute(null, null);
         }
 
         private async void OnApply()
         {
-            BlockViewModelBehavior.SetBlock("Обновление" ,true);
+            BlockViewModelBehavior.SetBlock("Обновление", true);
             foreach (var deviceConflictViewModel in DeviceConflictViewModels)
             {
-                if(deviceConflictViewModel.IsConflictOk)continue;
-                var res= await _elementConflictResolvers.FirstOrDefault((resolver =>
+                bool isConflictResolvedFromDevice = false;
+
+                if (deviceConflictViewModel is DeviceManualConflictViewModel deviceManualConflictViewModel)
+                {
+                    isConflictResolvedFromDevice = deviceManualConflictViewModel.IsConflictResolvedAsFromDevice;
+                }
+
+                if (deviceConflictViewModel.IsConflictOk) continue;
+                var res = await _elementConflictResolvers.FirstOrDefault((resolver =>
                         resolver.ConflictName == deviceConflictViewModel.ConflictTitle))?
-                    .ResolveConflict(deviceConflictViewModel.IsConflictResolvedAsFromDevice, _conflictContext.DeviceName,
+                    .ResolveConflict(isConflictResolvedFromDevice,
+                        _conflictContext.DeviceName,
                         _conflictContext.SclModelDevice, _conflictContext.SclModelProject);
                 if (res.IsRestartNeeded)
                 {
                     _conflictContext.IsRestartNeeded = true;
                 }
+
             }
 
             await Task.Delay(1000);
             BlockViewModelBehavior.Unlock();
-            DialogCommands.CloseDialogCommand.Execute(null,null);
+            DialogCommands.CloseDialogCommand.Execute(null, null);
         }
 
         public ObservableCollection<DeviceConflictViewModel> DeviceConflictViewModels { get; }
@@ -75,19 +84,31 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
                     .DeviceConflictContextKey);
             foreach (var elementConflictResolver in _elementConflictResolvers)
             {
-               var conflictViewModel= _deviceConflictFactory.CreateDeviceConflictViewModel(_conflictContext,elementConflictResolver);
+                var conflictViewModel = _deviceConflictFactory.CreateDeviceConflictViewModel(_conflictContext, elementConflictResolver);
                 DeviceConflictViewModels.Add(conflictViewModel);
             }
-            foreach (DeviceConflictViewModel deviceConflictViewModel in DeviceConflictViewModels)
+            foreach (ViewModelBase viewModelBase in DeviceConflictViewModels)
             {
-                deviceConflictViewModel.PropertyChanged += DeviceConflictViewModel_PropertyChanged;
+                viewModelBase.PropertyChanged += DeviceConflictViewModel_PropertyChanged;
             }
+            DeviceConflictViewModel_PropertyChanged(null,null);
         }
 
 
-        private void DeviceConflictViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void DeviceConflictViewModel_PropertyChanged(object sender,
+            System.ComponentModel.PropertyChangedEventArgs e)
         {
-            IsApplyButtonEnabled = DeviceConflictViewModels.All((model => model.IsConflictResolved));
+            IsApplyButtonEnabled = DeviceConflictViewModels.All((model =>
+            {
+                if (model is DeviceManualConflictViewModel deviceManualConflictViewModel)
+                {
+                    if (!deviceManualConflictViewModel.IsConflictResolved)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }));
         }
 
         public ICommand CancelCommand { get; }
@@ -97,7 +118,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
         public bool IsApplyButtonEnabled
         {
             get => _isApplyButtonEnabled;
-            set => SetProperty(ref _isApplyButtonEnabled , value);
+            set => SetProperty(ref _isApplyButtonEnabled, value);
         }
 
         #region Overrides of ViewModelBase

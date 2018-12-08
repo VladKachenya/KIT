@@ -18,8 +18,9 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
    {
        private readonly ITabManagementService _tabManagementService;
        private BiscNavigationContext _navigationContext;
+       private TreeItemIdentifier _detailsIdentifier;
 
-       public SettingsControlTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService)
+        public SettingsControlTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService)
        {
            _tabManagementService = tabManagementService;
            NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
@@ -27,11 +28,17 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
 
        private void OnNavigateToDetailsExecute()
        {
-           _tabManagementService.NavigateToTab(InfoModelKeys.SettingControlDetailsViewKey,
-               _navigationContext.BiscNavigationParameters,
+
+           var treeItemIdentifier = _navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(
+               TreeItemIdentifier
+                   .Key);
+           _detailsIdentifier = new TreeItemIdentifier(Guid.NewGuid(), treeItemIdentifier);
+           BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
+           biscNavigationParameters.AddParameterByName("IED", _navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED"));
+            _tabManagementService.NavigateToTab(InfoModelKeys.SettingControlDetailsViewKey,
+                biscNavigationParameters,
                $"Setting Groups {_navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey).Name}",
-               _navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier
-                   .Key));
+               _detailsIdentifier);
        }
 
        protected override void OnNavigatedTo(BiscNavigationContext navigationContext)

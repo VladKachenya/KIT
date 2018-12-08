@@ -59,7 +59,7 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<IDeviceViewModel, DeviceViewModel>();
             _injectionContainer.RegisterType<IDeviceWarningsService, DeviceWarningsService>(true);
 
-            _injectionContainer.RegisterType<DeviceConflictViewModel>();
+            _injectionContainer.RegisterType<DeviceManualConflictViewModel>();
             _injectionContainer.RegisterType<DeviceConflictsViewModel>();
             _injectionContainer.RegisterType<DeviceConflictFactory>();
             _injectionContainer.RegisterType<ReconnectDeviceTreeItemViewModel>();

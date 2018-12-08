@@ -25,8 +25,10 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                settingControlViewModel.AvailableSettingGroup.Add(new SettingGroupValue() { IsValid = false, Value = 0 });
             }
            settingControlViewModel.ActiveSettingsGroup = settingControlViewModel.AvailableSettingGroup.FirstOrDefault((value =>value.Value== settingControl.ActSG));
-
+           settingControlViewModel.IsEditable = true;
             settingControlViewModel.Header = settingControl.GetFirstParentOfType<ILDevice>().Inst;
+           settingControlViewModel.ChangeTracker.SetTrackingEnabled(true);
+           settingControlViewModel.Model = settingControl;
            return settingControlViewModel;
        }
 

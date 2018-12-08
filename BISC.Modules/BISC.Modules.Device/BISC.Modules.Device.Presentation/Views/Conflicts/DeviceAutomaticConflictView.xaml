@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="BISC.Modules.Device.Presentation.Views.Conflicts.DeviceAutomaticConflictView"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BISC.Modules.Device.Presentation.Views.Conflicts"
+             xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
+             xmlns:conflicts="clr-namespace:BISC.Modules.Device.Presentation.ViewModels.Conflicts"
+             mc:Ignorable="d"  Width="500"
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance conflicts:DeviceAutomaticResolveConflictViewModel}">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
+        <converters:BoolToVisConverter Invert="True" x:Key="boolToInVisConverter"></converters:BoolToVisConverter>
+    </UserControl.Resources>
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <TextBlock Margin="4" Text="{Binding ConflictTitle}"></TextBlock>
+        <TextBlock Margin="4" Visibility="{Binding IsConflictOk,Converter={StaticResource booleanToVisibilityConverter}}" Grid.Column="1" Text="ОК" Foreground="DarkGreen"></TextBlock>
+        <TextBlock Margin="4" Visibility="{Binding IsConflictOk,Converter={StaticResource boolToInVisConverter}}" Grid.Column="1" Text="Ок (автоматически)" ToolTip="Данные зыгрузятся автоматически" Foreground="DarkGreen"></TextBlock>
+
+        <StackPanel Grid.Column="2" Visibility="{Binding IsConflictOk,Converter={StaticResource boolToInVisConverter}}" Orientation="Horizontal">
+            <Button Width="40" Margin="4" Padding="1" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding ShowConflictInTool}" ToolTip="Посмотреть различия">
+                <ContentControl Width="20" Height="20" ContentTemplate="{DynamicResource MagnifyIcon}"></ContentControl>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

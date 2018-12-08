@@ -8,8 +8,15 @@ namespace BISC.Modules.Device.Infrastructure.Services
     public interface IElementConflictResolver
     {
         string ConflictName { get; }
+        ConflictType ConflictType { get; }
         bool GetIfConflictsExists(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject);
         Task<ResolvingResult> ResolveConflict(bool isFromDevice, string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject);
         void ShowConflicts(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject);
+    }
+
+    public enum ConflictType
+    {
+        AutomaticallyResolvingFromDevice,
+        ManualResolveNeeded
     }
 }

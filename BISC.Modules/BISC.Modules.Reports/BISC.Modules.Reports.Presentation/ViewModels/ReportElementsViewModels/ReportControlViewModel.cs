@@ -42,6 +42,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private bool _giBool;
         private int _configurationRevision;
 
+        
 
         #region ctor
         public ReportControlViewModel(IReportEnabledViewModel reportEnabledViewModel, ITriggerOptionsViewModel triggerOptionsViewModel,
@@ -98,7 +99,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         public List<string> AvailableDatasets
         {
             get => _availableDatasets;
-            set { SetProperty(ref _availableDatasets, value,true); }
+            set => SetProperty(ref _availableDatasets, value,true);
         }
         public string Name
         {
@@ -200,6 +201,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
                 UpdateViewModel();
             }
         }
+
+
 
         public void ActivateElement()
         {

@@ -153,6 +153,7 @@ namespace BISC.Modules.Device.Presentation.Services
                 if (resolver.GetIfConflictsExists(device.Name, sclModel, _biscProject.MainSclModel.Value))
                 {
                     hasConflics = true;
+
                     return;
                 }
             }));

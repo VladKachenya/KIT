@@ -28,7 +28,7 @@ namespace BISC.Modules.Reports.Presentation.Services
         private readonly IReportControlFactoryViewModel _reportControlFactoryViewModel;
         private readonly IReportsSavingService _reportsSavingService;
         private readonly IConnectionPoolService _connectionPoolService;
-
+        public ConflictType ConflictType => ConflictType.ManualResolveNeeded;
         public ReportsConflictResolver(IReportsModelService reportsModelService,IDeviceModelService deviceModelService,INavigationService navigationService,
             IReportControlFactoryViewModel reportControlFactoryViewModel,IReportsSavingService reportsSavingService,IConnectionPoolService connectionPoolService)
         {

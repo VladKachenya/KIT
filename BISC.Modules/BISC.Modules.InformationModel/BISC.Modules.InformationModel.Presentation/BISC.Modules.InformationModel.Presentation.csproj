@@ -75,6 +75,7 @@
     <Compile Include="Converters\TypeNameToIsDragSourceConverter.cs" />
     <Compile Include="Factories\InfoModelTreeFactory.cs" />
     <Compile Include="Factories\SettingControlViewModelFactory.cs" />
+    <Compile Include="Helpers\SettingsControlConflictsContext.cs" />
     <Compile Include="Helpers\TreeItemDetailsBuilder.cs" />
     <Compile Include="Interfaces\Factories\IInfoModelTreeFactory.cs" />
     <Compile Include="Interfaces\Helpers\ITreeItemDetailsBuilder.cs" />
@@ -89,6 +90,8 @@
     <Compile Include="Services\InfoModelLoadingService.cs" />
     <Compile Include="Services\InfoModelUiHandlingService.cs" />
     <Compile Include="Services\LDeviceUiHandlingService.cs" />
+    <Compile Include="Services\SettingControlConflictResolver.cs" />
+    <Compile Include="Services\SettingsControlSavingService.cs" />
     <Compile Include="ViewModels\Base\InfoModelItemViewModelBase.cs" />
     <Compile Include="ViewModels\InfoModelDetails\BoolInfoModelDetail.cs" />
     <Compile Include="ViewModels\InfoModelDetails\DefaultInfoModelDetail.cs" />
@@ -106,6 +109,7 @@
     <Compile Include="ViewModels\LDeviceTreeItemViewModel.cs" />
     <Compile Include="ViewModels\SettingControl\SettingControlDetailsViewModel.cs" />
     <Compile Include="ViewModels\SettingControl\SettingControlViewModel.cs" />
+    <Compile Include="ViewModels\SettingControl\SettingsControlConflivtsViewModel.cs" />
     <Compile Include="ViewModels\SettingControl\SettingsControlTreeItemViewModel.cs" />
     <Compile Include="Views\InfoModelLoadingTreeItemView.xaml.cs">
       <DependentUpon>InfoModelLoadingTreeItemView.xaml</DependentUpon>
@@ -122,6 +126,12 @@
     <Compile Include="Views\SettingsControl\SettingControlDetailsView.xaml.cs">
       <DependentUpon>SettingControlDetailsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsControl\SettingControlView.xaml.cs">
+      <DependentUpon>SettingControlView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsControl\SettingsControlConflictsView.xaml.cs">
+      <DependentUpon>SettingsControlConflictsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsControl\SettingsControlTreeItemView.xaml.cs">
       <DependentUpon>SettingsControlTreeItemView.xaml</DependentUpon>
     </Compile>
@@ -130,6 +140,10 @@
     <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
       <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
       <Name>BISC.Infrastructure.Global</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Global\BISC.Model.Global.csproj">
+      <Project>{fca3f7fe-d64b-4c3c-9f8d-85753fc944be}</Project>
+      <Name>BISC.Model.Global</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
@@ -155,6 +169,10 @@
       <Project>{1642183D-562D-4E50-B8F7-22205D731E45}</Project>
       <Name>BISC.Modules.InformationModel.Infrastucture</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BISC.Modules.InformationModel.Model\BISC.Modules.InformationModel.Model.csproj">
+      <Project>{346395B5-8238-45AE-B002-C22B816AC135}</Project>
+      <Name>BISC.Modules.InformationModel.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -179,6 +197,14 @@
     <Page Include="Views\SettingsControl\SettingControlDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsControl\SettingControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsControl\SettingsControlConflictsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\SettingsControl\SettingsControlTreeItemView.xaml">
       <SubType>Designer</SubType>

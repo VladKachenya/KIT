@@ -72,8 +72,10 @@
     <Compile Include="Services\Helpers\DeviceConflictContext.cs" />
     <Compile Include="Services\Helpers\ReconnectDeviceContext.cs" />
     <Compile Include="Services\Helpers\RestartDeviceContext.cs" />
+    <Compile Include="ViewModels\Conflicts\DeviceAutomaticResolveConflictViewModel.cs" />
     <Compile Include="ViewModels\Conflicts\DeviceConflictsViewModel.cs" />
     <Compile Include="ViewModels\Conflicts\DeviceConflictViewModel.cs" />
+    <Compile Include="ViewModels\Conflicts\DeviceManualConflictViewModel.cs" />
     <Compile Include="ViewModels\DeviceAddingViewModel.cs" />
     <Compile Include="ViewModels\DeviceConnectingViewModel.cs" />
     <Compile Include="ViewModels\DeviceDetailsViewModel.cs" />
@@ -88,6 +90,10 @@
     <Compile Include="ViewModels\Restart\DeviceRestartViewModel.cs" />
     <Compile Include="ViewModels\Tree\DeviceTreeItemViewModel.cs" />
     <Compile Include="ViewModels\Tree\ReconnectDeviceTreeItemViewModel.cs" />
+    <Compile Include="Views\Conflicts\ConflictDataTemplateSelector.cs" />
+    <Compile Include="Views\Conflicts\DeviceAutomaticConflictView.xaml.cs">
+      <DependentUpon>DeviceAutomaticConflictView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Conflicts\DeviceConflictsView.xaml.cs">
       <DependentUpon>DeviceConflictsView.xaml</DependentUpon>
     </Compile>
@@ -123,6 +129,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\Conflicts\DeviceAutomaticConflictView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Conflicts\DeviceConflictsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -172,6 +182,10 @@
     <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
       <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
       <Name>BISC.Infrastructure.Global</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Global\BISC.Model.Global.csproj">
+      <Project>{fca3f7fe-d64b-4c3c-9f8d-85753fc944be}</Project>
+      <Name>BISC.Model.Global</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>

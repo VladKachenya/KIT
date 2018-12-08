@@ -45,6 +45,8 @@ namespace BISC.Modules.InformationModel.Infrastucture
 
         public static string SettingControlDetailsViewKey = "SettingControlDetailsView";
         public static string SettingsControlTreeItemViewKey = "SettingsControlTreeItemView";
+        public static string SettingsControlConflictsViewKey = "SettingsControlConflictsView";
+        public static string SettingsControlConflictsContextKey = "SettingsControlConflictsContext";
 
 
         public static string InfoModelTreeItemViewKey = "InfoModelTreeItemView";

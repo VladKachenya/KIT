@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="BISC.Modules.InformationModel.Presentation.Views.SettingsControl.SettingsControlConflictsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BISC.Modules.InformationModel.Presentation.Views.SettingsControl"
+             xmlns:settingControl="clr-namespace:BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance settingControl:SettingsControlConflivtsViewModel}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Margin="5" Text="В устройстве"   Style="{StaticResource MaterialDesignTitleTextBlock}"></TextBlock>
+            <local:SettingControlView Grid.Row="1" DataContext="{Binding SettingControlViewModelsInDevice}"></local:SettingControlView>
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Margin="5" Text="В проекте"   Style="{StaticResource MaterialDesignTitleTextBlock}"></TextBlock>
+            <local:SettingControlView Grid.Row="1" DataContext="{Binding SettingControlViewModelsInProject}"></local:SettingControlView>
+        </Grid>
+    </Grid>
+</UserControl>

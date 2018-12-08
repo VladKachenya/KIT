@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Presentation.BaseItems.ViewModels;
 
 namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
 {
-   public class SettingControlViewModel:ViewModelBase
+   public class SettingControlViewModel:ComplexViewModelBase
     {
         private SettingGroupValue _activeSettingsGroup;
         private List<SettingGroupValue> _availableSettingGroup;
@@ -30,6 +31,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
             get => _header;
             set => SetProperty(ref _header , value,true);
         }
+        public ISettingControl Model { get; set; }
     }
 
     public class SettingGroupValue

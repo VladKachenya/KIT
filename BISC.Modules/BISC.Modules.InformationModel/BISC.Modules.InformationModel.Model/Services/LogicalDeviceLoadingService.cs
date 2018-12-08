@@ -130,7 +130,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 
                     cancellationToken.ThrowIfCancellationRequested();
                     progress?.Report(new LogicalNodeLoadingEvent());
-                    ILogicalNode logicalNode = await CreateLogicalNode(logicalNodeDto);
+                    ILogicalNode logicalNode = await CreateLogicalNode(logicalNodeDto, newLDevice.Inst);
                     if (logicalNode == null) continue;
                     if (logicalNode is ILogicalNodeZero)
                     {
@@ -198,7 +198,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 
 
 
-        private async Task<ILogicalNode> CreateLogicalNode(LogicalNodeDTO logicalNodeDto)
+        private async Task<ILogicalNode> CreateLogicalNode(LogicalNodeDTO logicalNodeDto,string ldName)
         {
 
             ILogicalNode resAnyLn = null;
@@ -208,7 +208,15 @@ namespace BISC.Modules.InformationModel.Model.Services
                 .Item;
             if (logicalNodeDto.ShortName == "LLN0")
             {
+                
+                var settingsControlDto = await _connectionPoolService.GetConnection(_ip).MmsConnection
+                    .GetSettingsControl(logicalNodeDto.DoiTypeDescription, "SP", _deviceName, "LLN0", ldName);
                 resAnyLn = new LogicalNodeZero();
+                if (settingsControlDto != null)
+                {
+                    (resAnyLn as LogicalNodeZero).SettingControl.Value = settingsControlDto.MapSettingControl();
+                }
+
                 resAnyLn.LnClass = logicalNodeDto.ShortName;
                 resAnyLn.LnType = logicalNodeDto.Path;
                 commonLogicalNode = new LNTypesEd2.LLN0();
@@ -269,7 +277,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 
 
 
-            List<DoiDto> doiDtos = CreateDoiDtos(logicalNodeDto.LnDefinitions, logicalNodeDto.DoiTypeDescription);
+            List<DoiDto> doiDtos =await CreateDoiDtos(logicalNodeDto.LnDefinitions, logicalNodeDto.DoiTypeDescription);
 
 
             foreach (var doiDto in doiDtos)
@@ -334,7 +342,8 @@ namespace BISC.Modules.InformationModel.Model.Services
 
 
 
-        public List<DoiDto> CreateDoiDtos(List<string> allDoiDefinitions, MmsTypeDescription typeDescription)
+        public async Task<List<DoiDto>> CreateDoiDtos(List<string> allDoiDefinitions, MmsTypeDescription typeDescription)
+            
         {
             List<DoiDto> doiDtos = new List<DoiDto>();
             foreach (var doiDefinition in allDoiDefinitions)

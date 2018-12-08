@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
+using BISC.Modules.Connection.Infrastructure.Connection.Dto;
 using BISC.Modules.Reports.Infrastructure.Model;
 
 namespace BISC.Modules.Connection.Infrastructure.Connection
@@ -21,9 +22,11 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
         Task<OperationResult<List<GooseDto>>> GetListGoosesAsync(string fullLdPath, string lnName,string deviceName);
         Task<OperationResult<List<IReportControl>>> GetListReportsAsync(string fullLdPath, string lnName, string deviceName,string reportType);
         Task<OperationResult> WriteReportDataAsync(string ldFullPath, string rptId, string itemValueName, object valueToSave);
-
         Task<OperationResult> DeleteDataSet(string ln,string ld,string ied,string name);
         Task<OperationResult> AddDataSet(string ln, string ld, string ied , string nameDataSet, List<FcdaDto> fcdaDtos);
+
+        Task<SettingsControlDto> GetSettingsControl(MmsTypeDescription lnMmsTypeDescription, string fc, string iedName,
+            string lnName, string ldName);
     }
 
     public class FcdaDto

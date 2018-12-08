@@ -32,7 +32,7 @@ namespace BISC.Modules.Gooses.Model.Services
         private readonly IFtpGooseModelService _ftpGooseModelService;
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly INavigationService _navigationService;
-
+        public ConflictType ConflictType => ConflictType.ManualResolveNeeded;
         public GoosesControlsConflictResolver(IDeviceModelService deviceModelService,IGoosesModelService goosesModelService, GooseControlViewModelFactory gooseControlViewModelFactory,
             IFtpGooseModelService ftpGooseModelService,ISclCommunicationModelService sclCommunicationModelService,INavigationService navigationService)
         {

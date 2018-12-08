@@ -44,6 +44,8 @@ namespace BISC.Modules.DataSets.Model.Services
         #region Implementation of IElementConflictResolver
 
         public string ConflictName => "DataSets";
+        public ConflictType ConflictType => ConflictType.ManualResolveNeeded;
+
         public bool GetIfConflictsExists(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
             var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);

@@ -53,6 +53,9 @@ namespace BISC.Modules.InformationModel.Presentation.Module
             _injectionContainer.RegisterType<SetFcTreeItemViewModel>();
             _injectionContainer.RegisterType<SettingControlDetailsViewModel>();
             _injectionContainer.RegisterType<SettingsControlTreeItemViewModel>();
+            _injectionContainer.RegisterType<IElementConflictResolver, SettingControlConflictResolver>(Guid.NewGuid().ToString());
+            _injectionContainer.RegisterType<SettingsControlConflivtsViewModel>();
+            _injectionContainer.RegisterType<SettingsControlSavingService>();
 
             _injectionContainer.RegisterType<IDeviceElementLoadingService, InfoModelLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<InfoModelLoadingTreeItemViewModel>();
@@ -62,6 +65,7 @@ namespace BISC.Modules.InformationModel.Presentation.Module
             _injectionContainer.RegisterType<object, LDeviceTreeItemView>(InfoModelKeys.LdeviceTreeItemViewKey);
             _injectionContainer.RegisterType<object, SettingControlDetailsView>(InfoModelKeys.SettingControlDetailsViewKey);
             _injectionContainer.RegisterType<object, SettingsControlTreeItemView>(InfoModelKeys.SettingsControlTreeItemViewKey);
+            _injectionContainer.RegisterType<object, SettingsControlConflictsView>(InfoModelKeys.SettingsControlConflictsViewKey);
 
             InitializeUiServices(_injectionContainer.ResolveType<IUiFromModelElementRegistryService>());
         }

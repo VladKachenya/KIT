@@ -7,7 +7,7 @@
              xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
              xmlns:conflicts="clr-namespace:BISC.Modules.Device.Presentation.ViewModels.Conflicts"
              mc:Ignorable="d"  Width="500"
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance conflicts:DeviceConflictViewModel}">
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance conflicts:DeviceManualConflictViewModel}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
         <converters:BoolToVisConverter Invert="True" x:Key="boolToInVisConverter"></converters:BoolToVisConverter>
@@ -20,7 +20,7 @@
         </Grid.ColumnDefinitions>
         <TextBlock Margin="4" Text="{Binding ConflictTitle}"></TextBlock>
         <TextBlock Margin="4" Visibility="{Binding IsConflictOk,Converter={StaticResource booleanToVisibilityConverter}}" Grid.Column="1" Text="ОК" Foreground="DarkGreen"></TextBlock>
-        <TextBlock Margin="4" Visibility="{Binding IsConflictResolvedAsFromProject,Converter={StaticResource booleanToVisibilityConverter}}" Grid.Column="1" Text="Ок (из проекта)" ToolTip="Данные будут соответствовать данным из проекиа" Foreground="DarkGreen"></TextBlock>
+        <TextBlock Margin="4" Visibility="{Binding IsConflictResolvedAsFromProject,Converter={StaticResource booleanToVisibilityConverter}}" Grid.Column="1" Text="Ок (из проекта)" ToolTip="Данные будут соответствовать данным из проекта" Foreground="DarkGreen"></TextBlock>
         <TextBlock Margin="4" Visibility="{Binding IsConflictResolvedAsFromDevice,Converter={StaticResource booleanToVisibilityConverter}}" Grid.Column="1" Text="Ок (из устройства)" ToolTip="Данные будут соответствовать данным из устройства" Foreground="DarkGreen"></TextBlock>
 
         <TextBlock Margin="4" Grid.Column="1" Visibility="{Binding IsConflictResolved,Converter={StaticResource boolToInVisConverter}}" Foreground="Red" Text="Конфликт"></TextBlock>

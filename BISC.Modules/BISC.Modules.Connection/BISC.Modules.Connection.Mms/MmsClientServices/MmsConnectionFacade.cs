@@ -527,6 +527,12 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             }
         }
 
+        public Task<SettingsControlDto> GetSettingsControl(MmsTypeDescription lnMmsTypeDescription, string fc, string iedName, string lnName,
+            string ldName)
+        {
+            return new InfoModelClientService(_state).ReadSettingsControls(lnMmsTypeDescription,fc,iedName,lnName,ldName);
+        }
+
 
         private MmsTypeDescription GetMmsTypeDescription(TypeDescription responseTypeDescription, string name)
         {

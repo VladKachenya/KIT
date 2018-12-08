@@ -1,12 +1,15 @@
 ﻿using BISC.Model.Iec61850Ed2.DataTypeTemplates;
+using BISC.Modules.Connection.Infrastructure.Connection.Dto;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DaType;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.EnumType;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.LNodeType;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Model.DataTypeTemplates.DaType;
 using BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType;
 using BISC.Modules.InformationModel.Model.DataTypeTemplates.EnumType;
 using BISC.Modules.InformationModel.Model.DataTypeTemplates.LNodeType;
+using BISC.Modules.InformationModel.Model.Elements;
 
 namespace BISC.Modules.InformationModel.Model.Extensions
 {
@@ -92,6 +95,14 @@ namespace BISC.Modules.InformationModel.Model.Extensions
             result.Type = tDo.type;
             result.Name = tDo.name;
             return result;
+        }
+
+        public static ISettingControl MapSettingControl(this SettingsControlDto settingsControlDto)
+        {
+            var res =new SettingControl();
+            res.ActSG = (int)settingsControlDto.ActSG;
+            res.NumOfSGs = (int)settingsControlDto.NumOfSGs;
+            return res;
         }
 
     }

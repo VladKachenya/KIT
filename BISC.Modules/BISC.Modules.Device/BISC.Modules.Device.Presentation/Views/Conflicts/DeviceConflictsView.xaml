@@ -17,11 +17,20 @@
         </Grid.RowDefinitions>
         <TextBlock Margin="5" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="Результаты сопоставления"></TextBlock>
         <ItemsControl Grid.Row="1" ItemsSource="{Binding DeviceConflictViewModels}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <local:DeviceConflictView></local:DeviceConflictView>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemTemplateSelector>
+                    <local:ConflictDataTemplateSelector>
+                        <local:ConflictDataTemplateSelector.DatatemplateForAutoConflict>
+                            <DataTemplate>
+                                <local:DeviceAutomaticConflictView></local:DeviceAutomaticConflictView>
+                            </DataTemplate>
+                        </local:ConflictDataTemplateSelector.DatatemplateForAutoConflict>
+                        <local:ConflictDataTemplateSelector.DatatemplateForManualConflict>
+                            <DataTemplate>
+                                <local:DeviceConflictView></local:DeviceConflictView>
+                            </DataTemplate>
+                        </local:ConflictDataTemplateSelector.DatatemplateForManualConflict>
+                    </local:ConflictDataTemplateSelector>
+            </ItemsControl.ItemTemplateSelector>
         </ItemsControl>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
