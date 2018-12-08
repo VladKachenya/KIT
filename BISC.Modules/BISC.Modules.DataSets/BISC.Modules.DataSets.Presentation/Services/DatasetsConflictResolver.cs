@@ -102,14 +102,14 @@ namespace BISC.Modules.DataSets.Model.Services
                     foreach (var projectOnlydataset in projectOnlydatasets)
                     {
                         await _connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).MmsConnection
-                            .AddDataSet(projectOnlydataset.GetFirstParentOfType<ILDevice>().Inst,
-                                projectOnlydataset.GetFirstParentOfType<ILogicalNode>().Name,
+                            .AddDataSet(projectOnlydataset.GetFirstParentOfType<ILogicalNode>().Name,
+                                projectOnlydataset.GetFirstParentOfType<ILDevice>().Inst,
                                 deviceInsclModelInDevice.Name, projectOnlydataset.Name,
                                 projectOnlydataset.FcdaList.ToDtos(deviceInsclModelInDevice.Name));
 
                         _datasetModelService.AddDatasetToDevice(projectOnlydataset, deviceInsclModelInDevice,
-                            projectOnlydataset.GetFirstParentOfType<ILDevice>().Inst,
-                            projectOnlydataset.GetFirstParentOfType<ILogicalNode>().Name);
+                            projectOnlydataset.GetFirstParentOfType<ILogicalNode>().Inst,
+                            projectOnlydataset.GetFirstParentOfType<ILDevice>().Inst);
 
                     }
 
