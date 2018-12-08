@@ -148,7 +148,52 @@ namespace BISC.Modules.Connection.MMS
         //    return null;
         //}
 
+        public static async Task<MMSpdu> SendMmsAsync(TcpState tcps)
+        {
+            if (tcps.workSocket == null) return null;
+            await Task.Delay(StaticContainer.CurrentContainer.ResolveType<IConfigurationService>().MmsQueryDelay);
+            try
+            {
+                await Task.Run((() =>
+                {
+                    lock (tcps)
+                    {
+                        if (tcps.workSocket.Available > 0)
+                        {
+                            var bytes = new byte[tcps.workSocket.Available];
+                            tcps.workSocket.Receive(bytes);
+                        }
+                        tcps.workSocket.Send(tcps.sendBuffer, 0, tcps.sendBytes, SocketFlags.None);
+                    }
 
+                }));
+            }
+            catch (Exception e)
+            {
+
+            }
+            return null;
+        }
+        public static async Task<MMSpdu> GetAnswerMmsPduAsync(TcpState tcps)
+        {
+            if (tcps.workSocket == null) return null;
+            await Task.Delay(StaticContainer.CurrentContainer.ResolveType<IConfigurationService>().MmsQueryDelay);
+            try
+            {
+                tcps.receivedBytes = null;
+                var mmsPdu = await IsoTpkt.GetAnswer(tcps);
+                // if ((tcps as Iec61850State).ostate == IsoProtocolState.OSI_STATE_SHUTDOWN)
+                // {
+                //StopClient(tcps);
+                // }
+                return mmsPdu;
+            }
+            catch (Exception e)
+            {
+
+            }
+            return null;
+        }
 
 
         public static async Task<MMSpdu> GetMmsPduAsync(TcpState tcps)

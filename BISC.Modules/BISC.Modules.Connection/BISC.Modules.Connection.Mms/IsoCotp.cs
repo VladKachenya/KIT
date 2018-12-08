@@ -238,8 +238,9 @@ namespace BISC.Modules.Connection.MMS
                     iecs.sendBuffer[offs++] = (byte)((dLen > 0) ? COTP_PACKET_FRAGMENT : COTP_PACKET_COMPLETE); // number "fragment" or "complete"
 
                     iecs.sendBytes += offs;
-                 return await IsoTpkt.SendAsync(iecs);
+                    await IsoTpkt.SendMmsRequestAsync(iecs);
                 }
+                return await IsoTpkt.GetAnswerMmsAsync(iecs);
             }
             return null;
         }

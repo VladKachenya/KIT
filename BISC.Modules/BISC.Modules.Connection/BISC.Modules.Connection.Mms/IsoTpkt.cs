@@ -190,8 +190,35 @@ namespace BISC.Modules.Connection.MMS
             return mmSpdu;
         }
 
+        public static async Task<MMSpdu> SendMmsRequestAsync(TcpState tcps, bool isMmsCanBeNull = false)
+        {
+            // TPKT
+            tcps.sendBuffer[IsoTpkt.TPKT_IDX_START] = IsoTpkt.TPKT_START;
+            tcps.sendBuffer[IsoTpkt.TPKT_IDX_RES] = IsoTpkt.TPKT_RES;
+            Array.Copy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)(tcps.sendBytes))), 0, tcps.sendBuffer, IsoTpkt.TPKT_IDX_LEN, 2);
+            tcps?.logger?.LogDebugBuffer("Send Tpkt", tcps.sendBuffer, 0, tcps.sendBytes);
+            MMSpdu mmSpdu = await TcpRw.SendMmsAsync(tcps);
+            return mmSpdu;
+        }
+        public static async Task<MMSpdu> GetAnswerMmsAsync(TcpState tcps, bool isMmsCanBeNull = false)
+        {
+            // TPKT
+            tcps.sendBuffer[IsoTpkt.TPKT_IDX_START] = IsoTpkt.TPKT_START;
+            tcps.sendBuffer[IsoTpkt.TPKT_IDX_RES] = IsoTpkt.TPKT_RES;
+            Array.Copy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)(tcps.sendBytes))), 0, tcps.sendBuffer, IsoTpkt.TPKT_IDX_LEN, 2);
 
-
+            tcps?.logger?.LogDebugBuffer("Send Tpkt", tcps.sendBuffer, 0, tcps.sendBytes);
+            MMSpdu mmSpdu = await TcpRw.GetAnswerMmsPduAsync(tcps);
+            if (mmSpdu == null && !isMmsCanBeNull)
+            {
+                mmSpdu = await TcpRw.GetAnswerMmsPduAsync(tcps);
+            }
+            if (mmSpdu == null && !isMmsCanBeNull)
+            {
+                mmSpdu = await TcpRw.GetAnswerMmsPduAsync(tcps);
+            }
+            return mmSpdu;
+        }
 
 
     }
