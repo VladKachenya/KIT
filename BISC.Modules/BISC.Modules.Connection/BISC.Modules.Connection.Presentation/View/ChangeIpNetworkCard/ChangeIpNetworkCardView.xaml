@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="BISC.Modules.Connection.Presentation.View.ChangeIpNetworkCard.ChangeIpNetworkCardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BISC.Modules.Connection.Presentation.View.ChangeIpNetworkCard"
+             mc:Ignorable="d" 
+             xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
+             xmlns:changeIpNetworkCard="clr-namespace:BISC.Modules.Connection.Presentation.Interfaces.ViewModel.ChangeIpNetworkCard"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Width="500" Height="400" Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Add" Margin="5" 
+                        Command="{Binding AddNewNetworkCardSettingsViewModelCommand}"/>
+                <Button Content="Remove" Margin="5" Grid.Column="1"
+                        Command="{Binding RemoveNetworkCardSettingsViewModelCommand}"/>
+            </Grid>
+            <ListBox  x:Name="ExpanderItemsControl" behaviors:ListBoxBehavior.ScrollOnNewItem="true"
+                      ItemsSource="{Binding NetworkCardSettingsViewModels}" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      SelectedItem="{Binding SellectedNetworkCardSettingsViewModel, Mode=TwoWay}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True" >
+                                <Setter Property="Background" Value="#c0d5ed"  />
+                            </Trigger>
+                        </Style.Triggers>
+                        <Style.Setters>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                        </Style.Setters>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="changeIpNetworkCard:INetworkCardSettingsViewModel">
+
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
+                <Button Content="Закрыть окно"
+                        Margin="0, 5, 0, 0"
+                        Command="{Binding CloseCommand}"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

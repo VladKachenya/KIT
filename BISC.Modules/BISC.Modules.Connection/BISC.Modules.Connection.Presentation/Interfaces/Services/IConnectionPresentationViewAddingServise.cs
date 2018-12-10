@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace BISC.Modules.Connection.Presentation.Interfaces.Services
 {
-    public interface IPingAddingServise
+    public interface IConnectionPresentationViewAddingServise
     {
         void OpenPingsView();
+        void OpenChangeIpNetworkCardView();
     }
 }

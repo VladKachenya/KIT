@@ -9,16 +9,22 @@ using System.Threading.Tasks;
 
 namespace BISC.Modules.Connection.Presentation.Services
 {
-    public class PingAddingServise : IPingAddingServise
+    public class ConnectionPresentationViewAddingServise : IConnectionPresentationViewAddingServise
     {
         private INavigationService _navigationService;
-        public PingAddingServise(INavigationService navigationService)
+        public ConnectionPresentationViewAddingServise(INavigationService navigationService)
         {
             _navigationService = navigationService;
         }
         public async void OpenPingsView()
         {
             await _navigationService.NavigateViewToGlobalRegion(ConnectionKeys.PingViewKey);
+        }
+
+        public async void OpenChangeIpNetworkCardView()
+        {
+            await _navigationService.NavigateViewToGlobalRegion(ConnectionKeys.ChangeIpNetworkCardViewKey);
+
         }
     }
 }

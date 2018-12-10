@@ -14,16 +14,25 @@ namespace BISC.Modules.Connection.Presentation.Module
     public class ConnectionPresentationInitialization
     {
         private readonly IInjectionContainer _injectionContainer;
+        private readonly IConnectionPresentationViewAddingServise _connectionPresentationViewAddingServise;
 
-        public ConnectionPresentationInitialization(IUserInterfaceComposingService userInterfaceComposingService, ICommandFactory commandFactory, IInjectionContainer injectionContainer)
+        public ConnectionPresentationInitialization(IUserInterfaceComposingService userInterfaceComposingService, ICommandFactory commandFactory,
+            IInjectionContainer injectionContainer, IConnectionPresentationViewAddingServise connectionPresentationViewAddingServise)
         {
             _injectionContainer = injectionContainer;
-            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(OnPingsPanelAdding, null), "Управление PING",null,true,false);
+            _connectionPresentationViewAddingServise = connectionPresentationViewAddingServise;
+            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(OnPingsPanelAdding, null), "Управление PING", null, true, false);
+            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(OnChangeIpNetworkCardAdding, () => false), "Изменение IP сетевой карты", IconsKeys.EthernetIconKey, true, false);
         }
 
         private void OnPingsPanelAdding()
         {
-            _injectionContainer.ResolveType<IPingAddingServise>().OpenPingsView();
+            _connectionPresentationViewAddingServise.OpenPingsView();
+        }
+
+        private void OnChangeIpNetworkCardAdding()
+        {
+            _connectionPresentationViewAddingServise.OpenChangeIpNetworkCardView();
         }
 
     }

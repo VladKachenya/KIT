@@ -54,17 +54,26 @@
     <Compile Include="Factorys\LastIpAddressesViewModelFactory.cs" />
     <Compile Include="Interfaces\Factorys\IIpAddressViewModelFactory.cs" />
     <Compile Include="Interfaces\Factorys\ILastIpAddressesViewModelFactory.cs" />
+    <Compile Include="Interfaces\ViewModel\ChangeIpNetworkCard\ICurrentCardConfigurationViewModel.cs" />
+    <Compile Include="Interfaces\ViewModel\ChangeIpNetworkCard\IChangeIpNetworkCardViewModel.cs" />
+    <Compile Include="Interfaces\ViewModel\ChangeIpNetworkCard\INetworkCardSettingsViewModel.cs" />
     <Compile Include="Interfaces\ViewModel\IIpAddressViewModel.cs" />
     <Compile Include="Interfaces\ViewModel\ILastIpAddressesViewModel.cs" />
     <Compile Include="Interfaces\ViewModel\IPingViewModel.cs" />
-    <Compile Include="Interfaces\Services\IPingAddingServise.cs" />
+    <Compile Include="Interfaces\Services\IConnectionPresentationViewAddingServise.cs" />
     <Compile Include="Module\ConnectionPresentationInitialization.cs" />
     <Compile Include="Module\ConnectionPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\PingAddingServise.cs" />
+    <Compile Include="Services\ConnectionPresentationViewAddingServise.cs" />
+    <Compile Include="ViewModels\ChangeIpNetworkCard\ChangeIpNetworkCardViewModel.cs" />
+    <Compile Include="ViewModels\ChangeIpNetworkCard\CurrentCardConfigurationViewModel.cs" />
+    <Compile Include="ViewModels\ChangeIpNetworkCard\NetworkCardSettingsViewModel.cs" />
     <Compile Include="ViewModels\IpAddressViewModel.cs" />
     <Compile Include="ViewModels\LastIpAddressesViewModel.cs" />
     <Compile Include="ViewModels\PingViewModel.cs" />
+    <Compile Include="View\ChangeIpNetworkCard\ChangeIpNetworkCardView.xaml.cs">
+      <DependentUpon>ChangeIpNetworkCardView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\IpAddressView.xaml.cs">
       <DependentUpon>IpAddressView.xaml</DependentUpon>
     </Compile>
@@ -98,6 +107,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\ChangeIpNetworkCard\ChangeIpNetworkCardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\IpAddressView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

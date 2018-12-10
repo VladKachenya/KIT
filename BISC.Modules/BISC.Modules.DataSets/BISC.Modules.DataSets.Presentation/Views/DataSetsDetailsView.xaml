@@ -220,7 +220,21 @@
                 </ItemsControl.ItemTemplate>
             </ListBox>
             <GridSplitter Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="7"></GridSplitter>
-            <GroupBox Header="{Binding Path=SelectedItem.EditableNamePart,Source={x:Reference ExpanderItemsControl}}" Grid.Row="3" Grid.Column="1" BorderThickness="1" >
+            <GroupBox Grid.Row="3" Grid.Column="1" BorderThickness="1" >
+                <GroupBox.HeaderTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13"
+                                     Grid.Column="0" Text="{Binding Path=SelectedItem.EditableNamePart,Source={x:Reference ExpanderItemsControl}}"/>
+                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13" 
+                                       Grid.Column="1" Text="{Binding Path=SelectedItem.FcdaViewModels.Count ,Source={x:Reference ExpanderItemsControl}}"/>
+                        </Grid>
+                    </DataTemplate>
+                </GroupBox.HeaderTemplate>
                 <ListBox  ScrollViewer.VerticalScrollBarVisibility="Visible" Name="fcdaListBox" DataContext="{Binding Path=SelectedItem,Source={x:Reference ExpanderItemsControl}}"
                                             MinHeight="50"
                                             ItemsSource="{Binding FcdaViewModels}"  

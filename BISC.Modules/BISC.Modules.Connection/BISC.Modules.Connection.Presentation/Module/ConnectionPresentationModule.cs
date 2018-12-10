@@ -14,6 +14,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
+using BISC.Modules.Connection.Presentation.Interfaces.ViewModel.ChangeIpNetworkCard;
+using BISC.Modules.Connection.Presentation.View.ChangeIpNetworkCard;
+using BISC.Modules.Connection.Presentation.ViewModels.ChangeIpNetworkCard;
 
 namespace BISC.Modules.Connection.Presentation.Module
 {
@@ -26,14 +29,19 @@ namespace BISC.Modules.Connection.Presentation.Module
         }
         public void Initialize()
         {
-            _injectionContainer.RegisterType<IPingAddingServise, PingAddingServise>(true);
+            _injectionContainer.RegisterType<IConnectionPresentationViewAddingServise, ConnectionPresentationViewAddingServise>(true);
             _injectionContainer.RegisterType<object, PingView>(ConnectionKeys.PingViewKey);
+            _injectionContainer.RegisterType<object, ChangeIpNetworkCardView>(ConnectionKeys.ChangeIpNetworkCardViewKey);
             _injectionContainer.RegisterType<IPingViewModel, PingViewModel>();
             //Рекомендуется создавать экземпляры этого класса через Фабрику.
             _injectionContainer.RegisterType<IIpAddressViewModel, IpAddressViewModel>();
             _injectionContainer.RegisterType<IIpAddressViewModelFactory, IpAddressViewModelFactory>(true);
             _injectionContainer.RegisterType<ILastIpAddressesViewModel, LastIpAddressesViewModel>();
             _injectionContainer.RegisterType<ILastIpAddressesViewModelFactory, LastIpAddressesViewModelFactory>(true);
+            _injectionContainer.RegisterType<IChangeIpNetworkCardViewModel, ChangeIpNetworkCardViewModel>();
+            _injectionContainer.RegisterType<ICurrentCardConfigurationViewModel, CurrentCardConfigurationViewModel>();
+            _injectionContainer.RegisterType<INetworkCardSettingsViewModel, NetworkCardSettingsViewModel>();
+
             var presentationInitialization = _injectionContainer.ResolveType(typeof(ConnectionPresentationInitialization)) as ConnectionPresentationInitialization;
 
         }

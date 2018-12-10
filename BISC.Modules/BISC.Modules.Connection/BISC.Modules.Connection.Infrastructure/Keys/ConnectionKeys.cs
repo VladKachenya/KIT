@@ -9,5 +9,6 @@ namespace BISC.Modules.Connection.Infrastructure.Keys
     public static class ConnectionKeys
     {
         public const string PingViewKey = "PingView";
+        public const string ChangeIpNetworkCardViewKey = "ChangeIpNetworkCardView";
     }
 }

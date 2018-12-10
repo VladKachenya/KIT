@@ -188,6 +188,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             SortDataSetsByIsDynamic();
             DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
             ChangeTracker.AcceptChanges();
+            ChangeTracker.SetTrackingEnabled(true);
             BlockViewModelBehavior.Unlock();
         }
 
