@@ -63,7 +63,7 @@ namespace BISC.Model.Global.Services
 
         private void SetApplicationTitle()
         {
-            GetApplicationTitle().ApplicationTitle = $"Bemn Intellectual Substation Control (Текущий проект: {GetCurrentProjectPath(true)})";
+            GetApplicationTitle().ApplicationTitle = $"Конфигуратор интеллектуальных терминалов (Текущий проект: {GetCurrentProjectPath(true)})";
         }
 
 

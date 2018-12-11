@@ -38,8 +38,8 @@ namespace BISC.Modules.Connection.Model.Connection
             {
                 if (_isConnected != value)
                 {
-                    _globalEventsService.SendMessage(new ConnectionEvent(value, Ip));
-                }
+					_globalEventsService.SendMessage(new ConnectionEvent(value, Ip));
+				}
                 _isConnected = value;
             }
         }
