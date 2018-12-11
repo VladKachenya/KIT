@@ -6,7 +6,7 @@ namespace BISC.Modules.Device.Infrastructure.Services
 {
     public interface IDeviceReconnectionService
     {
-        Task ReconnectDevice(IDevice existingDevice, TreeItemIdentifier treeItemIdToRemove);
+        Task<bool> ReconnectDevice(IDevice existingDevice, TreeItemIdentifier treeItemIdToRemove);
 
         Task RestartDevice(IDevice existingDevice,TreeItemIdentifier treeItemIdToRemove);
     }

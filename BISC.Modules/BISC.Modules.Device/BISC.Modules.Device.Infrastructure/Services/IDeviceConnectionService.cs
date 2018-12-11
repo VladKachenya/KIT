@@ -7,7 +7,7 @@ namespace BISC.Modules.Device.Infrastructure.Services
 {
     public interface IDeviceConnectionService
     {
-        Task<OperationResult<IDevice>> ConnectDevice(string ip);
+        Task<OperationResult<IDevice>> ConnectDevice(string ip,int tryNumber=1);
         Task ConnectExistingDevice(IDevice existingDevice);
         Task<OperationResult<bool>> DisconnectDevice(string ip);
 

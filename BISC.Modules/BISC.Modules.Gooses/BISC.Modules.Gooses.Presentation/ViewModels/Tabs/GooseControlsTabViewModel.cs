@@ -47,6 +47,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         private IDevice _device;
         private ObservableCollection<GooseControlViewModel> _gooseControlViewModels;
         private string _regionName;
+        private bool _isUpdateGooses = true;
+        private bool _isSaveChanges = true;
 
         public GooseControlsTabViewModel(GooseControlViewModelFactory gooseControlViewModelFactory, IGoosesModelService goosesModelService,
             ISaveCheckingService saveCheckingService, ICommandFactory commandFactory, ILoggingService loggingService, GooseControlSavingService gooseControlSavingService,
@@ -67,14 +69,16 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _goosesLoadingService = goosesLoadingService;
             _biscProject = biscProject;
             _deviceWarningsService = deviceWarningsService;
-            SaveCommand = commandFactory.CreatePresentationCommand(OnSaveChangesCommand);
+            SaveCommand = commandFactory.CreatePresentationCommand(OnSaveChangesCommand, () => _isSaveChanges);
             DeleteGooseCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteGoose);
             AddGooseCommand = commandFactory.CreatePresentationCommand(OnAddGooseCommand, IsAddGoose);
-            UpdateGoosesCommand = commandFactory.CreatePresentationCommand(OnUpdateGooses);
+            UpdateGoosesCommand = commandFactory.CreatePresentationCommand(OnUpdateGooses, () => _isUpdateGooses);
         }
 
         private async void OnUpdateGooses()
         {
+            _isUpdateGooses = false;
+            (UpdateGoosesCommand as IPresentationCommand)?.RaiseCanExecute();
             try
             {
                 await UpdateGooses(true);
@@ -84,6 +88,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
                 _loggingService.LogMessage("Goose update error", SeverityEnum.Warning);
 
+            }
+            finally
+            {
+                _isUpdateGooses = true;
+                (UpdateGoosesCommand as IPresentationCommand)?.RaiseCanExecute();
             }
         }
 
@@ -130,6 +139,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         private async void OnSaveChangesCommand()
         {
+            _isSaveChanges = false;
+            (SaveCommand as IPresentationCommand)?.RaiseCanExecute();
             BlockViewModelBehavior.SetBlock("Сохранение блоков управления Goose", true);
             _loggingService.LogUserAction($"Пользователь сохряняет изменения в Goose CB устройства {_device.Name})");
            var res= await _gooseControlSavingService.SaveGooseControls(GooseControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
@@ -142,6 +153,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                 _deviceWarningsService.SetWarningOfDevice(_device.Name,GooseKeys.GooseWarningKeys.GooseSavedFtpKey, "Goose сохранены по FTP");
             }
             ShowFtpBlockMessageIfNeeded();
+            _isSaveChanges = true;
+            (SaveCommand as IPresentationCommand)?.RaiseCanExecute();
         }
         private void ShowFtpBlockMessageIfNeeded()
         {

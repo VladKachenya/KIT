@@ -25,7 +25,7 @@ namespace BISC.Modules.Connection.Model.Services
             IDeviceConnection deviceConnection;
             deviceConnection = _deviceConnections.FirstOrDefault((connection => connection.Ip == ip));
             if (deviceConnection != null) return deviceConnection;
-            deviceConnection=_deviceConnectionCreator();
+            deviceConnection = _deviceConnectionCreator();
             deviceConnection.Ip = ip;
             _deviceConnections.Add(deviceConnection);
             return deviceConnection;

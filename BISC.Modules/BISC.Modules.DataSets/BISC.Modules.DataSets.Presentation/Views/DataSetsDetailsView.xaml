@@ -230,8 +230,15 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13"
                                      Grid.Column="0" Text="{Binding Path=SelectedItem.EditableNamePart,Source={x:Reference ExpanderItemsControl}}"/>
-                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13" 
-                                       Grid.Column="1" Text="{Binding Path=SelectedItem.FcdaViewModels.Count ,Source={x:Reference ExpanderItemsControl}}"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" >
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13" 
+                                           Text="{Binding Path=SelectedItem.FcdaViewModels.Count ,Source={x:Reference ExpanderItemsControl}}"/>
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13" 
+                                           Text="/"/>
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13" 
+                                           Text="{Binding Path=SelectedItem.MaxSizeFcdaList ,Source={x:Reference ExpanderItemsControl}}"/>
+                            </StackPanel>
+                            
                         </Grid>
                     </DataTemplate>
                 </GroupBox.HeaderTemplate>

@@ -44,13 +44,15 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly IDeviceAddingService _deviceAddingService;
         private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
+        private readonly IPingService _pingService;
 
         public DeviceReconnectionService(IDeviceFileWritingServices deviceFileWritingServices,
             IDeviceConnectionService deviceConnectionService, IDeviceModelService deviceModelService,
             ITreeManagementService treeManagementService, IConnectionPoolService connectionPoolService,
             ITabManagementService tabManagementService, ILoggingService loggingService, IGlobalEventsService globalEventsService,
             INavigationService navigationService, IInjectionContainer injectionContainer, Func<ISclModel> sclModelCreator,
-            IBiscProject biscProject, IDeviceAddingService deviceAddingService,IDeviceWarningsService deviceWarningsService,ISclCommunicationModelService sclCommunicationModelService)
+            IBiscProject biscProject, IDeviceAddingService deviceAddingService, IDeviceWarningsService deviceWarningsService,
+            ISclCommunicationModelService sclCommunicationModelService, IPingService pingService)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
             _deviceConnectionService = deviceConnectionService;
@@ -66,6 +68,7 @@ namespace BISC.Modules.Device.Presentation.Services
             _deviceAddingService = deviceAddingService;
             _deviceWarningsService = deviceWarningsService;
             _sclCommunicationModelService = sclCommunicationModelService;
+            _pingService = pingService;
             _elementLoadingServices = injectionContainer.ResolveAll(typeof(IDeviceElementLoadingService))
                 .Cast<IDeviceElementLoadingService>().ToList();
             _elementConflictResolvers = injectionContainer.ResolveAll(typeof(IElementConflictResolver))
@@ -75,16 +78,22 @@ namespace BISC.Modules.Device.Presentation.Services
 
         #region Implementation of IDeviceRestartService
 
-        public async Task ReconnectDevice(IDevice existingDevice, TreeItemIdentifier treeItemIdToRemove)
+        public async Task<bool> ReconnectDevice(IDevice existingDevice, TreeItemIdentifier treeItemIdToRemove)
         {
-           await Reconnect(existingDevice, treeItemIdToRemove,false);
+            if (!await _pingService.GetPing(
+                _sclCommunicationModelService.GetIpOfDevice(existingDevice.Name, _biscProject.MainSclModel.Value)))
+            {
+                _loggingService.LogMessage($"Устройство {existingDevice.Name} не отвечает",SeverityEnum.Critical);
+                return false;
+            }
+            await Reconnect(existingDevice, treeItemIdToRemove, false);
+            return true;
         }
 
         private async Task Reconnect(IDevice existingDevice, TreeItemIdentifier treeItemIdToRemove, bool isRestarting)
         {
-;
             _treeManagementService.DeleteTreeItem(treeItemIdToRemove);
-            
+
             _tabManagementService.CloseTabWithChildren(treeItemIdToRemove.ItemId.ToString());
 
             var sortedElements = _elementLoadingServices.OrderBy((service => service.Priority));
@@ -95,16 +104,16 @@ namespace BISC.Modules.Device.Presentation.Services
                 new RestartDeviceContext(existingDevice, cts);
             biscNavigationParameters.AddParameterByName(DeviceKeys.RestartDeviceContextKey, restartDeviceContext);
 
-          
+
             var treeItemId = _treeManagementService.AddTreeItem(biscNavigationParameters,
                 DeviceKeys.DeviceRestartViewKey,
                 null);
             restartDeviceContext.TreeItemIdentifier = treeItemId;
-           if(isRestarting){await Task.Delay(3000, cts.Token);}
+            if (isRestarting) { await Task.Delay(3000, cts.Token); }
 
             existingDevice.Ip =
                 _sclCommunicationModelService.GetIpOfDevice(existingDevice.Name, _biscProject.MainSclModel.Value);
-            var deviceConnectResult = await _deviceConnectionService.ConnectDevice(existingDevice.Ip);
+            var deviceConnectResult = await _deviceConnectionService.ConnectDevice(existingDevice.Ip, 4);
             var device = deviceConnectResult.Item;
             var sclModel = _sclModelCreator();
             var itemsCount = 0;

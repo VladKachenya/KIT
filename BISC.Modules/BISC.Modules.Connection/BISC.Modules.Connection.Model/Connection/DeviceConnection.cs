@@ -19,6 +19,7 @@ namespace BISC.Modules.Connection.Model.Connection
         private readonly IPingService _pingService;
         private Timer _connectionCheckingTimer;
         private bool _isConnected;
+        private int _failedConnectionCounter = 0;
 
         public DeviceConnection(IMmsConnectionFacade mmsConnectionFacade, IGlobalEventsService globalEventsService, ILoggingService loggingService, IPingService pingService)
         {
@@ -42,12 +43,31 @@ namespace BISC.Modules.Connection.Model.Connection
                 _isConnected = value;
             }
         }
-
-        public async Task OpenConnection()
+        // Тут наколхозил
+        public async Task OpenConnection(int tryNumber=1)
         {
             if (Ip == null) throw new Exception("Ip is empty");
-            IsConnected = await MmsConnection.TryOpenConnection(Ip);
-            _connectionCheckingTimer = new Timer(CheckConnection, null, 0, 1500);
+            //int i = 0;
+            //bool isSuccessfulConnecting = false;
+            //while (true)
+            //{
+            //    isSuccessfulConnecting = await MmsConnection.TryOpenConnection(Ip);
+            //    if (isSuccessfulConnecting || i >= 5) break;
+            //    i++;
+            //    Thread.Sleep(100);
+            //}
+            for (int i = 0; i < tryNumber; i++)
+            {
+                IsConnected = await MmsConnection.TryOpenConnection(Ip);
+                _loggingService.LogMessage($"Подключение", SeverityEnum.Info);
+                if (IsConnected)
+                {
+                    break;
+                }
+                await Task.Delay(400);
+
+            }
+            _connectionCheckingTimer = new Timer(CheckConnection, null, 0, 2000);
         }
 
         private async void CheckConnection(object state)
@@ -55,12 +75,22 @@ namespace BISC.Modules.Connection.Model.Connection
             SemaphoreSlim semaphoreSlim = new SemaphoreSlim(0);
             if (await _pingService.GetPing(Ip) == false || !MmsConnection.CheckConnection())
             {
+                _failedConnectionCounter++;
+            }
+            else
+            {
+                _failedConnectionCounter = 0;
+
+            }
+
+            if (_failedConnectionCounter >= 5)
+            {
                 _connectionCheckingTimer?.Dispose();
                 IsConnected = false;
-
                 if (!String.IsNullOrEmpty(Ip))
                     _loggingService.LogMessage($"Связь с [{Ip}] потеряна", SeverityEnum.Info);
             }
+
             semaphoreSlim.Release();
         }
 

@@ -30,6 +30,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         private void OnSelectShowConflicts()
         {
+            
             _deviceReconnectionService.ReconnectDevice(_reconnectDeviceContext.Device,
                 _reconnectDeviceContext.DeviceTreeItemIdentifier);
             DialogCommands.CloseDialogCommand?.Execute(null, null);

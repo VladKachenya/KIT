@@ -24,10 +24,11 @@ namespace BISC.Modules.Device.Model.Services
             _connectionPoolService = connectionPoolService;
         }
 
-        public async Task<OperationResult<IDevice>> ConnectDevice(string ip)
+        public async Task<OperationResult<IDevice>> ConnectDevice(string ip,int tryNumber= 1)
         {
             var connection = _connectionPoolService.GetConnection(ip);
-            await connection.OpenConnection();
+
+            await connection.OpenConnection(tryNumber);
             if (!connection.IsConnected)
             {
                 return new OperationResult<IDevice>("Не удалось подключить устройство");

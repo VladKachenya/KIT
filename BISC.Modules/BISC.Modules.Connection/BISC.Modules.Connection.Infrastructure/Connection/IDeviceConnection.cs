@@ -7,7 +7,7 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
     {
         string Ip { get; set; }
         bool IsConnected { get; }
-        Task OpenConnection();
+        Task OpenConnection(int tryNumber=1);
         void StopConnection();             
         IMmsConnectionFacade MmsConnection { get; }
     }

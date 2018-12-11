@@ -93,6 +93,17 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #endregion
 
         #region Implamentation of DataSetElementBaseViewModel
+
+        public int MaxSizeFcdaList
+        {
+            get
+            {
+                if (_isEditeble)
+                    return 80;
+                else
+                    return FcdaViewModels.Count;
+            }
+        }
         public string Name
         {
             get => _name;
@@ -299,6 +310,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public void Drop(IDropInfo dropInfo)
         {
             if (!IsEditing) return;
+            if(FcdaViewModels.Count >= MaxSizeFcdaList) return;
             TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;
             //TreeItemViewModelBase targetItem = dropInfo.TargetItem as TreeItemViewModelBase;
             if (sourceItem.TypeName == InfoModelKeys.ModelKeys.DaiKey)

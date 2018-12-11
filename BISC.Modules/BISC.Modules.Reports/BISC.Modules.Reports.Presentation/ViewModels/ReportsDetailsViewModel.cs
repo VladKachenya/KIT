@@ -54,6 +54,9 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly IDeviceReconnectionService _deviceReconnectionService;
         private readonly IGlobalEventsService _globalEventsService;
+        private bool _isUpdateReports = true;
+        private bool _isSaveСhanges = true;
+
 
 
 
@@ -80,9 +83,9 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _deviceReconnectionService = deviceReconnectionService;
             _globalEventsService = globalEventsService;
             //_reportsLoadingService = reportsLoadingService;
-            SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand);
+            SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand, () => _isSaveСhanges);
             AddNewReportCommand = commandFactory.CreatePresentationCommand(OnAddNewReportCommand, IsAddNewReport);
-            UpdateReportsCommad = commandFactory.CreatePresentationCommand(OnUpdateReports);
+            UpdateReportsCommad = commandFactory.CreatePresentationCommand(OnUpdateReports, () => _isUpdateReports);
             DeleteReportCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteReport);
             _loggingService = loggingService;
             ModelRegionKey = Guid.NewGuid().ToString();
@@ -102,6 +105,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         #region private methods
         private async void OnSaveСhangesCommand()
         {
+            _isSaveСhanges = false;
+            (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
             BlockViewModelBehavior.SetBlock("Сохранение отчетов", true);
             _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
             var res = await _reportsSavingService.SaveReportsAsync(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
@@ -119,6 +124,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             {
                 BlockViewModelBehavior.Unlock();
             }
+            _isSaveСhanges = true;
+            (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
         }
 
 
@@ -152,13 +159,15 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         private bool IsAddNewReport()
         {
-            //var editingReport = ReportControlViewModels.Where(rep => rep.IsDynamic);
-            //if (editingReport.Count() >= 10) return false;
+            var editingReport = ReportControlViewModels.Where(rep => rep.IsDynamic);
+            if (editingReport.Count() >= 10) return false;
             return true;
         }
 
         private async void OnUpdateReports()
         {
+            _isUpdateReports = false;
+            (UpdateReportsCommad as IPresentationCommand)?.RaiseCanExecute();
             try
             {
                 await UpdateReports(true);
@@ -167,6 +176,11 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             {
                 _loggingService.LogMessage("Ошибка обновления Reports", SeverityEnum.Warning);
                 BlockViewModelBehavior.Unlock();
+            }
+            finally
+            {
+                _isUpdateReports = true;
+                (UpdateReportsCommad as IPresentationCommand)?.RaiseCanExecute();
             }
         }
 
