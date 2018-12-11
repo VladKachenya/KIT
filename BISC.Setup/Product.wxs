@@ -1,6 +1,6 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
-  <?define ProductName="KIT" ?>
+  <?define ProductName="КИТ" ?>
   <?define ProductVersion="2.0.0.9" ?>
   <?define ProductCode="*"?>
   <?define UpgradeCode="D1091144-1DA7-4107-A412-F1ACEB40A422"?>
@@ -18,7 +18,7 @@
       <Directory Id="DesktopFolder" Name="Desktop">
         <Component Id="ApplicationShortcutDesktop" Guid="*">
           <Shortcut Id="ApplicationDesktopShortcut"
-                    Name="KIT"                   
+                    Name="КИТ"                   
                     Target="[INSTALLLOCATION]KIT.exe"
                     WorkingDirectory="INSTALLLOCATION">
             <Icon Id="Logo" SourceFile="Logo.ico" />
@@ -45,14 +45,14 @@
         <Directory Id="ApplicationProgramsFolder"  Name="$(var.ProductName)">
           <Component Id="ApplicationShortcutKIT" Guid="4ABA874B-D1C9-4CE5-8140-0D3424258899">
             <Shortcut Id="ShortcutKIT"
-                 Name="KIT"
+                 Name="КИТ"
                  Description="$(var.ProductName)"
                  Target="[INSTALLLOCATION]KIT.exe"
                  WorkingDirectory="INSTALLLOCATION">
-              <Icon Id="KIY.exe" SourceFile="Logo.ico"/>
+              <Icon Id="KIT.exe" SourceFile="Logo.ico"/>
             </Shortcut>
             <Shortcut Id="UninstallLIT"
-                 Name="Uninstall KIT"
+                 Name="Uninstall КИТ"
                  Target="[SystemFolder]msiexec.exe"
                  Arguments="/x [ProductCode]"
                  Description="Uninstalls KIT" />

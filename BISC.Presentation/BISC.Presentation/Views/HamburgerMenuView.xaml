@@ -34,7 +34,12 @@
         </Style>
 
     </UserControl.Resources>
-    <StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel>
         <Menu ItemContainerStyle="{StaticResource GroupMenuItem}" ItemsSource="{Binding GlobalCommandGroups}" HorizontalContentAlignment="Center">
             <Menu.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -86,5 +91,8 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
     </StackPanel>
+        <Button HorizontalAlignment="Right" ToolTipService.Placement="MousePoint" HorizontalContentAlignment="Center " VerticalContentAlignment="Center" Grid.Row="1" ToolTip="{Binding LastBuildDateTime}" Style="{StaticResource MaterialDesignFlatButton}" Width="55" Height="55">
+            <ContentControl ContentTemplate="{StaticResource InformationVariantIcon}"  Width="30" Height="30"></ContentControl>
+  </Button>  </Grid>
 </UserControl>
 
