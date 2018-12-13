@@ -48,7 +48,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             IGlobalEventsService globalEventsService,
             ITreeManagementService treeManagementService,
             IBiscProject biscProject, IDeviceLoadingService deviceLoadingService,
-            ILastIpAddressesViewModelFactory lastConnectedIpsFactoty, ILoggingService loggingService )
+            ILastIpAddressesViewModelFactory lastConnectedIpsFactoty, ILoggingService loggingService)
         {
             _commandFactory = commandFactory;
             _deviceConnectionService = deviceConnectionService;
@@ -76,11 +76,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels
                 var connectResult = await _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
                 if (connectResult.IsSucceed)
                 {
-                   
-                      var res=  await _deviceLoadingService.LoadElements(connectResult.Item);
+
+                    var res = await _deviceLoadingService.LoadElements(connectResult.Item);
                     if (!res.IsSucceed)
                     {
-                        _loggingService.LogMessage(res.GetFirstError(),SeverityEnum.Warning);
+                        _loggingService.LogMessage(res.GetFirstError(), SeverityEnum.Warning);
                     }
                 }
                 else

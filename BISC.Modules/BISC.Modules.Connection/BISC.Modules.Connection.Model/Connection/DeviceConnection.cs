@@ -17,9 +17,8 @@ namespace BISC.Modules.Connection.Model.Connection
         private readonly IGlobalEventsService _globalEventsService;
         private readonly ILoggingService _loggingService;
         private readonly IPingService _pingService;
-        private Timer _connectionCheckingTimer;
+        //private Timer _connectionCheckingTimer;
         private bool _isConnected;
-        private int _failedConnectionCounter = 0;
 
         public DeviceConnection(IMmsConnectionFacade mmsConnectionFacade, IGlobalEventsService globalEventsService, ILoggingService loggingService, IPingService pingService)
         {
@@ -38,68 +37,65 @@ namespace BISC.Modules.Connection.Model.Connection
             {
                 if (_isConnected != value)
                 {
-					_globalEventsService.SendMessage(new ConnectionEvent(value, Ip));
-				}
+                    _globalEventsService.SendMessage(new ConnectionEvent(value, Ip));
+                }
                 _isConnected = value;
             }
         }
-        // Тут наколхозил
-        public async Task OpenConnection(int tryNumber=1)
+
+        public async Task OpenConnection(int tryNumber = 1)
         {
             if (Ip == null) throw new Exception("Ip is empty");
-            //int i = 0;
-            //bool isSuccessfulConnecting = false;
-            //while (true)
-            //{
-            //    isSuccessfulConnecting = await MmsConnection.TryOpenConnection(Ip);
-            //    if (isSuccessfulConnecting || i >= 5) break;
-            //    i++;
-            //    Thread.Sleep(100);
-            //}
             for (int i = 0; i < tryNumber; i++)
             {
                 IsConnected = await MmsConnection.TryOpenConnection(Ip);
-                _loggingService.LogMessage($"Подключение", SeverityEnum.Info);
-                if (IsConnected)
-                {
-                    break;
-                }
+                if (IsConnected) break;
                 await Task.Delay(400);
 
             }
-            _connectionCheckingTimer = new Timer(CheckConnection, null, 0, 2000);
+            StartCheckingConnection();
+            //_connectionCheckingTimer = new Timer(CheckConnection, 5, 0, 2000);
         }
 
-        private async void CheckConnection(object state)
+        private async void StartCheckingConnection()
         {
-            SemaphoreSlim semaphoreSlim = new SemaphoreSlim(0);
-            if (await _pingService.GetPing(Ip) == false || !MmsConnection.CheckConnection())
+            while (IsConnected)
             {
-                _failedConnectionCounter++;
+                await CheckConnection(5);
+                await Task.Delay(2000);
             }
-            else
+        }
+
+        private async Task CheckConnection(int state = 1)
+        {
+            var allowedNumberFailedRequests = state;
+            var failedConnectionCounter = 0;
+            while (true)
             {
-                _failedConnectionCounter = 0;
+                if (!await _pingService.GetPing(Ip) || !MmsConnection.CheckConnection())
+                {
+                    failedConnectionCounter++;
+                }
+                else
+                    return;
 
+                if (failedConnectionCounter >= allowedNumberFailedRequests)
+                {
+                    IsConnected = false;
+                    if (!String.IsNullOrEmpty(Ip))
+                        _loggingService.LogMessage($"Связь с [{Ip}] потеряна", SeverityEnum.Info);
+                    return;
+                }
+                await Task.Delay(2000);
             }
-
-            if (_failedConnectionCounter >= 5)
-            {
-                _connectionCheckingTimer?.Dispose();
-                IsConnected = false;
-                if (!String.IsNullOrEmpty(Ip))
-                    _loggingService.LogMessage($"Связь с [{Ip}] потеряна", SeverityEnum.Info);
-            }
-
-            semaphoreSlim.Release();
         }
 
 
 
-        public void StopConnection()
+        public async void StopConnection()
         {
             MmsConnection.StopConnection();
-            CheckConnection(null);
+            await CheckConnection();
         }
 
         public IMmsConnectionFacade MmsConnection { get; }
