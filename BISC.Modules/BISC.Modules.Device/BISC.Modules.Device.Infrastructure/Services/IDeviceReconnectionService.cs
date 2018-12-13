@@ -9,5 +9,6 @@ namespace BISC.Modules.Device.Infrastructure.Services
         Task<bool> ReconnectDevice(IDevice existingDevice, TreeItemIdentifier treeItemIdToRemove);
 
         Task RestartDevice(IDevice existingDevice,TreeItemIdentifier treeItemIdToRemove);
+	    Task ExecuteBeforeRestart(Task taskToExecute, IDevice existingDevice);
     }
 }

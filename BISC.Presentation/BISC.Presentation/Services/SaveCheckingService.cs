@@ -78,9 +78,14 @@ namespace BISC.Presentation.Services
 
         public async Task<SaveResult> SaveAllUnsavedEntities(bool isNeedToAsk)
         {
+	        return await SaveUnsavedEntities((entity =>
+		        entity.ChangeTracker.GetIsModifiedRecursive()), isNeedToAsk);
+        }
+
+	    private async Task<SaveResult> SaveUnsavedEntities(Func<SaveCheckingEntity,bool> predicate,bool isNeedToAsk)
+	    {
             SaveResult saveResultEnum = new SaveResult();
-            var modifiedEntities = _saveCheckingEntities.Where((entity =>
-                entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
+            var modifiedEntities = _saveCheckingEntities.Where(predicate).ToList();
             if (modifiedEntities.Any()&&isNeedToAsk)
             {
                 BiscNavigationParameters navigationParameters=new BiscNavigationParameters();
@@ -96,9 +101,16 @@ namespace BISC.Presentation.Services
                 } ));
             }
             return saveResultEnum;
-        }
+	    }
 
-        public async Task<bool> GetIsRegionSaved(string regionName)
+
+	    public async Task<SaveResult> SaveDeviceUnsavedEntities(string deviceName, bool isNeedToAsk)
+	    {
+		    return await SaveUnsavedEntities((entity => entity.DeviceKey == deviceName &&
+		                                                entity.ChangeTracker.GetIsModifiedRecursive()), isNeedToAsk);
+	    }
+
+	    public async Task<bool> GetIsRegionSaved(string regionName)
         {
             var modifiedEntities = _saveCheckingEntities.Where((entity =>
                 entity.RegionName == regionName)).ToList();

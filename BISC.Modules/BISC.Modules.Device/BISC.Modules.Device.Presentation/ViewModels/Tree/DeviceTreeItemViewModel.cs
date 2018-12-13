@@ -131,6 +131,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private async void ResetDeviceByFtp()
         {
             _loggingService.LogMessage($"Устройство {_device.Name} перезагружается", SeverityEnum.Info);
+
             await _deviceReconnectionService.RestartDevice(_device, _treeItemIdentifier);
         }
 

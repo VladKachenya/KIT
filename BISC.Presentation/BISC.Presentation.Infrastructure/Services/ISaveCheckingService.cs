@@ -36,7 +36,9 @@ namespace BISC.Presentation.Infrastructure.Services
         void AddSaveCheckingEntity(SaveCheckingEntity saveCheckingEntity);
         void RemoveSaveCheckingEntityByOwner(string regionName);
         Task<SaveResult> SaveAllUnsavedEntities(bool isNeedToAsk);
-        Task<bool> GetIsRegionSaved(string regionName);
+	    Task<SaveResult> SaveDeviceUnsavedEntities(string deviceName,bool isNeedToAsk);
+
+		Task<bool> GetIsRegionSaved(string regionName);
         Task<bool> GetIsDeviceEntitiesSaved(string deviceName);
 
     }

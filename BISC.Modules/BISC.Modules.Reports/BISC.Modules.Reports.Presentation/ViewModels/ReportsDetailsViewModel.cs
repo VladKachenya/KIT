@@ -107,7 +107,25 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
             _isSaveСhanges = false;
             (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
-            BlockViewModelBehavior.SetBlock("Сохранение отчетов", true);
+
+	        if (await _reportsSavingService.IsFtpSavingNeeded(ReportControlViewModels.ToList(), _device,
+		        _connectionPoolService.GetConnection(_device.Ip).IsConnected))
+	        {
+				Task t = SaveChanges();
+		       await _deviceReconnectionService.ExecuteBeforeRestart(t, _device);
+	        }
+	        else
+	        {
+		        await SaveChanges();
+	        }
+
+
+           
+        }
+
+	    private async Task SaveChanges()
+	    {
+ BlockViewModelBehavior.SetBlock("Сохранение отчетов", true);
             _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
             var res = await _reportsSavingService.SaveReportsAsync(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             UpdateViewModels();
@@ -126,8 +144,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             }
             _isSaveСhanges = true;
             (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
-        }
-
+	    }
 
         private void ShowFtpBlockMessageIfNeeded()
         {

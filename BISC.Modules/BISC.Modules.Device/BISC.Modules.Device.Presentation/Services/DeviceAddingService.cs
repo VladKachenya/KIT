@@ -81,7 +81,7 @@ namespace BISC.Modules.Device.Presentation.Services
             BiscNavigationParameters navigationParameters = new BiscNavigationParameters();
             navigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, device);
             var resultTreeItem =
-                _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null);
+                _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null,device.Name);
             _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(device, resultTreeItem, "IED");
         }
     }

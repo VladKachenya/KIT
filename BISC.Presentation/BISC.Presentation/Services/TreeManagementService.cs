@@ -32,10 +32,10 @@ namespace BISC.Presentation.Services
             _tabManagementService = tabManagementService;
         }
 
-        public TreeItemIdentifier AddTreeItem(BiscNavigationParameters parameters, string viewName, TreeItemIdentifier parentTreeItemIdentifier)
+        public TreeItemIdentifier AddTreeItem(BiscNavigationParameters parameters, string viewName, TreeItemIdentifier parentTreeItemIdentifier,string tag=null)
         {
             var newTreeItemGuid = Guid.NewGuid();
-            TreeItemIdentifier treeItemIdentifier = new TreeItemIdentifier(newTreeItemGuid, parentTreeItemIdentifier);
+            TreeItemIdentifier treeItemIdentifier = new TreeItemIdentifier(newTreeItemGuid, parentTreeItemIdentifier,tag);
             TreeItemViewModel newItemViewModel = new TreeItemViewModel();
             newItemViewModel.DynamicRegionId = newTreeItemGuid;
 
@@ -103,7 +103,13 @@ namespace BISC.Presentation.Services
 
         }
 
-        public void ClearMainTree()
+	    public TreeItemIdentifier GetDeviceTreeItem(string deviceName)
+	    {
+		    var deviceTreeItem = _mainTreeViewModels.FirstOrDefault((pair => pair.Value.Item1.Tag == deviceName));
+		    return deviceTreeItem.Value.Item1;
+	    }
+
+	    public void ClearMainTree()
         {
             while (_mainTreeViewModel.ChildItemViewModels.Count != 0)
             {
