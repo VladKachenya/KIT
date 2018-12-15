@@ -206,27 +206,30 @@ namespace BISC.Modules.Device.Presentation.Services
 
 		public async Task ExecuteBeforeRestart(Func<Task> taskToExecute, IDevice existingDevice)
 		{
-		 var res= await  _userInteractionService.ShowOptionToUser("Требуется перезагрузка","Сохранение потребует перезагрузки устройства",
-		        new List<string>() {"ОК", "Отмена"});
-		    if (res == 1)
-		    {
-                return;
-		    }
+	
 			var unsavedEntitiesInfo = (await _saveCheckingService.GetIsDeviceEntitiesSaved(existingDevice.Name));
 			if (!unsavedEntitiesInfo.IsEntitiesSaved)
 			{
 
 			    if (unsavedEntitiesInfo.UnsavedCheckingEntities.Count > 1)
 			    {
-			        var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, true);
-			        if (savingRes.IsCancelled)
+			        var res = await _userInteractionService.ShowOptionToUser("Требуется перезагрузка", "Сохранение потребует перезагрузки устройства. \nВсе несохраненные изменения, которые относятся к этому устройству \nбудут сохранены\nЖелаете продолжить?",
+			            new List<string>() { "Да", "Нет" });
+			        if (res == 1)
 			        {
 			            return;
 			        }
+                    var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, false);
 			    }
 			    else
 			    {
-			        var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, false);
+			        var res = await _userInteractionService.ShowOptionToUser("Требуется перезагрузка", "Сохранение потребует перезагрузки устройства",
+			            new List<string>() { "ОК", "Отмена" });
+			        if (res == 1)
+			        {
+			            return;
+			        }
+                    var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, false);
                 }
             }
 
