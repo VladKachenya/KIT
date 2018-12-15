@@ -11,6 +11,7 @@ namespace BISC.Presentation.Infrastructure.Services
         {
             ParenTreeItemIdentifier = parenTreeItemIdentifier;
             ItemId = itemId;
+            Tag = tag;
         }
 		public string Tag { get;  }
         public TreeItemIdentifier ParenTreeItemIdentifier { get; }

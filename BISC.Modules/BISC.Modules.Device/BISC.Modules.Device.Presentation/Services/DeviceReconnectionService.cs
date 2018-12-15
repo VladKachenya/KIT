@@ -43,8 +43,9 @@ namespace BISC.Modules.Device.Presentation.Services
 		private readonly ISclCommunicationModelService _sclCommunicationModelService;
 		private readonly IPingService _pingService;
 		private readonly ISaveCheckingService _saveCheckingService;
+	    private readonly IUserInteractionService _userInteractionService;
 
-		public DeviceReconnectionService(IDeviceFileWritingServices deviceFileWritingServices,
+	    public DeviceReconnectionService(IDeviceFileWritingServices deviceFileWritingServices,
 			IDeviceConnectionService deviceConnectionService, IDeviceModelService deviceModelService,
 			ITreeManagementService treeManagementService, IConnectionPoolService connectionPoolService,
 			ITabManagementService tabManagementService, ILoggingService loggingService,
@@ -54,7 +55,7 @@ namespace BISC.Modules.Device.Presentation.Services
 			IBiscProject biscProject, IDeviceAddingService deviceAddingService,
 			IDeviceWarningsService deviceWarningsService,
 			ISclCommunicationModelService sclCommunicationModelService, IPingService pingService,
-			ISaveCheckingService saveCheckingService)
+			ISaveCheckingService saveCheckingService,IUserInteractionService userInteractionService)
 		{
 			_deviceFileWritingServices = deviceFileWritingServices;
 			_deviceConnectionService = deviceConnectionService;
@@ -72,7 +73,8 @@ namespace BISC.Modules.Device.Presentation.Services
 			_sclCommunicationModelService = sclCommunicationModelService;
 			_pingService = pingService;
 			_saveCheckingService = saveCheckingService;
-			_elementLoadingServices = injectionContainer.ResolveAll(typeof(IDeviceElementLoadingService))
+		    _userInteractionService = userInteractionService;
+		    _elementLoadingServices = injectionContainer.ResolveAll(typeof(IDeviceElementLoadingService))
 				.Cast<IDeviceElementLoadingService>().ToList();
 			_elementConflictResolvers = injectionContainer.ResolveAll(typeof(IElementConflictResolver))
 				.Cast<IElementConflictResolver>().ToList();
@@ -202,19 +204,33 @@ namespace BISC.Modules.Device.Presentation.Services
 			await Reconnect(existingDevice, treeItemIdToRemove, true);
 		}
 
-		public async Task ExecuteBeforeRestart(Task taskToExecute, IDevice existingDevice)
+		public async Task ExecuteBeforeRestart(Func<Task> taskToExecute, IDevice existingDevice)
 		{
-			var isDeviceEntitiesSaved = await _saveCheckingService.GetIsDeviceEntitiesSaved(existingDevice.Name);
-			if (!isDeviceEntitiesSaved)
+		 var res= await  _userInteractionService.ShowOptionToUser("Требуется перезагрузка","Сохранение потребует перезагрузки устройства",
+		        new List<string>() {"ОК", "Отмена"});
+		    if (res == 1)
+		    {
+                return;
+		    }
+			var unsavedEntitiesInfo = (await _saveCheckingService.GetIsDeviceEntitiesSaved(existingDevice.Name));
+			if (!unsavedEntitiesInfo.IsEntitiesSaved)
 			{
-				var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, true);
-				if (savingRes.IsCancelled)
-				{
-					return;
-				}
-			}
 
-			await taskToExecute;
+			    if (unsavedEntitiesInfo.UnsavedCheckingEntities.Count > 1)
+			    {
+			        var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, true);
+			        if (savingRes.IsCancelled)
+			        {
+			            return;
+			        }
+			    }
+			    else
+			    {
+			        var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, false);
+                }
+            }
+
+			//await taskToExecute();
 			await _deviceFileWritingServices.ResetDevice(existingDevice.Ip);
 			_connectionPoolService.GetConnection(existingDevice.Ip).StopConnection();
 			await Reconnect(existingDevice, _treeManagementService.GetDeviceTreeItem(existingDevice.Name), true);

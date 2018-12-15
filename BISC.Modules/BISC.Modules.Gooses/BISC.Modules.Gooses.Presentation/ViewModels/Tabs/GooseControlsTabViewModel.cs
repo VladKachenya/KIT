@@ -44,6 +44,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         private readonly GoosesLoadingService _goosesLoadingService;
         private readonly IBiscProject _biscProject;
         private readonly IDeviceWarningsService _deviceWarningsService;
+        private readonly IDeviceReconnectionService _deviceReconnectionService;
         private IDevice _device;
         private ObservableCollection<GooseControlViewModel> _gooseControlViewModels;
         private string _regionName;
@@ -54,7 +55,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             ISaveCheckingService saveCheckingService, ICommandFactory commandFactory, ILoggingService loggingService, GooseControlSavingService gooseControlSavingService,
             IConnectionPoolService connectionPoolService, IGlobalEventsService globalEventsService,
             IUserInterfaceComposingService userInterfaceComposingService, GoosesLoadingService goosesLoadingService,
-            IBiscProject biscProject,IDeviceWarningsService deviceWarningsService
+            IBiscProject biscProject,IDeviceWarningsService deviceWarningsService,IDeviceReconnectionService deviceReconnectionService
             )
         {
             _gooseControlViewModelFactory = gooseControlViewModelFactory;
@@ -69,6 +70,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _goosesLoadingService = goosesLoadingService;
             _biscProject = biscProject;
             _deviceWarningsService = deviceWarningsService;
+            _deviceReconnectionService = deviceReconnectionService;
             SaveCommand = commandFactory.CreatePresentationCommand(OnSaveChangesCommand, () => _isSaveChanges);
             DeleteGooseCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteGoose);
             AddGooseCommand = commandFactory.CreatePresentationCommand(OnAddGooseCommand, IsAddGoose);
@@ -139,23 +141,37 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         private async void OnSaveChangesCommand()
         {
+            _loggingService.LogUserAction($"Пользователь сохряняет изменения в Goose CB устройства {_device.Name})");
+            if (await _gooseControlSavingService.IsFtpSavingNeeded(GooseControlViewModels.ToList()))
+            {
+               await _deviceReconnectionService.ExecuteBeforeRestart(SaveChangesAsync, _device);
+            }
+            else
+            {
+                await SaveChangesAsync();
+            }
+        }
+
+
+        private async Task SaveChangesAsync()
+        {
             _isSaveChanges = false;
             (SaveCommand as IPresentationCommand)?.RaiseCanExecute();
             BlockViewModelBehavior.SetBlock("Сохранение блоков управления Goose", true);
-            _loggingService.LogUserAction($"Пользователь сохряняет изменения в Goose CB устройства {_device.Name})");
-           var res= await _gooseControlSavingService.SaveGooseControls(GooseControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
-          
+         
+            var res = await _gooseControlSavingService.SaveGooseControls(GooseControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+
             UpdateViewModels();
             ChangeTracker.AcceptChanges();
             BlockViewModelBehavior.Unlock();
-            if (res.IsSucceed && res.Item == SavingResultEnum.SavedUsingFtp)
-            {
-                _deviceWarningsService.SetWarningOfDevice(_device.Name,GooseKeys.GooseWarningKeys.GooseSavedFtpKey, "Goose сохранены по FTP");
-            }
+        
             ShowFtpBlockMessageIfNeeded();
             _isSaveChanges = true;
             (SaveCommand as IPresentationCommand)?.RaiseCanExecute();
         }
+
+
+
         private void ShowFtpBlockMessageIfNeeded()
         {
             if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name,
@@ -177,7 +193,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
             await UpdateGooses(false);
-            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker, $"Блоки управления GOOSE {_device.Name}", SaveCommand,_device.Name, _regionName));
+            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker, $"Блоки управления GOOSE {_device.Name}", SaveChangesAsync,_device.Name, _regionName));
             base.OnNavigatedTo(navigationContext);
         }
 

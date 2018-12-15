@@ -18,7 +18,7 @@ namespace BISC.Presentation.Services
         private readonly IGlobalEventsService _globalEventsService;
         private List<SaveCheckingEntity> _saveCheckingEntities = new List<SaveCheckingEntity>();
 
-        public SaveCheckingService(INavigationService navigationService,IGlobalEventsService globalEventsService)
+        public SaveCheckingService(INavigationService navigationService, IGlobalEventsService globalEventsService)
         {
             _navigationService = navigationService;
             _globalEventsService = globalEventsService;
@@ -31,8 +31,8 @@ namespace BISC.Presentation.Services
 
                 SaveResult saveResultEnum = new SaveResult();
                 var modifiedEntities = _saveCheckingEntities.Where((entity =>
-                    entity.RegionName==regionName)).ToList();
-                if (modifiedEntities.Any()&&modifiedEntities.First().ChangeTracker.GetIsModifiedRecursive())
+                    entity.RegionName == regionName)).ToList();
+                if (modifiedEntities.Any() && modifiedEntities.First().ChangeTracker.GetIsModifiedRecursive())
                 {
                     BiscNavigationParameters navigationParameters = new BiscNavigationParameters();
                     navigationParameters.AddParameterByName(SaveCheckingEntity.NavigationKey, modifiedEntities).AddParameterByName(nameof(SaveResult), saveResultEnum);
@@ -41,10 +41,10 @@ namespace BISC.Presentation.Services
 
                 if (saveResultEnum.IsSaved)
                 {
-                    modifiedEntities.ForEach((entity =>
+                    modifiedEntities.ForEach(async (entity) =>
                     {
-                        entity.SaveCommand?.Execute(null);
-                    }));
+                        await entity.SaveTask();
+                    });
                 }
                 return !saveResultEnum.IsCancelled;
             }
@@ -62,7 +62,7 @@ namespace BISC.Presentation.Services
             }
         }
 
-        
+
 
 
         public void RemoveSaveCheckingEntityByOwner(string regionName)
@@ -78,39 +78,44 @@ namespace BISC.Presentation.Services
 
         public async Task<SaveResult> SaveAllUnsavedEntities(bool isNeedToAsk)
         {
-	        return await SaveUnsavedEntities((entity =>
-		        entity.ChangeTracker.GetIsModifiedRecursive()), isNeedToAsk);
+            return await SaveUnsavedEntities((entity =>
+                entity.ChangeTracker.GetIsModifiedRecursive()), isNeedToAsk);
         }
 
-	    private async Task<SaveResult> SaveUnsavedEntities(Func<SaveCheckingEntity,bool> predicate,bool isNeedToAsk)
-	    {
+        private async Task<SaveResult> SaveUnsavedEntities(Func<SaveCheckingEntity, bool> predicate, bool isNeedToAsk)
+        {
             SaveResult saveResultEnum = new SaveResult();
             var modifiedEntities = _saveCheckingEntities.Where(predicate).ToList();
-            if (modifiedEntities.Any()&&isNeedToAsk)
+            if (modifiedEntities.Any() && isNeedToAsk)
             {
-                BiscNavigationParameters navigationParameters=new BiscNavigationParameters();
-                navigationParameters.AddParameterByName(SaveCheckingEntity.NavigationKey,modifiedEntities).AddParameterByName(nameof(SaveResult),saveResultEnum);
-             await  _navigationService.NavigateViewToGlobalRegion(KeysForNavigation.ViewNames.SaveChangesViewName,navigationParameters);
+                BiscNavigationParameters navigationParameters = new BiscNavigationParameters();
+                navigationParameters.AddParameterByName(SaveCheckingEntity.NavigationKey, modifiedEntities)
+                    .AddParameterByName(nameof(SaveResult), saveResultEnum);
+                await _navigationService.NavigateViewToGlobalRegion(KeysForNavigation.ViewNames.SaveChangesViewName,
+                    navigationParameters);
             }
 
-            if (saveResultEnum.IsSaved||!isNeedToAsk)
+            if (saveResultEnum.IsSaved || !isNeedToAsk)
             {
-                modifiedEntities.ForEach((entity =>
+                foreach (var modifiedEntity in modifiedEntities)
                 {
-                    entity.SaveCommand?.Execute(null);
-                } ));
+                    await modifiedEntity.SaveTask();
+                    if (modifiedEntities.Count > 1)
+                        await Task.Delay(100);
+                }
             }
+
             return saveResultEnum;
-	    }
+        }
 
 
-	    public async Task<SaveResult> SaveDeviceUnsavedEntities(string deviceName, bool isNeedToAsk)
-	    {
-		    return await SaveUnsavedEntities((entity => entity.DeviceKey == deviceName &&
-		                                                entity.ChangeTracker.GetIsModifiedRecursive()), isNeedToAsk);
-	    }
+        public async Task<SaveResult> SaveDeviceUnsavedEntities(string deviceName, bool isNeedToAsk)
+        {
+            return await SaveUnsavedEntities((entity => entity.DeviceKey == deviceName &&
+                                                        entity.ChangeTracker.GetIsModifiedRecursive()), isNeedToAsk);
+        }
 
-	    public async Task<bool> GetIsRegionSaved(string regionName)
+        public async Task<bool> GetIsRegionSaved(string regionName)
         {
             var modifiedEntities = _saveCheckingEntities.Where((entity =>
                 entity.RegionName == regionName)).ToList();
@@ -122,10 +127,12 @@ namespace BISC.Presentation.Services
             return true;
         }
 
-        public async Task<bool> GetIsDeviceEntitiesSaved(string deviceName)
+        public async Task<UnsavedEntitiesInfo> GetIsDeviceEntitiesSaved(string deviceName)
         {
-            return !_saveCheckingEntities.Any((entity =>
-                entity.DeviceKey == deviceName && entity.ChangeTracker.GetIsModifiedRecursive()));
+            var unsavedCheckingEntities= _saveCheckingEntities.Where((entity =>
+                entity.DeviceKey == deviceName && entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
+
+            return new UnsavedEntitiesInfo(!unsavedCheckingEntities.Any(),unsavedCheckingEntities);
         }
     }
 }

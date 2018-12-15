@@ -177,7 +177,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         {
             Dispose();
             _loggingService.LogUserAction("Пользователь удаляет устройство " + _device.Name);
-            var isSaved = await _saveCheckingService.GetIsDeviceEntitiesSaved(_device.Name);
+            var isSaved = (await _saveCheckingService.GetIsDeviceEntitiesSaved(_device.Name)).IsEntitiesSaved;
             if (!isSaved)
             {
                 var res = await _userInteractionService.ShowOptionToUser("Несохраненные изменения",

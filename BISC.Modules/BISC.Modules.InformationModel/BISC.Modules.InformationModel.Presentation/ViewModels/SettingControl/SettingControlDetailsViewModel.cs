@@ -51,8 +51,13 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
 
         private async void OnSaveChanges()
         {
-            BlockViewModelBehavior.SetBlock("Сохранение",true);
-            await _settingsControlSavingService.SaveSettingControlsAsync(SettingControlViewModels.ToList(),_device);
+            await SaveChangesAsync();
+        }
+
+        private async Task SaveChangesAsync()
+        {
+            BlockViewModelBehavior.SetBlock("Сохранение", true);
+            await _settingsControlSavingService.SaveSettingControlsAsync(SettingControlViewModels.ToList(), _device);
             BlockViewModelBehavior.Unlock();
         }
 
@@ -77,7 +82,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
       
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"Setting Groups устройства {_device.Name}", SaveСhangesCommand, _device.Name, _regionName));
+                $"Setting Groups устройства {_device.Name}", SaveChangesAsync, _device.Name, _regionName));
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);

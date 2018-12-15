@@ -41,10 +41,15 @@ namespace BISC.Modules.Gooses.Presentation.Services
             _biscProject = biscProject;
             _loggingService = loggingService;
         }
-        
 
 
 
+        public async Task<bool> IsFtpSavingNeeded(List<GooseControlViewModel> gooseControlViewModelsToSave)
+        {
+            var isSavingNeeded = gooseControlViewModelsToSave.Any((model =>
+                model.ChangeTracker.GetIsModifiedRecursive() && model.IsDynamic));
+            return isSavingNeeded;
+        }
 
         public async Task<OperationResult<SavingResultEnum>> SaveGooseControls(List<GooseControlViewModel> gooseControlViewModelsToSave, IDevice device, bool isInDevice)
         {

@@ -99,6 +99,8 @@ namespace BISC.Presentation.Services
                 _mainTreeViewModels[treeItemId.ParenTreeItemIdentifier.ItemId.Value].Item2.ChildItemViewModels
                     .Remove(_mainTreeViewModels[treeItemId.ItemId.Value].Item2);
             }
+            _mainTreeViewModels.Remove(treeItemId.ItemId.Value);
+
             _navigationService.DisposeRegionViewModel(treeItemId.ItemId.Value.ToString());
 
         }

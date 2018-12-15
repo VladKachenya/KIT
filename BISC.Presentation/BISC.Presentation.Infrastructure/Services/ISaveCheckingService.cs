@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Presentation.Infrastructure.ChangeTracker;
 
@@ -6,12 +8,12 @@ namespace BISC.Presentation.Infrastructure.Services
 {
     public class SaveCheckingEntity
     {
-        public SaveCheckingEntity(IChangeTracker changeTracker, string entityFriendlyName, ICommand saveCommand, string deviceKey, string regionName=null)
+        public SaveCheckingEntity(IChangeTracker changeTracker, string entityFriendlyName, Func<Task> saveTask, string deviceKey, string regionName=null)
         {
 
             ChangeTracker = changeTracker;
             EntityFriendlyName = entityFriendlyName;
-            SaveCommand = saveCommand;
+            SaveTask = saveTask;
             DeviceKey = deviceKey;
             RegionName = regionName;
         }
@@ -19,7 +21,7 @@ namespace BISC.Presentation.Infrastructure.Services
         public static string NavigationKey = "SaveCheckingEntity";
         public IChangeTracker ChangeTracker { get; }
         public string EntityFriendlyName { get; }
-        public ICommand SaveCommand { get; }
+        public Func<Task> SaveTask { get; }
         public string RegionName { get; }
         public string DeviceKey { get; }
     }
@@ -39,7 +41,19 @@ namespace BISC.Presentation.Infrastructure.Services
 	    Task<SaveResult> SaveDeviceUnsavedEntities(string deviceName,bool isNeedToAsk);
 
 		Task<bool> GetIsRegionSaved(string regionName);
-        Task<bool> GetIsDeviceEntitiesSaved(string deviceName);
+        Task<UnsavedEntitiesInfo> GetIsDeviceEntitiesSaved(string deviceName);
 
+    }
+
+    public class UnsavedEntitiesInfo
+    {
+        public UnsavedEntitiesInfo(bool isEntitiesSaved, List<SaveCheckingEntity> unsavedCheckingEntities)
+        {
+            IsEntitiesSaved = isEntitiesSaved;
+            UnsavedCheckingEntities = unsavedCheckingEntities;
+        }
+
+        public bool IsEntitiesSaved { get; }
+        public List<SaveCheckingEntity> UnsavedCheckingEntities { get; }
     }
 }

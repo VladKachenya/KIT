@@ -107,26 +107,22 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
             _isSaveСhanges = false;
             (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
+            _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
+            if (await _reportsSavingService.IsFtpSavingNeeded(ReportControlViewModels.ToList(), _device,
+                _connectionPoolService.GetConnection(_device.Ip).IsConnected))
+            {
+                await _deviceReconnectionService.ExecuteBeforeRestart(SaveChanges, _device);
+            }
+            else
+            {
+                await SaveChanges();
+            }
 
-	        if (await _reportsSavingService.IsFtpSavingNeeded(ReportControlViewModels.ToList(), _device,
-		        _connectionPoolService.GetConnection(_device.Ip).IsConnected))
-	        {
-				Task t = SaveChanges();
-		       await _deviceReconnectionService.ExecuteBeforeRestart(t, _device);
-	        }
-	        else
-	        {
-		        await SaveChanges();
-	        }
-
-
-           
         }
 
-	    private async Task SaveChanges()
-	    {
- BlockViewModelBehavior.SetBlock("Сохранение отчетов", true);
-            _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
+        private async Task SaveChanges()
+        {
+            BlockViewModelBehavior.SetBlock("Сохранение отчетов", true);
             var res = await _reportsSavingService.SaveReportsAsync(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             UpdateViewModels();
             ChangeTracker.AcceptChanges();
@@ -144,7 +140,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             }
             _isSaveСhanges = true;
             (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
-	    }
+        }
 
         private void ShowFtpBlockMessageIfNeeded()
         {
@@ -153,8 +149,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             {
                 BlockViewModelBehavior.SetBlockWithOption(
                     "Для сохранения изменений по FTP требуется перезагрузка" + Environment.NewLine +
-                    "Имеется несоответствие данных.", new UnlockCommandEntity("Все равно продолжить"), 
-                    new UnlockCommandEntity("Перезагрузить устройство", _commandFactory.CreatePresentationCommand(() => _globalEventsService.SendMessage( new ResetByFtpEvent{DeviceName = _device.Name, Ip = _device.Ip}))));
+                    "Имеется несоответствие данных.", new UnlockCommandEntity("Все равно продолжить"),
+                    new UnlockCommandEntity("Перезагрузить устройство", _commandFactory.CreatePresentationCommand(() => _globalEventsService.SendMessage(new ResetByFtpEvent { DeviceName = _device.Name, Ip = _device.Ip }))));
             }
         }
 
@@ -215,7 +211,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             UpdateViewModels();
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"Reports устройства {_device.Name}", SaveСhangesCommand, _device.Name, _regionName));
+                $"Reports устройства {_device.Name}", SaveChanges, _device.Name, _regionName));
             AddNewReportCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);

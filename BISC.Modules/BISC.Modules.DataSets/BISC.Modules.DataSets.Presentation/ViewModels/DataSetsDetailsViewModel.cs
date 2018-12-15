@@ -125,7 +125,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"DataSets устройства {_device.Name}", SaveСhangesCommand, _device.Name, _regionName));
+                $"DataSets устройства {_device.Name}", SaveChangesAsync,_device.Name, _regionName));
             AddNewDataSetCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
@@ -186,12 +186,16 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         private async void OnSaveСhanges()
         {
+            _loggingService.LogUserAction($"Пользователь сохраняет изменения DataSets устройства {_device.Name}");
+            await SaveChangesAsync();
+        }
+
+        private async Task SaveChangesAsync()
+        {
             _isSaveСhanges = false;
             (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
-
             BlockViewModelBehavior.SetBlock("Сохранение DataSet-ов", true);
             await Task.Delay(500);
-            _loggingService.LogUserAction($"Пользователь сохраняет изменения DataSets устройства {_device.Name}");
             await _dataSetSavingService.SaveDataSets(DataSets.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             ResetAllDataSetCollections();
             _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
@@ -203,8 +207,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _isSaveСhanges = true;
             (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
         }
-
-
 
         private void SortDataSetsByIsDynamic()
         {
