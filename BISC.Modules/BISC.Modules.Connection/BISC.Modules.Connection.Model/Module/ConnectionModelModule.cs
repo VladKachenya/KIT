@@ -27,6 +27,7 @@ namespace BISC.Modules.Connection.Model.Module
             _injectionContainer.RegisterType<IIpValidationService, IpValidationServic>(true);
             _injectionContainer.RegisterType<IConnectionPoolService,ConnectionPoolService>(true);
             _injectionContainer.RegisterType<IDeviceConnection, DeviceConnection>();
+            _injectionContainer.RegisterType<INetworkCardSettingsService, NetworkCardSettingsService>(true);
             //_injectionContainer.RegisterType<IIpModel, IpModel>();
         }
     }

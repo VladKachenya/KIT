@@ -105,8 +105,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         #region private methods
         private async void OnSaveСhangesCommand()
         {
+
             _isSaveСhanges = false;
-            (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
             _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
             if (await _reportsSavingService.IsFtpSavingNeeded(ReportControlViewModels.ToList(), _device,
                 _connectionPoolService.GetConnection(_device.Ip).IsConnected))
@@ -118,28 +118,37 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
                 await SaveChanges();
             }
 
+
+
         }
 
         private async Task SaveChanges()
         {
-            BlockViewModelBehavior.SetBlock("Сохранение отчетов", true);
-            var res = await _reportsSavingService.SaveReportsAsync(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
-            UpdateViewModels();
-            ChangeTracker.AcceptChanges();
-            if (res == SavingResultEnum.SavedUsingFtp)
+            (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
+            try
             {
-                if (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
+                BlockViewModelBehavior.SetBlock("Сохранение отчетов", true);
+                var res = await _reportsSavingService.SaveReportsAsync(ReportControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+                UpdateViewModels();
+                ChangeTracker.AcceptChanges();
+                if (res == SavingResultEnum.SavedUsingFtp)
                 {
-                    _deviceWarningsService.SetWarningOfDevice(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag, "Reports сохрандены с использование FTP");
-                    ShowFtpBlockMessageIfNeeded();
+                    if (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
+                    {
+                        _deviceWarningsService.SetWarningOfDevice(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag, "Reports сохрандены с использование FTP");
+                        ShowFtpBlockMessageIfNeeded();
+                    }
+                }
+                else
+                {
+                    BlockViewModelBehavior.Unlock();
                 }
             }
-            else
+            finally
             {
-                BlockViewModelBehavior.Unlock();
+                _isSaveСhanges = true;
+                (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
             }
-            _isSaveСhanges = true;
-            (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
         }
 
         private void ShowFtpBlockMessageIfNeeded()

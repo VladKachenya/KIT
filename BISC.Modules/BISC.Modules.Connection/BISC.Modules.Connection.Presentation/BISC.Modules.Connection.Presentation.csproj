@@ -50,13 +50,16 @@
   <ItemGroup>
     <Compile Include="Events\IpPingedEvent.cs" />
     <Compile Include="Events\IpSelectedEvent.cs" />
+    <Compile Include="Factorys\ChangeIpNetworkCard\CustomIpSettingsViewModelFactory.cs" />
     <Compile Include="Factorys\IpAddressViewModelFactory.cs" />
     <Compile Include="Factorys\LastIpAddressesViewModelFactory.cs" />
+    <Compile Include="Interfaces\Factorys\ChangeIpNetworkCard\ICustomIpSettingsViewModelFactory.cs" />
     <Compile Include="Interfaces\Factorys\IIpAddressViewModelFactory.cs" />
     <Compile Include="Interfaces\Factorys\ILastIpAddressesViewModelFactory.cs" />
     <Compile Include="Interfaces\ViewModel\ChangeIpNetworkCard\ICurrentCardConfigurationViewModel.cs" />
     <Compile Include="Interfaces\ViewModel\ChangeIpNetworkCard\IChangeIpNetworkCardViewModel.cs" />
-    <Compile Include="Interfaces\ViewModel\ChangeIpNetworkCard\INetworkCardSettingsViewModel.cs" />
+    <Compile Include="Interfaces\ViewModel\ChangeIpNetworkCard\ICustomNetworkCardSettingsViewModel.cs" />
+    <Compile Include="Interfaces\ViewModel\ChangeIpNetworkCard\ICustomIpSettingsViewModel.cs" />
     <Compile Include="Interfaces\ViewModel\IIpAddressViewModel.cs" />
     <Compile Include="Interfaces\ViewModel\ILastIpAddressesViewModel.cs" />
     <Compile Include="Interfaces\ViewModel\IPingViewModel.cs" />
@@ -67,7 +70,8 @@
     <Compile Include="Services\ConnectionPresentationViewAddingServise.cs" />
     <Compile Include="ViewModels\ChangeIpNetworkCard\ChangeIpNetworkCardViewModel.cs" />
     <Compile Include="ViewModels\ChangeIpNetworkCard\CurrentCardConfigurationViewModel.cs" />
-    <Compile Include="ViewModels\ChangeIpNetworkCard\NetworkCardSettingsViewModel.cs" />
+    <Compile Include="ViewModels\ChangeIpNetworkCard\CustomIpSettingsViewModel.cs" />
+    <Compile Include="ViewModels\ChangeIpNetworkCard\CustomNetworkCardSettingsViewModel.cs" />
     <Compile Include="ViewModels\IpAddressViewModel.cs" />
     <Compile Include="ViewModels\LastIpAddressesViewModel.cs" />
     <Compile Include="ViewModels\PingViewModel.cs" />

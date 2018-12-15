@@ -1,6 +1,9 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.IoC;
+using BISC.Infrastructure.Global.Services;
+using BISC.Modules.Connection.Presentation.Interfaces.Factorys.ChangeIpNetworkCard;
 using BISC.Modules.Connection.Presentation.Interfaces.ViewModel.ChangeIpNetworkCard;
 using BISC.Presentation.BaseItems.Commands;
 using BISC.Presentation.BaseItems.ViewModels;
@@ -10,20 +13,19 @@ namespace BISC.Modules.Connection.Presentation.ViewModels.ChangeIpNetworkCard
 {
     public class ChangeIpNetworkCardViewModel : ComplexViewModelBase, IChangeIpNetworkCardViewModel
     {
-        private IInjectionContainer _injectionContainer;
+        private readonly ICustomIpSettingsViewModelFactory _customIpSettingsViewModelFactory;
         private ObservableCollection<ICurrentCardConfigurationViewModel> _currentCardConfigurationViewModels;
-        private ICurrentCardConfigurationViewModel _sellectedCardConfigurationViewModel;
-        private INetworkCardSettingsViewModel _sellectedNetworkCardSettingsViewModel;
+        private ICustomIpSettingsViewModel _sellectedCustomIpSettingsViewModel;
 
         #region Ctor
-        public ChangeIpNetworkCardViewModel(ICommandFactory commandFactory, IInjectionContainer injectionContainer)
+        public ChangeIpNetworkCardViewModel(ICommandFactory commandFactory, ICustomIpSettingsViewModelFactory customIpSettingsViewModelFactory)
         {
+            _customIpSettingsViewModelFactory = customIpSettingsViewModelFactory;
 
-            NetworkCardSettingsViewModels = new ObservableCollection<INetworkCardSettingsViewModel>();
-            _injectionContainer = injectionContainer;
-            AddNewNetworkCardSettingsViewModelCommand =
+            CustomIpSettingsViewModels = new ObservableCollection<ICustomIpSettingsViewModel>();
+            AddNewCustomIpSettingsCommand =
                 commandFactory.CreatePresentationCommand(OnAddNewNetworkCardSettingsViewModel);
-            RemoveNetworkCardSettingsViewModelCommand =
+            RemoveCustomIpSettingsCommand =
                 commandFactory.CreatePresentationCommand(OnRemoveNetworkCardSettingsViewModel);
             CloseCommand = commandFactory.CreatePresentationCommand((() =>
             {
@@ -37,14 +39,15 @@ namespace BISC.Modules.Connection.Presentation.ViewModels.ChangeIpNetworkCard
 
         private void OnAddNewNetworkCardSettingsViewModel()
         {
-            var newSettings = _injectionContainer.ResolveType<INetworkCardSettingsViewModel>();
-            NetworkCardSettingsViewModels.Add(newSettings);
-            _sellectedNetworkCardSettingsViewModel = newSettings;
+            var newSettings =
+                _customIpSettingsViewModelFactory.CreateCustomIpSettingsViewModel(CustomIpSettingsViewModels.Select(element => element.SettingsNamе).ToList());
+            CustomIpSettingsViewModels.Add(newSettings);
+            SellectedCustomIpSettingsViewModel = newSettings;
         }
 
         private void OnRemoveNetworkCardSettingsViewModel()
         {
-            NetworkCardSettingsViewModels.Remove(_sellectedNetworkCardSettingsViewModel);
+            CustomIpSettingsViewModels.Remove(_sellectedCustomIpSettingsViewModel);
         }
 
         #endregion
@@ -56,39 +59,24 @@ namespace BISC.Modules.Connection.Presentation.ViewModels.ChangeIpNetworkCard
             get => _currentCardConfigurationViewModels;
             set
             {
+                // Тут потом поправить
                 if (Equals(value, _currentCardConfigurationViewModels)) return;
                 _currentCardConfigurationViewModels = value;
                 OnPropertyChanged();
             }
         }
 
-        public ICurrentCardConfigurationViewModel SellectedCardConfigurationViewModel
-        {
-            get => _sellectedCardConfigurationViewModel;
-            set
-            {
-                if (Equals(value, _sellectedCardConfigurationViewModel)) return;
-                _sellectedCardConfigurationViewModel = value;
-                OnPropertyChanged();
-            }
-        }
+        public ObservableCollection<ICustomIpSettingsViewModel> CustomIpSettingsViewModels { get; }
 
-        public ObservableCollection<INetworkCardSettingsViewModel> NetworkCardSettingsViewModels { get; }
-
-        public INetworkCardSettingsViewModel SellectedNetworkCardSettingsViewModel
+        public ICustomIpSettingsViewModel SellectedCustomIpSettingsViewModel
         {
-            get => _sellectedNetworkCardSettingsViewModel;
-            set
-            {
-                if (Equals(value, _sellectedNetworkCardSettingsViewModel)) return;
-                _sellectedNetworkCardSettingsViewModel = value;
-                OnPropertyChanged();
-            }
+            get => _sellectedCustomIpSettingsViewModel;
+            set => SetProperty(ref _sellectedCustomIpSettingsViewModel, value);
         }
 
         public ICommand CloseCommand { get; }
-        public ICommand AddNewNetworkCardSettingsViewModelCommand { get; }
-        public ICommand RemoveNetworkCardSettingsViewModelCommand { get; }
+        public ICommand AddNewCustomIpSettingsCommand { get; }
+        public ICommand RemoveCustomIpSettingsCommand { get; }
 
         #endregion
     }

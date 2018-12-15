@@ -12,13 +12,13 @@ namespace BISC.Modules.Connection.Presentation.Interfaces.ViewModel.ChangeIpNetw
     {
 
         ObservableCollection<ICurrentCardConfigurationViewModel> CurrentCardConfigurationViewModels { get; set; }
-        ICurrentCardConfigurationViewModel SellectedCardConfigurationViewModel { get; set; }
-        ObservableCollection<INetworkCardSettingsViewModel> NetworkCardSettingsViewModels { get; }
-        INetworkCardSettingsViewModel SellectedNetworkCardSettingsViewModel { get; set; }
+        ObservableCollection<ICustomIpSettingsViewModel> CustomIpSettingsViewModels { get; }
+        ICustomIpSettingsViewModel SellectedCustomIpSettingsViewModel { get; set; }
+
 
         ICommand CloseCommand { get; }
-        ICommand AddNewNetworkCardSettingsViewModelCommand { get; }
-        ICommand RemoveNetworkCardSettingsViewModelCommand { get; }
+        ICommand AddNewCustomIpSettingsCommand { get; }
+        ICommand RemoveCustomIpSettingsCommand { get; }
 
 
 

@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Modules.Connection.Presentation.Factorys.ChangeIpNetworkCard;
+using BISC.Modules.Connection.Presentation.Interfaces.Factorys.ChangeIpNetworkCard;
 using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
 using BISC.Modules.Connection.Presentation.Interfaces.ViewModel.ChangeIpNetworkCard;
 using BISC.Modules.Connection.Presentation.View.ChangeIpNetworkCard;
@@ -40,7 +42,9 @@ namespace BISC.Modules.Connection.Presentation.Module
             _injectionContainer.RegisterType<ILastIpAddressesViewModelFactory, LastIpAddressesViewModelFactory>(true);
             _injectionContainer.RegisterType<IChangeIpNetworkCardViewModel, ChangeIpNetworkCardViewModel>();
             _injectionContainer.RegisterType<ICurrentCardConfigurationViewModel, CurrentCardConfigurationViewModel>();
-            _injectionContainer.RegisterType<INetworkCardSettingsViewModel, NetworkCardSettingsViewModel>();
+            _injectionContainer.RegisterType<ICustomNetworkCardSettingsViewModel, CustomNetworkCardSettingsViewModel>();
+            _injectionContainer.RegisterType<ICustomIpSettingsViewModel, CustomIpSettingsViewModel>();
+            _injectionContainer.RegisterType<ICustomIpSettingsViewModelFactory, CustomIpSettingsViewModelFactory>(true);
 
             var presentationInitialization = _injectionContainer.ResolveType(typeof(ConnectionPresentationInitialization)) as ConnectionPresentationInitialization;
 

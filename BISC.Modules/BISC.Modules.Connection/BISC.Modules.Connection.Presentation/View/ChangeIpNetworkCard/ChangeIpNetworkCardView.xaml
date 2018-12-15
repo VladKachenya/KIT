@@ -7,26 +7,45 @@
              mc:Ignorable="d" 
              xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
              xmlns:changeIpNetworkCard="clr-namespace:BISC.Modules.Connection.Presentation.Interfaces.ViewModel.ChangeIpNetworkCard"
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Width="500" Height="400" Margin="5">
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="IpSettingsControl">
+    <!--<UserControl.Resources>
+        <Style TargetType="GroupBox" BasedOn="{StaticResource {x:Type GroupBox}}"  x:Key="IpConfiguration">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DataContext.SellectedCustomIpSettingsViewModel.SelectedNetworkCardSettingsViewModel}"
+                             Value="{x:Null}">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding SellectedCustomIpSettingsViewModel.SelectedNetworkCardSettingsViewModel.IsNotNull, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Value="True">
+                    <Setter Property="IsEnabled" Value="True"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>-->
+    <Grid Width="750" Height="600" Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="7*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0">
-            <Grid >
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row ="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Content="Add" Margin="5" 
-                        Command="{Binding AddNewNetworkCardSettingsViewModelCommand}"/>
+                <Button Content="Add" Margin="0,5,5,5" 
+                        Command="{Binding AddNewCustomIpSettingsCommand}" HorizontalAlignment="Right" Width="65"/>
                 <Button Content="Remove" Margin="5" Grid.Column="1"
-                        Command="{Binding RemoveNetworkCardSettingsViewModelCommand}"/>
+                        Command="{Binding RemoveCustomIpSettingsCommand}"/>
             </Grid>
-            <ListBox  x:Name="ExpanderItemsControl" behaviors:ListBoxBehavior.ScrollOnNewItem="true"
-                      ItemsSource="{Binding NetworkCardSettingsViewModels}" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                      SelectedItem="{Binding SellectedNetworkCardSettingsViewModel, Mode=TwoWay}">
+            <ListBox Grid.Row="1" x:Name="CustomIpSettigsItemsControl" behaviors:ListBoxBehavior.ScrollOnNewItem="False"
+                      ItemsSource="{Binding CustomIpSettingsViewModels}" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      VerticalAlignment="Stretch" SelectedItem="{Binding SellectedCustomIpSettingsViewModel, Mode=TwoWay}">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                         <Style.Triggers>
@@ -40,18 +59,106 @@
                     </Style>
                 </ListBox.ItemContainerStyle>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="changeIpNetworkCard:INetworkCardSettingsViewModel">
-
+                    <DataTemplate DataType="changeIpNetworkCard:ICustomIpSettingsViewModel">
+                        <TextBlock Text="{Binding SettingsNamе}"></TextBlock>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ListBox>
-        </StackPanel>
+        </Grid>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="4*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
+            <Grid DataContext="{Binding SellectedCustomIpSettingsViewModel, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="{x:Type FrameworkElement}" >
+                        <Setter Property="Margin" Value="5"/>
+                    </Style>
+                </Grid.Resources>
+                <TextBlock VerticalAlignment="Center" Text="Название настроек: " Margin="5"
+                               Grid.Column="0" Grid.Row="0" TextAlignment="Center"/>
+                <TextBox Text="{Binding SettingsNamе}" TextAlignment="Center" Margin="5"
+                             Grid.Column="1" Grid.Row="0"/>
+                <TextBlock Text="Доступные сетевые карты: " TextAlignment="Center" Margin="5"
+                           VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"/>
+                <ComboBox ItemsSource="{Binding NetworkCardSettingsViewModels}" Margin="5"
+                              Grid.Column="1" Grid.Row="1" SelectedItem="{Binding SelectedNetworkCardSettingsViewModel, 
+                        UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="changeIpNetworkCard:ICustomNetworkCardSettingsViewModel">
+                            <TextBlock Text="{Binding NetWorkCardName}"></TextBlock>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ComboBox>
+                <GroupBox Grid.Row="3"  Grid.ColumnSpan="2" DataContext="{Binding SelectedNetworkCardSettingsViewModel}">
+                    <!--Style="{DynamicResource IpConfiguration}"-->
+                    <GroupBox.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Настройка IP для: " HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding NetWorkCardName}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Margin="5" TextAlignment="Center" VerticalAlignment="Center"  HorizontalAlignment="Stretch"
+                               Grid.Column="0" Grid.Row="0"
+                               Text="Адресс IPv4: "/>
+                        <TextBox Margin="5" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                   Grid.Column="1" Grid.Row="0" IsEnabled="{Binding IsGetIpAutomatically}"
+                                   Text="{Binding Ip}" />
+                        <Border Grid.Column="2" Grid.Row="0" ToolTip="Получить IPv4 автоматически" >
+                            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsGetIpAutomatically}"/>
+                        </Border>
+                        <TextBlock Margin="5" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                   Grid.Column="0" Grid.Row="1"
+                                   Text="Маска подсети IPv4: "/>
+                        <TextBox Margin="5" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                 Grid.Column="1" Grid.Row="1" 
+                                 Text="{Binding SubnetMask}" IsEnabled="{Binding IsGetIpAutomatically}"/>
+                        <Border Grid.Column="2" Grid.Row="1"  ToolTip="Получить IPv4 автоматически" >
+                            <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                                    ToolTip="Установить маску подсети 255.255.255.0" Height="25" Width="25">
+                                <Button.Content>
+                                    <ContentControl  ContentTemplate="{DynamicResource RefreshIcon}"/>
+                                </Button.Content>
+                            </Button>
+                        </Border>
+
+                        <StackPanel Grid.Row="2" Grid.ColumnSpan ="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="Батон" Margin="5" Command="{Binding SetNetworkCardSettingsCommand}"/>
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+            <GroupBox Grid.Row="1"
+                Header="Текущая конфигурация доступных сетевых карт"
+                Margin="5">
+                <TextBlock>
+                    My Content Settings
+                </TextBlock>
+            </GroupBox>
+            <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
                 <Button Content="Закрыть окно"
                         Margin="0, 5, 0, 0"
                         Command="{Binding CloseCommand}"/>
