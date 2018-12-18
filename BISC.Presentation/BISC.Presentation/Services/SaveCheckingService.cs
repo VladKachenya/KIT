@@ -16,45 +16,75 @@ namespace BISC.Presentation.Services
     {
         private readonly INavigationService _navigationService;
         private readonly IGlobalEventsService _globalEventsService;
-        private List<SaveCheckingEntity> _saveCheckingEntities = new List<SaveCheckingEntity>();
+	    private readonly IUserInteractionService _userInteractionService;
+	    private List<SaveCheckingEntity> _saveCheckingEntities = new List<SaveCheckingEntity>();
 
-        public SaveCheckingService(INavigationService navigationService, IGlobalEventsService globalEventsService)
+        public SaveCheckingService(INavigationService navigationService, IGlobalEventsService globalEventsService,IUserInteractionService userInteractionService)
         {
             _navigationService = navigationService;
             _globalEventsService = globalEventsService;
+	        _userInteractionService = userInteractionService;
         }
 
         public async Task<bool> GetIsRegionCanBeClosed(string regionName)
         {
-            if (_saveCheckingEntities.Any((entity => entity.RegionName == regionName)))
-            {
+	        if (_saveCheckingEntities.Any((entity => entity.RegionName == regionName)))
+	        {
 
-                SaveResult saveResultEnum = new SaveResult();
-                var modifiedEntities = _saveCheckingEntities.Where((entity =>
-                    entity.RegionName == regionName)).ToList();
-                if (modifiedEntities.Any() && modifiedEntities.First().ChangeTracker.GetIsModifiedRecursive())
-                {
-                    BiscNavigationParameters navigationParameters = new BiscNavigationParameters();
-                    navigationParameters.AddParameterByName(SaveCheckingEntity.NavigationKey, modifiedEntities).AddParameterByName(nameof(SaveResult), saveResultEnum);
-                    await _navigationService.NavigateViewToGlobalRegion(KeysForNavigation.ViewNames.SaveChangesViewName, navigationParameters);
-                }
+		        SaveResult saveResultEnum = new SaveResult();
+		        var modifiedEntities = _saveCheckingEntities.Where((entity =>
+			        entity.RegionName == regionName)).ToList();
+		        if (modifiedEntities.Any() && modifiedEntities.First().ChangeTracker.GetIsModifiedRecursive())
+		        {
+			        BiscNavigationParameters navigationParameters = new BiscNavigationParameters();
+			        navigationParameters.AddParameterByName(SaveCheckingEntity.NavigationKey, modifiedEntities)
+				        .AddParameterByName(nameof(SaveResult), saveResultEnum);
+			        await _navigationService.NavigateViewToGlobalRegion(KeysForNavigation.ViewNames.SaveChangesViewName,
+				        navigationParameters);
+		        }
 
-                if (saveResultEnum.IsSaved)
-                {
-                    modifiedEntities.ForEach(async (entity) =>
-                    {
-                        await entity.SaveTask();
-                    });
-                }
-                return !saveResultEnum.IsCancelled;
-            }
-            else
+		        if (saveResultEnum.IsSaved)
+			        await ExecuteSave(modifiedEntities);
+
+		        return !saveResultEnum.IsCancelled;
+	        }
+	        else
             {
                 return true;
             }
         }
 
-        public void AddSaveCheckingEntity(SaveCheckingEntity saveCheckingEntity)
+
+	    public async Task<bool> ValidateSave(List<SaveCheckingEntity> entitiesToSave)
+	    {
+		    foreach (var entityToSave in entitiesToSave)
+		    {
+			    if ((entityToSave?.SavingCommand==null))
+			    {
+				    continue;
+			    }
+			    var res =await entityToSave.SavingCommand.ValidateBeforeSave();
+			    if (res.IsSucceed) continue;
+			    await _userInteractionService.ShowOptionToUser("Ошибка сохранения", res.GetFirstError(), new List<string>() {"Ок"});
+			    return false;
+
+
+		    }
+			return true;
+	    }
+
+	    public async Task ExecuteSave(List<SaveCheckingEntity> entitiesToSave)
+	    {
+		    foreach (var modifiedEntity in entitiesToSave)
+		    {
+			    await modifiedEntity.SaveTask();
+			    if (entitiesToSave.Count > 1)
+				    await Task.Delay(100);
+		    }
+	    }
+
+
+	    public void AddSaveCheckingEntity(SaveCheckingEntity saveCheckingEntity)
         {
             if (!_saveCheckingEntities.Any((entity => entity.ChangeTracker == saveCheckingEntity.ChangeTracker)))
             {
@@ -95,14 +125,14 @@ namespace BISC.Presentation.Services
                     navigationParameters);
             }
 
+	     
             if (saveResultEnum.IsSaved || !isNeedToAsk)
             {
-                foreach (var modifiedEntity in modifiedEntities)
-                {
-                    await modifiedEntity.SaveTask();
-                    if (modifiedEntities.Count > 1)
-                        await Task.Delay(100);
-                }
+	            if (!await ValidateSave(modifiedEntities))
+	            {
+					return new SaveResult(){IsValidationFailed = true};
+	            }
+				await ExecuteSave(modifiedEntities);
             }
 
             return saveResultEnum;

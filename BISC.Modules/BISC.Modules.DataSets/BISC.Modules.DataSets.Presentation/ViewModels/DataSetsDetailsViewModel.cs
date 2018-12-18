@@ -35,6 +35,7 @@ using BISC.Modules.DataSets.Infrastructure.Factorys;
 using BISC.Modules.DataSets.Presentation.Services.Interfaces;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.DataSets.Model.Services;
+using BISC.Modules.DataSets.Presentation.Commands;
 using BISC.Presentation.Infrastructure.Commands;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
@@ -45,13 +46,12 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private List<IDataSet> _dataSets;
         private IDatasetModelService _datasetModelService;
         private IDatasetViewModelFactory _datasetViewModelFactory;
-        private readonly ISaveCheckingService _saveCheckingService;
+	    private DatasetsSavingCommand _datasetsSavingCommand;
+		private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly IGlobalEventsService _globalEventsService;
-        private readonly IDataSetSavingService _dataSetSavingService;
         private readonly INavigationService _navigationService;
-        private readonly IProjectService _projectService;
         private readonly ILoggingService _loggingService;
         private readonly DatasetsLoadingService _datasetsLoadingService;
         private IBiscProject _biscProject;
@@ -62,21 +62,21 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private bool _isSaveСhanges = true;
         #region C-tor
 
-        public DataSetsDetailsViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService,
+        public DataSetsDetailsViewModel(ICommandFactory commandFactory,
             IBiscProject biscProject, IDatasetModelService datasetModelService, IDatasetViewModelFactory datasetViewModelFactory,
             ISaveCheckingService saveCheckingService, IUserInterfaceComposingService userInterfaceComposingService,
-            IConnectionPoolService connectionPoolService, IGlobalEventsService globalEventsService, IDataSetSavingService dataSetSavingService,
-            INavigationService navigationService, IProjectService projectService, ILoggingService loggingService, DatasetsLoadingService datasetsLoadingService)
+            IConnectionPoolService connectionPoolService, IGlobalEventsService globalEventsService ,
+            INavigationService navigationService, ILoggingService loggingService, DatasetsLoadingService datasetsLoadingService,
+	        DatasetsSavingCommand datasetsSavingCommand)
         {
             _userInterfaceComposingService = userInterfaceComposingService;
             _connectionPoolService = connectionPoolService;
             _globalEventsService = globalEventsService;
-            _dataSetSavingService = dataSetSavingService;
             _navigationService = navigationService;
-            _projectService = projectService;
             _loggingService = loggingService;
             _datasetsLoadingService = datasetsLoadingService;
-            _biscProject = biscProject;
+	        _datasetsSavingCommand = datasetsSavingCommand;
+	        _biscProject = biscProject;
             _datasetModelService = datasetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
             _saveCheckingService = saveCheckingService;
@@ -124,8 +124,9 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             SortDataSetsByIsDynamic();
             DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
+			_datasetsSavingCommand.Initialize(DataSets,_device);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"DataSets устройства {_device.Name}", SaveChangesAsync,_device.Name, _regionName));
+                $"DataSets устройства {_device.Name}", SaveChangesAsync,_datasetsSavingCommand,_device.Name, _regionName));
             AddNewDataSetCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
@@ -196,7 +197,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
             BlockViewModelBehavior.SetBlock("Сохранение DataSet-ов", true);
             await Task.Delay(500);
-            await _dataSetSavingService.SaveDataSets(DataSets.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+			_datasetsSavingCommand.Initialize(DataSets, _device);
+            await _datasetsSavingCommand.SaveAsync();
             ResetAllDataSetCollections();
             _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
             SortDataSetsByIsDynamic();

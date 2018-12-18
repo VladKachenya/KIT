@@ -47,39 +47,7 @@ namespace BISC.Modules.DataSets.Presentation.Services
             _sclCommunicationModelService = sclCommunicationModelService;
             _biscProject = biscProject;
         }
-
-        private void SetParentLnToModel(IDataSet dataSet)
-        {
-            if (dataSet.ParentModelElement != null)
-            {
-                if (dataSet is ILogicalNode parentNode)
-                {
-                    parentNode.ChildModelElements.Remove(dataSet);
-                    dataSet.ParentModelElement = null;
-                }
-            }
-
-
-            if (dataSet.ParentModelElement == null)
-            {
-                //    var ldevice = _infoModelService.GetLDevicesFromDevices(dataSet.GetFirstParentOfType<IDevice>())
-                //       .FirstOrDefault((device => device.Inst == SelectedParentLd));
-
-                //    if (SelectedParentLn == ldevice.LogicalNodeZero.Value.Name)
-                {
-                    //  dataSet.ParentModelElement = ldevice.LogicalNodeZero.Value;
-                    return;
-                }
-
-                //   var parentLn = ldevice.LogicalNodes.FirstOrDefault((node => node.Name == SelectedParentLn));
-                //    if (parentLn != null)
-                {
-                    //      dataSet.ParentModelElement = parentLn;
-                    return;
-                }
-            }
-        }
-
+		
 
         #region Implementation of IDataSetSavingService
 

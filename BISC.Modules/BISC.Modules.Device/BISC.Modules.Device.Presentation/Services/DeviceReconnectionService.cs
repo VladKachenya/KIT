@@ -220,6 +220,7 @@ namespace BISC.Modules.Device.Presentation.Services
 			            return;
 			        }
                     var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, false);
+				    if (savingRes.IsValidationFailed) return;
 			    }
 			    else
 			    {
@@ -230,7 +231,10 @@ namespace BISC.Modules.Device.Presentation.Services
 			            return;
 			        }
                     var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, false);
-                }
+					if(savingRes.IsValidationFailed)return;
+				    
+
+			    }
             }
 
 			//await taskToExecute();

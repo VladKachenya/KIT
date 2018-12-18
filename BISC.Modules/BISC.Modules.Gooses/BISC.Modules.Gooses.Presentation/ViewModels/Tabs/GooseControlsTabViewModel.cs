@@ -18,6 +18,7 @@ using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Model.Services;
+using BISC.Modules.Gooses.Presentation.Commands;
 using BISC.Modules.Gooses.Presentation.Factories;
 using BISC.Modules.Gooses.Presentation.Services;
 using BISC.Modules.Gooses.Presentation.ViewModels.GooseControls;
@@ -37,7 +38,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly ICommandFactory _commandFactory;
         private readonly ILoggingService _loggingService;
-        private readonly GooseControlSavingService _gooseControlSavingService;
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly IGlobalEventsService _globalEventsService;
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
@@ -46,24 +46,23 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly IDeviceReconnectionService _deviceReconnectionService;
         private IDevice _device;
+	    private GooseControlsSavingCommand _gooseControlsSavingCommand;
         private ObservableCollection<GooseControlViewModel> _gooseControlViewModels;
         private string _regionName;
         private bool _isUpdateGooses = true;
         private bool _isSaveChanges = true;
 
         public GooseControlsTabViewModel(GooseControlViewModelFactory gooseControlViewModelFactory, IGoosesModelService goosesModelService,
-            ISaveCheckingService saveCheckingService, ICommandFactory commandFactory, ILoggingService loggingService, GooseControlSavingService gooseControlSavingService,
+            ISaveCheckingService saveCheckingService, ICommandFactory commandFactory, ILoggingService loggingService ,
             IConnectionPoolService connectionPoolService, IGlobalEventsService globalEventsService,
             IUserInterfaceComposingService userInterfaceComposingService, GoosesLoadingService goosesLoadingService,
-            IBiscProject biscProject,IDeviceWarningsService deviceWarningsService,IDeviceReconnectionService deviceReconnectionService
-            )
+            IBiscProject biscProject,IDeviceWarningsService deviceWarningsService,IDeviceReconnectionService deviceReconnectionService, GooseControlsSavingCommand gooseControlsSavingCommand)
         {
             _gooseControlViewModelFactory = gooseControlViewModelFactory;
             _goosesModelService = goosesModelService;
             _saveCheckingService = saveCheckingService;
             _commandFactory = commandFactory;
             _loggingService = loggingService;
-            _gooseControlSavingService = gooseControlSavingService;
             _connectionPoolService = connectionPoolService;
             _globalEventsService = globalEventsService;
             _userInterfaceComposingService = userInterfaceComposingService;
@@ -71,7 +70,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _biscProject = biscProject;
             _deviceWarningsService = deviceWarningsService;
             _deviceReconnectionService = deviceReconnectionService;
-            SaveCommand = commandFactory.CreatePresentationCommand(OnSaveChangesCommand, () => _isSaveChanges);
+	        _gooseControlsSavingCommand = gooseControlsSavingCommand;
+	        SaveCommand = commandFactory.CreatePresentationCommand(OnSaveChangesCommand, () => _isSaveChanges);
             DeleteGooseCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteGoose);
             AddGooseCommand = commandFactory.CreatePresentationCommand(OnAddGooseCommand, IsAddGoose);
             UpdateGoosesCommand = commandFactory.CreatePresentationCommand(OnUpdateGooses, () => _isUpdateGooses);
@@ -142,7 +142,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         private async void OnSaveChangesCommand()
         {
             _loggingService.LogUserAction($"Пользователь сохряняет изменения в Goose CB устройства {_device.Name})");
-            if (await _gooseControlSavingService.IsFtpSavingNeeded(GooseControlViewModels.ToList()))
+			_gooseControlsSavingCommand.Initialize(GooseControlViewModels,_device);
+            if (await _gooseControlsSavingCommand.IsSavingByFtpNeeded())
             {
                await _deviceReconnectionService.ExecuteBeforeRestart(SaveChangesAsync, _device);
             }
@@ -158,8 +159,9 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _isSaveChanges = false;
             (SaveCommand as IPresentationCommand)?.RaiseCanExecute();
             BlockViewModelBehavior.SetBlock("Сохранение блоков управления Goose", true);
-         
-            var res = await _gooseControlSavingService.SaveGooseControls(GooseControlViewModels.ToList(), _device, _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+			_gooseControlsSavingCommand.Initialize(GooseControlViewModels, _device);
+
+			var res = await _gooseControlsSavingCommand.SaveAsync();
 
             UpdateViewModels();
             ChangeTracker.AcceptChanges();
@@ -193,7 +195,9 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
             await UpdateGooses(false);
-            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker, $"Блоки управления GOOSE {_device.Name}", SaveChangesAsync,_device.Name, _regionName));
+			_gooseControlsSavingCommand.Initialize(GooseControlViewModels,_device);
+            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker, $"Блоки управления GOOSE {_device.Name}", SaveChangesAsync,_gooseControlsSavingCommand,
+	            _device.Name, _regionName));
             base.OnNavigatedTo(navigationContext);
         }
 

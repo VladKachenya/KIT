@@ -10,6 +10,7 @@ using BISC.Modules.DataSets.Infrastructure.ViewModels;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Services;
 using BISC.Modules.DataSets.Model.Services;
+using BISC.Modules.DataSets.Presentation.Commands;
 using BISC.Modules.DataSets.Presentation.Factorys;
 using BISC.Modules.DataSets.Presentation.Services;
 using BISC.Modules.DataSets.Presentation.Services.Interfaces;
@@ -54,6 +55,7 @@ namespace BISC.Modules.DataSets.Presentation.Module
             _injectionContainer.RegisterType<IFcdaAdderViewModel, FcdaAdderViewModel>();
             _injectionContainer.RegisterType<IDataSetSavingService, DataSetSavingService>();
             _injectionContainer.RegisterType<DataSetsConflictsViewModel>();
+            _injectionContainer.RegisterType<DatasetsSavingCommand>();
 
 
         }

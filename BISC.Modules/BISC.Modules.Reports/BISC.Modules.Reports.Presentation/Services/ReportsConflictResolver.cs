@@ -1,13 +1,12 @@
-﻿using BISC.Model.Infrastructure.Common;
-using BISC.Model.Infrastructure.Project;
+﻿using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.HelpClasses;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Reports.Infrastructure.Keys;
 using BISC.Modules.Reports.Infrastructure.Presentation.Factorys;
-using BISC.Modules.Reports.Infrastructure.Presentation.Services;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Infrastructure.Services;
+using BISC.Modules.Reports.Presentation.Commands;
 using BISC.Modules.Reports.Presentation.ViewModels.Helpers;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
@@ -24,17 +23,17 @@ namespace BISC.Modules.Reports.Presentation.Services
 		private readonly IDeviceModelService _deviceModelService;
 		private readonly INavigationService _navigationService;
 		private readonly IReportControlFactoryViewModel _reportControlFactoryViewModel;
-		private readonly IReportsSavingService _reportsSavingService;
+		private readonly ReportsSavingCommand _reportsSavingCommand;
 		private readonly IConnectionPoolService _connectionPoolService;
 		public ConflictType ConflictType => ConflictType.ManualResolveNeeded;
 		public ReportsConflictResolver(IReportsModelService reportsModelService, IDeviceModelService deviceModelService, INavigationService navigationService,
-			IReportControlFactoryViewModel reportControlFactoryViewModel, IReportsSavingService reportsSavingService, IConnectionPoolService connectionPoolService)
+			IReportControlFactoryViewModel reportControlFactoryViewModel, ReportsSavingCommand reportsSavingCommand, IConnectionPoolService connectionPoolService)
 		{
 			_reportsModelService = reportsModelService;
 			_deviceModelService = deviceModelService;
 			_navigationService = navigationService;
 			_reportControlFactoryViewModel = reportControlFactoryViewModel;
-			_reportsSavingService = reportsSavingService;
+			_reportsSavingCommand = reportsSavingCommand;
 			_connectionPoolService = connectionPoolService;
 		}
 
@@ -94,23 +93,25 @@ namespace BISC.Modules.Reports.Presentation.Services
 			deviceOnlyReportViewModels.ForEach((report => reportViewmodelsInDevice.FirstOrDefault((model => model.Name == report.Name))?.ChangeTracker.SetModified()));
 			projectOnlyReportViewModels.ForEach((report => reportViewmodelsInProject.FirstOrDefault((model => model.Name == report.Name))?.ChangeTracker.SetModified()));
 
-
-			SavingResultEnum savingResult;
+			bool isSavingByFtpNeeded = false;
 			if (isFromDevice)
 			{
 				deviceOnlyReportViewModels.ForEach((model => model.ChangeTracker.SetModified()));
-				savingResult = await _reportsSavingService.SaveReportsAsync(reportViewmodelsInDevice.ToList(), devicesclModelInProject, false);
-
+				_reportsSavingCommand.Initialize(reportViewmodelsInDevice, devicesclModelInProject, ()=>false);
 			}
 			else
 			{
 				projectOnlyReportViewModels.ForEach((model => model.ChangeTracker.SetModified()));
-
-				savingResult = await _reportsSavingService.SaveReportsAsync(reportViewmodelsInProject.ToList(), deviceInsclModelInDevice, _connectionPoolService.GetConnection(devicesclModelInProject.Ip).IsConnected);
-
+				_reportsSavingCommand.Initialize(reportViewmodelsInProject, deviceInsclModelInDevice,
+					()=>_connectionPoolService.GetConnection(devicesclModelInProject.Ip).IsConnected);
 			}
 
-			if (savingResult == SavingResultEnum.SavedUsingFtp)
+			if (await _reportsSavingCommand.IsSavingByFtpNeeded())
+			{
+				isSavingByFtpNeeded = true;
+			}
+			await _reportsSavingCommand.SaveAsync();
+			if (isSavingByFtpNeeded)
 			{
 				return new ResolvingResult() { IsRestartNeeded = true };
 			}

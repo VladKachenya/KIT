@@ -63,7 +63,9 @@
     <Compile Include="ChangeTracker\IObjectWithChangeTracker.cs" />
     <Compile Include="Commands\IAsyncCommand.cs" />
     <Compile Include="Commands\IPresentationCommand.cs" />
+    <Compile Include="Commands\ISavingCommand.cs" />
     <Compile Include="Commands\ITrackableCommand.cs" />
+    <Compile Include="Commands\SavingCommandResultEnum.cs" />
     <Compile Include="Events\NotificationBarExpandEvent.cs" />
     <Compile Include="Events\RegionDisposingEvent.cs" />
     <Compile Include="Events\SaveCheckEvent.cs" />
@@ -90,6 +92,10 @@
     <Compile Include="ViewModel\ISelectableViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
+      <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
+      <Name>BISC.Infrastructure.Global</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
       <Name>BISC.Model.Infrastructure</Name>

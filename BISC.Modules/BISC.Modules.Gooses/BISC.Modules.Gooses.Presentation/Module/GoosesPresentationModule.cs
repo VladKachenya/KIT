@@ -8,6 +8,7 @@ using BISC.Infrastructure.Global.Modularity;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Model.Services;
+using BISC.Modules.Gooses.Presentation.Commands;
 using BISC.Modules.Gooses.Presentation.Factories;
 using BISC.Modules.Gooses.Presentation.FileParsers;
 using BISC.Modules.Gooses.Presentation.Interfaces;
@@ -52,7 +53,7 @@ namespace BISC.Modules.Gooses.Presentation.Module
         //    _injectionContainer.RegisterType<ResultFileParser>();
             _injectionContainer.RegisterType<GooseMatrixViewModel>();
             _injectionContainer.RegisterType<IGooseControlBlockViewModelFactory, GooseControlBlockViewModelFactory>();
-            _injectionContainer.RegisterType<GooseControlSavingService>();
+            _injectionContainer.RegisterType<GooseControlsSavingCommand>();
             _injectionContainer.RegisterType<GooseControlsConflictsViewModel>();
             _injectionContainer.RegisterType<IElementConflictResolver, GoosesControlsConflictResolver>(Guid.NewGuid().ToString());
 

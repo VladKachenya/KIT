@@ -53,6 +53,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\DatasetsSavingCommand.cs" />
     <Compile Include="Factorys\DatasetViewModelFactory.cs" />
     <Compile Include="Factorys\FcdaViewModelFactory.cs" />
     <Compile Include="Interfaces\IDataSetSavingService.cs" />
@@ -155,6 +156,10 @@
     <ProjectReference Include="..\..\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Presentation\BISC.Modules.InformationModel.Presentation.csproj">
       <Project>{749492EB-2EFC-4D03-BB60-E26BBAF25DD8}</Project>
       <Name>BISC.Modules.InformationModel.Presentation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.Reports\BISC.Modules.Reports.Infrastructure\BISC.Modules.Reports.Infrastructure.csproj">
+      <Project>{D1B96DC2-63D6-4726-9CFF-9C88E1315834}</Project>
+      <Name>BISC.Modules.Reports.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\BISC.Modules.DataSets.Infrastructure\BISC.Modules.DataSets.Infrastructure.csproj">
       <Project>{B2BF5767-508B-469C-B196-A991678867AE}</Project>
