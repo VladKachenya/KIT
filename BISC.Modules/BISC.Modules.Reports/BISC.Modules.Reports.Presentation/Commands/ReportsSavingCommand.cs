@@ -345,20 +345,21 @@ namespace BISC.Modules.Reports.Presentation.Commands
 						reportToSave.IntegrutyPeriod);
 			}
 
-			if (reportControl.RptID != reportToSave.ReportID)
+			if (reportControl.RptID.Substring(0,reportControl.RptID.Length-2) != reportToSave.ReportID)
 			{
 				savingResult = await _connectionPoolService.GetConnection(device.Ip).MmsConnection
 					.WriteReportDataAsync(device.Name + ldInst, rptPath, "RptID",
 						reportToSave.ReportID);
 			}
 
-			// Тут необходимо ещё ConfRevision
-			if (reportControl.ConfRev != reportToSave.ConfigurationRevision)
-			{
-				savingResult = await _connectionPoolService.GetConnection(device.Ip).MmsConnection
-					.WriteReportDataAsync(device.Name + ldInst, rptPath, "ConfRev",
-						reportToSave.ConfigurationRevision);
-			}
+            // Тут необходимо ещё ConfRevision
+
+		 //   if (reportControl.ConfRev != reportToSave.ConfigurationRevision)
+			//{
+			//	savingResult = await _connectionPoolService.GetConnection(device.Ip).MmsConnection
+			//		.WriteReportDataAsync(device.Name + ldInst, rptPath, "ConfRev",
+			//			reportToSave.ConfigurationRevision);
+			//}
 
 			if (!savingResult.IsSucceed)
 			{

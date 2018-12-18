@@ -114,12 +114,13 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 			{
 				await SaveChanges();
 			}
+		    _isSaveСhanges = true;
 
 
 
-		}
+        }
 
-		private async Task SaveChanges()
+        private async Task SaveChanges()
 		{
 			(SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
 			try

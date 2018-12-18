@@ -47,7 +47,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private IDatasetModelService _datasetModelService;
         private IDatasetViewModelFactory _datasetViewModelFactory;
 	    private DatasetsSavingCommand _datasetsSavingCommand;
-		private readonly ISaveCheckingService _saveCheckingService;
+        private readonly IUserInteractionService _userInteractionService;
+        private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly IGlobalEventsService _globalEventsService;
@@ -67,7 +68,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             ISaveCheckingService saveCheckingService, IUserInterfaceComposingService userInterfaceComposingService,
             IConnectionPoolService connectionPoolService, IGlobalEventsService globalEventsService ,
             INavigationService navigationService, ILoggingService loggingService, DatasetsLoadingService datasetsLoadingService,
-	        DatasetsSavingCommand datasetsSavingCommand)
+	        DatasetsSavingCommand datasetsSavingCommand,IUserInteractionService userInteractionService)
         {
             _userInterfaceComposingService = userInterfaceComposingService;
             _connectionPoolService = connectionPoolService;
@@ -76,7 +77,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _loggingService = loggingService;
             _datasetsLoadingService = datasetsLoadingService;
 	        _datasetsSavingCommand = datasetsSavingCommand;
-	        _biscProject = biscProject;
+            _userInteractionService = userInteractionService;
+            _biscProject = biscProject;
             _datasetModelService = datasetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
             _saveCheckingService = saveCheckingService;
@@ -187,6 +189,13 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         private async void OnSaveСhanges()
         {
+            _datasetsSavingCommand.Initialize(DataSets, _device);
+            var res = await _datasetsSavingCommand.ValidateBeforeSave();
+            if (!res.IsSucceed)
+            {
+                await _userInteractionService.ShowOptionToUser("Ошибка сохранения", res.GetFirstError(), new List<string>() { "Ок" });
+                return;
+            }
             _loggingService.LogUserAction($"Пользователь сохраняет изменения DataSets устройства {_device.Name}");
             await SaveChangesAsync();
         }
