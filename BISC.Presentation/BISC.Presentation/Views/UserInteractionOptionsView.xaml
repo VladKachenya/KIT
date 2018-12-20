@@ -20,11 +20,26 @@
         </Grid.RowDefinitions>
 
         <TextBlock Margin="15" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding Title}"/>
-        <TextBlock Margin="15,50,15,10" Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Message}"/>
-        <ItemsControl Margin="1" Grid.Row="2" ItemsSource="{Binding OptionCollection}" >
+        <StackPanel Grid.Row="1" Margin="15">
+            <ItemsControl ItemsSource="{Binding Warnings}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <ContentControl ContentTemplate="{DynamicResource AlertIcon}" VerticalAlignment="Center"
+                                            Foreground="Red"/>
+                            <TextBlock Text="{Binding .}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+        <TextBlock Grid.Row="2" Text="{Binding Message}" Margin="10"/>
+
+
+        <ItemsControl Margin="1" Grid.Row="3" ItemsSource="{Binding OptionCollection}" >
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="viewModels:OptionSelectionCommand">
-                        <Button Margin="5" MinWidth="100" Content="{Binding OptionSignature}" Command="{Binding SelectionCommand}"/>
+                    <Button Margin="5" MinWidth="100" Content="{Binding OptionSignature}" Command="{Binding SelectionCommand}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>

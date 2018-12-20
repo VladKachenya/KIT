@@ -1,17 +1,10 @@
-﻿using BISC.Model.Iec61850Ed2;
-using BISC.Model.Iec61850Ed2.DataTypeTemplates;
-using BISC.Model.Infrastructure.Project;
+﻿using BISC.Model.Infrastructure.Project;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.ViewModels;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
-using BISC.Modules.Device.Infrastructure.Services;
-using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
-using BISC.Modules.InformationModel.Infrastucture.Elements;
-using BISC.Modules.InformationModel.Model.Elements;
-using BISC.Modules.InformationModel.Presentation.ViewModels.Base;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
@@ -36,6 +29,7 @@ using BISC.Modules.DataSets.Presentation.Services.Interfaces;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.DataSets.Model.Services;
 using BISC.Modules.DataSets.Presentation.Commands;
+using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.Commands;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
@@ -54,6 +48,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private readonly IGlobalEventsService _globalEventsService;
         private readonly INavigationService _navigationService;
         private readonly ILoggingService _loggingService;
+        private readonly IDeviceReconnectionService _deviceReconnectionService;
+
         private readonly DatasetsLoadingService _datasetsLoadingService;
         private IBiscProject _biscProject;
         private ObservableCollection<IDataSetViewModel> _dataSets1;
@@ -68,7 +64,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             ISaveCheckingService saveCheckingService, IUserInterfaceComposingService userInterfaceComposingService,
             IConnectionPoolService connectionPoolService, IGlobalEventsService globalEventsService ,
             INavigationService navigationService, ILoggingService loggingService, DatasetsLoadingService datasetsLoadingService,
-	        DatasetsSavingCommand datasetsSavingCommand,IUserInteractionService userInteractionService)
+	        DatasetsSavingCommand datasetsSavingCommand,IUserInteractionService userInteractionService, IDeviceReconnectionService deviceReconnectionService)
         {
             _userInterfaceComposingService = userInterfaceComposingService;
             _connectionPoolService = connectionPoolService;
@@ -82,6 +78,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _datasetModelService = datasetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
             _saveCheckingService = saveCheckingService;
+            _deviceReconnectionService = deviceReconnectionService;
             DeployAllExpandersCommand = commandFactory.CreatePresentationCommand(OnDeployAllExpanders);
             RollUpAllExpandersCommand = commandFactory.CreatePresentationCommand(OnRollUpAllExpanders);
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhanges, () => _isSaveСhanges);
@@ -165,8 +162,9 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         private bool IsAddNewDataSet()
         {
-            var isEditebleDs = DataSets.Where(ds => ds.IsEditeble);
-            if (isEditebleDs.Count() >= 20) return false;
+            //var isEditebleDs = DataSets.Where(ds => ds.IsEditeble);
+            //if (isEditebleDs.Count() >= 20) return false;
+            if (DataSets.Count() >= 30) return false;
             return true;
         }
         private void OnDeployAllExpanders()
@@ -197,7 +195,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 return;
             }
             _loggingService.LogUserAction($"Пользователь сохраняет изменения DataSets устройства {_device.Name}");
-            await SaveChangesAsync();
+            await _deviceReconnectionService.ExecuteBeforeRestart(SaveChangesAsync, _device);
+            //await SaveChangesAsync();
         }
 
         private async Task SaveChangesAsync()

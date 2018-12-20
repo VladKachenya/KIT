@@ -20,14 +20,17 @@ namespace BISC.Presentation.Services
 
         #region Implementation of IUserInteractionService
 
-        public async Task<int> ShowOptionToUser(string title, string message, List<string> options)
+        public async Task<int> ShowOptionToUser(string title, string message, List<string> options, List<string> warnings = null)
         {
             OperationResult<int> operationResult = new OperationResult<int>(1);
 
             await _navigationService.NavigateViewToGlobalRegion(
                 KeysForNavigation.ViewNames.UserInteractionOptionsViewName,
                 new BiscNavigationParameters().AddParameterByName("result", operationResult)
-                    .AddParameterByName("message", message).AddParameterByName("title", title).AddParameterByName("options", options));
+                    .AddParameterByName("message", message)
+                    .AddParameterByName("title", title)
+                    .AddParameterByName("options", options)
+                    .AddParameterByName("warnings", warnings));
 
 
             return operationResult.Item;

@@ -6,14 +6,14 @@
     <DirectoryRef Id="INSTALLLOCATION" >
       <Component Id="ProductComponent" Guid="b11556a2-e066-4393-af5c-9c9210187228">
         <File Id="filA30B0BA577D1A9F40F005B5C7CB99A07" KeyPath="no" Source="$(var.SourceDir)\AttachedCommandBehavior.dll" />
-    
+
         <File Id="filFEAE3E5509C3F37B887687BAA75667F4" KeyPath="no" Source="$(var.SourceDir)\BISC.Infrastructure.CompositionRoot.dll" />
-      <File Id="fil4113F826CCDFA38C3DCDD88F0B78ADD9" KeyPath="no" Source="$(var.SourceDir)\BISC.Infrastructure.CompositionRoot.dll.config" />
-       <File Id="fil775B767BB0F0C62EC8E33417DACF960E" KeyPath="no" Source="$(var.SourceDir)\BISC.Infrastructure.CompositionRoot.pdb" />
+        <File Id="fil4113F826CCDFA38C3DCDD88F0B78ADD9" KeyPath="no" Source="$(var.SourceDir)\BISC.Infrastructure.CompositionRoot.dll.config" />
+        <File Id="fil775B767BB0F0C62EC8E33417DACF960E" KeyPath="no" Source="$(var.SourceDir)\BISC.Infrastructure.CompositionRoot.pdb" />
         <File Id="fil7F4C5E31EE5094B8131F719FD3A921FF" KeyPath="no" Source="$(var.SourceDir)\BISC.Infrastructure.Global.dll" />
         <File Id="filEA5228DD400C9E00F6FC479777066109" KeyPath="no" Source="$(var.SourceDir)\BISC.Infrastructure.Global.pdb" />
         <File Id="fil897DE5D843B18FD6A2159D04BAC6D9A1" KeyPath="no" Source="$(var.SourceDir)\BISC.Model.Global.dll" />
-      <File Id="filFA9CF3B020EF3E77D27B14D518B7FD07" KeyPath="no" Source="$(var.SourceDir)\BISC.Model.Global.pdb" />
+        <File Id="filFA9CF3B020EF3E77D27B14D518B7FD07" KeyPath="no" Source="$(var.SourceDir)\BISC.Model.Global.pdb" />
         <File Id="fil6281AD20A01E910B6AAA3C10B6BC9006" KeyPath="no" Source="$(var.SourceDir)\BISC.Model.Iec61850Ed2.dll" />
         <File Id="filCEF4D5166DF858650D65A8055A7E5D3F" KeyPath="no" Source="$(var.SourceDir)\BISC.Model.Iec61850Ed2.pdb" />
         <File Id="fil4388EEB2AFF42C10227FF2C844890EC9" KeyPath="no" Source="$(var.SourceDir)\BISC.Model.Infrastructure.dll" />
@@ -24,104 +24,104 @@
         <File Id="filFA41D912EF950650702E7B9B3A8A06D2" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Connection.MMS.pdb" />
         <File Id="fil3B5B934F3988347924A9CC7266C3B049" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Connection.Model.dll" />
         <File Id="fil6A9A0B2983528BC9395DF4984C8CE610" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Connection.Model.pdb" />
-       <File Id="fil09969CBD03E5DA07162F3B82FBCDB999" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Connection.Presentation.dll" />
-     <File Id="fil6007D965DA08291CC96BBE76EC9CA4A1" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Connection.Presentation.pdb" />
+        <File Id="fil09969CBD03E5DA07162F3B82FBCDB999" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Connection.Presentation.dll" />
+        <File Id="fil6007D965DA08291CC96BBE76EC9CA4A1" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Connection.Presentation.pdb" />
         <File Id="fil1B1CF0853796259954292159E68AB269" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.DataSets.Infrastructure.dll" />
-       <File Id="fil50DAB875A1D23A92D4AD1ADE8CF76072" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.DataSets.Infrastructure.pdb" />
+        <File Id="fil50DAB875A1D23A92D4AD1ADE8CF76072" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.DataSets.Infrastructure.pdb" />
         <File Id="filD107852B4E162FE50E9ECEB081988B9A" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.DataSets.Model.dll" />
-       <File Id="fil65021CA35FB85C699DEDC31655913E8F" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.DataSets.Model.pdb" />
-      <File Id="fil6EEA371CAFD28588194D520411D7453A" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.DataSets.Presentation.dll" />
+        <File Id="fil65021CA35FB85C699DEDC31655913E8F" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.DataSets.Model.pdb" />
+        <File Id="fil6EEA371CAFD28588194D520411D7453A" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.DataSets.Presentation.dll" />
         <File Id="filF3D076A8715B04C2FBBB603874D3BC5A" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.DataSets.Presentation.pdb" />
-     <File Id="filBC2283892B70316EE031EEC7603BCF5D" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Device.Infrastructure.dll" />
-       <File Id="fil76F57BEDB9B29BBAB4D3E83933D01E49" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Device.Infrastructure.pdb" />
-     <File Id="fil55981DC8B18990C7779B416EC471496A" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Device.Model.dll" />
-       <File Id="filEF896226E6574DC4F328503ACDDB8159" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Device.Model.pdb" />
-       <File Id="fil666D2B744E5DC7B9EEA20CB8CF9C2DB7" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Device.Presentation.dll" />
-      <File Id="filF51C60ABF8EEC94A42B79648B553D7F2" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Device.Presentation.pdb" />
-      <File Id="filA70FB2264283ED7717153DC94925C66A" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.FTP.FTPConnection.dll" />
-      <File Id="fil757703FBCFC0813CAC124079BE0F2329" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.FTP.FTPConnection.pdb" />
-       <File Id="fil6E2DC5648F61C2C07FCA8E117A6E21BA" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.FTP.Infrastructure.dll" />
-       <File Id="fil60796C9DEB90A9BD33C87A40DED4D95D" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.FTP.Infrastructure.pdb" />
-       <File Id="fil354C179B11CECA2C00E2BEEF0C2B9A8B" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Gooses.Infrastructure.dll" />
+        <File Id="filBC2283892B70316EE031EEC7603BCF5D" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Device.Infrastructure.dll" />
+        <File Id="fil76F57BEDB9B29BBAB4D3E83933D01E49" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Device.Infrastructure.pdb" />
+        <File Id="fil55981DC8B18990C7779B416EC471496A" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Device.Model.dll" />
+        <File Id="filEF896226E6574DC4F328503ACDDB8159" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Device.Model.pdb" />
+        <File Id="fil666D2B744E5DC7B9EEA20CB8CF9C2DB7" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Device.Presentation.dll" />
+        <File Id="filF51C60ABF8EEC94A42B79648B553D7F2" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Device.Presentation.pdb" />
+        <File Id="filA70FB2264283ED7717153DC94925C66A" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.FTP.FTPConnection.dll" />
+        <File Id="fil757703FBCFC0813CAC124079BE0F2329" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.FTP.FTPConnection.pdb" />
+        <File Id="fil6E2DC5648F61C2C07FCA8E117A6E21BA" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.FTP.Infrastructure.dll" />
+        <File Id="fil60796C9DEB90A9BD33C87A40DED4D95D" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.FTP.Infrastructure.pdb" />
+        <File Id="fil354C179B11CECA2C00E2BEEF0C2B9A8B" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Gooses.Infrastructure.dll" />
         <File Id="filF6C46F9AE225E6F9EAEF4BC5487A7302" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Gooses.Infrastructure.pdb" />
         <File Id="filF4FB9BCDA5508624198E4A62244B07AD" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Gooses.Model.dll" />
-       <File Id="fil4BEC0AB7C443AEB7BEE95039C1B3BBC7" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Gooses.Model.pdb" />
-       <File Id="fil42C2EF5BC2FBE89755D8A7A615182593" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Gooses.Presentation.dll" />
-      <File Id="filB4E65C6951E3C46F931FD84DF811421E" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Gooses.Presentation.pdb" />
-       <File Id="fil1E590F8D06555A5E0B796BCDE4EB8EF7" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.InformationModel.Infrastucture.dll" />
-       <File Id="filF977627517C927111A3D590B00176827" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.InformationModel.Infrastucture.pdb" />
-      <File Id="fil8D5C6B367F32214E95C6F9D85D1539A5" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.InformationModel.Model.dll" />
-      <File Id="filC604ADCD2658E745A283D5BEEF40D18B" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.InformationModel.Model.pdb" />
-       <File Id="filB57F9A80816D529F92D6E6919020D525" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.InformationModel.Presentation.dll" />
-       <File Id="fil03E6F1DB3A8FB1270F5DB576982F2215" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.InformationModel.Presentation.pdb" />
-       <File Id="fil0678C49549CB31FB58F1517835721A71" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Logging.dll" />
+        <File Id="fil4BEC0AB7C443AEB7BEE95039C1B3BBC7" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Gooses.Model.pdb" />
+        <File Id="fil42C2EF5BC2FBE89755D8A7A615182593" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Gooses.Presentation.dll" />
+        <File Id="filB4E65C6951E3C46F931FD84DF811421E" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Gooses.Presentation.pdb" />
+        <File Id="fil1E590F8D06555A5E0B796BCDE4EB8EF7" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.InformationModel.Infrastucture.dll" />
+        <File Id="filF977627517C927111A3D590B00176827" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.InformationModel.Infrastucture.pdb" />
+        <File Id="fil8D5C6B367F32214E95C6F9D85D1539A5" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.InformationModel.Model.dll" />
+        <File Id="filC604ADCD2658E745A283D5BEEF40D18B" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.InformationModel.Model.pdb" />
+        <File Id="filB57F9A80816D529F92D6E6919020D525" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.InformationModel.Presentation.dll" />
+        <File Id="fil03E6F1DB3A8FB1270F5DB576982F2215" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.InformationModel.Presentation.pdb" />
+        <File Id="fil0678C49549CB31FB58F1517835721A71" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Logging.dll" />
         <File Id="fil80AED162C857D77321AEACF8483CA78C" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Logging.Infrastructure.dll" />
-      <File Id="fil1C9367FC294668C5D533815D628B6355" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Logging.Infrastructure.pdb" />
-       <File Id="fil8764EC17F090399F5CCBC9B67BE7D1D6" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Logging.pdb" />
-       <File Id="fil79072672E71DD3D94541F0AAB51710D7" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Reports.Infrastructure.dll" />
-     <File Id="fil0DB9564173DC431CBB7E3CBC8CBDD116" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Reports.Infrastructure.pdb" />
-       <File Id="filBCB5A25AC3946B81E6AC3115B48AB748" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Reports.Model.dll" />
-     <File Id="filAD5AD0BA9F72F4D4311ED872E32820AE" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Reports.Model.pdb" />
-      <File Id="filFB7B959DEC28A78E5CE704E0FFD2C218" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Reports.Presentation.dll" />
-       <File Id="filBE14E70CFFC2C78871E7414843415895" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Reports.Presentation.pdb" />
-       <File Id="fil5834520C2DC9150E0AFD77DDDE9DBBA6" KeyPath="no" Source="$(var.SourceDir)\BISC.Presentation.BaseItems.dll" />
-      <File Id="fil424E67BE35CDACEDFB1FBC2011DA4548" KeyPath="no" Source="$(var.SourceDir)\BISC.Presentation.BaseItems.pdb" />
-     <File Id="filA62B8F65287A725256B6D50F1D3EA8AB" KeyPath="no" Source="$(var.SourceDir)\BISC.Presentation.dll" />
-      <File Id="fil655B9C35E64AC5D155CD9BE35166374C" KeyPath="no" Source="$(var.SourceDir)\BISC.Presentation.Infrastructure.dll" />
-       <File Id="fil3FA6A2F21F52D4B37A807BE6BE1A1011" KeyPath="no" Source="$(var.SourceDir)\BISC.Presentation.Infrastructure.pdb" />
-       <File Id="filA6BBB0CB72996A015BC53F5F8B61F1F7" KeyPath="no" Source="$(var.SourceDir)\BISC.Presentation.pdb" />
-      
+        <File Id="fil1C9367FC294668C5D533815D628B6355" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Logging.Infrastructure.pdb" />
+        <File Id="fil8764EC17F090399F5CCBC9B67BE7D1D6" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Logging.pdb" />
+        <File Id="fil79072672E71DD3D94541F0AAB51710D7" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Reports.Infrastructure.dll" />
+        <File Id="fil0DB9564173DC431CBB7E3CBC8CBDD116" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Reports.Infrastructure.pdb" />
+        <File Id="filBCB5A25AC3946B81E6AC3115B48AB748" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Reports.Model.dll" />
+        <File Id="filAD5AD0BA9F72F4D4311ED872E32820AE" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Reports.Model.pdb" />
+        <File Id="filFB7B959DEC28A78E5CE704E0FFD2C218" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Reports.Presentation.dll" />
+        <File Id="filBE14E70CFFC2C78871E7414843415895" KeyPath="no" Source="$(var.SourceDir)\BISC.Modules.Reports.Presentation.pdb" />
+        <File Id="fil5834520C2DC9150E0AFD77DDDE9DBBA6" KeyPath="no" Source="$(var.SourceDir)\BISC.Presentation.BaseItems.dll" />
+        <File Id="fil424E67BE35CDACEDFB1FBC2011DA4548" KeyPath="no" Source="$(var.SourceDir)\BISC.Presentation.BaseItems.pdb" />
+        <File Id="filA62B8F65287A725256B6D50F1D3EA8AB" KeyPath="no" Source="$(var.SourceDir)\BISC.Presentation.dll" />
+        <File Id="fil655B9C35E64AC5D155CD9BE35166374C" KeyPath="no" Source="$(var.SourceDir)\BISC.Presentation.Infrastructure.dll" />
+        <File Id="fil3FA6A2F21F52D4B37A807BE6BE1A1011" KeyPath="no" Source="$(var.SourceDir)\BISC.Presentation.Infrastructure.pdb" />
+        <File Id="filA6BBB0CB72996A015BC53F5F8B61F1F7" KeyPath="no" Source="$(var.SourceDir)\BISC.Presentation.pdb" />
+
         <File Id="filCCBAA1DE5DA34F005288A2AB48DA9B55" KeyPath="no" Source="$(var.SourceDir)\CommonServiceLocator.dll" />
-       
+
         <File Id="fil3792DCD26036DF826F812E6E7F7C3FDA" KeyPath="no" Source="$(var.SourceDir)\FluentFTP.dll" />
-           <File Id="fil33D885A9A0A1DB8D6B6FCB3EE0581BE7" KeyPath="no" Source="$(var.SourceDir)\FluentFTP.pdb" />
+        <File Id="fil33D885A9A0A1DB8D6B6FCB3EE0581BE7" KeyPath="no" Source="$(var.SourceDir)\FluentFTP.pdb" />
         <File Id="filAE3ABA5A75635EF24A99CB4B7A4EB0D0" KeyPath="no" Source="$(var.SourceDir)\FluentFTP.xml" />
         <File Id="filAF0F9A632D9B6D678E7B31916BBD9A67" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.dll" />
         <File Id="filAD4F9B972FA7AB272CDEEA33E9DC1E74" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.Extras.dll" />
         <File Id="fil25ED7E8B159F759F7FFD125C4BAA9241" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.Extras.pdb" />
-       <File Id="fil895321AE7C98F63F8D5379BEB581DD1B" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.Extras.xml" />
-       <File Id="fil3281016FDD5C3D956C448C8B921128B1" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.pdb" />
-       <File Id="fil421236D7D98A97F40193213C51B623CF" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.Platform.dll" />
-       <File Id="fil9D38E9B1F0C6107A19ADA3E18B092B55" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.Platform.pdb" />
-       <File Id="fil1E96FAA1250EAE19A4EB1DD753B76767" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.Platform.xml" />
-      <File Id="filE20DBEB2ED0FA07BFD2ED9D56A3C33EF" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.xml" />
-       <File Id="filCA30F4193B20F1C5513CE3D86DDC236D" KeyPath="no" Source="$(var.SourceDir)\GongSolutions.WPF.DragDrop.dll" />
-       <File Id="filCF193CA7A00C6B18D7C70CE5688FA110" KeyPath="no" Source="$(var.SourceDir)\GongSolutions.WPF.DragDrop.pdb" />
-       <File Id="fil473E6B5FB08C05E48377951465488420" KeyPath="no" Source="$(var.SourceDir)\GongSolutions.WPF.DragDrop.xml" />
-       <File Id="fil87F078F175676173C79B67CCCC4F45BB" KeyPath="no" Source="$(var.SourceDir)\KIT.exe" />
-      <File Id="fil3943F51E1D50AB0C5BABC00B29B689A8" KeyPath="no" Source="$(var.SourceDir)\KIT.exe.config" />
-       <File Id="fil08FA7B9FB735546BE03E002599CB2E1A" KeyPath="no" Source="$(var.SourceDir)\KIT.pdb" />
-       <File Id="fil557020C250284FA82809954BDF040783" KeyPath="no" Source="$(var.SourceDir)\MaterialDesignColors.dll" />
-       <File Id="fil6D88D4A23626FA3F9288F8BD3235B165" KeyPath="no" Source="$(var.SourceDir)\MaterialDesignColors.pdb" />
-       <File Id="fil76C550FF42A2F8218498921D94C5304C" KeyPath="no" Source="$(var.SourceDir)\MaterialDesignThemes.Wpf.dll" />
-     <File Id="filB16E0A4A52F71C4637FAD0CD752BE4F0" KeyPath="no" Source="$(var.SourceDir)\MaterialDesignThemes.Wpf.pdb" />
-      <File Id="filD906F7D0BBB6F0C23122425D819D27C1" KeyPath="no" Source="$(var.SourceDir)\MaterialDesignThemes.Wpf.xml" />
-<File Id="filB1E6C58F19FD25F113C117E493261E54" KeyPath="no" Source="$(var.SourceDir)\Microsoft.Practices.ServiceLocation.dll" />
+        <File Id="fil895321AE7C98F63F8D5379BEB581DD1B" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.Extras.xml" />
+        <File Id="fil3281016FDD5C3D956C448C8B921128B1" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.pdb" />
+        <File Id="fil421236D7D98A97F40193213C51B623CF" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.Platform.dll" />
+        <File Id="fil9D38E9B1F0C6107A19ADA3E18B092B55" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.Platform.pdb" />
+        <File Id="fil1E96FAA1250EAE19A4EB1DD753B76767" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.Platform.xml" />
+        <File Id="filE20DBEB2ED0FA07BFD2ED9D56A3C33EF" KeyPath="no" Source="$(var.SourceDir)\GalaSoft.MvvmLight.xml" />
+        <File Id="filCA30F4193B20F1C5513CE3D86DDC236D" KeyPath="no" Source="$(var.SourceDir)\GongSolutions.WPF.DragDrop.dll" />
+        <File Id="filCF193CA7A00C6B18D7C70CE5688FA110" KeyPath="no" Source="$(var.SourceDir)\GongSolutions.WPF.DragDrop.pdb" />
+        <File Id="fil473E6B5FB08C05E48377951465488420" KeyPath="no" Source="$(var.SourceDir)\GongSolutions.WPF.DragDrop.xml" />
+        <File Id="fil87F078F175676173C79B67CCCC4F45BB" KeyPath="no" Source="$(var.SourceDir)\KIT.exe" />
+        <File Id="fil3943F51E1D50AB0C5BABC00B29B689A8" KeyPath="no" Source="$(var.SourceDir)\KIT.exe.config" />
+        <File Id="fil08FA7B9FB735546BE03E002599CB2E1A" KeyPath="no" Source="$(var.SourceDir)\KIT.pdb" />
+        <File Id="fil557020C250284FA82809954BDF040783" KeyPath="no" Source="$(var.SourceDir)\MaterialDesignColors.dll" />
+        <File Id="fil6D88D4A23626FA3F9288F8BD3235B165" KeyPath="no" Source="$(var.SourceDir)\MaterialDesignColors.pdb" />
+        <File Id="fil76C550FF42A2F8218498921D94C5304C" KeyPath="no" Source="$(var.SourceDir)\MaterialDesignThemes.Wpf.dll" />
+        <File Id="filB16E0A4A52F71C4637FAD0CD752BE4F0" KeyPath="no" Source="$(var.SourceDir)\MaterialDesignThemes.Wpf.pdb" />
+        <File Id="filD906F7D0BBB6F0C23122425D819D27C1" KeyPath="no" Source="$(var.SourceDir)\MaterialDesignThemes.Wpf.xml" />
+        <File Id="filB1E6C58F19FD25F113C117E493261E54" KeyPath="no" Source="$(var.SourceDir)\Microsoft.Practices.ServiceLocation.dll" />
         <File Id="filCF639FFEE50EE5B8291F95428D1AF8ED" KeyPath="no" Source="$(var.SourceDir)\Microsoft.Practices.ServiceLocation.pdb" />
         <File Id="filC3AC5D3F203D5C40DD59E7611366F07A" KeyPath="no" Source="$(var.SourceDir)\Microsoft.Practices.ServiceLocation.xml" />
-<File Id="filF9C146B50652AC5BBC58B64E8F7A565E" KeyPath="no" Source="$(var.SourceDir)\Microsoft.Practices.Unity.dll" />
-       <File Id="fil0B9A78EF0A72E7AC2A0FBEC0F5CF4421" KeyPath="no" Source="$(var.SourceDir)\Microsoft.Practices.Unity.xml" />
-      <File Id="fil94F47DD4629D87B8878BF727BE5F7853" KeyPath="no" Source="$(var.SourceDir)\Newtonsoft.Json.dll" />
-      <File Id="filFC2427FAED0A7AB17F7D8FAA7C4F9C88" KeyPath="no" Source="$(var.SourceDir)\Newtonsoft.Json.xml" />
-       <File Id="fil282118653205562AB2E88A80D15A43E7" KeyPath="no" Source="$(var.SourceDir)\NLog.config" />
-      <File Id="filEE301C86AA37E17EFB6CA8E162670F2F" KeyPath="no" Source="$(var.SourceDir)\NLog.dll" />
-      <File Id="fil86C912BB0A1B702FA187554426D6C9A6" KeyPath="no" Source="$(var.SourceDir)\NLog.xml" />
- <File Id="fil2AED2674C62A38963312C052374CA2C7" KeyPath="no" Source="$(var.SourceDir)\Prism.dll" />
-    <File Id="fil3F84AAE67C08861D3D67A11AE1F47B52" KeyPath="no" Source="$(var.SourceDir)\Prism.Unity.Wpf.dll" />
-      <File Id="fil57BBB6E2E8B50C6F1057A549AB19B0B6" KeyPath="no" Source="$(var.SourceDir)\Prism.Unity.Wpf.xml" />
+        <File Id="filF9C146B50652AC5BBC58B64E8F7A565E" KeyPath="no" Source="$(var.SourceDir)\Microsoft.Practices.Unity.dll" />
+        <!--<File Id="fil0B9A78EF0A72E7AC2A0FBEC0F5CF4421" KeyPath="no" Source="$(var.SourceDir)\Microsoft.Practices.Unity.xml" />-->
+        <File Id="fil94F47DD4629D87B8878BF727BE5F7853" KeyPath="no" Source="$(var.SourceDir)\Newtonsoft.Json.dll" />
+        <File Id="filFC2427FAED0A7AB17F7D8FAA7C4F9C88" KeyPath="no" Source="$(var.SourceDir)\Newtonsoft.Json.xml" />
+        <File Id="fil282118653205562AB2E88A80D15A43E7" KeyPath="no" Source="$(var.SourceDir)\NLog.config" />
+        <File Id="filEE301C86AA37E17EFB6CA8E162670F2F" KeyPath="no" Source="$(var.SourceDir)\NLog.dll" />
+        <File Id="fil86C912BB0A1B702FA187554426D6C9A6" KeyPath="no" Source="$(var.SourceDir)\NLog.xml" />
+        <File Id="fil2AED2674C62A38963312C052374CA2C7" KeyPath="no" Source="$(var.SourceDir)\Prism.dll" />
+        <File Id="fil3F84AAE67C08861D3D67A11AE1F47B52" KeyPath="no" Source="$(var.SourceDir)\Prism.Unity.Wpf.dll" />
+        <File Id="fil57BBB6E2E8B50C6F1057A549AB19B0B6" KeyPath="no" Source="$(var.SourceDir)\Prism.Unity.Wpf.xml" />
         <File Id="filF818D0C2079AF32CF94F953C6FE6EE04" KeyPath="no" Source="$(var.SourceDir)\Prism.Wpf.dll" />
-       <File Id="fil9F4A4C6C51075C92C3EF1DD56569C9F9" KeyPath="no" Source="$(var.SourceDir)\Prism.Wpf.xml" />
+        <File Id="fil9F4A4C6C51075C92C3EF1DD56569C9F9" KeyPath="no" Source="$(var.SourceDir)\Prism.Wpf.xml" />
         <File Id="filDD720674F1D65BA08F84379BFA25402D" KeyPath="no" Source="$(var.SourceDir)\Prism.xml" />
-       <File Id="fil647D1BB034622E84B376058F922A85F6" KeyPath="no" Source="$(var.SourceDir)\System.Windows.Interactivity.dll" />
-      <!--<File Id="fil168D2C1064EA6D2AAF424CFA4E7A3A23" KeyPath="no" Source="$(var.SourceDir)\TempProject.bisc" />-->
-   
+        <File Id="fil647D1BB034622E84B376058F922A85F6" KeyPath="no" Source="$(var.SourceDir)\System.Windows.Interactivity.dll" />
+        <!--<File Id="fil168D2C1064EA6D2AAF424CFA4E7A3A23" KeyPath="no" Source="$(var.SourceDir)\TempProject.bisc" />-->
+
         <File Id="fil78A9021295A23043B4900ED0E21A73E6" KeyPath="no" Source="$(var.SourceDir)\Unity.Abstractions.dll" />
-          <File Id="filCB3B34AC86A40A95991999414682A51F" KeyPath="no" Source="$(var.SourceDir)\Unity.Abstractions.pdb" />
+        <File Id="filCB3B34AC86A40A95991999414682A51F" KeyPath="no" Source="$(var.SourceDir)\Unity.Abstractions.pdb" />
         <File Id="filF1BDE7550EF320D1802075E9DC7C9FA6" KeyPath="no" Source="$(var.SourceDir)\Unity.Configuration.dll" />
-      <File Id="filC6F40CAEE259447EC90B21F971E3BE20" KeyPath="no" Source="$(var.SourceDir)\Unity.Configuration.pdb" />
+        <File Id="filC6F40CAEE259447EC90B21F971E3BE20" KeyPath="no" Source="$(var.SourceDir)\Unity.Configuration.pdb" />
         <File Id="filA74CCEBE3D02814744F3967C4959395C" KeyPath="no" Source="$(var.SourceDir)\Unity.Container.dll" />
-         <File Id="fil12A700707FD2036D078FD51DDB8F08D2" KeyPath="no" Source="$(var.SourceDir)\Unity.Container.pdb" />
-       <File Id="fil875088A511A113B0E778D7D632889165" KeyPath="no" Source="$(var.SourceDir)\Unity.Interception.Configuration.dll" />
+        <File Id="fil12A700707FD2036D078FD51DDB8F08D2" KeyPath="no" Source="$(var.SourceDir)\Unity.Container.pdb" />
+        <File Id="fil875088A511A113B0E778D7D632889165" KeyPath="no" Source="$(var.SourceDir)\Unity.Interception.Configuration.dll" />
         <File Id="filE1E5646EA9A95305D9230927C78D84CF" KeyPath="no" Source="$(var.SourceDir)\Unity.Interception.Configuration.pdb" />
         <File Id="fil4EB19D29F2AE7A102EFBB0F5E297AB62" KeyPath="no" Source="$(var.SourceDir)\Unity.Interception.dll" />
         <File Id="filF0F2E77A1FDB0BA35BC5519A616D6871" KeyPath="no" Source="$(var.SourceDir)\Unity.Interception.pdb" />
@@ -130,7 +130,7 @@
         <File Id="filCAA87F949CF5D067C512F409CF7FB8C0" KeyPath="no" Source="$(var.SourceDir)\Unity.ServiceLocation.dll" />
         <File Id="fil135D5E2E3DEAA645D5E362E1F410CC6C" KeyPath="no" Source="$(var.SourceDir)\Unity.ServiceLocation.pdb" />
         <File Id="fil30BABFF7CA22E8455B4299682D82E462" KeyPath="no" Source="$(var.SourceDir)\Xceed.Wpf.AvalonDock.dll" />
-      <File Id="fil0FE464C8A9244704AA9A7121051843D5" KeyPath="no" Source="$(var.SourceDir)\Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
+        <File Id="fil0FE464C8A9244704AA9A7121051843D5" KeyPath="no" Source="$(var.SourceDir)\Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
       </Component>
     </DirectoryRef>
   </Fragment>

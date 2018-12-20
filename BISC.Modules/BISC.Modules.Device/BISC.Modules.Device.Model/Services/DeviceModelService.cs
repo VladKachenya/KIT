@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Infrastructure.Global.Common;
+﻿using BISC.Infrastructure.Global.Common;
 using BISC.Model.Global.Common;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
@@ -15,6 +9,8 @@ using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BISC.Modules.Device.Model.Services
 {
@@ -23,7 +19,7 @@ namespace BISC.Modules.Device.Model.Services
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
 
-        public DeviceModelService(ISclCommunicationModelService sclCommunicationModelService,IDataTypeTemplatesModelService dataTypeTemplatesModelService)
+        public DeviceModelService(ISclCommunicationModelService sclCommunicationModelService, IDataTypeTemplatesModelService dataTypeTemplatesModelService)
         {
             _sclCommunicationModelService = sclCommunicationModelService;
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
@@ -40,26 +36,25 @@ namespace BISC.Modules.Device.Model.Services
                     devices.Add(modelChildModelElement as IDevice);
                 }
             }
-
             return devices;
         }
 
-        public IDevice GetDeviceByName(ISclModel sclModel,string deviceName)
+        public IDevice GetDeviceByName(ISclModel sclModel, string deviceName)
         {
-            List<IDevice> devices=new List<IDevice>();
+            List<IDevice> devices = new List<IDevice>();
             sclModel.GetAllChildrenOfType<IDevice>(ref devices);
-            return devices.FirstOrDefault((device => device.Name==deviceName ));
+            return devices.FirstOrDefault((device => device.Name == deviceName));
         }
 
-        public OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device,ISclModel modelFrom)
+        public OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device, ISclModel modelFrom)
         {
             if (GetIsDeviceExists(sclModel, device.Name))
             {
                 return new OperationResult($"Устройство с именем {device.Name} уже существует в модели");
             }
 
-            _dataTypeTemplatesModelService.MergeDataTypeTemplates(sclModel,modelFrom);
-            _sclCommunicationModelService.AddConnectedAccessPoint(sclModel,FindConnectedAccessPointOfTheDevice(modelFrom,device.Name));
+            _dataTypeTemplatesModelService.MergeDataTypeTemplates(sclModel, modelFrom);
+            _sclCommunicationModelService.AddConnectedAccessPoint(sclModel, FindConnectedAccessPointOfTheDevice(modelFrom, device.Name));
             sclModel.ChildModelElements.Add(device);
             return OperationResult.SucceedResult;
         }
@@ -70,19 +65,23 @@ namespace BISC.Modules.Device.Model.Services
             {
                 return new OperationResult($"Устройство с именем {device.Name} уже существует в модели");
             }
-            _sclCommunicationModelService.AddDefaultConnectedAccessPointForDevice(sclModel,device.Name,device.Ip);
+            _sclCommunicationModelService.AddDefaultConnectedAccessPointForDevice(sclModel, device.Name, device.Ip);
             sclModel.ChildModelElements.Add(device);
             device.ParentModelElement = sclModel;
             return OperationResult.SucceedResult;
         }
 
 
-        private IConnectedAccessPoint FindConnectedAccessPointOfTheDevice(ISclModel modelFrom,string deviceName)
+        private IConnectedAccessPoint FindConnectedAccessPointOfTheDevice(ISclModel modelFrom, string deviceName)
         {
             IConnectedAccessPoint connectedAccessPointFinded = null;
             foreach (var childModelElement in modelFrom.ChildModelElements)
             {
-                if (!(childModelElement is ISclCommunicationModel communicationModel)) continue;
+                if (!(childModelElement is ISclCommunicationModel communicationModel))
+                {
+                    continue;
+                }
+
                 foreach (var subNetwork in communicationModel.SubNetworks)
                 {
                     foreach (var connectedAccessPoint in subNetwork.ConnectedAccessPoints)
@@ -121,7 +120,7 @@ namespace BISC.Modules.Device.Model.Services
                 return new OperationResult($"Устройство с именем {deviceName} не существует в модели");
             };
 
-            List<ILDevice> devicesToRemove=new List<ILDevice>();
+            List<ILDevice> devicesToRemove = new List<ILDevice>();
             List<ILDevice> devicesToLeave = new List<ILDevice>();
             _sclCommunicationModelService.DeleteAccessPoint(sclModel, deviceName);
 
@@ -130,8 +129,8 @@ namespace BISC.Modules.Device.Model.Services
             sclModel.FillChildModelElements(devicesToLeave);
             devicesToLeave = devicesToLeave.Where((lDevice => !devicesToRemove.Any((remove => lDevice == remove))))
                 .ToList();
-                
-            _dataTypeTemplatesModelService.FilterDataTypeTemplates(sclModel.ChildModelElements.First((element =>element is IDataTypeTemplates )) as IDataTypeTemplates,devicesToRemove,devicesToLeave);
+
+            _dataTypeTemplatesModelService.FilterDataTypeTemplates(sclModel.ChildModelElements.First((element => element is IDataTypeTemplates)) as IDataTypeTemplates, devicesToRemove, devicesToLeave);
             sclModel.ChildModelElements.Remove(device);
             return OperationResult.SucceedResult;
 

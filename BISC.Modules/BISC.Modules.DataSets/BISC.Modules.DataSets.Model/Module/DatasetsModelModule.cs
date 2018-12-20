@@ -39,6 +39,7 @@ namespace BISC.Modules.DataSets.Model.Module
 
             _injectionContainer.RegisterType<IFcdaFactory, FcdaFactory>(true);
             _injectionContainer.RegisterType<IDataSetFactory, DataSetFactory>(true);
+            _injectionContainer.RegisterType<IFcdaInfoService, FcdaInfoService>(true);
         }
 
         #endregion

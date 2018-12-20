@@ -23,7 +23,7 @@ using BISC.Modules.InformationModel.Model.LoadingFromConnection;
 
 namespace BISC.Modules.InformationModel.Model.Services
 {
-    public class LogicalDeviceLoadingService : ILogicalDeviceLoadingService
+    public class LogicalDeviceLoadingService : ILogicalDevice
     {
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly IModelTypesResolvingService _modelTypesResolvingService;

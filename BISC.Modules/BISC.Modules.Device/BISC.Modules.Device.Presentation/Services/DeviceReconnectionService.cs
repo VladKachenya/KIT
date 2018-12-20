@@ -213,8 +213,12 @@ namespace BISC.Modules.Device.Presentation.Services
 
 			    if (unsavedEntitiesInfo.UnsavedCheckingEntities.Count > 1)
 			    {
-			        var res = await _userInteractionService.ShowOptionToUser("Требуется перезагрузка", "Сохранение потребует перезагрузки устройства. \nВсе несохраненные изменения, которые относятся к этому устройству \nбудут сохранены\nЖелаете продолжить?",
-			            new List<string>() { "Да", "Нет" });
+			        var warnings =
+			            unsavedEntitiesInfo.UnsavedCheckingEntities.Select(
+			                change => ("Изменения " + change.EntityFriendlyName + " будут сохранены.")).ToList();
+			        var res = await _userInteractionService.ShowOptionToUser("Требуется перезагрузка", 
+			            "Сохранение потребует перезагрузки устройства. \nЖелаете продолжить?", 
+                        new List<string>() { "Да", "Нет" }, warnings);
 			        if (res == 1)
 			        {
 			            return;

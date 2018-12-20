@@ -14,5 +14,7 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
         ICommand DeleteFcdaCommand { get; }
         IFcda GetFcda();
         string FullName { get; }
+        int Weight { get; }
+        void SetWeight(int weight);
     }
 }

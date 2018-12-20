@@ -7,7 +7,7 @@ using BISC.Modules.InformationModel.Infrastucture.Elements;
 
 namespace BISC.Modules.InformationModel.Infrastucture.Services
 {
-    public interface ILogicalDeviceLoadingService
+    public interface ILogicalDevice
     {
         Task PrepareProgressData(string ip);
         int GetLogicalNodeCount();

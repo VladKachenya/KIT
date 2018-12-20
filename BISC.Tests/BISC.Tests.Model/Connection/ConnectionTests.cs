@@ -100,7 +100,7 @@ namespace BISC.Tests.Model.Connection
                 StaticContainer.CurrentContainer.ResolveType<IConnectionPoolService>();
             await connectionPoolService.GetConnection("127.0.0.1").OpenConnection();
             var sclModel = new SclModel();
-            ILogicalDeviceLoadingService logicalDeviceLoadingService = StaticContainer.CurrentContainer.ResolveType<ILogicalDeviceLoadingService>();
+            ILogicalDevice logicalDeviceLoadingService = StaticContainer.CurrentContainer.ResolveType<ILogicalDevice>();
             await logicalDeviceLoadingService.PrepareProgressData("127.0.0.1");
             var result = await logicalDeviceLoadingService.GetLDeviceFromConnection(new Progress<LogicalNodeLoadingEvent>((event1 => { })),
                    sclModel, "MR771N123",new CancellationToken());
@@ -183,7 +183,7 @@ namespace BISC.Tests.Model.Connection
                 StaticContainer.CurrentContainer.ResolveType<IConnectionPoolService>();
             await connectionPoolService.GetConnection("127.0.0.1").OpenConnection();
             var sclModel = new SclModel();
-            ILogicalDeviceLoadingService logicalDeviceLoadingService = StaticContainer.CurrentContainer.ResolveType<ILogicalDeviceLoadingService>();
+            ILogicalDevice logicalDeviceLoadingService = StaticContainer.CurrentContainer.ResolveType<ILogicalDevice>();
             await logicalDeviceLoadingService.PrepareProgressData("127.0.0.1");
             var result = await logicalDeviceLoadingService.GetLDeviceFromConnection(new Progress<LogicalNodeLoadingEvent>((event1 => { })),
                 sclModel, "MR771N123",new CancellationToken());

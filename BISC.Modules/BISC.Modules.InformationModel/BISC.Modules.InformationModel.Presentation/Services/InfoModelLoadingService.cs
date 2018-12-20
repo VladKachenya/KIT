@@ -20,11 +20,11 @@ namespace BISC.Modules.InformationModel.Presentation.Services
     {
 
         private readonly IConnectionPoolService _connectionPoolService;
-        private readonly ILogicalDeviceLoadingService _logicalDeviceLoadingService;
+        private readonly ILogicalDevice _logicalDeviceLoadingService;
         private readonly IInfoModelService _infoModelService;
 
         public InfoModelLoadingService(IConnectionPoolService connectionPoolService,
-            ILogicalDeviceLoadingService logicalDeviceLoadingService, IInfoModelService infoModelService)
+            ILogicalDevice logicalDeviceLoadingService, IInfoModelService infoModelService)
         {
             _connectionPoolService = connectionPoolService;
             _logicalDeviceLoadingService = logicalDeviceLoadingService;

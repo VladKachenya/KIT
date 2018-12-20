@@ -32,7 +32,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
 
         #region Implementation of IFcdaAdderViewModel
-        public string TestProp => "Hellow my friend!";
         public ICommand CloseCommand { get; }
         #endregion
 

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Presentation.Infrastructure.ChangeTracker;
 
 namespace BISC.Modules.DataSets.Infrastructure.ViewModels
@@ -18,7 +19,7 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
         bool IsExpanded { get; set; }
         bool IsEditing { get; set; }
         bool IsChanged { get; set; }
-
+        int Weight { get; }
         ObservableCollection<IFcdaViewModel> FcdaViewModels { get;}
         ICommand DeleteFcdaCommand { get; }
         ICommand AddFcdaToDataset { get; }

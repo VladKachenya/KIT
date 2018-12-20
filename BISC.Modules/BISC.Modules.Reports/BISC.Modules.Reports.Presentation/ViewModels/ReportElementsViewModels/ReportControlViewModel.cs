@@ -62,7 +62,9 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         {
             var datasets = _datasetModelService.GetAllDataSetOfDevice(_lDevice.GetFirstParentOfType<IDevice>());
             var selectedDataset = SelectidDataSetName;
-            AvailableDatasets = datasets.Select((ds => ds.Name)).ToList();
+            var itemList = datasets.Select((ds => ds.Name)).ToList();
+            itemList.Insert(0, "Default");
+            AvailableDatasets = itemList;
             SelectidDataSetName = AvailableDatasets.FirstOrDefault((s => s == selectedDataset));
         }
 

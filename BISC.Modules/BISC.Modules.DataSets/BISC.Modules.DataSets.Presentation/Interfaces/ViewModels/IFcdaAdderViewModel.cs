@@ -9,7 +9,6 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
 {
     public interface IFcdaAdderViewModel
     {
-        string TestProp { get; }
         ICommand CloseCommand { get; }
     }
 }

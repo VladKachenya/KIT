@@ -19,6 +19,7 @@ namespace BISC.Presentation.ViewModels
         private readonly ICommandFactory _commandFactory;
         private OperationResult<int> _result;
         private ObservableCollection<string> _options;
+        private ObservableCollection<string> _warnings;
         private string _message;
         private string _title;
 
@@ -36,8 +37,18 @@ namespace BISC.Presentation.ViewModels
             _options =
                 new ObservableCollection<string>(
                     navigationContext.BiscNavigationParameters.GetParameterByName<List<string>>("options"));
-            Message= navigationContext.BiscNavigationParameters.GetParameterByName<string>("message");
+            Message = navigationContext.BiscNavigationParameters.GetParameterByName<string>("message");
             Title = navigationContext.BiscNavigationParameters.GetParameterByName<string>("title");
+            if (navigationContext.BiscNavigationParameters?.GetParameterByName<List<string>>("warnings") != null)
+            {
+                Warnings =
+                    new ObservableCollection<string>(
+                        navigationContext.BiscNavigationParameters?.GetParameterByName<List<string>>("warnings"));
+            }
+            else
+            {
+                Warnings = new ObservableCollection<string>();
+            }
 
             OptionCollection.Clear();
             foreach (var option in _options)
@@ -59,20 +70,26 @@ namespace BISC.Presentation.ViewModels
 
         private void CloseView()
         {
-            DialogCommands.CloseDialogCommand.Execute(null,null);
+            DialogCommands.CloseDialogCommand.Execute(null, null);
         }
         public ObservableCollection<OptionSelectionCommand> OptionCollection { get; }
 
         public string Message
         {
             get => _message;
-            set => SetProperty(ref _message , value);
+            set => SetProperty(ref _message, value);
         }
 
         public string Title
         {
             get => _title;
             set => SetProperty(ref _title, value);
+        }
+
+        public ObservableCollection<string> Warnings
+        {
+            get => _warnings;
+            protected set => SetProperty(ref _warnings, value);
         }
     }
 

@@ -26,7 +26,7 @@ namespace BISC.Modules.InformationModel.Model.Module
 
         public void Initialize()
         {
-            _injectionContainer.RegisterType<ILogicalDeviceLoadingService, LogicalDeviceLoadingService>();
+            _injectionContainer.RegisterType<ILogicalDevice, LogicalDeviceLoadingService>();
             _injectionContainer.RegisterType<IInfoModelService, InfoModelService>();
             _injectionContainer.RegisterType<IDataTypeTemplatesModelService, DataTypeTemplatesModelService>();
 
