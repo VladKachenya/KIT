@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Events\DeviceWarningsChanged.cs" />
+    <Compile Include="Events\LoadErrorEvent.cs" />
     <Compile Include="Events\ResetByFtpEvent.cs" />
     <Compile Include="HelpClasses\DeviceWarning.cs" />
     <Compile Include="HelpClasses\ResolvingResult.cs" />

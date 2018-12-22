@@ -156,7 +156,11 @@
                                         <ContentControl.Style>
                                             <Style TargetType="ContentControl">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsEditing}" Value="True"/>
+                                                            <Condition Binding="{Binding IsInitialized}" Value="False"/>
+                                                        </MultiDataTrigger.Conditions>
                                                         <Setter Property="ContentTemplate">
                                                             <Setter.Value>
                                                                 <DataTemplate>
@@ -167,11 +171,34 @@
                                                                         <ComboBox VerticalAlignment="Center" Margin="4,0,0,4" SelectedItem="{Binding SelectedParentLd}" ItemsSource="{Binding ParentLdList}" MinWidth="100"></ComboBox>
                                                                         <ComboBox VerticalAlignment="Center" Margin="4,0,0,4" SelectedItem="{Binding SelectedParentLn}" ItemsSource="{Binding ParentLnList}" MinWidth="100"></ComboBox>
                                                                         <TextBox VerticalAlignment="Center" Margin="4,0,0,4"  Text="{Binding EditableNamePart,UpdateSourceTrigger=PropertyChanged}" />
+
                                                                     </StackPanel>
                                                                 </DataTemplate>
                                                             </Setter.Value>
                                                         </Setter>
-                                                    </DataTrigger>
+                                                    </MultiDataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsEditing}" Value="True"/>
+                                                            <Condition Binding="{Binding IsInitialized}" Value="True"/>
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="ContentTemplate">
+                                                            <Setter.Value>
+                                                                <DataTemplate>
+                                                                    <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                                                        <Border Margin="2" Background="{Binding TypeColorBrush}" >
+                                                                            <TextBlock Margin="4"  Text="{Binding ElementName}"/>
+                                                                        </Border>
+                                                                        <TextBlock VerticalAlignment="Center" Text="{Binding SelectedParentLd}"></TextBlock>
+                                                                        <TextBlock VerticalAlignment="Center" Text="."></TextBlock>
+                                                                        <TextBlock VerticalAlignment="Center"  Text="{Binding SelectedParentLn}"></TextBlock>
+                                                                        <TextBlock VerticalAlignment="Center" Text="."></TextBlock>
+                                                                        <TextBox VerticalAlignment="Center" Margin="4"  Text="{Binding EditableNamePart,UpdateSourceTrigger=PropertyChanged}" />
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </MultiDataTrigger>
                                                     <DataTrigger Binding="{Binding IsEditing}" Value="False">
                                                         <Setter Property="ContentTemplate">
                                                             <Setter.Value>
@@ -238,7 +265,7 @@
                                 <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13" 
                                            Text="{Binding Path=SelectedItem.MaxSizeFcdaList ,Source={x:Reference ExpanderItemsControl}}"/>
                             </StackPanel>
-                            
+
                         </Grid>
                     </DataTemplate>
                 </GroupBox.HeaderTemplate>

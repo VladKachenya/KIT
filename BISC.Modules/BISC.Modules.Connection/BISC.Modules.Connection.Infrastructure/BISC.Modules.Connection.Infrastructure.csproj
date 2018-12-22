@@ -52,6 +52,7 @@
     <Compile Include="Connection\IDeviceConnection.cs" />
     <Compile Include="Connection\IMmsConnectionFacade.cs" />
     <Compile Include="Events\ConnectionEvent.cs" />
+    <Compile Include="Events\LossConnectionEvent.cs" />
     <Compile Include="Keys\ConnectionKeys.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IConnectionPoolService.cs" />

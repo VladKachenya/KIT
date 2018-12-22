@@ -20,6 +20,8 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
         bool IsEditing { get; set; }
         bool IsChanged { get; set; }
         int Weight { get; }
+        bool IsInitialized { get; set; }
+
         ObservableCollection<IFcdaViewModel> FcdaViewModels { get;}
         ICommand DeleteFcdaCommand { get; }
         ICommand AddFcdaToDataset { get; }

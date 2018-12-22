@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Presentation.BaseItems.ViewModels;
@@ -18,13 +19,16 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
    public class LDeviceTreeItemViewModel:NavigationViewModelBase
    {
        private readonly ITabManagementService _tabManagementService;
+       private readonly IDeviceModelService _deviceModelService;
        private ILDevice _lDevice;
        private string _lDeviceName;
        private BiscNavigationContext _navigationContext;
+       private string _physicalDeviceName;
 
-       public LDeviceTreeItemViewModel(ICommandFactory commandFactory,ITabManagementService tabManagementService)
+       public LDeviceTreeItemViewModel(ICommandFactory commandFactory,ITabManagementService tabManagementService, IDeviceModelService deviceModelService)
        {
            _tabManagementService = tabManagementService;
+           _deviceModelService = deviceModelService;
            NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
        }
 
@@ -32,7 +36,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
        {
            _tabManagementService.NavigateToTab(InfoModelKeys.InfoModelTreeItemDetailsViewKey,
                _navigationContext.BiscNavigationParameters,
-               $"Logical Device {LDeviceName} устройства {_lDevice.Inst}",
+               $"Logical Device {LDeviceName} устройства {_physicalDeviceName}",
                _navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier
                    .Key));
         }
@@ -42,6 +46,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
            _navigationContext = navigationContext;
             _lDevice = navigationContext.BiscNavigationParameters.GetParameterByName<ILDevice>(InfoModelKeys.ModelKeys.LDeviceKey);
             LDeviceName = _lDevice.Inst;
+           _physicalDeviceName = _deviceModelService.GetParitntDeviceNameOfChildElement(_lDevice);
             base.OnNavigatedTo(navigationContext);
         }
 

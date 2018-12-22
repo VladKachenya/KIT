@@ -81,8 +81,7 @@ namespace BISC.Modules.Reports.Model.Services
             return count;
         }
 
-        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel,
-            CancellationToken cancellationToken)
+        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel, CancellationToken cancellationToken)
         {
             var connection = _connectionPoolService.GetConnection(device.Ip);
             _reportsModelService.DeleteAllReportsOfDevice(device);

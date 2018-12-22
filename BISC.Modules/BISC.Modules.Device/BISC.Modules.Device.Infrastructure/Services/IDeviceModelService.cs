@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BISC.Infrastructure.Global.Common;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Model;
 
@@ -12,8 +13,8 @@ namespace BISC.Modules.Device.Infrastructure.Services
         OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device,ISclModel modelFrom);
         OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device);
         OperationResult DeleteDeviceFromModel(ISclModel sclModel, string deviceName);
+        IDevice GetParitntDeviceOfChildElement(IModelElement childElement);
+        string GetParitntDeviceNameOfChildElement(IModelElement childElement);
+
     }
-
-
-
 }

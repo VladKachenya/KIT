@@ -1,6 +1,7 @@
 ﻿using BISC.Infrastructure.Global.Common;
 using BISC.Model.Global.Common;
 using BISC.Model.Infrastructure.Common;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Project.Communication;
 using BISC.Model.Infrastructure.Services.Communication;
@@ -133,7 +134,28 @@ namespace BISC.Modules.Device.Model.Services
             _dataTypeTemplatesModelService.FilterDataTypeTemplates(sclModel.ChildModelElements.First((element => element is IDataTypeTemplates)) as IDataTypeTemplates, devicesToRemove, devicesToLeave);
             sclModel.ChildModelElements.Remove(device);
             return OperationResult.SucceedResult;
+        }
 
+        public IDevice GetParitntDeviceOfChildElement(IModelElement childElement)
+        {
+            var parientElement = childElement.ParentModelElement;
+            if (parientElement == null)
+            {
+                return null;
+            }
+            else if (parientElement is IDevice)
+            {
+                return parientElement as IDevice;
+            }
+            else
+            {
+                return GetParitntDeviceOfChildElement(parientElement);
+            }
+        }
+
+        public string GetParitntDeviceNameOfChildElement(IModelElement childElement)
+        {
+            return GetParitntDeviceOfChildElement(childElement)?.Name;
         }
     }
 }

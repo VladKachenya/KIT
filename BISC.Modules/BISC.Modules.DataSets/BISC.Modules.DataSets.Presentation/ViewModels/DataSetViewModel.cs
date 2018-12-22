@@ -54,6 +54,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private bool _isEditeble;
         private IModelElement _device;
         private bool _isChanged;
+        private bool _isInitialized = true;
 
         #endregion
 
@@ -98,19 +99,19 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         #region Implamentation of DataSetElementBaseViewModel
 
-        public int MaxSizeFcdaList
+        public int MaxSizeFcdaList 
         {
-            get
-            {
-                if (_isEditeble)
-                {
-                    return 100;
-                }
-                else
-                {
-                    return FcdaViewModels.Count;
-                }
-            }
+            get => 100;
+            //{
+            //    if (_isEditeble)
+            //    {
+            //        return 100;
+            //    }
+            //    else
+            //    {
+            //        return FcdaViewModels.Count;
+            //    }
+            //}
         }
         public string Name
         {
@@ -179,6 +180,11 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         }
 
+        public bool IsInitialized
+        {
+            get => _isInitialized;
+            set => SetProperty(ref _isInitialized, value, true);
+        }
         public bool IsExpanded
         {
             get => _isExpanded;
@@ -188,18 +194,23 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public bool IsEditing
         {
             get => _isEditing;
-            set { SetProperty(ref _isEditing, value, true); }
+            set
+            {
+                if (_isEditing && !IsInitialized)
+                    IsInitialized = true;
+                SetProperty(ref _isEditing, value, true);
+            }
         }
 
         public bool IsEditeble
         {
             get => _isEditeble;
-            set { SetProperty(ref _isEditeble, value, true); }
+            set => SetProperty(ref _isEditeble, value, true); 
         }
         public bool IsChanged
         {
             get => _isChanged;
-            set { SetProperty(ref _isChanged, value, true); }
+            set => SetProperty(ref _isChanged, value, true); 
         }
 
         #endregion
@@ -209,10 +220,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public ObservableCollection<IFcdaViewModel> FcdaViewModels
         {
             get => _fcdaViewModels;
-            protected set
-            {
-                SetProperty(ref _fcdaViewModels, value);
-            }
+            protected set => SetProperty(ref _fcdaViewModels, value);
         }
 
         public ICommand DeleteFcdaCommand { get; }

@@ -84,6 +84,7 @@ namespace BISC.Modules.Connection.Model.Connection
                     IsConnected = false;
                     if (!String.IsNullOrEmpty(Ip))
                         _loggingService.LogMessage($"Связь с [{Ip}] потеряна", SeverityEnum.Info);
+                    _globalEventsService.SendMessage(new LossConnectionEvent(Ip));
                     return;
                 }
                 await Task.Delay(2000);

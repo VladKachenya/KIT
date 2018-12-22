@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Device.Infrastructure.Events;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Loading.Events;
@@ -47,6 +48,14 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private void OnCancelLoading()
         {
             _cts.Cancel();
+            _treeManagementService.DeleteTreeItem(
+                _navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier
+                    .Key));
+        }
+
+        private void OnCancelEvent(LoadErrorEvent loadErrorEvent)
+        {
+            if (loadErrorEvent.Ip != _device.Ip || loadErrorEvent.DeviceName != DeviceName) return;
             _treeManagementService.DeleteTreeItem(
                 _navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier
                     .Key));

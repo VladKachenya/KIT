@@ -43,6 +43,7 @@ namespace BISC.Modules.DataSets.Presentation.Factorys
             newDataSetViewModel.SelectedParentLd = newDataSetViewModel.ParentLdList.First();
             newDataSetViewModel.IsEditeble = true;
             newDataSetViewModel.IsEditing = true;
+            newDataSetViewModel.IsInitialized = false;
             newDataSetViewModel.ChangeTracker.SetModified();
             return newDataSetViewModel;
         }

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Services;
+using BISC.Modules.Connection.Infrastructure.Events;
+using BISC.Modules.Device.Infrastructure.Events;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading.Events;
 using BISC.Modules.Device.Infrastructure.Services;
@@ -82,6 +84,13 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
             }
         }
 
+        private void OnCancelEvent(LoadErrorEvent loadErrorEvent)
+        {
+            if(loadErrorEvent.Ip != _restartDeviceContext.Device.Ip || loadErrorEvent.DeviceName != _restartDeviceContext.Device.Name) return;
+            _treeManagementService.DeleteTreeItem(_restartDeviceContext.TreeItemIdentifier);
+            _deviceAddingService.AddDeviceToTree(_restartDeviceContext.Device);
+        }
+
         private void OnCancel()
         {
             _restartDeviceContext.Cts.Cancel();
@@ -146,6 +155,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
         public override void OnDeactivate()
         {
             _globalEventsService.Unsubscribe<DeviceLoadingEvent>(OnDeviceLoadingEvent);
+            _globalEventsService.Unsubscribe<LoadErrorEvent>(OnCancelEvent);
+
             base.OnDeactivate();
         }
 
@@ -171,6 +182,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
         public override void OnActivate()
         {
             _globalEventsService.Subscribe<DeviceLoadingEvent>(OnDeviceLoadingEvent);
+            _globalEventsService.Subscribe<LoadErrorEvent>(OnCancelEvent);
             base.OnActivate();
         }
 

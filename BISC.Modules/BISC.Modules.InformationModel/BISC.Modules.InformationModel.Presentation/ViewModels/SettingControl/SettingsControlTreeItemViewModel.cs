@@ -23,7 +23,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
         public SettingsControlTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService)
        {
            _tabManagementService = tabManagementService;
-           NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
+           NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute, () => false);
        }
 
        private void OnNavigateToDetailsExecute()

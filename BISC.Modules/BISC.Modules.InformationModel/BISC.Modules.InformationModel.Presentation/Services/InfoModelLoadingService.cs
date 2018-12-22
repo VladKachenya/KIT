@@ -38,7 +38,8 @@ namespace BISC.Modules.InformationModel.Presentation.Services
             return _logicalDeviceLoadingService.GetLogicalNodeCount();
         }
 
-        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress,ISclModel sclModel,CancellationToken cancellationToken)
+        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress,ISclModel sclModel,
+            CancellationToken cancellationToken)
         {
             int loadedLns = 0;
             var devices = await _logicalDeviceLoadingService.GetLDeviceFromConnection(
