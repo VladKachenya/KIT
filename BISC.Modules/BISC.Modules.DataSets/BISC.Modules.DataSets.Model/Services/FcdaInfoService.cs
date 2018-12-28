@@ -38,8 +38,7 @@ namespace BISC.Modules.DataSets.Model.Services
 
             List<ILogicalNode> lNodes = new List<ILogicalNode>();
             lDevice.GetAllChildrenOfType<ILogicalNode>(ref lNodes);
-            var lNode = lNodes.Find(ln =>
-                ln.Prefix == fcda.Prefix && ln.LnClass == fcda.LnClass && ln.Inst == fcda.LnInst);
+            var lNode = lNodes.Find(ln => ln.Prefix + ln.LnClass + ln.Inst == fcda.Prefix + fcda.LnClass + fcda.LnInst);
 
             if (lNode == null || string.IsNullOrEmpty(fcda.DoName))
             {
@@ -89,6 +88,8 @@ namespace BISC.Modules.DataSets.Model.Services
         public int GetFcdaWeight(IDevice device, IFcda fcda)
         {
             var modelElement = GetModelElementFromFcda(device, fcda);
+            if(modelElement == null)
+            { }
             return GetModelElementWeight(device, modelElement, fcda.Fc);
         }
 
@@ -101,7 +102,9 @@ namespace BISC.Modules.DataSets.Model.Services
             {
                 IDa da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel.Value);
                 if (da.Fc == fc)
+                {
                     weight++;
+                }
             }
             return weight;
         }

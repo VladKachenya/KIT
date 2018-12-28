@@ -1,36 +1,34 @@
-﻿using BISC.Model.Infrastructure.Project;
+﻿using BISC.Infrastructure.Global.Logging;
+using BISC.Infrastructure.Global.Services;
+using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Connection.Infrastructure.Events;
+using BISC.Modules.Connection.Infrastructure.Services;
+using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.ViewModels;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
+using BISC.Modules.DataSets.Model.Services;
+using BISC.Modules.DataSets.Presentation.Commands;
+using BISC.Modules.Device.Infrastructure.Events;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.InformationModel.Infrastucture;
+using BISC.Modules.Reports.Infrastructure.Keys;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.BaseItems.ViewModels.Behaviors;
+using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
-using GongSolutions.Wpf.DragDrop;
+using BISC.Presentation.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
-using BISC.Infrastructure.Global.Logging;
-using BISC.Infrastructure.Global.Services;
-using BISC.Modules.Connection.Infrastructure.Events;
-using BISC.Modules.Connection.Infrastructure.Services;
-using BISC.Presentation.Infrastructure.ChangeTracker;
-using BISC.Presentation.Infrastructure.Services;
-using BISC.Modules.DataSets.Infrastructure.Factorys;
-using BISC.Modules.DataSets.Presentation.Services.Interfaces;
-using BISC.Modules.InformationModel.Infrastucture;
-using BISC.Modules.DataSets.Model.Services;
-using BISC.Modules.DataSets.Presentation.Commands;
-using BISC.Modules.Device.Infrastructure.Services;
-using BISC.Presentation.Infrastructure.Commands;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -40,15 +38,17 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private List<IDataSet> _dataSets;
         private IDatasetModelService _datasetModelService;
         private IDatasetViewModelFactory _datasetViewModelFactory;
-	    private DatasetsSavingCommand _datasetsSavingCommand;
+        private DatasetsSavingByFtpCommand _datasetsSavingCommand;
         private readonly IUserInteractionService _userInteractionService;
         private readonly ISaveCheckingService _saveCheckingService;
+        private readonly ICommandFactory _commandFactory;
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly IGlobalEventsService _globalEventsService;
         private readonly INavigationService _navigationService;
         private readonly ILoggingService _loggingService;
         private readonly IDeviceReconnectionService _deviceReconnectionService;
+        private readonly IDeviceWarningsService _deviceWarningsService;
 
         private readonly DatasetsLoadingService _datasetsLoadingService;
         private IBiscProject _biscProject;
@@ -62,26 +62,29 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public DataSetsDetailsViewModel(ICommandFactory commandFactory,
             IBiscProject biscProject, IDatasetModelService datasetModelService, IDatasetViewModelFactory datasetViewModelFactory,
             ISaveCheckingService saveCheckingService, IUserInterfaceComposingService userInterfaceComposingService,
-            IConnectionPoolService connectionPoolService, IGlobalEventsService globalEventsService ,
+            IConnectionPoolService connectionPoolService, IGlobalEventsService globalEventsService,
             INavigationService navigationService, ILoggingService loggingService, DatasetsLoadingService datasetsLoadingService,
-	        DatasetsSavingCommand datasetsSavingCommand,IUserInteractionService userInteractionService, IDeviceReconnectionService deviceReconnectionService)
+            DatasetsSavingByFtpCommand datasetsSavingByFtpCommandCommand, IUserInteractionService userInteractionService, IDeviceReconnectionService deviceReconnectionService,
+                IDeviceWarningsService deviceWarningsService)
         {
+            _commandFactory = commandFactory;
             _userInterfaceComposingService = userInterfaceComposingService;
             _connectionPoolService = connectionPoolService;
             _globalEventsService = globalEventsService;
             _navigationService = navigationService;
             _loggingService = loggingService;
             _datasetsLoadingService = datasetsLoadingService;
-	        _datasetsSavingCommand = datasetsSavingCommand;
+            _datasetsSavingCommand = datasetsSavingByFtpCommandCommand;
             _userInteractionService = userInteractionService;
             _biscProject = biscProject;
             _datasetModelService = datasetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
             _saveCheckingService = saveCheckingService;
             _deviceReconnectionService = deviceReconnectionService;
+            _deviceWarningsService = deviceWarningsService;
             DeployAllExpandersCommand = commandFactory.CreatePresentationCommand(OnDeployAllExpanders);
             RollUpAllExpandersCommand = commandFactory.CreatePresentationCommand(OnRollUpAllExpanders);
-            SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhanges, () => _isSaveСhanges);
+            SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand, () => _isSaveСhanges);
             ExpandModelCommand = commandFactory.CreatePresentationCommand(OnExpandModel);
             CollapseModelCommand = commandFactory.CreatePresentationCommand(OnCollapseModel);
             AddNewDataSetCommand = commandFactory.CreatePresentationCommand(OnAddNewDataSet, IsAddNewDataSet);
@@ -123,9 +126,9 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             SortDataSetsByIsDynamic();
             DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
-			_datasetsSavingCommand.Initialize(DataSets,_device);
+            _datasetsSavingCommand.Initialize(DataSets, _device);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"DataSets устройства {_device.Name}", SaveChangesAsync,_datasetsSavingCommand,_device.Name, _regionName));
+                $"DataSets устройства {_device.Name}", SaveChangesAsync, _datasetsSavingCommand, _device.Name, _regionName));
             AddNewDataSetCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
@@ -164,19 +167,27 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             //var isEditebleDs = DataSets.Where(ds => ds.IsEditeble);
             //if (isEditebleDs.Count() >= 20) return false;
-            if (DataSets.Count() >= 30) return false;
+            if (DataSets.Count() >= 30)
+            {
+                return false;
+            }
+
             return true;
         }
         private void OnDeployAllExpanders()
         {
             foreach (var element in DataSets)
+            {
                 element.IsExpanded = true;
+            }
         }
 
         private void OnRollUpAllExpanders()
         {
             foreach (var element in DataSets)
+            {
                 element.IsExpanded = false;
+            }
         }
 
         private void ResetAllDataSetCollections()
@@ -185,37 +196,93 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             DataSets.Clear();
         }
 
-        private async void OnSaveСhanges()
+        private async void OnSaveСhangesCommand()
         {
-            _datasetsSavingCommand.Initialize(DataSets, _device);
-            var res = await _datasetsSavingCommand.ValidateBeforeSave();
-            if (!res.IsSucceed)
+            try
             {
-                await _userInteractionService.ShowOptionToUser("Ошибка сохранения", res.GetFirstError(), new List<string>() { "Ок" });
-                return;
+                _loggingService.LogUserAction($"Пользователь сохраняет изменения DataSets устройства {_device.Name}");
+                _datasetsSavingCommand.Initialize(DataSets, _device);
+                var res = await _datasetsSavingCommand.ValidateBeforeSave();
+                if (!res.IsSucceed)
+                {
+                    string errorMes = string.Empty;
+                    foreach (var error in res.ErrorList)
+                    {
+                        errorMes += error + "\n";
+                    }
+                    await _userInteractionService.ShowOptionToUser("DataSets не могут быть сохранены", errorMes,
+                        new List<string>() { "Ок" });
+                    return;
+                }
+                if (await _datasetsSavingCommand.IsSavingByFtpNeeded())
+                {
+                    await _deviceReconnectionService.ExecuteBeforeRestart(SaveChangesAsync, _device);
+                }
+                else
+                {
+                    await SaveChangesAsync();
+                }
             }
-            _loggingService.LogUserAction($"Пользователь сохраняет изменения DataSets устройства {_device.Name}");
-            await _deviceReconnectionService.ExecuteBeforeRestart(SaveChangesAsync, _device);
-            //await SaveChangesAsync();
+            catch (Exception e)
+            {
+                _loggingService.LogUserAction($"Ошибка записи DataSet в устройство {e.Message}");
+
+            }
+
         }
 
         private async Task SaveChangesAsync()
         {
             _isSaveСhanges = false;
             (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
-            BlockViewModelBehavior.SetBlock("Сохранение DataSet-ов", true);
-            await Task.Delay(500);
-			_datasetsSavingCommand.Initialize(DataSets, _device);
-            await _datasetsSavingCommand.SaveAsync();
-            ResetAllDataSetCollections();
-            _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
-            SortDataSetsByIsDynamic();
-            DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
-            ChangeTracker.AcceptChanges();
-            ChangeTracker.SetTrackingEnabled(true);
-            BlockViewModelBehavior.Unlock();
-            _isSaveСhanges = true;
-            (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
+            try
+            {
+                BlockViewModelBehavior.SetBlock("Сохранение DataSet-ов", true);
+                await Task.Delay(500);
+                _datasetsSavingCommand.Initialize(DataSets, _device);
+                var res = await _datasetsSavingCommand.SaveAsync();
+                ResetAllDataSetCollections();
+                _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
+                SortDataSetsByIsDynamic();
+                DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
+                ChangeTracker.AcceptChanges();
+                if (res.Item == SavingCommandResultEnum.SavedOk && await _datasetsSavingCommand.IsSavingByFtpNeeded())
+                {
+                    if (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
+                    {
+                        _deviceWarningsService.SetWarningOfDevice(_device.Name, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey, "DataSets сохранены с использование FTP");
+                        ShowFtpBlockMessageIfNeeded();
+                    }
+                }
+                else
+                {
+                    BlockViewModelBehavior.Unlock();
+                }
+
+                //ChangeTracker.SetTrackingEnabled(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally
+            {
+                _isSaveСhanges = true;
+                (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
+            }
+        }
+
+        private void ShowFtpBlockMessageIfNeeded()
+        {
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name,
+                DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey))
+            {
+                BlockViewModelBehavior.SetBlockWithOption(
+                    "Для сохранения изменений по FTP требуется перезагрузка" + Environment.NewLine +
+                    "Имеется несоответствие данных.", new UnlockCommandEntity("Все равно продолжить"),
+                    new UnlockCommandEntity("Перезагрузить устройство", _commandFactory.CreatePresentationCommand(() => _globalEventsService.SendMessage(new ResetByFtpEvent { DeviceName = _device.Name, Ip = _device.Ip }))));
+            }
         }
 
         private void SortDataSetsByIsDynamic()
@@ -225,9 +292,13 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             foreach (var element in _dataSets)
             {
                 if (element.IsDynamic)
+                {
                     isDynamicDataSets.Add(element);
+                }
                 else
+                {
                     notIsDynamicDataSets.Add(element);
+                }
             }
             _dataSets.Clear();
             _dataSets.AddRange(notIsDynamicDataSets);

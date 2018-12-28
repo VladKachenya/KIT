@@ -26,6 +26,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Model.Infrastructure.Common;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
 {
@@ -131,18 +132,18 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
                 var res = await _reportsSavingCommand.SaveAsync();
                 UpdateViewModels();
                 ChangeTracker.AcceptChanges();
-                //if (res == SavingResultEnum.SavedUsingFtp)
-                //{
-                //    if (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
-                //    {
-                //        _deviceWarningsService.SetWarningOfDevice(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag, "Reports сохрандены с использование FTP");
-                //        ShowFtpBlockMessageIfNeeded();
-                //    }
-                //}
-                //else
-                //{
-                BlockViewModelBehavior.Unlock();
-                //      }
+                if (res.Item == SavingCommandResultEnum.SavedOk && await _reportsSavingCommand.IsSavingByFtpNeeded())
+                {
+                    if (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
+                    {
+                        _deviceWarningsService.SetWarningOfDevice(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag, "Reports сохранены с использование FTP");
+                        ShowFtpBlockMessageIfNeeded();
+                    }
+                }
+                else
+                {
+                    BlockViewModelBehavior.Unlock();
+                }
             }
             finally
             {

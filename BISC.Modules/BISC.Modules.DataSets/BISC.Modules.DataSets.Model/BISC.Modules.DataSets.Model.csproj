@@ -84,6 +84,10 @@
       <Project>{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}</Project>
       <Name>BISC.Modules.Device.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.FTP\BISC.Modules.FTP.Infrastructure\BISC.Modules.FTP.Infrastructure.csproj">
+      <Project>{60A162A1-2A6A-4A39-B349-4B718BA1FA1F}</Project>
+      <Name>BISC.Modules.FTP.Infrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Infrastucture\BISC.Modules.InformationModel.Infrastucture.csproj">
       <Project>{1642183D-562D-4E50-B8F7-22205D731E45}</Project>
       <Name>BISC.Modules.InformationModel.Infrastucture</Name>

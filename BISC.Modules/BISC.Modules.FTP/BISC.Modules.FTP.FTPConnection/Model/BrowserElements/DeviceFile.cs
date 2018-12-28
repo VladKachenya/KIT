@@ -1,14 +1,10 @@
 ﻿using BISC.Modules.FTP.Infrastructure.Keys;
 using BISC.Modules.FTP.Infrastructure.Model.BrowserElements;
 using BISC.Modules.FTP.Infrastructure.Model.Loaders;
-using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace BISC.Modules.FTP.FTPConnection.Model.BrowserElements
 {
@@ -27,18 +23,17 @@ namespace BISC.Modules.FTP.FTPConnection.Model.BrowserElements
 
         public byte[] FileData { get; private set; }
 
-        public void Download(string path )
+        public void Download(string path)
         {
-            FileData = _fileLoader.LoadFileData(ElementPath);
             StreamWriter sw = new StreamWriter(path);
             try
             {
+                FileData = _fileLoader.LoadFileData(ElementPath);
                 sw.Write(UTF8Encoding.UTF8.GetString(FileData));
-
             }
             catch (Exception e)
             {
-
+                throw;
             }
             finally
             {

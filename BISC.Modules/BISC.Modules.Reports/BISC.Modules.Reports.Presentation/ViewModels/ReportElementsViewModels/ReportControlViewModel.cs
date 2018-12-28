@@ -1,24 +1,20 @@
 ﻿using BISC.Infrastructure.Global.Services;
-using BISC.Model.Infrastructure.Elements;
-using BISC.Modules.InformationModel.Infrastucture.Elements;
-using BISC.Modules.Reports.Infrastructure.Model;
-using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
-using BISC.Presentation.BaseItems.ViewModels;
-using BISC.Presentation.Infrastructure.Events;
-using BISC.Presentation.Infrastructure.Factories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Windows.Media;
-using BISC.Model.Global.Common;
 using BISC.Model.Infrastructure.Common;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Modules.Reports.Infrastructure.Model;
+using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Model.Model;
+using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Events;
+using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 {
@@ -42,11 +38,11 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private bool _giBool;
         private int _configurationRevision;
 
-        
+
 
         #region ctor
         public ReportControlViewModel(IReportEnabledViewModel reportEnabledViewModel, ITriggerOptionsViewModel triggerOptionsViewModel,
-            IOprionalFildsViewModel oprionalFildsViewModel, IGlobalEventsService globalEventsService, ICommandFactory commandFactory,IDatasetModelService datasetModelService)
+            IOprionalFildsViewModel oprionalFildsViewModel, IGlobalEventsService globalEventsService, ICommandFactory commandFactory, IDatasetModelService datasetModelService)
         {
             ReportEnabledViewModel = reportEnabledViewModel;
             TriggerOptionsViewModel = triggerOptionsViewModel;
@@ -63,7 +59,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             var datasets = _datasetModelService.GetAllDataSetOfDevice(_lDevice.GetFirstParentOfType<IDevice>());
             var selectedDataset = SelectidDataSetName;
             var itemList = datasets.Select((ds => ds.Name)).ToList();
-            itemList.Insert(0, "Default");
+            if(!itemList.Contains(selectedDataset))
+                itemList.Add(selectedDataset);
             AvailableDatasets = itemList;
             SelectidDataSetName = AvailableDatasets.FirstOrDefault((s => s == selectedDataset));
         }
@@ -101,15 +98,23 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         public List<string> AvailableDatasets
         {
             get => _availableDatasets;
-            set => SetProperty(ref _availableDatasets, value,true);
+            set => SetProperty(ref _availableDatasets, value, true);
         }
         public string Name
         {
             get => _name;
             set
             {
-                if (value.Length > 20) return;
-                if (!StaticStringValidationService.NameValidation(value)) return;
+                if (value.Length > 20)
+                {
+                    return;
+                }
+
+                if (!StaticStringValidationService.NameValidation(value))
+                {
+                    return;
+                }
+
                 SetProperty(ref _name, value);
                 SetRoportID();
             }
@@ -142,7 +147,11 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             get => _bufferTime;
             set
             {
-                if(value < 0 || value > 3600000) return;
+                if (value < 0 || value > 3600000)
+                {
+                    return;
+                }
+
                 SetProperty(ref _bufferTime, value);
             }
         }
@@ -188,7 +197,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         public bool GiBool
         {
             get => _giBool;
-            set =>SetProperty(ref _giBool , value);
+            set => SetProperty(ref _giBool, value);
         }
 
         public IReportControl Model
@@ -216,7 +225,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 
         public IReportControl GetUpdatedModel()
         {
-          IReportControl reportControl=new ReportControl();
+            IReportControl reportControl = new ReportControl();
             reportControl.Name = Name;
             reportControl.RptID = ReportID;
             reportControl.Buffered = IsBuffered;
@@ -226,13 +235,13 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             reportControl.GiBool = GiBool;
             reportControl.IsDynamic = IsDynamic;
             reportControl.ConfRev = ConfigurationRevision;
-            reportControl.OptFields.Value= OprionalFildsViewModel.GetUpdatedModel();
+            reportControl.OptFields.Value = OprionalFildsViewModel.GetUpdatedModel();
             reportControl.RptEnabled.Value = ReportEnabledViewModel.GetUpdatedModel();
             reportControl.TrgOps.Value = TriggerOptionsViewModel.GetUpdatedModel();
             return reportControl;
         }
 
-      
+
 
         public void UpdateViewModel()
         {
@@ -246,8 +255,10 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             ReportEnabledViewModel.UpdateViewModel();
             TriggerOptionsViewModel.UpdateViewModel();
             OprionalFildsViewModel.UpdateViewModel();
-            if(Model.ParentModelElement != null)
+            if (Model.ParentModelElement != null)
+            {
                 ChangeTracker.AcceptChanges();
+            }
         }
         #endregion
 

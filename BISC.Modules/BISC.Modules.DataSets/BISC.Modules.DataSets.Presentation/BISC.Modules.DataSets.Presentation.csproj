@@ -53,10 +53,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\DatasetsSavingCommand.cs" />
+    <Compile Include="Commands\DatasetsSavingByFtpCommand.cs" />
+    <Compile Include="Commands\DatasetsSavingByMmsCommand.cs" />
     <Compile Include="Factorys\DatasetViewModelFactory.cs" />
     <Compile Include="Factorys\FcdaViewModelFactory.cs" />
     <Compile Include="Interfaces\IDataSetSavingService.cs" />
+    <Compile Include="Interfaces\IFtpDataSetModelService.cs" />
     <Compile Include="Interfaces\ViewModels\Base\IDataSetElementBaseViewModel.cs" />
     <Compile Include="Interfaces\ViewModels\Factorys\IDatasetViewModelFactory.cs" />
     <Compile Include="Interfaces\ViewModels\Factorys\IFcdaViewModelFactory.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="Services\DatasetsConflictResolver.cs" />
     <Compile Include="Services\DataSetsUiHandlingService.cs" />
     <Compile Include="Services\FcdaAdderViewModelService.cs" />
+    <Compile Include="Services\FtpDataSetModelService.cs" />
     <Compile Include="ViewModels\DataSetsConflictsViewModel.cs" />
     <Compile Include="ViewModels\DataSetsDetailsViewModel.cs" />
     <Compile Include="ViewModels\DataSetsTreeItemViewModel.cs" />
@@ -144,6 +147,10 @@
     <ProjectReference Include="..\..\BISC.Modules.Device\BISC.Modules.Device.Infrastructure\BISC.Modules.Device.Infrastructure.csproj">
       <Project>{ADF04BC5-5D55-4B62-B5E3-AD355CA8BB07}</Project>
       <Name>BISC.Modules.Device.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.FTP\BISC.Modules.FTP.Infrastructure\BISC.Modules.FTP.Infrastructure.csproj">
+      <Project>{60a162a1-2a6a-4a39-b349-4b718ba1fa1f}</Project>
+      <Name>BISC.Modules.FTP.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Infrastucture\BISC.Modules.InformationModel.Infrastucture.csproj">
       <Project>{1642183D-562D-4E50-B8F7-22205D731E45}</Project>

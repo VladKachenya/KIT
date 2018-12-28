@@ -1,4 +1,5 @@
 ﻿using BISC.Infrastructure.Global.IoC;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
@@ -8,14 +9,9 @@ using BISC.Modules.Reports.Infrastructure.Factorys;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.Factorys;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
-using BISC.Presentation.BaseItems.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Infrastructure.Global.Services;
 
 namespace BISC.Modules.Reports.Presentation.Factorys
 {
@@ -27,7 +23,7 @@ namespace BISC.Modules.Reports.Presentation.Factorys
         private readonly IInfoModelService _infoModelService;
         private readonly IUniqueNameService _uniqueNameService;
 
-        public ReportControlFactoryViewModel(IInjectionContainer injectionContainer, IReportControlsFactory reportControlsFactory, IDatasetModelService datasetModelService, 
+        public ReportControlFactoryViewModel(IInjectionContainer injectionContainer, IReportControlsFactory reportControlsFactory, IDatasetModelService datasetModelService,
             IInfoModelService infoModelService, IUniqueNameService uniqueNameService)
         {
             _injectionContainer = injectionContainer;
@@ -40,7 +36,10 @@ namespace BISC.Modules.Reports.Presentation.Factorys
         {
             ObservableCollection<IReportControlViewModel> reportControlsColection = new ObservableCollection<IReportControlViewModel>();
             foreach (var element in modelsList)
+            {
                 reportControlsColection.Add(GetReportControlViewModel(element, device));
+            }
+
             return reportControlsColection;
         }
 
@@ -52,7 +51,7 @@ namespace BISC.Modules.Reports.Presentation.Factorys
 
         public IReportControlViewModel CreateReportViewModel(List<string> existingNames, IDevice device)
         {
-            var reportsName = existingNames.Select(repId => repId.Split('$','/','.')[2]);
+            var reportsName = existingNames.Select(repId => repId.Split('$', '/', '.')[2]);
 
             var model = _reportControlsFactory.GetReportControl();
             model.Name = _uniqueNameService.GetUniqueName(reportsName.ToList(), "NewReport");
@@ -66,7 +65,7 @@ namespace BISC.Modules.Reports.Presentation.Factorys
         private IReportControlViewModel GetNewReportViewModel(ILDevice parientDevice, IReportControl model, IDevice device)
         {
             IReportControlViewModel newReport = _injectionContainer.ResolveType<IReportControlViewModel>();
-        newReport.SetIsEditable(true);
+            newReport.SetIsEditable(true);
             newReport.Model = model;
             newReport.SetParentLDevice(parientDevice);
             newReport.ActivateElement();
@@ -75,8 +74,16 @@ namespace BISC.Modules.Reports.Presentation.Factorys
 
         private ILDevice GetLDeviceOfReportControlRecursive(IModelElement reportControl)
         {
-            if (reportControl == null) return null;
-            if (reportControl is ILDevice) return reportControl as ILDevice;
+            if (reportControl == null)
+            {
+                return null;
+            }
+
+            if (reportControl is ILDevice)
+            {
+                return reportControl as ILDevice;
+            }
+
             return GetLDeviceOfReportControlRecursive(reportControl.ParentModelElement);
         }
     }

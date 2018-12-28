@@ -26,7 +26,7 @@
                                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Margin="5" Text="{Binding ShortPath}"></TextBlock>
+                                <TextBlock Margin="5" Text="{Binding ShortPath}" ToolTip="{Binding ShortPath}"/>
                                 <Button Margin="1" Width="24" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"
                                                 Command="{Binding DataContext.DeleteFileFromView,Source={x:Reference lastOpenedFilesListBox}}" CommandParameter="{Binding .}">
                                     <Button.Content>

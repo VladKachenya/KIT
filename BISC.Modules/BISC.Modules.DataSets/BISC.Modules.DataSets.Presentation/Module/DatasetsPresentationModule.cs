@@ -54,10 +54,10 @@ namespace BISC.Modules.DataSets.Presentation.Module
             _injectionContainer.RegisterType<IDataSetViewModel, DataSetViewModel>();
             _injectionContainer.RegisterType<IFcdaAdderViewModel, FcdaAdderViewModel>();
             _injectionContainer.RegisterType<IDataSetSavingService, DataSetSavingService>();
+            _injectionContainer.RegisterType<IFtpDataSetModelService, FtpDataSetModelService>();
             _injectionContainer.RegisterType<DataSetsConflictsViewModel>();
-            _injectionContainer.RegisterType<DatasetsSavingCommand>();
-
-
+            _injectionContainer.RegisterType<DatasetsSavingByMmsCommand>();
+            _injectionContainer.RegisterType<DatasetsSavingByFtpCommand>();
         }
 
         #endregion
