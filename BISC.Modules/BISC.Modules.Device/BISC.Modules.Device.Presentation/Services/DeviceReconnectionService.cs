@@ -169,9 +169,11 @@ namespace BISC.Modules.Device.Presentation.Services
 						$"Ошибка загрузки устройства {e.Message + Environment.NewLine + e.StackTrace}",
 						SeverityEnum.Critical);
                     _globalEventsService.SendMessage(new LoadErrorEvent(device.Ip, device.Name));
-					// return new OperationResult($"Ошибка загрузка устройства {device.Name}");
+					
+				    // return new OperationResult($"Ошибка загрузка устройства {device.Name}");
 				}
-			}
+			    return;
+            }
 
 			var hasConflics = false;
 			_elementConflictResolvers.ForEach((resolver =>

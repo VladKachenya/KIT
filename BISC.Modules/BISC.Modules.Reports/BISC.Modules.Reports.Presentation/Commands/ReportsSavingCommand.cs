@@ -32,6 +32,8 @@ namespace BISC.Modules.Reports.Presentation.Commands
         private readonly IFtpReportModelService _ftpReportModelService;
         private IReportControlsFactory _IReportControlsFactory;
         private ObservableCollection<IReportControlViewModel> _reportsToSave;
+        private List<IReportControl> _reportsToDelete = new List<IReportControl>();
+
         private IDevice _device;
         private Func<bool> _isSavingInDevice;
 
@@ -59,6 +61,18 @@ namespace BISC.Modules.Reports.Presentation.Commands
         {
             _reportsToSave = reportsToSave;
             _device = device;
+            _reportsToDelete.Clear();
+
+            List<IReportControl> reportControlsInDevice =
+                _reportsModelService.GetAllReportControlsOfDevice(_device);
+            foreach (var report in reportControlsInDevice)
+            {
+                if (!_reportsToSave.Any(el => el.Name == report.Name))
+                {
+                    _reportsToDelete.Add(report);
+                }
+
+            }
             _isSavingInDevice = isSavingInDevice;
         }
 
@@ -167,12 +181,12 @@ namespace BISC.Modules.Reports.Presentation.Commands
             List<IReportControl> reportControlsInDeviceToDelete =
                 reportControlsInDevice.Where((model => model.IsDynamic)).ToList();
             if (!reportsToSaveDynamic.Any(model => model.ChangeTracker.GetIsModifiedRecursive()) &&
-                reportControlsInDeviceToDelete.Count == reportsToSaveDynamic.Count)
+                !_reportsToDelete.Any())
             {
                 return false;
             }
 
-            if (!reportsToSaveDynamic.Any() && !reportControlsInDeviceToDelete.Any())
+            if (!reportsToSaveDynamic.Any() && !_reportsToDelete.Any())
             {
                 return false;
             }
