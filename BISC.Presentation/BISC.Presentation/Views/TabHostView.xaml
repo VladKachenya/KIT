@@ -33,6 +33,7 @@
             AnchorableHeaderTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
             AnchorableTitleTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
             AnchorablesSource="{Binding AnchorableWindows}"
+        
             DocumentHeaderTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
             DocumentTitleTemplate="{DynamicResource DockingWindowTitleDataTemplate}"
             DocumentsSource="{Binding TabViewModels}">
@@ -136,6 +137,7 @@
                 </docking:PanesStyleSelector.ProjectPaneStyle>
                 <docking:PanesStyleSelector.FragmentsPaneStyle>
                     <Style TargetType="{x:Type xcad:LayoutItem}">
+                        <Setter Property="CanFloat" Value="False"></Setter>
                         <Setter Property="Title">
                             <Setter.Value>
                                 <Binding Path="Model.FragmentTitle" />
@@ -148,10 +150,10 @@
         </xcad:DockingManager.LayoutItemContainerStyleSelector>
 
         <xcad:LayoutRoot>
-            <xcad:LayoutPanel Orientation="Vertical">
+            <xcad:LayoutPanel CanRepositionItems="False"   Orientation="Vertical">
                 <xcad:LayoutPanel DockHeight="2*" Orientation="Horizontal">
                     <xcad:LayoutAnchorablePane Name="LeftAnchorablePane" DockWidth="250" />
-                    <xcad:LayoutDocumentPane DockWidth="*" />
+                    <xcad:LayoutDocumentPane DockHeight="0"  DockWidth="0" />
                 </xcad:LayoutPanel>
 
                 <xcad:LayoutAnchorablePane

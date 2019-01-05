@@ -52,6 +52,7 @@
     <Compile Include="Model\IGooseInput.cs" />
     <Compile Include="Model\ISubscriberDevice.cs" />
     <Compile Include="Model\Matrix\IGooseMatrix.cs" />
+    <Compile Include="Model\Matrix\IGooseMatrixFtp.cs" />
     <Compile Include="Model\Matrix\IGooseRow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IFtpGooseModelService.cs" />
