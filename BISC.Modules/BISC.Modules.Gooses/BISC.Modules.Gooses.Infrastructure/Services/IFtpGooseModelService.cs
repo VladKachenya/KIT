@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
+using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 
 namespace BISC.Modules.Gooses.Infrastructure.Services
 {
@@ -10,5 +11,9 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
     {
         Task<OperationResult<List<GooseFtpDto>>> GetGooseDtosFromDevice(string ip);
         Task<OperationResult> WriteGooseDtosToDevice(string ip, List<GooseFtpDto> gooseDtos);
-    }
+
+	    Task<OperationResult<IGooseMatrixFtp>> GetGooseMatrixByFtp(string ip);
+	    Task<OperationResult> WriteGooseMatrixToDevice(string ip, List<GooseFtpDto> gooseDtos);
+
+	}
 }

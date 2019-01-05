@@ -3,11 +3,12 @@ using BISC.Model.Infrastructure.Elements;
 
 namespace BISC.Modules.Gooses.Infrastructure.Model.Matrix
 {
-	public interface IGooseMatrixFtp
+	public interface IGooseMatrixFtp:IModelElement
 	{
-		ChildModelsList<IMacAddressEntity> MacAddressList { get; set; }
-		ChildModelsList<IGoCbFtpEntity> GoCbFtpEntities { get; set; }
-		ChildModelsList<IGooseRowFtpEntity> GooseRowFtpEntities { get; set; }
+		string DeviceOwnerName { get; set; }
+		ChildModelsList<IMacAddressEntity> MacAddressList { get; }
+		ChildModelsList<IGoCbFtpEntity> GoCbFtpEntities { get; }
+		ChildModelsList<IGooseRowFtpEntity> GooseRowFtpEntities { get;  }
 	}
 
 	public interface IMacAddressEntity:IModelElement

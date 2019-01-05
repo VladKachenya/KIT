@@ -17,9 +17,14 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
             public static string GooseRowKey => "GooseRow";
             public static string GooseMatrixKey => "GooseMatrix";
 
+	        public static string GooseMatrixFtpKey => "GooseMatrixFtp";
+	        public static string GoCbFtpEntityKey => "GoCbFtpEntity";
+	        public static string GooseRowFtpEntityKey => "GooseRowFtpEntity";
+	        public static string MacAddressEntityKey => "GooseRowFtpEntity";
 
-        }
-        public static class GoosePresentationKeys
+
+		}
+		public static class GoosePresentationKeys
         {
   
             public static string GooseGroupTreeItemViewKey => "GooseGroupTreeItemView";

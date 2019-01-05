@@ -227,7 +227,49 @@ namespace BISC.Modules.Gooses.Model.Services
             return gooseMatrix;
         }
 
-        public void DeleteGooseCbAndGseByName(string name, IDevice device)
+	    public void SetGooseMatrixFtpForDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp)
+	    {
+		    IGooseMatrixFtp existing = null;
+		    foreach (var customElement in _biscProject.CustomElements.Value.ChildModelElements)
+		    {
+			    if (customElement is IGooseMatrixFtp gooseMatrixInModel)
+			    {
+				    if (gooseMatrixInModel.DeviceOwnerName == device.Name)
+				    {
+					    existing = gooseMatrixInModel;
+				    }
+			    }
+		    }
+		    if (existing != null)
+		    {
+			    if (existing == gooseMatrixFtp) return;
+			    _biscProject.CustomElements.Value.ChildModelElements.Remove(existing);
+		    }
+		    {
+			    gooseMatrixFtp.DeviceOwnerName = device.Name;
+			    _biscProject.CustomElements.Value.ChildModelElements.Add(gooseMatrixFtp);
+		    }
+		}
+
+	    public IGooseMatrixFtp GetGooseMatrixFtpForDevice(IDevice device)
+	    {
+			foreach (var customElement in _biscProject.CustomElements.Value.ChildModelElements)
+		    {
+			    if (customElement is IGooseMatrixFtp gooseMatrixInModel)
+			    {
+				    if (gooseMatrixInModel.DeviceOwnerName == device.Name)
+				    {
+					    return gooseMatrixInModel;
+				    }
+			    }
+		    }
+		    IGooseMatrixFtp gooseMatrix = new GooseMatrixFtp();
+		    gooseMatrix.DeviceOwnerName = device.Name;
+		    _biscProject.CustomElements.Value.ChildModelElements.Add(gooseMatrix);
+		    return gooseMatrix;
+		}
+
+	    public void DeleteGooseCbAndGseByName(string name, IDevice device)
         {
             var ldevices = _infoModelService.GetLDevicesFromDevices(device);
             IGooseControl findedGooseControlToDelete = null;

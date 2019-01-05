@@ -49,6 +49,7 @@
     <Compile Include="Model\GooseControl.cs" />
     <Compile Include="Model\GooseInput.cs" />
     <Compile Include="Model\Matrix\GooseMatrix.cs" />
+    <Compile Include="Model\Matrix\GooseMatrixFtp.cs" />
     <Compile Include="Model\Matrix\GooseRow.cs" />
     <Compile Include="Model\SubscriberDevice.cs" />
     <Compile Include="Module\GoosesModelModule.cs" />
