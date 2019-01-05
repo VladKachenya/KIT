@@ -110,9 +110,10 @@ namespace BISC.Modules.Gooses.Model.Services
 			}
 		}
 
-		public Task<OperationResult> WriteGooseMatrixToDevice(string ip, List<GooseFtpDto> gooseDtos)
+		public async Task<OperationResult> WriteGooseMatrixToDevice(string ip, List<GooseFtpDto> gooseDtos)
 		{
-			throw new NotImplementedException();
+
+			return OperationResult.SucceedResult;
 		}
 
 

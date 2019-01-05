@@ -81,7 +81,6 @@
     <Compile Include="Services\ISaveManagementService.cs" />
     <Compile Include="Services\ITabManagementService.cs" />
     <Compile Include="Services\ITreeManagementService.cs" />
-    <Compile Include="Services\IUiCommandService.cs" />
     <Compile Include="Services\StaticStringValidationService.cs" />
     <Compile Include="Tab\IDraggableTab.cs" />
     <Compile Include="Tree\TreeCommands\ITreeCommand.cs" />

@@ -103,7 +103,6 @@
     <Compile Include="Services\SaveManagementService.cs" />
     <Compile Include="Services\TabManagementService.cs" />
     <Compile Include="Services\TreeManagementService.cs" />
-    <Compile Include="Services\UiCommandService.cs" />
     <Compile Include="Services\UniqueNameService.cs" />
     <Compile Include="UiFromModel\UiFromModelElementRegistryService.cs" />
     <Compile Include="ViewModels\ApplicationSettingsViewModel.cs" />

@@ -94,7 +94,7 @@ namespace BISC.Modules.Gooses.Model.Services
 
 	         //   var resMatrix = await _ftpGooseModelService.GetGooseMatrixByFtp(device.Ip);
                 // Работать сдесь
-                if (!res.IsSucceed/*||!resMatrix.IsSucceed*/)
+                if (!res.IsSucceed)
                 {
                     _deviceWarningsService.SetWarningOfDevice(device.Name, GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey, "Ошибка вычитывания Goose из устройства");
                 }

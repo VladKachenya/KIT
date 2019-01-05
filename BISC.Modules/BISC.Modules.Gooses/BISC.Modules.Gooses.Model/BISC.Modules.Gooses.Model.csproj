@@ -61,6 +61,7 @@
     <Compile Include="Serializers\GooseRowSerializer.cs" />
     <Compile Include="Serializers\SubscriberDeviceSerializer.cs" />
     <Compile Include="Services\FtpGooseModelService.cs" />
+    <Compile Include="Services\GooseMatrixLoadingService.cs" />
     <Compile Include="Services\GoosesLoadingService.cs" />
     <Compile Include="Services\GoosesModelService.cs" />
   </ItemGroup>
