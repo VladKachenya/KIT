@@ -46,8 +46,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\ExternalGooseRef.cs" />
+    <Compile Include="Model\GoCbFtpEntity.cs" />
     <Compile Include="Model\GooseControl.cs" />
     <Compile Include="Model\GooseInput.cs" />
+    <Compile Include="Model\GooseRowFtpEntity.cs" />
+    <Compile Include="Model\GooseRowQualityFtpEntity.cs" />
+    <Compile Include="Model\MacAddressEntity.cs" />
     <Compile Include="Model\Matrix\GooseMatrix.cs" />
     <Compile Include="Model\Matrix\GooseMatrixFtp.cs" />
     <Compile Include="Model\Matrix\GooseRow.cs" />

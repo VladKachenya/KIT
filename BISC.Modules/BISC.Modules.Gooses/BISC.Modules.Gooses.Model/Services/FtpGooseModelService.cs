@@ -11,6 +11,7 @@ using BISC.Modules.FTP.Infrastructure.Serviсes;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Infrastructure.Services;
+using BISC.Modules.Gooses.Model.Model;
 using BISC.Modules.Gooses.Model.Model.Matrix;
 
 namespace BISC.Modules.Gooses.Model.Services
@@ -88,21 +89,57 @@ namespace BISC.Modules.Gooses.Model.Services
 			try
 			{
 				
-				string macAddressesPattern = "MAC{.*}";
-				string gocbrefPattern = "gocbRef{.*}";
-				string configPattern = "config{.*}";
-				var macAddressesPatternRegEx=new Regex(macAddressesPattern,RegexOptions.Multiline);
-				var gocbrefPatternRegEx = new Regex(gocbrefPattern, RegexOptions.Multiline);
-				var configPatternRegEx = new Regex(configPattern, RegexOptions.Multiline);
+				string macAddressesPattern = "MAC{([^.}])*}";
+				string gocbrefPattern = "gocbRef{([^.}])*}";
+				string configPattern = "config{([^.}])*}";
+				var macAddressesPatternRegEx=new Regex(macAddressesPattern,RegexOptions.Singleline);
+				var gocbrefPatternRegEx = new Regex(gocbrefPattern, RegexOptions.Singleline);
+				var configPatternRegEx = new Regex(configPattern, RegexOptions.Singleline);
 
 				var macMatch = macAddressesPatternRegEx.Match(fileInDevice);
 				var gocbMatch = gocbrefPatternRegEx.Match(fileInDevice);
 				var configMatch = configPatternRegEx.Match(fileInDevice);
 
-				var macs=macMatch.Value.Split('\n');
-				var gocbs = gocbMatch.Value.Split('\n');
-				var configs = configMatch.Value.Split('\n');
-				return new OperationResult<IGooseMatrixFtp>(gooseMatrixFtp);
+			    var macs = macMatch.Value.Replace("MAC{\r\n", String.Empty).Replace("\r\n}", String.Empty).Replace("\r", String.Empty).Split('\n');
+				var gocbs = gocbMatch.Value.Replace("gocbRef{\r\n", String.Empty).Replace("\r\n}", String.Empty).Replace("\r", String.Empty).Split('\n');
+				var configs = configMatch.Value.Replace("config{\r\n", String.Empty).Replace("\r\n}", String.Empty).Replace("\r", String.Empty).Split('\n');
+
+			    foreach (var mac in macs)
+			    {
+			        gooseMatrixFtp.MacAddressList.Add(new MacAddressEntity(){MacAddress=mac});
+			    }
+
+			    foreach (var gocb in gocbs)
+			    {
+                    IGoCbFtpEntity goCbFtpEntity=new GoCbFtpEntity();
+			        var entries = gocb.Split(',', ':');
+			        goCbFtpEntity.IndexOfGoose = int.Parse(entries[0]);
+			        goCbFtpEntity.GoCbReference = entries[1];
+			        goCbFtpEntity.AppId = entries[2];
+
+                    gooseMatrixFtp.GoCbFtpEntities.Add(goCbFtpEntity);
+			    }
+			    foreach (var config in configs)
+			    {
+			        IGooseRowFtpEntity gooseRowFtpEntity = new GooseRowFtpEntity();
+			        var entries = config.Split(',');
+			        int bitIndex = int.Parse(entries[2]);
+			        if (bitIndex > 64)
+			        {
+                        gooseRowFtpEntity=new GooseRowQualityFtpEntity();
+			            gooseRowFtpEntity.BitIndex =  bitIndex - 64;
+			            (gooseRowFtpEntity as GooseRowQualityFtpEntity).IsValiditySelected = entries[3]=="1";
+                    }
+                    else
+			        {
+			            gooseRowFtpEntity.BitIndex = bitIndex;
+                    }
+			        gooseRowFtpEntity.IndexOfGoose = int.Parse(entries[0]);
+			        gooseRowFtpEntity.NumberOfFcdaInDataSetOfGoose = int.Parse(entries[1]);
+
+                    gooseMatrixFtp.GooseRowFtpEntities.Add(gooseRowFtpEntity);
+			    }
+                return new OperationResult<IGooseMatrixFtp>(gooseMatrixFtp);
 			}
 			catch (Exception e)
 			{
