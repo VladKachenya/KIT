@@ -145,7 +145,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 			_gooseControlsSavingCommand.Initialize(GooseControlViewModels,_device);
             if (await _gooseControlsSavingCommand.IsSavingByFtpNeeded())
             {
-               await _deviceReconnectionService.ExecuteBeforeRestart(SaveChangesAsync, _device);
+               await _deviceReconnectionService.ExecuteBeforeRestart(_device);
             }
             else
             {
@@ -196,7 +196,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                 .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
             await UpdateGooses(false);
 			_gooseControlsSavingCommand.Initialize(GooseControlViewModels,_device);
-            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker, $"Блоки управления GOOSE {_device.Name}", SaveChangesAsync,_gooseControlsSavingCommand,
+            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker, $"Блоки управления GOOSE {_device.Name}",_gooseControlsSavingCommand,
 	            _device.Name, _regionName));
             base.OnNavigatedTo(navigationContext);
         }

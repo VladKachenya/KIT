@@ -52,6 +52,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\SaveBeforeRestartCommand.cs" />
     <Compile Include="Interfaces\Factories\IDeviceViewModelFactory.cs" />
     <Compile Include="Interfaces\IDeviceAddingViewModel.cs" />
     <Compile Include="Interfaces\IDeviceConnectingViewModel.cs" />

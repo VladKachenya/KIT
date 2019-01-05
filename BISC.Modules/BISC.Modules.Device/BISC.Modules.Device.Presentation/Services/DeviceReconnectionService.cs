@@ -208,7 +208,7 @@ namespace BISC.Modules.Device.Presentation.Services
 			await Reconnect(existingDevice, treeItemIdToRemove, true);
 		}
 
-		public async Task ExecuteBeforeRestart(Func<Task> taskToExecute, IDevice existingDevice)
+		public async Task ExecuteBeforeRestart( IDevice existingDevice)
 		{
 	
 			var unsavedEntitiesInfo = (await _saveCheckingService.GetIsDeviceEntitiesSaved(existingDevice.Name));
@@ -244,8 +244,7 @@ namespace BISC.Modules.Device.Presentation.Services
 
 			    }
             }
-
-			//await taskToExecute();
+            
 			await _deviceFileWritingServices.ResetDevice(existingDevice.Ip);
 			_connectionPoolService.GetConnection(existingDevice.Ip).StopConnection();
 			await Reconnect(existingDevice, _treeManagementService.GetDeviceTreeItem(existingDevice.Name), true);

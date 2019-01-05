@@ -78,6 +78,7 @@
     <Compile Include="Services\INavigationService.cs" />
     <Compile Include="Services\IProjectManagementService.cs" />
     <Compile Include="Services\ISaveCheckingService.cs" />
+    <Compile Include="Services\ISaveManagementService.cs" />
     <Compile Include="Services\ITabManagementService.cs" />
     <Compile Include="Services\ITreeManagementService.cs" />
     <Compile Include="Services\IUiCommandService.cs" />

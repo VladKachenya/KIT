@@ -9,12 +9,11 @@ namespace BISC.Presentation.Infrastructure.Services
 {
     public class SaveCheckingEntity
     {
-        public SaveCheckingEntity(IChangeTracker changeTracker, string entityFriendlyName, Func<Task> saveTask,ISavingCommand savingCommand, string deviceKey, string regionName=null)
+        public SaveCheckingEntity(IChangeTracker changeTracker, string entityFriendlyName,ISavingCommand savingCommand, string deviceKey, string regionName=null)
         {
 
             ChangeTracker = changeTracker;
             EntityFriendlyName = entityFriendlyName;
-            SaveTask = saveTask;
 	        SavingCommand = savingCommand;
 	        DeviceKey = deviceKey;
             RegionName = regionName;
@@ -23,7 +22,6 @@ namespace BISC.Presentation.Infrastructure.Services
         public static string NavigationKey = "SaveCheckingEntity";
         public IChangeTracker ChangeTracker { get; }
         public string EntityFriendlyName { get; }
-        public Func<Task> SaveTask { get; }
 	    public ISavingCommand SavingCommand { get; }
 	    public string RegionName { get; }
         public string DeviceKey { get; }
@@ -38,13 +36,14 @@ namespace BISC.Presentation.Infrastructure.Services
     }
     public interface ISaveCheckingService
     {
-        Task<bool> GetIsRegionCanBeClosed(string regionName);
         void AddSaveCheckingEntity(SaveCheckingEntity saveCheckingEntity);
         void RemoveSaveCheckingEntityByOwner(string regionName);
         Task<SaveResult> SaveAllUnsavedEntities(bool isNeedToAsk);
 	    Task<SaveResult> SaveDeviceUnsavedEntities(string deviceName,bool isNeedToAsk);
+        Task ExecuteSave(List<SaveCheckingEntity> entitiesToSave);
+        List<SaveCheckingEntity> GetSaveCheckingEntities();
+        Task<bool> GetIsRegionSaved(string regionName);
 
-		Task<bool> GetIsRegionSaved(string regionName);
         Task<UnsavedEntitiesInfo> GetIsDeviceEntitiesSaved(string deviceName);
 
     }

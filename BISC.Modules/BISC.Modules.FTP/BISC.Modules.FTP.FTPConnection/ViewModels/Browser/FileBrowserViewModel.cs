@@ -109,7 +109,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser
 
         private async void OnLoadRootExecuteAsync()
         {
-            _globalEventsService.SendMessage(new FTPActionMassageEvent { Status = null, Message = "Перечитывание файловой системы" });
+            _globalEventsService.SendMessage(new FTPActionMassageEvent { Status = null, Message = "Чтение файловой системы" });
             if (_fileBrowser == null) return;
             try
             {
@@ -117,7 +117,7 @@ namespace BISC.Modules.FTP.FTPConnection.ViewModels.Browser
             }
             catch (Exception e)
             {
-                _globalEventsService.SendMessage(new FTPActionMassageEvent { Status = false, Message = "Ошибка перечитывания файловой системы" });
+                _globalEventsService.SendMessage(new FTPActionMassageEvent { Status = false, Message = "Ошибка чтение файловой системы" });
                 _rootDeviceDirectoryViewModel = null;
                 OnPropertyChanged(nameof(RootDeviceDirectoryViewModel));
                 return;

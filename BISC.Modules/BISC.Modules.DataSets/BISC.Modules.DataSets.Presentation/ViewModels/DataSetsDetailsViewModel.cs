@@ -128,7 +128,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _datasetsSavingCommand.Initialize(DataSets, _device);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"DataSets устройства {_device.Name}", SaveChangesAsync, _datasetsSavingCommand, _device.Name, _regionName));
+                $"DataSets устройства {_device.Name}", _datasetsSavingCommand, _device.Name, _regionName));
             AddNewDataSetCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
@@ -216,7 +216,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 }
                 if (await _datasetsSavingCommand.IsSavingByFtpNeeded())
                 {
-                    await _deviceReconnectionService.ExecuteBeforeRestart(SaveChangesAsync, _device);
+                    await _deviceReconnectionService.ExecuteBeforeRestart(_device);
                 }
                 else
                 {
@@ -228,7 +228,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 _loggingService.LogUserAction($"Ошибка записи DataSet в устройство {e.Message}");
 
             }
-
         }
 
         private async Task SaveChangesAsync()
@@ -259,7 +258,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                     BlockViewModelBehavior.Unlock();
                 }
 
-                //ChangeTracker.SetTrackingEnabled(true);
+                ChangeTracker.SetTrackingEnabled(true);
             }
             catch (Exception e)
             {

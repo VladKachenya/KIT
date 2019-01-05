@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ISaveBeforeRestartCommand.cs" />
     <Compile Include="Events\DeviceWarningsChanged.cs" />
     <Compile Include="Events\LoadErrorEvent.cs" />
     <Compile Include="Events\ResetByFtpEvent.cs" />

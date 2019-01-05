@@ -82,7 +82,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
       
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"Setting Groups устройства {_device.Name}", SaveChangesAsync,null, _device.Name, _regionName));
+                $"Setting Groups устройства {_device.Name}",null, _device.Name, _regionName));
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);

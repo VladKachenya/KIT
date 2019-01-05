@@ -109,7 +109,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             if (await _reportsSavingCommand.IsSavingByFtpNeeded())
             {
-                await _deviceReconnectionService.ExecuteBeforeRestart(SaveChanges, _device);
+                await _deviceReconnectionService.ExecuteBeforeRestart(_device);
             }
             else
             {
@@ -220,7 +220,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"Reports устройства {_device.Name}", SaveChanges, _reportsSavingCommand, _device.Name, _regionName));
+                $"Reports устройства {_device.Name}", _reportsSavingCommand, _device.Name, _regionName));
             AddNewReportCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);

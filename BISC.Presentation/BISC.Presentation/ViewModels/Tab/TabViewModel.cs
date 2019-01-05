@@ -18,20 +18,22 @@ namespace BISC.Presentation.ViewModels.Tab
     {
         private readonly ITabManagementService _tabManagementService;
         private readonly ISaveCheckingService _saveCheckingService;
+        private readonly ISaveManagementService _saveManagementService;
         private readonly IGlobalEventsService _globalEventsService;
         private string _tabRegionName;
         private string _tabHeader;
         private bool _isHaveChanges;
 
 
-        public TabViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService, ISaveCheckingService saveCheckingService, IGlobalEventsService globalEventsService)
+        public TabViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService, ISaveCheckingService saveCheckingService,ISaveManagementService saveManagementService, IGlobalEventsService globalEventsService)
         {
             _tabManagementService = tabManagementService;
             _saveCheckingService = saveCheckingService;
+            _saveManagementService = saveManagementService;
             _globalEventsService = globalEventsService;
             CloseFragmentCommand = commandFactory.CreatePresentationCommand((async () =>
             {
-                if (await saveCheckingService.GetIsRegionCanBeClosed(_tabRegionName))
+                if (await saveManagementService.GetIsRegionCanBeClosed(_tabRegionName))
                 {
                     _tabManagementService.CloseTab(TabRegionName);
                 }

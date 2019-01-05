@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Infrastructure.Global.Services;
+using BISC.Modules.Device.Infrastructure.Commands;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Device.Presentation.Commands;
 using BISC.Modules.Device.Presentation.Interfaces;
 using BISC.Modules.Device.Presentation.Interfaces.Factories;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
@@ -58,6 +60,7 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<IDeviceViewModelFactory, DeviceViewModelFactory>();
             _injectionContainer.RegisterType<IDeviceViewModel, DeviceViewModel>();
             _injectionContainer.RegisterType<IDeviceWarningsService, DeviceWarningsService>(true);
+            _injectionContainer.RegisterType<ISaveBeforeRestartCommand, SaveBeforeRestartCommand>();
 
             _injectionContainer.RegisterType<DeviceManualConflictViewModel>();
             _injectionContainer.RegisterType<DeviceConflictsViewModel>();
