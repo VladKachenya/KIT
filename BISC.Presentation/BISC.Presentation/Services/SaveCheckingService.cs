@@ -1,62 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Infrastructure.Global.Services;
-using BISC.Presentation.Infrastructure.ChangeTracker;
-using BISC.Presentation.Infrastructure.Events;
+﻿using BISC.Infrastructure.Global.Services;
 using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BISC.Presentation.Services
 {
     public class SaveCheckingService : ISaveCheckingService
     {
         private readonly INavigationService _navigationService;
-	    private readonly IUserInteractionService _userInteractionService;
-	    private List<SaveCheckingEntity> _saveCheckingEntities = new List<SaveCheckingEntity>();
+        private readonly IUserInteractionService _userInteractionService;
+        private List<SaveCheckingEntity> _saveCheckingEntities = new List<SaveCheckingEntity>();
 
-        public SaveCheckingService(INavigationService navigationService ,IUserInteractionService userInteractionService)
+        public SaveCheckingService(INavigationService navigationService, IUserInteractionService userInteractionService)
         {
             _navigationService = navigationService;
-	        _userInteractionService = userInteractionService;
+            _userInteractionService = userInteractionService;
         }
 
-    
-
-	    public async Task<bool> ValidateSave(List<SaveCheckingEntity> entitiesToSave)
-	    {
-		    foreach (var entityToSave in entitiesToSave)
-		    {
-			    if ((entityToSave?.SavingCommand==null))
-			    {
-				    continue;
-			    }
-			    var res =await entityToSave.SavingCommand.ValidateBeforeSave();
-			    if (res.IsSucceed) continue;
-			    await _userInteractionService.ShowOptionToUser("Ошибка сохранения", res.GetFirstError(), new List<string>() {"Ок"});
-			    return false;
 
 
-		    }
-			return true;
-	    }
+        public async Task<bool> ValidateSave(List<SaveCheckingEntity> entitiesToSave)
+        {
+            foreach (var entityToSave in entitiesToSave)
+            {
+                if ((entityToSave?.SavingCommand == null))
+                {
+                    continue;
+                }
+                var res = await entityToSave.SavingCommand.ValidateBeforeSave();
+                if (res.IsSucceed)
+                {
+                    continue;
+                }
 
-	    public async Task ExecuteSave(List<SaveCheckingEntity> entitiesToSave)
-	    {
+                await _userInteractionService.ShowOptionToUser("Ошибка сохранения", res.GetFirstError(), new List<string>() { "Ок" });
+                return false;
 
 
-	        foreach (var modifiedEntity in entitiesToSave)
-	        {
-	            await modifiedEntity.SavingCommand.SaveAsync();
-	            if (entitiesToSave.Count > 1)
-	                await Task.Delay(100);
-	            if (_saveCheckingEntities.Contains(modifiedEntity))
-	                _saveCheckingEntities.Remove(modifiedEntity);
-	        }
-	    }
+            }
+            return true;
+        }
+
+        public async Task ExecuteSave(List<SaveCheckingEntity> entitiesToSave)
+        {
+
+
+            foreach (var modifiedEntity in entitiesToSave)
+            {
+                if (modifiedEntity.SavingCommand != null)
+                {
+                    await modifiedEntity.SavingCommand.SaveAsync();
+
+                    if (entitiesToSave.Count > 1)
+                    {
+                        await Task.Delay(100);
+                    }
+                }
+
+                if (_saveCheckingEntities.Contains(modifiedEntity))
+                {
+                    _saveCheckingEntities.Remove(modifiedEntity);
+                }
+            }
+        }
 
 
 
@@ -101,14 +111,14 @@ namespace BISC.Presentation.Services
                     navigationParameters);
             }
 
-	     
+
             if (saveResultEnum.IsSaved || !isNeedToAsk)
             {
-	            if (!await ValidateSave(modifiedEntities))
-	            {
-					return new SaveResult(){IsValidationFailed = true};
-	            }
-				await ExecuteSave(modifiedEntities);
+                if (!await ValidateSave(modifiedEntities))
+                {
+                    return new SaveResult() { IsValidationFailed = true };
+                }
+                await ExecuteSave(modifiedEntities);
             }
 
             return saveResultEnum;
@@ -140,10 +150,10 @@ namespace BISC.Presentation.Services
 
         public async Task<UnsavedEntitiesInfo> GetIsDeviceEntitiesSaved(string deviceName)
         {
-            var unsavedCheckingEntities= _saveCheckingEntities.Where((entity =>
-                entity.DeviceKey == deviceName && entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
+            var unsavedCheckingEntities = _saveCheckingEntities.Where((entity =>
+                 entity.DeviceKey == deviceName && entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
 
-            return new UnsavedEntitiesInfo(!unsavedCheckingEntities.Any(),unsavedCheckingEntities);
+            return new UnsavedEntitiesInfo(!unsavedCheckingEntities.Any(), unsavedCheckingEntities);
         }
     }
 }

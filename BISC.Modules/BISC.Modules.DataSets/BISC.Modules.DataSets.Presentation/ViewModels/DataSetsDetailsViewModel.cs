@@ -82,8 +82,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _saveCheckingService = saveCheckingService;
             _deviceReconnectionService = deviceReconnectionService;
             _deviceWarningsService = deviceWarningsService;
-            DeployAllExpandersCommand = commandFactory.CreatePresentationCommand(OnDeployAllExpanders);
-            RollUpAllExpandersCommand = commandFactory.CreatePresentationCommand(OnRollUpAllExpanders);
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand, () => _isSaveСhanges);
             ExpandModelCommand = commandFactory.CreatePresentationCommand(OnExpandModel);
             CollapseModelCommand = commandFactory.CreatePresentationCommand(OnCollapseModel);
@@ -126,7 +124,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             SortDataSetsByIsDynamic();
             DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
-            _datasetsSavingCommand.Initialize(DataSets, _device);
+            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive(), FineshSaving);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
                 $"DataSets устройства {_device.Name}", _datasetsSavingCommand, _device.Name, _regionName));
             AddNewDataSetCommand.RaiseCanExecute();
@@ -155,12 +153,14 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _loggingService.LogUserAction($"Пользователь удаляет DataSet {element.SelectedParentLd + "." + element.SelectedParentLn + "." + element.EditableNamePart}");
             DataSets.Remove(element);
             AddNewDataSetCommand.RaiseCanExecute();
+            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive(), FineshSaving);
         }
         private void OnAddNewDataSet()
         {
             _loggingService.LogUserAction($"Пользователь добавляет новый датасет в устройстве {_device.Name}");
             DataSets.Add(_datasetViewModelFactory.CreateDataSetViewModel(DataSets.Select((model => model.EditableNamePart)).ToList(), _device));
             AddNewDataSetCommand.RaiseCanExecute();
+            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive(), FineshSaving);
         }
 
         private bool IsAddNewDataSet()
@@ -174,21 +174,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
             return true;
         }
-        private void OnDeployAllExpanders()
-        {
-            foreach (var element in DataSets)
-            {
-                element.IsExpanded = true;
-            }
-        }
-
-        private void OnRollUpAllExpanders()
-        {
-            foreach (var element in DataSets)
-            {
-                element.IsExpanded = false;
-            }
-        }
+       
 
         private void ResetAllDataSetCollections()
         {
@@ -201,7 +187,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             try
             {
                 _loggingService.LogUserAction($"Пользователь сохраняет изменения DataSets устройства {_device.Name}");
-                _datasetsSavingCommand.Initialize(DataSets, _device);
+                //_datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive());
                 var res = await _datasetsSavingCommand.ValidateBeforeSave();
                 if (!res.IsSucceed)
                 {
@@ -238,27 +224,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             {
                 BlockViewModelBehavior.SetBlock("Сохранение DataSet-ов", true);
                 await Task.Delay(500);
-                _datasetsSavingCommand.Initialize(DataSets, _device);
+                //_datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive());
                 var res = await _datasetsSavingCommand.SaveAsync();
-                ResetAllDataSetCollections();
-                _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
-                SortDataSetsByIsDynamic();
-                DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
-                ChangeTracker.AcceptChanges();
-                if (res.Item == SavingCommandResultEnum.SavedOk && await _datasetsSavingCommand.IsSavingByFtpNeeded())
-                {
-                    if (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
-                    {
-                        _deviceWarningsService.SetWarningOfDevice(_device.Name, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey, "DataSets сохранены с использование FTP");
-                        ShowFtpBlockMessageIfNeeded();
-                    }
-                }
-                else
-                {
-                    BlockViewModelBehavior.Unlock();
-                }
-
-                ChangeTracker.SetTrackingEnabled(true);
             }
             catch (Exception e)
             {
@@ -270,6 +237,27 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 _isSaveСhanges = true;
                 (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
             }
+        }
+
+        private async Task FineshSaving(bool isFtpSaving)
+        {
+            
+            if (isFtpSaving)
+            {
+                if (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
+                {
+                    _deviceWarningsService.SetWarningOfDevice(_device.Name, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey, "DataSets сохранены с использование FTP");
+                    ShowFtpBlockMessageIfNeeded();
+                }
+            }
+            else
+            {
+                BlockViewModelBehavior.Unlock();
+            }
+
+            await UpdateDataSets(false);
+
+
         }
 
         private void ShowFtpBlockMessageIfNeeded()
@@ -311,11 +299,13 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public ObservableCollection<IDataSetViewModel> DataSets
         {
             get => _dataSets1;
-            protected set { SetProperty(ref _dataSets1, value); }
+            protected set
+            {
+                SetProperty(ref _dataSets1, value);
+            }
         }
         public string ModelRegionKey { get; }
-        public ICommand DeployAllExpandersCommand { get; }
-        public ICommand RollUpAllExpandersCommand { get; }
+
         public ICommand SaveСhangesCommand { get; }
         public ICommand ExpandModelCommand { get; }
         public ICommand CollapseModelCommand { get; }
@@ -330,6 +320,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             get => _isModelShowed;
             set { SetProperty(ref _isModelShowed, value, true); }
         }
+
+        public int MaxNambOfDataSet => 30;
 
         #endregion
 
@@ -351,7 +343,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public override void OnActivate()
         {
-
+            ShowFtpBlockMessageIfNeeded();
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _userInterfaceComposingService.AddGlobalCommand(UpdateDataSetsCommand, $"Обновить DataSets {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewDataSetCommand, $"Добавить DataSet {_device.Name}", IconsKeys.AddIconKey, false, true);

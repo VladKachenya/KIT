@@ -36,6 +36,9 @@ namespace BISC.Modules.DataSets.Presentation.Commands
         private readonly IReportsModelService _reportsModelService;
         private readonly IFtpDataSetModelService _ftpDataSetModelService;
         private ObservableCollection<IDataSetViewModel> _dataSetsToSave;
+        private bool? _isCheged = null;
+        private Func<bool, Task> _fineshSaving;
+
         private IDevice _device;
 
         private string _errorDeleteMessagePattern = $"Не удалось удалить DataSet {0} в устройстве: {1}";
@@ -57,14 +60,19 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             _ftpDataSetModelService = ftpDataSetModelService;
         }
 
-        public void Initialize(ObservableCollection<IDataSetViewModel> dataSetsToSave, IModelElement device)
+
+
+        public void Initialize(ObservableCollection<IDataSetViewModel> dataSetsToSave, IModelElement device, bool? isCheged, Func<bool, Task> fineshSaving = null)
         {
             _dataSetsToSave = dataSetsToSave;
             _device = device as IDevice;
+            _isCheged = isCheged;
+            _fineshSaving = fineshSaving;
+
         }
         public Task<bool> IsSavingByFtpNeeded()
         {
-            if (_device == null)
+            if (_device == null || _isCheged == false)
             {
                 return Task.FromResult(false);
             }
@@ -128,7 +136,10 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             {
                 _loggingService.LogMessage($"DataSets устройства {_device.Name} сохранены c ошибкой: {e.Message}",
                     SeverityEnum.Warning);
+
             }
+            await _fineshSaving?.Invoke(await IsSavingByFtpNeeded());
+
             return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedOk);
         }
 

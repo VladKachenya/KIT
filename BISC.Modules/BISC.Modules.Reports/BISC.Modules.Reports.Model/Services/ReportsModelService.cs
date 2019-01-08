@@ -1,15 +1,10 @@
 ﻿using BISC.Model.Infrastructure.Elements;
-using BISC.Modules.DataSets.Infrastructure.Model;
+using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Modules.Device.Infrastructure.Model;
-using BISC.Modules.InformationModel.Infrastucture.Elements;
 
 namespace BISC.Modules.Reports.Model.Services
 {
@@ -114,16 +109,24 @@ namespace BISC.Modules.Reports.Model.Services
             foreach (var toBeAddedReport in reportControls)
             {
                 IReportControl repToDev = reportsInDevice.FirstOrDefault(rep => rep.Name == toBeAddedReport.Name);
-                int index = lNode.ChildModelElements.IndexOf(repToDev);
-                if (index > 0)
+                if (reportsInDevice.Any(rep => rep.Name == toBeAddedReport.Name))
                 {
+                    int insertIndex = lNode.ChildModelElements.IndexOf(repToDev);
                     DeleteReportsFromDevice(device, new List<IReportControl> { repToDev });
-                    lNode.ChildModelElements.Insert(index, toBeAddedReport);
+                    lNode.ChildModelElements.Insert(insertIndex, toBeAddedReport);
                 }
                 else
                 {
-                    index = lNode.ChildModelElements.IndexOf(reportsInDevice.Last());
-                    lNode.ChildModelElements.Insert(index + 1, toBeAddedReport);
+                    if (reportsInDevice.Any())
+                    {
+                        int insertIndex = lNode.ChildModelElements.IndexOf(reportsInDevice.Last());
+                        lNode.ChildModelElements.Insert(insertIndex + 1, toBeAddedReport);
+                    }
+                    else
+                    {
+                        lNode.ChildModelElements.Add(toBeAddedReport);
+                    }
+
                 }
                 toBeAddedReport.ParentModelElement = lNode;
             }
@@ -139,7 +142,9 @@ namespace BISC.Modules.Reports.Model.Services
                 IReportControl repToDev = reportsInDevice.FirstOrDefault(rep => rep.Name == toBeDeletedReport.Name);
                 toBeDeletedReport.ParentModelElement = null;
                 if (repToDev != null)
+                {
                     lNode.ChildModelElements.Remove(repToDev);
+                }
             }
         }
     }

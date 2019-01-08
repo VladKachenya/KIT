@@ -34,7 +34,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #region private filds
         private IDataSet _model;
         private IFcdaViewModelFactory _fcdaViewModelFactory;
-        private bool _isExpanded = false;
         private IFcdaAdderViewModelService _fcdaAdderViewModelService;
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
         private readonly IBiscProject _biscProject;
@@ -184,11 +183,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             get => _isInitialized;
             set => SetProperty(ref _isInitialized, value, true);
-        }
-        public bool IsExpanded
-        {
-            get => _isExpanded;
-            set => SetProperty(ref _isExpanded, value, true);
         }
 
         public bool IsEditing

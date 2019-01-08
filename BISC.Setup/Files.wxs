@@ -113,7 +113,7 @@
         <File Id="fil9F4A4C6C51075C92C3EF1DD56569C9F9" KeyPath="no" Source="$(var.SourceDir)\Prism.Wpf.xml" />
         <File Id="filDD720674F1D65BA08F84379BFA25402D" KeyPath="no" Source="$(var.SourceDir)\Prism.xml" />
         <File Id="fil647D1BB034622E84B376058F922A85F6" KeyPath="no" Source="$(var.SourceDir)\System.Windows.Interactivity.dll" />
-        <!--<File Id="fil168D2C1064EA6D2AAF424CFA4E7A3A23" KeyPath="no" Source="$(var.SourceDir)\TempProject.bisc" />-->
+        <File Id="fil168D2C1064EA6D2AAF424CFA4E7A3A23" KeyPath="no" Source="$(var.SourceDir)\TempProject.bisc" />
 
         <File Id="fil78A9021295A23043B4900ED0E21A73E6" KeyPath="no" Source="$(var.SourceDir)\Unity.Abstractions.dll" />
         <File Id="filCB3B34AC86A40A95991999414682A51F" KeyPath="no" Source="$(var.SourceDir)\Unity.Abstractions.pdb" />

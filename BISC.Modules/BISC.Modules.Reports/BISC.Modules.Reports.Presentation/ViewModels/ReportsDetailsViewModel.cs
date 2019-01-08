@@ -106,9 +106,9 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
             _isSaveСhanges = false;
             _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
-            _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             if (await _reportsSavingCommand.IsSavingByFtpNeeded())
             {
+                _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected, FineshSaving);
                 await _deviceReconnectionService.ExecuteBeforeRestart(_device);
             }
             else
@@ -127,29 +127,37 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             try
             {
                 BlockViewModelBehavior.SetBlock("Сохранение отчетов", true);
-                _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+                _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected, FineshSaving);
 
                 var res = await _reportsSavingCommand.SaveAsync();
-                UpdateViewModels();
-                ChangeTracker.AcceptChanges();
-                if (res.Item == SavingCommandResultEnum.SavedOk && await _reportsSavingCommand.IsSavingByFtpNeeded())
-                {
-                    if (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
-                    {
-                        _deviceWarningsService.SetWarningOfDevice(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag, "Reports сохранены с использование FTP");
-                        ShowFtpBlockMessageIfNeeded();
-                    }
-                }
-                else
-                {
-                    BlockViewModelBehavior.Unlock();
-                }
+                //UpdateViewModels();
+                //ChangeTracker.AcceptChanges();
             }
             finally
             {
                 _isSaveСhanges = true;
                 (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
             }
+        }
+
+        private async Task FineshSaving(bool isFtpSaving)
+        {
+            if (isFtpSaving)
+            {
+                if (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
+                {
+                    _deviceWarningsService.SetWarningOfDevice(_device.Name, ReportsKeys.ReportsPresentationKeys.ReportsFtpIncostistancyWarningTag, "Reports сохранены с использование FTP");
+                    ShowFtpBlockMessageIfNeeded();
+                }
+            }
+            else
+            {
+                BlockViewModelBehavior.Unlock();
+            }
+
+            await UpdateReports(false);
+
+
         }
 
         private void ShowFtpBlockMessageIfNeeded()
@@ -218,7 +226,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             }
             UpdateViewModels();
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
-            _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected, FineshSaving);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
                 $"Reports устройства {_device.Name}", _reportsSavingCommand, _device.Name, _regionName));
             AddNewReportCommand.RaiseCanExecute();

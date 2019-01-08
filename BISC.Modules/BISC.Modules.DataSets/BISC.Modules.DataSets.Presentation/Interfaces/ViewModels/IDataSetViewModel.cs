@@ -16,7 +16,6 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
     public interface IDataSetViewModel  : IDataSetElementBaseViewModel<IDataSet>,IObjectWithChangeTracker
     {
         int MaxSizeFcdaList { get; }
-        bool IsExpanded { get; set; }
         bool IsEditing { get; set; }
         bool IsChanged { get; set; }
         int Weight { get; }

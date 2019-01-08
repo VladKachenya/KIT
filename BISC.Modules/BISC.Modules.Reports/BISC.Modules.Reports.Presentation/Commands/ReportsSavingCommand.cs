@@ -36,6 +36,7 @@ namespace BISC.Modules.Reports.Presentation.Commands
 
         private IDevice _device;
         private Func<bool> _isSavingInDevice;
+        private Func<bool, Task> _fineshSaving;
 
         public ReportsSavingCommand(IInfoModelService infoModelService, ILoggingService loggingService,
             IConnectionPoolService connectionPoolService,
@@ -57,8 +58,9 @@ namespace BISC.Modules.Reports.Presentation.Commands
 
 
         internal void Initialize(ObservableCollection<IReportControlViewModel> reportsToSave, IDevice device,
-            Func<bool> isSavingInDevice)
+            Func<bool> isSavingInDevice, Func<bool, Task> fineshSaving = null)
         {
+            _fineshSaving = fineshSaving;
             _reportsToSave = reportsToSave;
             _device = device;
             _reportsToDelete.Clear();
@@ -75,8 +77,6 @@ namespace BISC.Modules.Reports.Presentation.Commands
             }
             _isSavingInDevice = isSavingInDevice;
         }
-
-
 
 
         public async Task<OperationResult<SavingCommandResultEnum>> SaveAsync()
@@ -146,7 +146,7 @@ namespace BISC.Modules.Reports.Presentation.Commands
 
                     _loggingService.LogMessage($"Reports устройства {_device.Name} успешно сохранены",
                         SeverityEnum.Info);
-
+                    await _fineshSaving?.Invoke(await IsSavingByFtpNeeded());
                     return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedOk);
                 }
                 else
@@ -198,14 +198,6 @@ namespace BISC.Modules.Reports.Presentation.Commands
         {
             return OperationResult.SucceedResult;
         }
-
-
-
-
-
-
-
-
 
         private async Task<OperationResult> SaveDynamicReports(
             ObservableCollection<IReportControlViewModel> reportsToSave, IDevice device,

@@ -64,8 +64,8 @@ namespace BISC.Presentation.Services
             {
                 try
                 {
-                    _projectService.SaveCurrentProject();
                     await _saveCheckingService.SaveAllUnsavedEntities(false);
+                    _projectService.SaveCurrentProject();
                     _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
                 }
                 catch (Exception e)
@@ -100,13 +100,13 @@ namespace BISC.Presentation.Services
                 await _userInteractionService.ShowOptionToUser("Сохранение проекта",
                     $"Проект {_projectService.GetCurrentProjectPath(false)} не может быть сохранён по пути " +
                     $"{listOfPaths.GetFirstValue()}. Проект будет сохранён в {defPath}", new List<string> { "ОК" });
-                _projectService.SaveProjectAs(defPath);
                 await _saveCheckingService.SaveAllUnsavedEntities(false);
+                _projectService.SaveProjectAs(defPath);
                 _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
                 return;
             }
-            _projectService.SaveProjectAs(listOfPaths.GetFirstValue());
             await _saveCheckingService.SaveAllUnsavedEntities(false);
+            _projectService.SaveProjectAs(listOfPaths.GetFirstValue());
             _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
         }
 
@@ -141,6 +141,7 @@ namespace BISC.Presentation.Services
                 $"Не желаете сохранить текущий проект?", new List<string> { "Сохранить", "НЕТ" });
             if (res == 0)
             {
+                await _saveCheckingService.SaveAllUnsavedEntities(false);
                 SaveProject();
             }
 
@@ -163,7 +164,6 @@ namespace BISC.Presentation.Services
                 _loggingService.LogMessage(e.Message, SeverityEnum.Warning);
             }
             _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(_biscProject.MainSclModel.Value, null, "SCL");
-            await _saveCheckingService.SaveAllUnsavedEntities(false);
             _loggingService.LogMessage($"Проект открыт {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
         }
 
@@ -174,12 +174,12 @@ namespace BISC.Presentation.Services
                 $"Не желаете сохранить текущий проект?", new List<string> { "Сохранить", "НЕТ" });
             if (res == 0)
             {
+                await _saveCheckingService.SaveAllUnsavedEntities(false);
                 SaveProject();
             }
             ClearCurrentProject();
             _projectService.СreateNewProject();
             _projectService.SetDefaultProjectPath();
-            await _saveCheckingService.SaveAllUnsavedEntities(false);
             _loggingService.LogMessage($"Проект {_projectService.GetCurrentProjectPath(true)} очищен", SeverityEnum.Info);
         }
 

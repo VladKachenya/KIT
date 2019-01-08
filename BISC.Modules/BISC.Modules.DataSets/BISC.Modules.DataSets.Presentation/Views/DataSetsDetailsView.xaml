@@ -108,20 +108,10 @@
                     </Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="10, 0">
-                    <Button Command="{Binding RollUpAllExpandersCommand}" Margin="10,5" Height="20" Width="20"
-                        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
-                        ToolTip="Свернуть всё">
-                        <Button.Content>
-                            <ContentControl ContentTemplate="{DynamicResource ChevronDoubleUpIcon}"/>
-                        </Button.Content>
-                    </Button>
-                    <Button Command="{Binding DeployAllExpandersCommand}" Margin="10,5" Height="20" Width="20"
-                        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
-                        ToolTip="Развернуть всё">
-                        <Button.Content>
-                            <ContentControl ContentTemplate="{DynamicResource ChevronDoubleDownIcon}"/>
-                        </Button.Content>
-                    </Button>
+                    <TextBlock Text="{Binding DataSets.Count}"/>
+                    <TextBlock Text="/"/>
+                    <TextBlock Text="{Binding MaxNambOfDataSet}"/>
+
                 </StackPanel>
             </Grid>
 
