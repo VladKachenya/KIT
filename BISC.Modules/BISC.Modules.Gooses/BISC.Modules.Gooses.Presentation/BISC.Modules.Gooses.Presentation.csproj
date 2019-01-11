@@ -58,10 +58,12 @@
     <Compile Include="Events\GooseControlBlockEnableChangedEventArgs.cs" />
     <Compile Include="Events\SelectableBoxEventArgs.cs" />
     <Compile Include="Factories\GooseControlBlockViewModelFactory.cs" />
+    <Compile Include="Factories\GooseControlBlockViewModelFromFtpFactory.cs" />
     <Compile Include="Factories\GooseControlViewModelFactory.cs" />
     <Compile Include="Factories\GooseRowViewModelFactory.cs" />
     <Compile Include="FileParsers\ResultFileParser.cs" />
     <Compile Include="Interfaces\Factories\IGooseControlBlockViewModelFactory.cs" />
+    <Compile Include="Interfaces\Factories\IGooseRowViewModelFactory.cs" />
     <Compile Include="Interfaces\IGooseRowViewModel.cs" />
     <Compile Include="Interfaces\ISelectableValueViewModel.cs" />
     <Compile Include="Module\GoosesPresentationModule.cs" />

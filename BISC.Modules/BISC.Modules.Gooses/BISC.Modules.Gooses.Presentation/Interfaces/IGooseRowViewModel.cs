@@ -8,8 +8,9 @@ namespace BISC.Modules.Gooses.Presentation.Interfaces
     public interface IGooseRowViewModel : IDisposable
     {
         IGooseRow Model { get; set; }
-        List<ISelectableValueViewModel> SelectableValueViewModels { get; set; }
+        List<ISelectableValueViewModel> SelectableValueViewModels { get; }
         string RowName { get; set; }
         GooseControlBlockViewModel Parent { get; set; }
+
     }
 }

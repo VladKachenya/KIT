@@ -56,6 +56,7 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<GooseControlsSavingCommand>();
             _injectionContainer.RegisterType<GooseControlsConflictsViewModel>();
             _injectionContainer.RegisterType<IElementConflictResolver, GoosesControlsConflictResolver>(Guid.NewGuid().ToString());
+            _injectionContainer.RegisterType<IGooseRowViewModelFactory, GooseRowViewModelFactory>();
 
             _injectionContainer.RegisterType<object,GooseGroupTreeItemView>(GooseKeys.GoosePresentationKeys.GooseGroupTreeItemViewKey);
             _injectionContainer.RegisterType<object, GooseSubscriptionTab>(GooseKeys.GoosePresentationKeys.GooseSubscriptionTabKey);

@@ -32,7 +32,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Rows
                     _model.ValueList.Add(selectableValueViewModel.SelectedValue);
                 }
                 return _model;
-
             }
             set
             {
@@ -53,7 +52,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Rows
             }
         }
 
-        public List<ISelectableValueViewModel> SelectableValueViewModels { get; set; }
+        public List<ISelectableValueViewModel> SelectableValueViewModels { get;}
         public string RowName { get; set; }
         public GooseControlBlockViewModel Parent { get; set; }
 

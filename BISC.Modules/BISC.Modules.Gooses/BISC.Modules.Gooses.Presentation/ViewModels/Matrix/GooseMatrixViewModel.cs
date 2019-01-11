@@ -393,7 +393,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 			_globalEventsService.Unsubscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
 			_userInterfaceComposingService.DeleteGlobalCommand(UpdateCommand);
 			base.OnDeactivate();
-		}
+		} 
 
 		protected override void OnDisposing()
 		{
@@ -401,7 +401,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 			{
 				gooseControlBlockViewModel.Dispose();
 			}
-
 			base.OnDisposing();
 		}
 

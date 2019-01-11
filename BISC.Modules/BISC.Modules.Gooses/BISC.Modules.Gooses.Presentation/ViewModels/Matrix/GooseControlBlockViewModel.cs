@@ -15,8 +15,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         private readonly GooseRowViewModelFactory _gooseRowViewModelFactory;
         //private readonly IEventAggregator _eventAggregator;
         //private IGooseControlBlock _model;
-        private List<IGooseRowViewModel> _gooseRowViewModels;
-        private string _macAddressString;
+	    private string _macAddressString;
         private bool _isReferenceEnabled;
         private string _gocbReferenceString;
         private string _dataSetName;
@@ -28,6 +27,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         public GooseControlBlockViewModel(GooseRowViewModelFactory gooseRowViewModelFactory)
         {
             _gooseRowViewModelFactory = gooseRowViewModelFactory;
+			GooseRowViewModels=new List<IGooseRowViewModel>();
         }
 
 
@@ -36,11 +36,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             var rowVms=new List<IGooseRowViewModel>();
             foreach (var row in rowsForBlock)
             {
-              var rowVm=  _gooseRowViewModelFactory.CreateGooseRowViewModel(row, this);
+              var rowVm=  _gooseRowViewModelFactory.CreateGooseRowViewModelOld(row, this);
                 rowVms.Add(rowVm);
             }
-
-            GooseRowViewModels = rowVms;
+			GooseRowViewModels.Clear();
+            GooseRowViewModels.AddRange(rowVms);
         }
 
 
@@ -70,7 +70,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         //        GooseRowViewModels.Clear();
         //        foreach (var gooseRow in _model.GooseRows)
         //        {
-        //            GooseRowViewModels.Add(_gooseRowViewModelFactory.CreateGooseRowViewModel(gooseRow, this));
+        //            GooseRowViewModels.Add(_gooseRowViewModelFactory.CreateGooseRowViewModelOld(gooseRow, this));
         //        }
         //        MacAddressString = _model.MacAddressString;
         //        _isReferenceEnabled = _model.IsReferenceEnabled;
@@ -82,18 +82,9 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         //    }
         //}
 
-        public List<IGooseRowViewModel> GooseRowViewModels
-        {
-            get { return _gooseRowViewModels; }
-            set
-            {
-                {
-                    SetProperty(ref _gooseRowViewModels , value);
-                }
-            }
-        }
+        public List<IGooseRowViewModel> GooseRowViewModels { get; }
 
-        //public string MacAddressString
+	    //public string MacAddressString
         //{
         //    get { return _macAddressString; }
         //    set
