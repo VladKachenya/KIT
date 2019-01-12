@@ -44,51 +44,51 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 			List<string> messagesList = new List<string>();
 
 
-            var gooseControlBlocksSubscribed = _goosesModelService.GetGooseControlsSubscribed(device, sclModel);
-            IGooseMatrixFtp gooseMatrix = _goosesModelService.GetGooseMatrixFtpForDevice(device);
-            foreach (var gooseControlBlockSubscribed in gooseControlBlocksSubscribed)
-            {
-                GooseControlBlockViewModel gooseControlBlockViewModel = _gooseControlBlockViewModelFunc();
-                gooseControlBlockViewModel.AppId = gooseControlBlockSubscribed.Item2.AppId;
-                gooseControlBlockViewModel.Name = gooseControlBlockSubscribed.Item2.Name;
-                gooseControlBlockViewModel.DataSetName = gooseControlBlockSubscribed.Item2.DataSet;
+            //var gooseControlBlocksSubscribed = _goosesModelService.GetGooseControlsSubscribed(device, sclModel);
+            //IGooseMatrixFtp gooseMatrix = _goosesModelService.GetGooseMatrixFtpForDevice(device);
+            //foreach (var gooseControlBlockSubscribed in gooseControlBlocksSubscribed)
+            //{
+            //    GooseControlBlockViewModel gooseControlBlockViewModel = _gooseControlBlockViewModelFunc();
+            //    gooseControlBlockViewModel.AppId = gooseControlBlockSubscribed.Item2.AppId;
+            //    gooseControlBlockViewModel.Name = gooseControlBlockSubscribed.Item2.Name;
+            //    gooseControlBlockViewModel.DataSetName = gooseControlBlockSubscribed.Item2.DataSet;
 
-                gooseControlBlockViewModel.GoCbReference = gooseControlBlockSubscribed.Item1.Name + "LD0/LLN0$GO$" +
-                                                           gooseControlBlockSubscribed.Item2.Name;
+            //    gooseControlBlockViewModel.GoCbReference = gooseControlBlockSubscribed.Item1.Name + "LD0/LLN0$GO$" +
+            //                                               gooseControlBlockSubscribed.Item2.Name;
 
-                //  MR771N127LD0 / LLN0$GO$gcbIn
-                var dataSet = _datasetModelService.GetAllDataSetOfDevice(gooseControlBlockSubscribed.Item1)
-                    .FirstOrDefault((set => set.Name == gooseControlBlockSubscribed.Item2.DataSet));
+            //    //  MR771N127LD0 / LLN0$GO$gcbIn
+            //    var dataSet = _datasetModelService.GetAllDataSetOfDevice(gooseControlBlockSubscribed.Item1)
+            //        .FirstOrDefault((set => set.Name == gooseControlBlockSubscribed.Item2.DataSet));
 
-                var input = _goosesModelService.GetGooseInputsOfDevice(device).FirstOrDefault();
-                if (input == null) break;
-                List<IGooseRow> rowsForBlock = new List<IGooseRow>();
-                foreach (var externalGooseReference in input.ExternalGooseReferences)
-                {
-                    IGooseRow relatedGooseRow = GetGooseRowForRef(externalGooseReference, gooseMatrix, dataSet);
+            //    var input = _goosesModelService.GetGooseInputsOfDevice(device).FirstOrDefault();
+            //    if (input == null) break;
+            //    List<IGooseRow> rowsForBlock = new List<IGooseRow>();
+            //    foreach (var externalGooseReference in input.ExternalGooseReferences)
+            //    {
+            //        IGooseRow relatedGooseRow = GetGooseRowForRef(externalGooseReference, gooseMatrix, dataSet);
 
-                    if (relatedGooseRow == null) continue;
-                    if (externalGooseReference.DaName == "q" || externalGooseReference.DaName == "stVal")
-                    {
-                        rowsForBlock.Add(relatedGooseRow);
-                    }
-                    else
-                    {
-                        messagesList.Add($"Элемент GOOSE.Dataset {externalGooseReference.AsString()} не был принят");
-                    }
-                }
+            //        if (relatedGooseRow == null) continue;
+            //        if (externalGooseReference.DaName == "q" || externalGooseReference.DaName == "stVal")
+            //        {
+            //            rowsForBlock.Add(relatedGooseRow);
+            //        }
+            //        else
+            //        {
+            //            messagesList.Add($"Элемент GOOSE.Dataset {externalGooseReference.AsString()} не был принят");
+            //        }
+            //    }
 
-                CheckBlockRows(rowsForBlock, messagesList);
-                if (rowsForBlock.Count == 0) continue;
-                var validityRowForBlock = GetValidityGooseRow(gooseMatrix, gooseControlBlockSubscribed.Item2.AppId);
+            //    CheckBlockRows(rowsForBlock, messagesList);
+            //    if (rowsForBlock.Count == 0) continue;
+            //    var validityRowForBlock = GetValidityGooseRow(gooseMatrix, gooseControlBlockSubscribed.Item2.AppId);
 
-                rowsForBlock.Add(validityRowForBlock);
-                gooseControlBlockViewModel.SetRows(rowsForBlock);
+            //    rowsForBlock.Add(validityRowForBlock);
+            //    gooseControlBlockViewModel.SetRows(rowsForBlock);
 
-                gooseControlBlockViewModels.Add(gooseControlBlockViewModel);
+            //    gooseControlBlockViewModels.Add(gooseControlBlockViewModel);
 
 
-            }
+            //}
 
             return new OperationResult<List<GooseControlBlockViewModel>>(gooseControlBlockViewModels, messagesList,
 				true);
@@ -148,43 +148,43 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
 
 
-        private IGoCbFtpEntity GetGooseRowForRef(IExternalGooseRef externalGooseRef, IGooseMatrixFtp gooseMatrixFtp,
-            IDataSet dataset)
-        {
+        //private IGoCbFtpEntity GetGooseRowForRef(IExternalGooseRef externalGooseRef, IGooseMatrixFtp gooseMatrixFtp,
+        //    IDataSet dataset)
+        //{
 
-            int fcdaNum = -1;
-            foreach (var fcda in dataset.FcdaList)
-            {
-                if (CompareFcdaAndExtRef(externalGooseRef, fcda))
-                {
-                    fcdaNum = dataset.FcdaList.IndexOf(fcda);
-                    foreach (var goCbFtpEntity in gooseMatrixFtp.GoCbFtpEntities)
-                    {
-                        if (goCbFtpEntity.GoCbReference == externalGooseRef.AsString())
-                        {
-                            return goCbFtpEntity;
-                        }
-                    }
+        //    int fcdaNum = -1;
+        //    foreach (var fcda in dataset.FcdaList)
+        //    {
+        //        if (CompareFcdaAndExtRef(externalGooseRef, fcda))
+        //        {
+        //            fcdaNum = dataset.FcdaList.IndexOf(fcda);
+        //            foreach (var goCbFtpEntity in gooseMatrixFtp.GoCbFtpEntities)
+        //            {
+        //                if (goCbFtpEntity.GoCbReference == externalGooseRef.AsString())
+        //                {
+        //                    return goCbFtpEntity;
+        //                }
+        //            }
 
-                    break;
-                }
-            }
+        //            break;
+        //        }
+        //    }
 
-            if (fcdaNum == -1)
-            {
-                return null;
-            }
+        //    if (fcdaNum == -1)
+        //    {
+        //        return null;
+        //    }
 
-            string type = externalGooseRef.DaName == "q" ? "Quality" :
-                externalGooseRef.DaName == "stVal" ? "State" : "Unknown";
-            return new GoCbFtpEntity()
-            {
-                AppId = externalGooseRef.,
-                GoCbReference = externalGooseRef.AsString(),
+        //    string type = externalGooseRef.DaName == "q" ? "Quality" :
+        //        externalGooseRef.DaName == "stVal" ? "State" : "Unknown";
+        //    return new GoCbFtpEntity()
+        //    {
+        //        AppId = externalGooseRef.,
+        //        GoCbReference = externalGooseRef.AsString(),
                
-            };
+        //    };
 
-        }
+        //}
 
         private IGooseRow GetValidityGooseRow(IGooseMatrix gooseMatrix, string gooseBlockName)
 		{
