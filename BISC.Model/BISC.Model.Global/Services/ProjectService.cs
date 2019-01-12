@@ -158,7 +158,7 @@ namespace BISC.Model.Global.Services
                         XElement.Load(_currentProjectPath));
                 _configurationService.LastProjectPath = _currentProjectPath;
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 SetDefaultProjectPath();
                 СreateNewProject();

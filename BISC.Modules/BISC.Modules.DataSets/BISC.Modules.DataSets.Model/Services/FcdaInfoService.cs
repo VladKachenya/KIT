@@ -53,6 +53,7 @@ namespace BISC.Modules.DataSets.Model.Services
             string[] Dos = fcda.DoName.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
             IModelElement daParint = lNode;
+            
             for (int i = 0; i < Dos.Length; i++)
             {
                 if (i == 0)
@@ -88,7 +89,7 @@ namespace BISC.Modules.DataSets.Model.Services
         public int GetFcdaWeight(IDevice device, IFcda fcda)
         {
             var modelElement = GetModelElementFromFcda(device, fcda);
-            if(modelElement == null)
+            if (modelElement == null)
             { }
             return GetModelElementWeight(device, modelElement, fcda.Fc);
         }
@@ -97,6 +98,8 @@ namespace BISC.Modules.DataSets.Model.Services
         {
             List<IDai> daisOfModelEment = new List<IDai>();
             modelElement.GetAllChildrenOfType<IDai>(ref daisOfModelEment);
+
+
             int weight = 0;
             foreach (var dai in daisOfModelEment)
             {

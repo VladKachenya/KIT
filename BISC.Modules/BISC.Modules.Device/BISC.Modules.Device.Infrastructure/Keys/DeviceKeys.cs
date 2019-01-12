@@ -35,5 +35,11 @@ namespace BISC.Modules.Device.Infrastructure.Keys
             public const string UnknowManufacturer = "Unknow";
 
         }
+
+        public static class ConfigurationKeys
+        {
+            public const string BasicConfigurationPathKey = "BasicСonfiguration.xml";
+            public const string BasicConfigurationNodeKey = "BaseConfigure";
+        }
     }
 }

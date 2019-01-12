@@ -120,18 +120,44 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                     _loggingService.LogMessage($"Ошибка вычитывания DataSets устройства {_device.Name}", SeverityEnum.Warning);
                 }
             }
+            UpdateCurentChengeTracker();
+            await Task.Delay(500);
+            BlockViewModelBehavior.Unlock();
+        }
+
+        private void UpdateCurentChengeTracker()
+        {
             _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
             SortDataSetsByIsDynamic();
-            DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
+            try
+            {
+                DataSets = _datasetViewModelFactory.GetDataSetsViewModel(_dataSets);
+            }
+            catch (Exception e)
+            {
+                if (DataSets == null && _dataSets != null)
+                {
+                    _loggingService.LogMessage($"Невозможно сформировать DataSet на основании модели устройства {_device.Name}." +
+                                               $"Возможно вы используете Cid фаил сгенерированный сторонней программой.", SeverityEnum.Critical);
+                    _deviceWarningsService.SetWarningOfDevice(_device.Name, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey, "Невозможно сформировать DataSets");
+
+
+                }
+                else
+                {
+                    _loggingService.LogMessage( e.Message, SeverityEnum.Critical);
+                }
+                DataSets = new ObservableCollection<IDataSetViewModel>();
+                _dataSets = new List<IDataSet>();
+            }
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
-            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive(), FineshSaving);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
                 $"DataSets устройства {_device.Name}", _datasetsSavingCommand, _device.Name, _regionName));
             AddNewDataSetCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
-            await Task.Delay(500);
-            BlockViewModelBehavior.Unlock();
+            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive(), FineshSaving);
+
         }
 
         private void OnCollapseModel()
@@ -239,7 +265,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             }
         }
 
-        private async Task FineshSaving(bool isFtpSaving)
+        private void FineshSaving(bool isFtpSaving)
         {
             
             if (isFtpSaving)
@@ -255,9 +281,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 BlockViewModelBehavior.Unlock();
             }
 
-            await UpdateDataSets(false);
-
-
+            UpdateCurentChengeTracker();
         }
 
         private void ShowFtpBlockMessageIfNeeded()

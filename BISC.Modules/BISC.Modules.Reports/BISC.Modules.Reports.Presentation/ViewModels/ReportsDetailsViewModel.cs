@@ -26,7 +26,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using BISC.Model.Infrastructure.Common;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
 {
@@ -140,7 +139,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             }
         }
 
-        private async Task FineshSaving(bool isFtpSaving)
+        private void FineshSaving(bool isFtpSaving)
         {
             if (isFtpSaving)
             {
@@ -154,10 +153,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             {
                 BlockViewModelBehavior.Unlock();
             }
-
-            await UpdateReports(false);
-
-
+            UpdateCurentChengeTracker();
         }
 
         private void ShowFtpBlockMessageIfNeeded()
@@ -224,15 +220,22 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
                 await _reportControlLoadingService.EstimateProgress(_device);
                 await _reportControlLoadingService.Load(_device, null, _biscProject.MainSclModel.Value, new CancellationToken());
             }
+
+            UpdateCurentChengeTracker();
+            BlockViewModelBehavior.Unlock();
+        }
+
+        private void UpdateCurentChengeTracker()
+        {
             UpdateViewModels();
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
-            _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected, FineshSaving);
+            _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
                 $"Reports устройства {_device.Name}", _reportsSavingCommand, _device.Name, _regionName));
             AddNewReportCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
-            BlockViewModelBehavior.Unlock();
+            _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected, FineshSaving);
         }
 
         private void UpdateViewModels()

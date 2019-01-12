@@ -215,13 +215,13 @@ namespace BISC.Modules.Device.Presentation.Services
 			if (!unsavedEntitiesInfo.IsEntitiesSaved)
 			{
 
-			    if (unsavedEntitiesInfo.UnsavedCheckingEntities.Count > 1)
+			    if (unsavedEntitiesInfo.UnsavedCheckingEntities.Count > 0)
 			    {
 			        var warnings =
 			            unsavedEntitiesInfo.UnsavedCheckingEntities.Select(
 			                change => ("Изменения " + change.EntityFriendlyName + " будут сохранены.")).ToList();
-			        var res = await _userInteractionService.ShowOptionToUser("Требуется перезагрузка", 
-			            "Сохранение потребует перезагрузки устройства. \nЖелаете продолжить?", 
+			        var res = await _userInteractionService.ShowOptionToUser("Сохранение изменений", 
+			            "Сохранение потребует перезагрузки устройства. \nЖелаете произвести сохранение?", 
                         new List<string>() { "Да", "Нет" }, warnings);
 			        if (res == 1)
 			        {
@@ -230,19 +230,19 @@ namespace BISC.Modules.Device.Presentation.Services
                     var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, false);
 				    if (savingRes.IsValidationFailed) return;
 			    }
-			    else
-			    {
-			        var res = await _userInteractionService.ShowOptionToUser("Требуется перезагрузка", "Сохранение потребует перезагрузки устройства",
-			            new List<string>() { "ОК", "Отмена" });
-			        if (res == 1)
-			        {
-			            return;
-			        }
-                    var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, false);
-					if(savingRes.IsValidationFailed)return;
+			  //  else
+			  //  {
+			  //      var res = await _userInteractionService.ShowOptionToUser("Требуется перезагрузка", "Сохранение потребует перезагрузки устройства",
+			  //          new List<string>() { "ОК", "Отмена" });
+			  //      if (res == 1)
+			  //      {
+			  //          return;
+			  //      }
+     //               var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, false);
+					//if(savingRes.IsValidationFailed)return;
 				    
 
-			    }
+			  //  }
             }
             
 			await _deviceFileWritingServices.ResetDevice(existingDevice.Ip);
