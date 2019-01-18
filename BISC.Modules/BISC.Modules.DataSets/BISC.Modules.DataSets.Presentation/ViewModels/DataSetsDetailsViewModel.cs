@@ -137,8 +137,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             {
                 if (DataSets == null && _dataSets != null)
                 {
-                    _loggingService.LogMessage($"Невозможно сформировать DataSet на основании модели устройства {_device.Name}." +
-                                               $"Возможно вы используете Cid фаил сгенерированный сторонней программой.", SeverityEnum.Critical);
+                    _loggingService.LogMessage($"Невозможно сформировать DataSet на основании модели устройства {_device.Name}.", SeverityEnum.Critical);
                     _deviceWarningsService.SetWarningOfDevice(_device.Name, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey, "Невозможно сформировать DataSets");
 
 

@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Model.Infrastructure.Elements;
+﻿using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
-using BISC.Modules.InformationModel.Model.Elements;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BISC.Modules.DataSets.Model.Services
 {
-   public class DatasetModelService: IDatasetModelService
+    public class DatasetModelService : IDatasetModelService
     {
         private readonly IInfoModelService _infoModelService;
 
@@ -24,13 +20,13 @@ namespace BISC.Modules.DataSets.Model.Services
 
         #region private methods
 
-        private ILogicalNode TryFindLn(IDataSet dataSet, IModelElement device, string ldName = null, string lnName = null)
+        private ILogicalNode TryFindLn(IDataSet dataSet, IModelElement device, string ldName = null, string lnFullName = null)
         {
             // первое приближение 
-            if (ldName == null || lnName == null)
+            if (ldName == null || lnFullName == null)
             {
-                ldName = (dataSet.ParentModelElement.ParentModelElement as ILDevice)?.Inst;
-                lnName = (dataSet.ParentModelElement as ILogicalNode)?.Name;
+                ldName = _infoModelService.GetParentLDevice(dataSet)?.Inst;
+                lnFullName = _infoModelService.GetFullNameOfLogicalNode(_infoModelService.GetParentLogicalNode(dataSet));
             }
             ILogicalNode logicalNode = null;
             List<ILDevice> lDevices = _infoModelService.GetLDevicesFromDevices(device);
@@ -38,19 +34,27 @@ namespace BISC.Modules.DataSets.Model.Services
             {
                 if (lDevice.Inst == ldName)
                 {
-                    if (lDevice.LogicalNodeZero.Value.Name == lnName)
+                    if (lDevice.LogicalNodeZero.Value.Name == lnFullName)
+                    {
                         logicalNode = lDevice.LogicalNodeZero.Value;
+                    }
+
                     if (logicalNode == null)
                     {
                         foreach (ILogicalNode ln in lDevice.LogicalNodes)
-                            if (ln.Name == lnName)
+                        {
+                            string lnName = _infoModelService.GetFullNameOfLogicalNode(ln);
+                            if (lnName == lnFullName)
                             {
                                 logicalNode = ln;
                                 break;
                             }
+                        }
                     }
                     if (logicalNode != null)
+                    {
                         break;
+                    }
                 }
             }
             return logicalNode;
@@ -59,17 +63,23 @@ namespace BISC.Modules.DataSets.Model.Services
 
 
         #region Implementation of IDatasetModelService
-        public void DeleteDatasetFromDevice(IDataSet dataSet, IModelElement device, string ldName = null, string lnName = null)
+        public void DeleteDatasetFromDevice(IDataSet dataSet, IModelElement device, string ldName = null, string lnFullName = null)
         {
             string dsName = dataSet.Name;
-            ILogicalNode logicalNode = TryFindLn(dataSet, device, ldName, lnName);
+            ILogicalNode logicalNode = TryFindLn(dataSet, device, ldName, lnFullName);
             if (logicalNode != null)
             {
-                List<IModelElement> NodeDataSets = new List<IModelElement>(logicalNode.ChildModelElements);
-                foreach (var ds in NodeDataSets)
-                    if (ds is IDataSet)
-                        if ((ds as IDataSet).Name == dsName)
-                            logicalNode.ChildModelElements.Remove(ds);
+                List<IModelElement> nodeDataSets = new List<IModelElement>(logicalNode.ChildModelElements);
+                foreach (var ds in nodeDataSets)
+                {
+                    if (ds is IDataSet set)
+                    {
+                        if (set.Name == dsName)
+                        {
+                            logicalNode.ChildModelElements.Remove(set);
+                        }
+                    }
+                }
             }
         }
         public void DeleteAllDatasetsFromDevice(IModelElement device)
@@ -88,17 +98,24 @@ namespace BISC.Modules.DataSets.Model.Services
                 }
             }
         }
-        public void AddDatasetToDevice(IDataSet dataSet, IModelElement device, string ldName = null, string lnName = null)
+        public void AddDatasetToDevice(IDataSet dataSet, IModelElement device, string ldName = null, string lnFullName = null)
         {
             // первое приближение 
             string dsName = dataSet.Name;
-            ILogicalNode logicalNode = TryFindLn(dataSet, device, ldName, lnName);
+            ILogicalNode logicalNode = TryFindLn(dataSet, device, ldName, lnFullName);
             if (logicalNode != null)
             {
                 foreach (var ds in logicalNode.ChildModelElements)
+                {
                     if (ds is IDataSet)
+                    {
                         if ((ds as IDataSet).Name == dsName)
+                        {
                             return;
+                        }
+                    }
+                }
+
                 dataSet.ParentModelElement = logicalNode;
                 logicalNode.ChildModelElements.Add(dataSet);
                 return;

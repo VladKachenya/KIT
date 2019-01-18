@@ -46,7 +46,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
            _navigationContext = navigationContext;
             _lDevice = navigationContext.BiscNavigationParameters.GetParameterByName<ILDevice>(InfoModelKeys.ModelKeys.LDeviceKey);
             LDeviceName = _lDevice.Inst;
-           _physicalDeviceName = _deviceModelService.GetParitntDeviceNameOfChildElement(_lDevice);
+           _physicalDeviceName = _deviceModelService.GetParentDeviceName(_lDevice);
             base.OnNavigatedTo(navigationContext);
         }
 

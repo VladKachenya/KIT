@@ -136,7 +136,7 @@ namespace BISC.Modules.Device.Model.Services
             return OperationResult.SucceedResult;
         }
 
-        public IDevice GetParitntDeviceOfChildElement(IModelElement childElement)
+        public IDevice GetParentDevice(IModelElement childElement)
         {
             var parientElement = childElement.ParentModelElement;
             if (parientElement == null)
@@ -149,13 +149,13 @@ namespace BISC.Modules.Device.Model.Services
             }
             else
             {
-                return GetParitntDeviceOfChildElement(parientElement);
+                return GetParentDevice(parientElement);
             }
         }
 
-        public string GetParitntDeviceNameOfChildElement(IModelElement childElement)
+        public string GetParentDeviceName(IModelElement childElement)
         {
-            return GetParitntDeviceOfChildElement(childElement)?.Name;
+            return GetParentDevice(childElement)?.Name;
         }
     }
 }

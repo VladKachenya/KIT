@@ -13,8 +13,9 @@ namespace BISC.Modules.Device.Infrastructure.Services
         OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device,ISclModel modelFrom);
         OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device);
         OperationResult DeleteDeviceFromModel(ISclModel sclModel, string deviceName);
-        IDevice GetParitntDeviceOfChildElement(IModelElement childElement);
-        string GetParitntDeviceNameOfChildElement(IModelElement childElement);
+        IDevice GetParentDevice(IModelElement childElement);
+        string GetParentDeviceName(IModelElement childElement);
+
 
     }
 }

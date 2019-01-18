@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Animation;
 using BISC.Infrastructure.Global.Common;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
@@ -12,10 +13,12 @@ using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
 using BISC.Modules.DataSets.Model.Mappers;
+using BISC.Modules.DataSets.Presentation.Commands;
 using BISC.Modules.DataSets.Presentation.ViewModels.Helpers;
 using BISC.Modules.Device.Infrastructure.HelpClasses;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 
@@ -28,15 +31,20 @@ namespace BISC.Modules.DataSets.Model.Services
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly INavigationService _navigationService;
         private readonly IDatasetViewModelFactory _datasetViewModelFactory;
+        private readonly IInfoModelService _infoModelService;
+        private readonly DatasetsSavingByFtpCommand _datasetsSavingByFtpCommand;
+
 
         public DatasetsConflictResolver(IDatasetModelService datasetModelService, IDeviceModelService deviceModelService, IConnectionPoolService connectionPoolService,
-            INavigationService navigationService,IDatasetViewModelFactory datasetViewModelFactory)
+            INavigationService navigationService,IDatasetViewModelFactory datasetViewModelFactory, IInfoModelService infoModelService, DatasetsSavingByFtpCommand datasetsSavingByFtpCommand)
         {
             _datasetModelService = datasetModelService;
             _deviceModelService = deviceModelService;
             _connectionPoolService = connectionPoolService;
             _navigationService = navigationService;
             _datasetViewModelFactory = datasetViewModelFactory;
+            _infoModelService = infoModelService;
+            _datasetsSavingByFtpCommand = datasetsSavingByFtpCommand;
         }
 
 
@@ -80,59 +88,103 @@ namespace BISC.Modules.DataSets.Model.Services
             var datasetsInDevice = _datasetModelService.GetAllDataSetOfDevice(deviceInsclModelInDevice);
             var datasetsInProject = _datasetModelService.GetAllDataSetOfDevice(devicesclModelInProject);
 
+            var datasetsViewModelsInDevice = _datasetViewModelFactory.GetDataSetsViewModel(datasetsInDevice);
+            var datasetsViewModelsInProject = _datasetViewModelFactory.GetDataSetsViewModel(datasetsInProject);
+
+            foreach (var dataSetViewModel in datasetsViewModelsInProject)
+            {
+                dataSetViewModel.ChangeTracker.SetTrackingEnabled(true);
+            }
+
+            foreach (var dataSetViewModel in datasetsViewModelsInProject)
+            {
+                dataSetViewModel.ChangeTracker.SetTrackingEnabled(true);
+            }
+
             var projectOnlydatasets = GetProjectOnlyList(datasetsInDevice, datasetsInProject);
             var deviceOnlydatasets = GetDeviceOnlyList(datasetsInDevice, datasetsInProject);
 
+            var deviceOnlydatasetsViewModels = _datasetViewModelFactory.GetDataSetsViewModel(datasetsInDevice);
+            var projectOnlydatasetsViewModels = _datasetViewModelFactory.GetDataSetsViewModel(datasetsInProject);
 
+            foreach (var dataSetViewModel in deviceOnlydatasetsViewModels)
+            {
+                datasetsViewModelsInDevice?.FirstOrDefault(model => model.EditableNamePart == dataSetViewModel.EditableNamePart)?.ChangeTracker.SetModified();
+            }
+
+            foreach (var dataSetViewModel in projectOnlydatasetsViewModels)
+            {
+                datasetsViewModelsInProject?.FirstOrDefault(model => model.EditableNamePart == dataSetViewModel.EditableNamePart)?.ChangeTracker.SetModified();
+            }
+
+            bool isSavingByFtpNeeded = false;
+            bool isChengid = (projectOnlydatasets.Count != 0 || deviceOnlydatasets.Count != 0);
 
             if (isFromDevice)//подтянуть различия из устройства
             {
-                foreach (var projectOnlydataset in projectOnlydatasets)
+                var instanseOfDataSets = new List<IDataSet>(datasetsInDevice);
+                _datasetModelService.DeleteAllDatasetsFromDevice(devicesclModelInProject);
+                foreach (var dataSetToAdd in datasetsInDevice)
                 {
-                    _datasetModelService.DeleteDatasetFromDevice(projectOnlydataset, devicesclModelInProject, projectOnlydataset.GetFirstParentOfType<ILDevice>().Inst, projectOnlydataset.GetFirstParentOfType<ILogicalNode>().Name);
+                    _datasetModelService.AddDatasetToDevice(dataSetToAdd, devicesclModelInProject, _infoModelService.GetParentLDevice(dataSetToAdd).Inst, _infoModelService.GetFullNameOfLogicalNode(_infoModelService.GetParentLogicalNode(dataSetToAdd)));
                 }
+                //foreach (var projectOnlydataset in projectOnlydatasets)
+                //{
+                //    _datasetModelService.DeleteDatasetFromDevice(projectOnlydataset, devicesclModelInProject, projectOnlydataset.GetFirstParentOfType<ILDevice>().Inst, projectOnlydataset.GetFirstParentOfType<ILogicalNode>().Name);
+                //}
 
-                foreach (var deviceOnlydataset in deviceOnlydatasets)
-                {
-                    _datasetModelService.AddDatasetToDevice(deviceOnlydataset, devicesclModelInProject, deviceOnlydataset.GetFirstParentOfType<ILDevice>().Inst, deviceOnlydataset.GetFirstParentOfType<ILogicalNode>().Name);
-                }
+                //foreach (var deviceOnlydataset in deviceOnlydatasets)
+                //{
+                //    _datasetModelService.AddDatasetToDevice(deviceOnlydataset, devicesclModelInProject, deviceOnlydataset.GetFirstParentOfType<ILDevice>().Inst, deviceOnlydataset.GetFirstParentOfType<ILogicalNode>().Name);
+                //}
             }
             else
             { //записать в устройство различия
-                if (_connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).IsConnected)
+                //if (_connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).IsConnected)
+                //{
+                //    foreach (var projectOnlydataset in projectOnlydatasets)
+                //    {
+                //        await _connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).MmsConnection
+                //            .AddDataSet(projectOnlydataset.GetFirstParentOfType<ILogicalNode>().Name,
+                //                projectOnlydataset.GetFirstParentOfType<ILDevice>().Inst,
+                //                deviceInsclModelInDevice.Name, projectOnlydataset.Name,
+                //                projectOnlydataset.FcdaList.ToDtos(deviceInsclModelInDevice.Name));
+
+                //        _datasetModelService.AddDatasetToDevice(projectOnlydataset, deviceInsclModelInDevice,
+                //            projectOnlydataset.GetFirstParentOfType<ILogicalNode>().Inst,
+                //            projectOnlydataset.GetFirstParentOfType<ILDevice>().Inst);
+
+                //    }
+
+                //    foreach (var deviceOnlydataset in deviceOnlydatasets)
+                //    {
+                //        await _connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).MmsConnection
+                //            .DeleteDataSet(deviceOnlydataset.GetFirstParentOfType<ILogicalNode>().Name,
+                //                deviceOnlydataset.GetFirstParentOfType<ILDevice>().Inst,
+                //                deviceInsclModelInDevice.Name, deviceOnlydataset.Name);
+
+                //        _datasetModelService.DeleteDatasetFromDevice(deviceOnlydataset, deviceInsclModelInDevice,
+                //            deviceOnlydataset.GetFirstParentOfType<ILDevice>().Inst,
+                //            deviceOnlydataset.GetFirstParentOfType<ILogicalNode>().Name);
+                //    }
+                //}
+                //else
+                //{
+                //    return new ResolvingResult("Устройство не на связи");
+                //}
+                _datasetsSavingByFtpCommand.Initialize(datasetsViewModelsInProject, deviceInsclModelInDevice, isChengid);
+                if (await _datasetsSavingByFtpCommand.IsSavingByFtpNeeded())
                 {
-                    foreach (var projectOnlydataset in projectOnlydatasets)
-                    {
-                        await _connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).MmsConnection
-                            .AddDataSet(projectOnlydataset.GetFirstParentOfType<ILogicalNode>().Name,
-                                projectOnlydataset.GetFirstParentOfType<ILDevice>().Inst,
-                                deviceInsclModelInDevice.Name, projectOnlydataset.Name,
-                                projectOnlydataset.FcdaList.ToDtos(deviceInsclModelInDevice.Name));
-
-                        _datasetModelService.AddDatasetToDevice(projectOnlydataset, deviceInsclModelInDevice,
-                            projectOnlydataset.GetFirstParentOfType<ILogicalNode>().Inst,
-                            projectOnlydataset.GetFirstParentOfType<ILDevice>().Inst);
-
-                    }
-
-                    foreach (var deviceOnlydataset in deviceOnlydatasets)
-                    {
-                        await _connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).MmsConnection
-                            .DeleteDataSet(deviceOnlydataset.GetFirstParentOfType<ILogicalNode>().Name,
-                                deviceOnlydataset.GetFirstParentOfType<ILDevice>().Inst,
-                                deviceInsclModelInDevice.Name, deviceOnlydataset.Name);
-
-                        _datasetModelService.DeleteDatasetFromDevice(deviceOnlydataset, deviceInsclModelInDevice,
-                            deviceOnlydataset.GetFirstParentOfType<ILDevice>().Inst,
-                            deviceOnlydataset.GetFirstParentOfType<ILogicalNode>().Name);
-                    }
+                    isSavingByFtpNeeded = true;
                 }
-                else
+                await _datasetsSavingByFtpCommand.SaveAsync();
+                if (isSavingByFtpNeeded)
                 {
-                    return new ResolvingResult("Устройство не на связи");
+                    return new ResolvingResult() { IsRestartNeeded = true };
                 }
             }
             return ResolvingResult.SucceedResult;
+
 
         }
 

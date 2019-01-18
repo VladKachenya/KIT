@@ -8,6 +8,7 @@ using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
+using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.InformationModel.Model.Elements;
@@ -62,10 +63,38 @@ namespace BISC.Modules.InformationModel.Model.Services
             return new List<ILDevice>();
         }
 
-        public ILDevice GetZeroLDevicesFromDevices(IModelElement device)
+        public ILDevice GetZeroLDevicesOfDevice(IDevice device)
         {
             var lDevices = GetLDevicesFromDevices(device);
             return lDevices.FirstOrDefault(ld => ld.Inst == "LD0");
+        }
+
+        public ILDevice GetParentLDevice(IModelElement childElement)
+        {
+            var parientElement = childElement.ParentModelElement;
+            switch (parientElement)
+            {
+                case null:
+                    return null;
+                case ILDevice _:
+                    return parientElement as ILDevice;
+                default:
+                    return GetParentLDevice(parientElement);
+            }
+        }
+
+        public ILogicalNode GetParentLogicalNode(IModelElement childElement)
+        {
+            var parientElement = childElement.ParentModelElement;
+            switch (parientElement)
+            {
+                case null:
+                    return null;
+                case ILogicalNode _:
+                    return parientElement as ILogicalNode;
+                default:
+                    return GetParentLogicalNode(parientElement);
+            }
         }
 
         public List<ISettingControl> GetSettingControlsOfDevice(IModelElement device)
@@ -74,5 +103,11 @@ namespace BISC.Modules.InformationModel.Model.Services
             device.GetAllChildrenOfType(ref settingControls);
             return settingControls;
         }
+
+        public string GetFullNameOfLogicalNode(ILogicalNode logicalNode)
+        {
+            return logicalNode.Prefix + logicalNode.LnClass + logicalNode.Inst;
+        }
+        
     }
 }

@@ -9,6 +9,7 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using System;
 using System.Collections.Generic;
+using BISC.Modules.InformationModel.Infrastucture.Services;
 
 namespace BISC.Modules.DataSets.Model.Services
 {

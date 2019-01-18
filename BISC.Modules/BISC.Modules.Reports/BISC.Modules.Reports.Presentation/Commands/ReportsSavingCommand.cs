@@ -53,10 +53,6 @@ namespace BISC.Modules.Reports.Presentation.Commands
             _ftpReportModelService = ftpReportModelService;
         }
 
-
-
-
-
         internal void Initialize(ObservableCollection<IReportControlViewModel> reportsToSave, IDevice device,
             Func<bool> isSavingInDevice, Action<bool> fineshSaving = null)
         {
@@ -73,8 +69,8 @@ namespace BISC.Modules.Reports.Presentation.Commands
                 {
                     _reportsToDelete.Add(report);
                 }
-
             }
+
             _isSavingInDevice = isSavingInDevice;
         }
 
@@ -121,7 +117,6 @@ namespace BISC.Modules.Reports.Presentation.Commands
                                             MapViewModelToModel(reportControlInDevise, reportToSave);
                                         }
                                     }
-
                                 }
                                 else
                                 {
@@ -143,7 +138,6 @@ namespace BISC.Modules.Reports.Presentation.Commands
                 _projectService.SaveCurrentProject();
                 if (resSavingDynamicReports.IsSucceed)
                 {
-
                     _loggingService.LogMessage($"Reports устройства {_device.Name} успешно сохранены",
                         SeverityEnum.Info);
                     _fineshSaving?.Invoke(await IsSavingByFtpNeeded());
@@ -156,7 +150,6 @@ namespace BISC.Modules.Reports.Presentation.Commands
                     return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedWithErrors, false,
                         resSavingDynamicReports.GetFirstError());
                 }
-
             }
             catch (Exception e)
             {
@@ -224,7 +217,7 @@ namespace BISC.Modules.Reports.Presentation.Commands
             if (isSavingInDevice)
             {
                 var res = await _ftpReportModelService.WriteReportsToDevice(device.Ip, reportControlsToSave,
-                    _infoModelService.GetZeroLDevicesFromDevices(device));
+                    _infoModelService.GetZeroLDevicesOfDevice(device));
                 if (res.IsSucceed)
                 {
                     _loggingService.LogMessage($"Сохранение динамических отчетов по FTP прошло успешно {device.Name}",
@@ -250,7 +243,6 @@ namespace BISC.Modules.Reports.Presentation.Commands
 
             return new OperationResult<SavingResultEnum>(SavingResultEnum.SavedInFile);
         }
-
 
 
         private void MapViewModelToModel(IReportControl reportControl, IReportControlViewModel reportControlViewModel)
@@ -286,7 +278,6 @@ namespace BISC.Modules.Reports.Presentation.Commands
                 (reportControl.OptFields.Value.SeqNum != reportToSave.OprionalFildsViewModel.SequenceNumber) ||
                 (reportControl.OptFields.Value.DataRef != reportToSave.OprionalFildsViewModel.DataReference))
             {
-
                 IOptFields optFields = reportToSave.OprionalFildsViewModel.GetUpdatedModel();
                 savingResult = await _connectionPoolService.GetConnection(device.Ip).MmsConnection
                     .WriteReportDataAsync(device.Name + ldInst, rptPath, "OptFlds",
@@ -325,8 +316,8 @@ namespace BISC.Modules.Reports.Presentation.Commands
                 if (dataSet != null)
                 {
                     dspath = device.Name +
-                                ldInst + "/"
-                                + lnName + "$" + dataSet.Name;
+                             ldInst + "/"
+                             + lnName + "$" + dataSet.Name;
                 }
 
 
@@ -345,7 +336,6 @@ namespace BISC.Modules.Reports.Presentation.Commands
                     .WriteReportDataAsync(device.Name + ldInst, rptPath, "GI",
                         reportToSave.GiBool);
             }
-
 
 
             if (reportControl.BufTime != reportToSave.BufferTime)
@@ -386,12 +376,5 @@ namespace BISC.Modules.Reports.Presentation.Commands
 
             return OperationResult.SucceedResult;
         }
-
-
     }
-
-
-
-
-
 }
