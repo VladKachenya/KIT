@@ -9,6 +9,7 @@ using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Reports.Infrastructure.Keys;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Presentation.Factorys;
+using BISC.Modules.Reports.Infrastructure.Presentation.Services;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Infrastructure.Services;
 using BISC.Modules.Reports.Model.Services;
@@ -51,6 +52,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly IDeviceReconnectionService _deviceReconnectionService;
         private readonly IGlobalEventsService _globalEventsService;
+        private readonly IReportVeiwModelService _reportVeiwModelService;
         private bool _isUpdateReports = true;
         private bool _isSaveСhanges = true;
 
@@ -59,10 +61,11 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         #region Ctor
         public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService, ISaveCheckingService saveCheckingService,
-            IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService, IConnectionPoolService connectionPoolService,
-            ILoggingService loggingService, ReportsSavingCommand reportsSavingCommand, IBiscProject biscProject,
+                IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService, IConnectionPoolService connectionPoolService,
+                ILoggingService loggingService, ReportsSavingCommand reportsSavingCommand, IBiscProject biscProject,
                 ReportControlLoadingService reportControlLoadingService, IUserNotificationService userNotificationService, IUserInteractionService userInteractionService,
-                IDeviceWarningsService deviceWarningsService, IDeviceReconnectionService deviceReconnectionService, IGlobalEventsService globalEventsService)
+                IDeviceWarningsService deviceWarningsService, IDeviceReconnectionService deviceReconnectionService, IGlobalEventsService globalEventsService,
+                IReportVeiwModelService reportVeiwModelService)
         //IReportsLoadingService reportsLoadingService, 
         {
             _commandFactory = commandFactory;
@@ -79,6 +82,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _deviceWarningsService = deviceWarningsService;
             _deviceReconnectionService = deviceReconnectionService;
             _globalEventsService = globalEventsService;
+            _reportVeiwModelService = reportVeiwModelService;
             //_reportsLoadingService = reportsLoadingService;
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand, () => _isSaveСhanges);
             AddNewReportCommand = commandFactory.CreatePresentationCommand(OnAddNewReportCommand, IsAddNewReport);
@@ -180,8 +184,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         private bool IsAddNewReport()
         {
-            var editingReport = ReportControlViewModels.Where(rep => rep.IsDynamic);
-            if (editingReport.Count() >= 10)
+            if (ReportControlViewModels.Count() >= 30)
             {
                 return false;
             }
@@ -241,7 +244,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private void UpdateViewModels()
         {
             _reportControlsModel = _reportsModelService.GetAllReportControlsOfDevice(_device);
-            ReportControlViewModels = _reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device);
+            ReportControlViewModels = _reportVeiwModelService.SortReportViewModels(_reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device));
         }
         #endregion
 

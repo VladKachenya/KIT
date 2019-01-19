@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Reports.Infrastructure.Presentation.Services;
 using BISC.Modules.Reports.Model.Services;
 using BISC.Modules.Reports.Presentation.Commands;
 
@@ -49,6 +50,7 @@ namespace BISC.Modules.Reports.Presentation.Module
             _injectionContainer.RegisterType<ITriggerOptionsViewModel, TriggerOptionsViewModel>();
             _injectionContainer.RegisterType<ReportsSavingCommand>();
             _injectionContainer.RegisterType<IReportControlFactoryViewModel, ReportControlFactoryViewModel>(true);
+            _injectionContainer.RegisterType<IReportVeiwModelService, ReportVeiwModelService>();
 
         }
     }

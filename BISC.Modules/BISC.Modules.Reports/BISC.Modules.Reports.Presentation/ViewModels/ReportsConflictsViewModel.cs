@@ -1,25 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Modules.Reports.Infrastructure.Keys;
+﻿using BISC.Modules.Reports.Infrastructure.Keys;
+using BISC.Modules.Reports.Infrastructure.Presentation.Services;
 using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Presentation.ViewModels.Helpers;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Navigation;
+using System.Collections.ObjectModel;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
 {
-   public class ReportsConflictsViewModel:NavigationViewModelBase
+    public class ReportsConflictsViewModel : NavigationViewModelBase
     {
+        private readonly IReportVeiwModelService _controlViewModelService;
         private ReportsConflictsContext _reportsConflictsContext;
 
-        public ReportsConflictsViewModel()
+
+        public ReportsConflictsViewModel(IReportVeiwModelService controlViewModelService)
         {
-            ReportControlViewModelsInProject=new ObservableCollection<IReportControlViewModel>();
-            ReportControlViewModelsInDevice=new ObservableCollection<IReportControlViewModel>();
+            _controlViewModelService = controlViewModelService;
+            ReportControlViewModelsInProject = new ObservableCollection<IReportControlViewModel>();
+            ReportControlViewModelsInDevice = new ObservableCollection<IReportControlViewModel>();
         }
 
         public ObservableCollection<IReportControlViewModel> ReportControlViewModelsInDevice { get; }
@@ -36,13 +35,21 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             ReportControlViewModelsInDevice.Clear();
             ReportControlViewModelsInProject.Clear();
 
-            foreach (var reportControlViewModel in _reportsConflictsContext.ReportControlViewModelsInDevice)
+            var contextReportInDevice =
+                _controlViewModelService.SortReportViewModels(_reportsConflictsContext
+                    .ReportControlViewModelsInDevice);
+            var contextReportInProject =
+                _controlViewModelService.SortReportViewModels(_reportsConflictsContext
+                    .ReportControlViewModelsInProject);
+
+
+            foreach (var reportControlViewModel in contextReportInDevice)
             {
                 reportControlViewModel.IsEditable = false;
                 reportControlViewModel.IsChenged = reportControlViewModel.ChangeTracker.GetIsModifiedRecursive();
                 ReportControlViewModelsInDevice.Add(reportControlViewModel);
             }
-            foreach (var reportControlViewModel in _reportsConflictsContext.ReportControlViewModelsInProject)
+            foreach (var reportControlViewModel in contextReportInProject)
             {
                 reportControlViewModel.IsEditable = false;
                 reportControlViewModel.IsChenged = reportControlViewModel.ChangeTracker.GetIsModifiedRecursive();

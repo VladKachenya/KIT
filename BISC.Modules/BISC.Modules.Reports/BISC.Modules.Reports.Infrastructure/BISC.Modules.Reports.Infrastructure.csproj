@@ -52,6 +52,7 @@
     <Compile Include="Model\IRptEnabled.cs" />
     <Compile Include="Model\ITrgOps.cs" />
     <Compile Include="Presentation\Factorys\IReportControlFactoryViewModel.cs" />
+    <Compile Include="Presentation\Services\IReportVeiwModelService.cs" />
     <Compile Include="Presentation\ViewModels\Base\IReportElementBase.cs" />
     <Compile Include="Presentation\ViewModels\IOprionalFildsViewModel.cs" />
     <Compile Include="Presentation\ViewModels\IReportControlViewModel.cs" />
@@ -83,8 +84,6 @@
       <Name>BISC.Modules.InformationModel.Infrastucture</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Presentation\Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
