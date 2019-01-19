@@ -37,11 +37,6 @@ namespace BISC.Modules.Reports.Presentation.Services
             _connectionPoolService = connectionPoolService;
         }
 
-
-
-
-
-
         #region Implementation of IElementConflictResolver
 
         public string ConflictName => "Report Controls";

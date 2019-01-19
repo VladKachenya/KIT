@@ -75,6 +75,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             _connection = _connectionPoolService.GetConnection(ip);
             var ldList = await _connection.MmsConnection.GetLdListAsync();
             _deviceName = FindSubstring(ldList.Item);
+            ldDictionary.Clear();
             foreach (var ld in ldList.Item)
             {
                 ldDictionary.Add(ld, (await _connection.MmsConnection.GetListValiablesAsync(ld, false)).Item);

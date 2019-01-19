@@ -29,62 +29,64 @@
         <converters:RowHeightToIsExpandedConverter x:Key="RowHeightToIsExpandedConverter"></converters:RowHeightToIsExpandedConverter>
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
     </Window.Resources>
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Closing" >
-            <command:EventToCommand  PassEventArgsToCommand="True"   Command="{Binding ShellClosingCommand}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
-    <materialDesign:DialogHost     attachedCommandBehavior:CommandBehavior.Command="{Binding ShellLoadedCommand}"
+    <ContentControl Style="{StaticResource BlockedContentStyle}">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Closing" >
+                <command:EventToCommand  PassEventArgsToCommand="True"   Command="{Binding ShellClosingCommand}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+        <materialDesign:DialogHost     attachedCommandBehavior:CommandBehavior.Command="{Binding ShellLoadedCommand}"
                                    attachedCommandBehavior:CommandBehavior.Event="Loaded"  Identifier="{x:Static constants:Constants.RootDialogKey}"  SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
 
-        <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
-            <materialDesign:DrawerHost.LeftDrawerContent>
-                <DockPanel MinWidth="212">
-                    <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+            <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+                <materialDesign:DrawerHost.LeftDrawerContent>
+                    <DockPanel MinWidth="212">
+                        <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
                                   DockPanel.Dock="Top"
                                   HorizontalAlignment="Right" Margin="10"
                                   IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
-                    <Grid>
-                        <views:DynamicRegion HorizontalAlignment="Stretch" RegionKey="{x:Static keys:KeysForNavigation+RegionNames.HamburgerMenuKey}" />
-                    </Grid>
-                </DockPanel>
-            </materialDesign:DrawerHost.LeftDrawerContent>
-            <DockPanel>
-                <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2"
-                                          Mode="PrimaryMid" DockPanel.Dock="Top">
-                    <DockPanel>
-                        <ToggleButton DockPanel.Dock="Left" Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="{Binding IsLeftMenuEnabled}"
-                                      x:Name="MenuToggleButton"/>
-                        <Grid DockPanel.Dock="Right" HorizontalAlignment="Stretch">
-                            <ContentControl HorizontalAlignment="Stretch"  interactivity:RegionManager.RegionName="{x:Static keys:KeysForNavigation+RegionNames.ToolBarMenuKey}" />
-
+                        <Grid>
+                            <views:DynamicRegion HorizontalAlignment="Stretch" RegionKey="{x:Static keys:KeysForNavigation+RegionNames.HamburgerMenuKey}" />
                         </Grid>
                     </DockPanel>
-                </materialDesign:ColorZone>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="{Binding ExpanderRowHeight,Mode=TwoWay}" MinHeight="22" Name="RowDefinition" ></RowDefinition>
+                </materialDesign:DrawerHost.LeftDrawerContent>
+                <DockPanel>
+                    <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                                          Mode="PrimaryMid" DockPanel.Dock="Top">
+                        <DockPanel>
+                            <ToggleButton DockPanel.Dock="Left" Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="{Binding IsLeftMenuEnabled}"
+                                      x:Name="MenuToggleButton"/>
+                            <Grid DockPanel.Dock="Right" HorizontalAlignment="Stretch">
+                                <ContentControl HorizontalAlignment="Stretch"  interactivity:RegionManager.RegionName="{x:Static keys:KeysForNavigation+RegionNames.ToolBarMenuKey}" />
 
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="3*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <ContentControl HorizontalAlignment="Stretch" Margin ="2" interactivity:RegionManager.RegionName="{x:Static keys:KeysForNavigation+RegionNames.MainTreeRegionKey}" />
-                    <ContentControl Grid.Column="2" Grid.Row="0" Margin ="2" HorizontalAlignment="Stretch" interactivity:RegionManager.RegionName="{x:Static keys:KeysForNavigation+RegionNames.MainTabHostRegionKey}" />
+                            </Grid>
+                        </DockPanel>
+                    </materialDesign:ColorZone>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="{Binding ExpanderRowHeight,Mode=TwoWay}" MinHeight="22" Name="RowDefinition" ></RowDefinition>
 
-                    <GridSplitter Grid.Column="1" ShowsPreview="True" Width="3"
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <ContentControl HorizontalAlignment="Stretch" Margin ="2" interactivity:RegionManager.RegionName="{x:Static keys:KeysForNavigation+RegionNames.MainTreeRegionKey}" />
+                        <ContentControl Grid.Column="2" Grid.Row="0" Margin ="2" HorizontalAlignment="Stretch" interactivity:RegionManager.RegionName="{x:Static keys:KeysForNavigation+RegionNames.MainTabHostRegionKey}" />
+
+                        <GridSplitter Grid.Column="1" ShowsPreview="True" Width="3"
                                   HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-                    <GridSplitter Visibility="{Binding IsNotificationsExpanded,Converter={StaticResource booleanToVisibilityConverter}}" Grid.ColumnSpan="3" Grid.Row="1" ShowsPreview="True"  Height="3"
+                        <GridSplitter Visibility="{Binding IsNotificationsExpanded,Converter={StaticResource booleanToVisibilityConverter}}" Grid.ColumnSpan="3" Grid.Row="1" ShowsPreview="True"  Height="3"
                                   HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-                    <ContentControl VerticalAlignment="Stretch" interactivity:RegionManager.RegionName="{x:Static keys:KeysForNavigation+RegionNames.NotificationBarKey}" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"></ContentControl>
-                </Grid>
-            </DockPanel>
-        </materialDesign:DrawerHost>
+                        <ContentControl VerticalAlignment="Stretch" interactivity:RegionManager.RegionName="{x:Static keys:KeysForNavigation+RegionNames.NotificationBarKey}" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"></ContentControl>
+                    </Grid>
+                </DockPanel>
+            </materialDesign:DrawerHost>
 
-    </materialDesign:DialogHost>
+        </materialDesign:DialogHost>
+    </ContentControl>
 </Window>
 

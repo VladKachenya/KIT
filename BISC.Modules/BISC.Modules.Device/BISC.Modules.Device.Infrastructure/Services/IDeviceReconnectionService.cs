@@ -11,5 +11,7 @@ namespace BISC.Modules.Device.Infrastructure.Services
 
         Task RestartDevice(IDevice existingDevice,TreeItemIdentifier treeItemIdToRemove);
 	    Task ExecuteBeforeRestart(IDevice existingDevice);
+        Task RestartAndReconnectDevice(IDevice existingDevice);
+
     }
 }

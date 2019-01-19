@@ -68,6 +68,7 @@ namespace BISC.Modules.Reports.Presentation.Services
             dU?.ForEach(element => resultCollection.Add(element));
             notDynamicBuffered?.ForEach(element => resultCollection.Add(element));
             dB?.ForEach(element => resultCollection.Add(element));
+
             return resultCollection;
         }
     }

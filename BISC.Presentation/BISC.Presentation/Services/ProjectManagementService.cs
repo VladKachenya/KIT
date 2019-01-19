@@ -30,13 +30,14 @@ namespace BISC.Presentation.Services
         private readonly ITabManagementService _tabManagementService;
         private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly IUserInteractionService _userInteractionService;
-
+        private readonly IGlobalSavingService _globalSavingService;
 
 
         public ProjectManagementService(IProjectService projectService, ISaveCheckingService saveCheckingService, ILoggingService loggingService,
             IUiFromModelElementRegistryService uiFromModelElementRegistryService, IBiscProject biscProject, IDeviceModelService deviceModelService,
             ITreeManagementService treeManagementService, IGoosesModelService goosesModelService, IConnectionPoolService connectionPoolService,
-            ITabManagementService tabManagementService, IDeviceWarningsService deviceWarningsService, IUserInteractionService userInteractionService)
+            ITabManagementService tabManagementService, IDeviceWarningsService deviceWarningsService, IUserInteractionService userInteractionService,
+            IGlobalSavingService globalSavingService)
         {
             _projectService = projectService;
             _saveCheckingService = saveCheckingService;
@@ -50,6 +51,7 @@ namespace BISC.Presentation.Services
             _tabManagementService = tabManagementService;
             _deviceWarningsService = deviceWarningsService;
             _userInteractionService = userInteractionService;
+            _globalSavingService = globalSavingService;
         }
 
         public async void SaveProject()
@@ -64,7 +66,8 @@ namespace BISC.Presentation.Services
             {
                 try
                 {
-                    await _saveCheckingService.SaveAllUnsavedEntities(false);
+                    //await _saveCheckingService.SaveAllUnsavedEntities(false);
+                    await _globalSavingService.SaveAllDevices();
                     _projectService.SaveCurrentProject();
                     _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
                 }

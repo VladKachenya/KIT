@@ -69,6 +69,7 @@
     <Compile Include="Events\NotificationBarExpandEvent.cs" />
     <Compile Include="Events\RegionDisposingEvent.cs" />
     <Compile Include="Events\SaveCheckEvent.cs" />
+    <Compile Include="Events\ShellBlockEvent.cs" />
     <Compile Include="Factories\ICommandFactory.cs" />
     <Compile Include="Keys\KeysForNavigation.cs" />
     <Compile Include="Navigation\BiscNavigationContext.cs" />

@@ -11,6 +11,7 @@ using BISC.Infrastructure.Global.Services;
 using BISC.Interfaces;
 using BISC.Presentation.BaseItems.Events;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.BaseItems.ViewModels.Behaviors;
 using BISC.Presentation.Infrastructure.Events;
 using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Services;
@@ -19,7 +20,7 @@ using Prism.Events;
 
 namespace BISC.ViewModel
 {
-   public class ShellViewModel:ViewModelBase, IShellViewModel
+   public class ShellViewModel:NavigationViewModelBase, IShellViewModel
     {
         private readonly INavigationService _navigationService;
         private readonly ISaveCheckingService _saveCheckingService;
@@ -40,7 +41,21 @@ namespace BISC.ViewModel
             ShellLoadedCommand = new DelegateCommand(OnShellLoaded);
             ShellClosingCommand=new DelegateCommand<object>(OnShellClosing);
             _globalEventsService.Subscribe<NotificationBarExpandEvent>(OnNotificationBarClosing);
+            _globalEventsService.Subscribe<ShellBlockEvent>((x) =>
+            {
+                if (x.IsBlocked)
+                {
+                    BlockViewModelBehavior.SetBlock("Обновление",true);
+                }
+                else
+                {
+                    BlockViewModelBehavior.Unlock();
+                }
+            });
+            BlockViewModelBehavior = new BlockViewModelBehavior();
+
         }
+
 
         private void OnNotificationBarClosing(NotificationBarExpandEvent obj)
         {

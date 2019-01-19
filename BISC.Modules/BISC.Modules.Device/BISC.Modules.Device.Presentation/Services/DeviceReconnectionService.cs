@@ -244,13 +244,18 @@ namespace BISC.Modules.Device.Presentation.Services
 
 			  //  }
             }
-            
-			await _deviceFileWritingServices.ResetDevice(existingDevice.Ip);
-			_connectionPoolService.GetConnection(existingDevice.Ip).StopConnection();
-			await Reconnect(existingDevice, _treeManagementService.GetDeviceTreeItem(existingDevice.Name), true);
+		    await RestartAndReconnectDevice(existingDevice);
 
 		}
 
-		#endregion
-	}
+	    public async Task RestartAndReconnectDevice(IDevice existingDevice)
+	    {
+	        await _deviceFileWritingServices.ResetDevice(existingDevice.Ip);
+	        _connectionPoolService.GetConnection(existingDevice.Ip).StopConnection();
+	        await Reconnect(existingDevice, _treeManagementService.GetDeviceTreeItem(existingDevice.Name), true);
+        }
+
+
+        #endregion
+    }
 }

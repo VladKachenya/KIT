@@ -63,7 +63,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
                 if (res.IsRestartNeeded)
                 {
                     _conflictContext.IsRestartNeeded = true;
-                }
+               }
 
             }
 
