@@ -37,7 +37,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
         private readonly IFtpDataSetModelService _ftpDataSetModelService;
         private ObservableCollection<IDataSetViewModel> _dataSetsToSave;
         private bool? _isCheged = null;
-        private Action<bool> _fineshSaving;
+        //private Action<bool> _fineshSaving;
 
         private IDevice _device;
 
@@ -62,12 +62,12 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
 
 
-        public void Initialize(ObservableCollection<IDataSetViewModel> dataSetsToSave, IModelElement device, bool? isCheged, Action<bool> fineshSaving = null)
+        public void Initialize(ObservableCollection<IDataSetViewModel> dataSetsToSave, IModelElement device, bool? isCheged)
         {
             _dataSetsToSave = dataSetsToSave;
             _device = device as IDevice;
             _isCheged = isCheged;
-            _fineshSaving = fineshSaving;
+            //_fineshSaving = fineshSaving;
 
         }
         public Task<bool> IsSavingByFtpNeeded()
@@ -138,7 +138,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
                     SeverityEnum.Warning);
 
             }
-            _fineshSaving?.Invoke(await IsSavingByFtpNeeded());
+            //_fineshSaving?.Invoke(await IsSavingByFtpNeeded());
 
             return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedOk);
         }

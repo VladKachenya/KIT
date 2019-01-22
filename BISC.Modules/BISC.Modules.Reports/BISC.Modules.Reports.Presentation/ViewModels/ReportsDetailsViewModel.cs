@@ -97,6 +97,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             if (obj is IReportControlViewModel reportControlViewModel)
             {
                 ReportControlViewModels.Remove(reportControlViewModel);
+                _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
                 AddNewReportCommand.RaiseCanExecute();
             }
         }
@@ -111,7 +112,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
             if (await _reportsSavingCommand.IsSavingByFtpNeeded())
             {
-                _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected, FineshSaving);
                 await _deviceReconnectionService.ExecuteBeforeRestart(_device);
             }
             else
@@ -130,8 +130,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             try
             {
                 BlockViewModelBehavior.SetBlock("Сохранение отчетов", true);
-                _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected, FineshSaving);
-
                 var res = await _reportsSavingCommand.SaveAsync();
                 //UpdateViewModels();
                 //ChangeTracker.AcceptChanges();
@@ -139,6 +137,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             finally
             {
                 _isSaveСhanges = true;
+                BlockViewModelBehavior.Unlock();
                 (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
             }
         }
@@ -179,6 +178,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             ReportControlViewModels.Add(
                 _reportControlFactoryViewModel.CreateReportViewModel(
                     ReportControlViewModels.Select((model => model.ReportID)).ToList(), _device));
+            _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             AddNewReportCommand.RaiseCanExecute();
         }
 
@@ -208,6 +208,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             finally
             {
                 _isUpdateReports = true;
+                _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
                 (UpdateReportsCommad as IPresentationCommand)?.RaiseCanExecute();
             }
         }
@@ -238,7 +239,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             AddNewReportCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
-            _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected, FineshSaving);
+            _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
         }
 
         private void UpdateViewModels()
@@ -279,7 +280,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         public override void OnActivate()
         {
-            ShowFtpBlockMessageIfNeeded();
+            //ShowFtpBlockMessageIfNeeded();
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _userInterfaceComposingService.AddGlobalCommand(UpdateReportsCommad, $"Обновить Report-ы {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewReportCommand, $"Добавить Report {_device.Name}", IconsKeys.AddIconKey, false, true);

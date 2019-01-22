@@ -155,7 +155,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             AddNewDataSetCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
-            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive(), FineshSaving);
+            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive());
 
         }
 
@@ -178,14 +178,14 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _loggingService.LogUserAction($"Пользователь удаляет DataSet {element.SelectedParentLd + "." + element.SelectedParentLn + "." + element.EditableNamePart}");
             DataSets.Remove(element);
             AddNewDataSetCommand.RaiseCanExecute();
-            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive(), FineshSaving);
+            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive());
         }
         private void OnAddNewDataSet()
         {
             _loggingService.LogUserAction($"Пользователь добавляет новый датасет в устройстве {_device.Name}");
             DataSets.Add(_datasetViewModelFactory.CreateDataSetViewModel(DataSets.Select((model => model.EditableNamePart)).ToList(), _device));
             AddNewDataSetCommand.RaiseCanExecute();
-            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive(), FineshSaving);
+            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive());
         }
 
         private bool IsAddNewDataSet()
@@ -259,41 +259,43 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             }
             finally
             {
+                BlockViewModelBehavior.Unlock();
                 _isSaveСhanges = true;
                 (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
             }
         }
 
-        private void FineshSaving(bool isFtpSaving)
-        {
+        // Предлогает перезагрузить устройство при сохранении данных по FTP
+        //private void FineshSaving(bool isFtpSaving)
+        //{
             
-            if (isFtpSaving)
-            {
-                if (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
-                {
-                    _deviceWarningsService.SetWarningOfDevice(_device.Name, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey, "DataSets сохранены с использование FTP");
-                    ShowFtpBlockMessageIfNeeded();
-                }
-            }
-            else
-            {
-                BlockViewModelBehavior.Unlock();
-            }
+        //    if (isFtpSaving)
+        //    {
+        //        if (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
+        //        {
+        //            _deviceWarningsService.SetWarningOfDevice(_device.Name, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey, "DataSets сохранены с использование FTP");
+        //            ShowFtpBlockMessageIfNeeded();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        BlockViewModelBehavior.Unlock();
+        //    }
 
-            UpdateCurentChengeTracker();
-        }
+        //    UpdateCurentChengeTracker();
+        //}
 
-        private void ShowFtpBlockMessageIfNeeded()
-        {
-            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name,
-                DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey))
-            {
-                BlockViewModelBehavior.SetBlockWithOption(
-                    "Для сохранения изменений по FTP требуется перезагрузка" + Environment.NewLine +
-                    "Имеется несоответствие данных.", new UnlockCommandEntity("Все равно продолжить"),
-                    new UnlockCommandEntity("Перезагрузить устройство", _commandFactory.CreatePresentationCommand(() => _globalEventsService.SendMessage(new ResetByFtpEvent { DeviceName = _device.Name, Ip = _device.Ip }))));
-            }
-        }
+        //private void ShowFtpBlockMessageIfNeeded()
+        //{
+        //    if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name,
+        //        DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey))
+        //    {
+        //        BlockViewModelBehavior.SetBlockWithOption(
+        //            "Для сохранения изменений по FTP требуется перезагрузка" + Environment.NewLine +
+        //            "Имеется несоответствие данных.", new UnlockCommandEntity("Все равно продолжить"),
+        //            new UnlockCommandEntity("Перезагрузить устройство", _commandFactory.CreatePresentationCommand(() => _globalEventsService.SendMessage(new ResetByFtpEvent { DeviceName = _device.Name, Ip = _device.Ip }))));
+        //    }
+        //}
 
         private void SortDataSetsByIsDynamic()
         {
@@ -366,7 +368,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public override void OnActivate()
         {
-            ShowFtpBlockMessageIfNeeded();
+            //ShowFtpBlockMessageIfNeeded();
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _userInterfaceComposingService.AddGlobalCommand(UpdateDataSetsCommand, $"Обновить DataSets {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewDataSetCommand, $"Добавить DataSet {_device.Name}", IconsKeys.AddIconKey, false, true);
