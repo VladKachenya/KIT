@@ -49,19 +49,19 @@ namespace BISC.Presentation.Module
 
             var fileCommands = new List<ICommand>();
             var fileCommandsName = new List<string>();
-            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.СreateNewProject));
+            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.СreateNewProjectAsync));
             fileCommandsName.Add("Новый проект");
-            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.SaveProject));
+            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.SaveProjectAsync));
             fileCommandsName.Add("Сохранить все изменения");
-            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.SaveProjectAs));
+            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.SaveProjectAsAsync));
             fileCommandsName.Add("Сохранить проект как...");
-            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.OpenProjectAs));
+            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.OpenProjectAsAsync));
             fileCommandsName.Add("Открыть проект");
-            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.ClearCurrentProject));
+            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.ClearCurrentProjectAsync));
             fileCommandsName.Add("Очистить текущий проект");
             userInterfaceComposingService.AddGlobalCommandGroup(fileCommands, fileCommandsName, "ПРОЕКТ", IconsKeys.BookMultipleIconKey);
 
-            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(projectManagementService.SaveProject),
+            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(projectManagementService.SaveProjectAsync),
                 "Сохранить все изменения", IconsKeys.ContentSaveAllKey, false, true);
             userInterfaceComposingService.AddGlobalCommand
                 (commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки", IconsKeys.SettingsIconKey, true, false);
@@ -75,7 +75,7 @@ namespace BISC.Presentation.Module
             navigationService.NavigateViewToRegion(KeysForNavigation.ViewNames.ToolBarMenuViewName,
                 KeysForNavigation.RegionNames.ToolBarMenuKey);
 
-            projectManagementService.OpenDefaultProject();
+            projectManagementService.OpenDefaultProjectAsync();
 
             uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(biscProject.MainSclModel.Value, null, "SCL");
             mainTreeViewModel.ChangeTracker.SetTrackingEnabled(true);

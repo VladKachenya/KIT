@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using BISC.Infrastructure.Global.Services;
+﻿using BISC.Infrastructure.Global.Services;
 using BISC.Presentation.BaseItems.ViewModels;
-using BISC.Presentation.Docking;
 using BISC.Presentation.Infrastructure.Events;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Interfaces;
+using System.Windows.Input;
 
 namespace BISC.Presentation.ViewModels.Tab
 {
@@ -18,22 +12,23 @@ namespace BISC.Presentation.ViewModels.Tab
     {
         private readonly ITabManagementService _tabManagementService;
         private readonly ISaveCheckingService _saveCheckingService;
-        private readonly ISaveManagementService _saveManagementService;
         private readonly IGlobalEventsService _globalEventsService;
+        private readonly IGlobalSavingService _globalSavingService;
         private string _tabRegionName;
         private string _tabHeader;
         private bool _isHaveChanges;
 
 
-        public TabViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService, ISaveCheckingService saveCheckingService,ISaveManagementService saveManagementService, IGlobalEventsService globalEventsService)
+        public TabViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService, ISaveCheckingService saveCheckingService,
+            IGlobalEventsService globalEventsService, IGlobalSavingService globalSavingService)
         {
             _tabManagementService = tabManagementService;
             _saveCheckingService = saveCheckingService;
-            _saveManagementService = saveManagementService;
             _globalEventsService = globalEventsService;
+            _globalSavingService = globalSavingService;
             CloseFragmentCommand = commandFactory.CreatePresentationCommand((async () =>
             {
-                if (await saveManagementService.GetIsRegionCanBeClosed(_tabRegionName))
+                if (await _globalSavingService.GetIsRegionCanBeClosed(_tabRegionName))
                 {
                     _tabManagementService.CloseTab(TabRegionName);
                 }

@@ -48,7 +48,6 @@ namespace BISC.Presentation.Module
             _injectionContainer.RegisterType<IUserInteractionService, UserInteractionService>(true);
             _injectionContainer.RegisterType<IProjectManagementService, ProjectManagementService>(true);
             _injectionContainer.RegisterType<IUniqueNameService, UniqueNameService>(true);
-            _injectionContainer.RegisterType<ISaveManagementService, SaveManagementService>();
             _injectionContainer.RegisterType<IGlobalSavingService, GlobalSavingService>();
 
             _injectionContainer.RegisterType<object,TabHostView>(KeysForNavigation.ViewNames.MainTabHostViewName);

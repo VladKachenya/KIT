@@ -2,12 +2,13 @@
 {
     public interface IProjectManagementService
     {
-        void SaveProject();
-        void SaveProjectAs();
-        void OpenProjectAs();
-        void OpenDefaultProject();
-        void СreateNewProject();
-        void ClearCurrentProject();
+        void SaveProjectAsync();
+
+        void SaveProjectAsAsync();
+        void OpenProjectAsAsync();
+        void OpenDefaultProjectAsync();
+        void СreateNewProjectAsync();
+        void ClearCurrentProjectAsync();
 
 
     }
