@@ -201,49 +201,6 @@ namespace BISC.Modules.Device.Presentation.Services
             }
         }
 
-        public async Task ExecuteBeforeRestart(IDevice existingDevice)
-        {
-
-            var unsavedEntitiesInfo = (await _saveCheckingService.GetIsDeviceEntitiesSaved(existingDevice.Name));
-            if (!unsavedEntitiesInfo.IsEntitiesSaved)
-            {
-
-                if (unsavedEntitiesInfo.UnsavedCheckingEntities.Count > 0)
-                {
-                    var warnings =
-                        unsavedEntitiesInfo.UnsavedCheckingEntities.Select(
-                            change => ("Изменения " + change.EntityFriendlyName + " будут сохранены.")).ToList();
-                    var res = await _userInteractionService.ShowOptionToUser("Сохранение изменений",
-                        "Сохранение потребует перезагрузки устройства. \nЖелаете произвести сохранение?",
-                        new List<string>() { "Да", "Нет" }, warnings);
-                    if (res == 1)
-                    {
-                        return;
-                    }
-                    var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, false);
-                    if (savingRes.IsValidationFailed)
-                    {
-                        return;
-                    }
-                }
-                //  else
-                //  {
-                //      var res = await _userInteractionService.ShowOptionToUser("Требуется перезагрузка", "Сохранение потребует перезагрузки устройства",
-                //          new List<string>() { "ОК", "Отмена" });
-                //      if (res == 1)
-                //      {
-                //          return;
-                //      }
-                //               var savingRes = await _saveCheckingService.SaveDeviceUnsavedEntities(existingDevice.Name, false);
-                //if(savingRes.IsValidationFailed)return;
-
-
-                //  }
-            }
-            await RestartDevice(existingDevice);
-
-        }
-
         public async Task RebootOnly(IDevice existingDevice)
         {
             await _deviceFileWritingServices.ResetDevice(existingDevice.Ip);

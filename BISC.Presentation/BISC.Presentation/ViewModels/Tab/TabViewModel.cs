@@ -28,7 +28,7 @@ namespace BISC.Presentation.ViewModels.Tab
             _globalSavingService = globalSavingService;
             CloseFragmentCommand = commandFactory.CreatePresentationCommand((async () =>
             {
-                if (await _globalSavingService.GetIsRegionCanBeClosed(_tabRegionName))
+                if (!(await _globalSavingService.SaveСhangesToRegion(_tabRegionName, true)).IsCancelled)
                 {
                     _tabManagementService.CloseTab(TabRegionName);
                 }

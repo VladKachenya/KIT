@@ -4,12 +4,12 @@ using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.Events;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Presentation.Services
 {
@@ -22,13 +22,12 @@ namespace BISC.Presentation.Services
                 Device = device;
                 UnsavedEntitiesOfDevise = new List<SaveCheckingEntity>();
             }
-            public IDevice Device { get;}
+            public IDevice Device { get; }
             public bool IsRestartNecessry { get; set; }
             public List<SaveCheckingEntity> UnsavedEntitiesOfDevise { get; }
-
             public async Task AddUnsavedEntity(SaveCheckingEntity entity)
             {
-                if(entity.SavingCommand != null &&
+                if (entity.SavingCommand != null &&
                   await entity.SavingCommand.IsSavingByFtpNeeded())
                 {
                     IsRestartNecessry = true;
@@ -43,13 +42,12 @@ namespace BISC.Presentation.Services
         private readonly IUserInteractionService _userInteractionService;
         private readonly IInjectionContainer _injectionContainer;
         private readonly IGlobalEventsService _globalEventsService;
-        private readonly INavigationService _navigationService;
         private ISclModel _sclModel;
 
         public GlobalSavingService(ISaveCheckingService saveCheckingService,
             Func<IDeviceReconnectionService> deviceReconnectionService,
-            IDeviceModelService deviceModelService, IUserInteractionService userInteractionService, IInjectionContainer injectionContainer, IGlobalEventsService globalEventsService,
-            INavigationService navigationService)
+            IDeviceModelService deviceModelService, IUserInteractionService userInteractionService, 
+            IInjectionContainer injectionContainer, IGlobalEventsService globalEventsService)
         {
             _saveCheckingService = saveCheckingService;
             _deviceReconnectionService = deviceReconnectionService;
@@ -57,18 +55,17 @@ namespace BISC.Presentation.Services
             _userInteractionService = userInteractionService;
             _injectionContainer = injectionContainer;
             _globalEventsService = globalEventsService;
-            _navigationService = navigationService;
         }
 
 
         #region Implementation of IGlobalSavingService
 
-        public async Task<bool> SaveAllDevices(bool isReconnectIfNeed = true)
+        public async Task<SaveResult> SaveAllDevices(bool isReconnectIfNeed = true)
         {
+            var res = new SaveResult();
             _globalEventsService.SendMessage(new ShellBlockEvent { IsBlocked = true });
             var allUnsavedEntities = _saveCheckingService.GetSaveCheckingEntities()
                 .Where((entity => entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
-
             try
             {
                 var devisesForSaving = await GetDevicesForSaving(allUnsavedEntities);
@@ -76,7 +73,8 @@ namespace BISC.Presentation.Services
 
                 if (!(bool)confirmResult)
                 {
-                    return false;
+                    res.IsDeclined = false;
+                    return res;
                 }
 
                 var savingRes = await _saveCheckingService.SaveAllUnsavedEntities(false);
@@ -84,7 +82,7 @@ namespace BISC.Presentation.Services
 
                 if (savingRes.IsValidationFailed)
                 {
-                    return false;
+                    return savingRes;
                 }
 
                 if (isReconnectIfNeed)
@@ -99,38 +97,51 @@ namespace BISC.Presentation.Services
             finally
             {
                 _globalEventsService.SendMessage(new ShellBlockEvent { IsBlocked = false });
-
             }
 
-            return true;
+            res.IsSaved = true;
+            return res;
         }
 
-        public async Task<bool> GetIsRegionCanBeClosed(string regionName)
+        public async Task<SaveResult> SaveСhangesToRegion(string regionName, bool isCancelPossible = false )
         {
+            var saveResult = new SaveResult();
+
             if (_saveCheckingService.GetSaveCheckingEntities().Any((entity => entity.RegionName == regionName)))
             {
                 var modifiedEntities = _saveCheckingService.GetSaveCheckingEntities().Where((entity =>
                     entity.RegionName == regionName)).ToList();
-
+                // Получение всех связанных изменений
                 var devisesForSaving = await GetDevicesForSaving(modifiedEntities);
+
+                var entitiesForSaving = new List<SaveCheckingEntity>();
+                foreach (var devise in devisesForSaving)
+                {
+                    entitiesForSaving.AddRange(devise.UnsavedEntitiesOfDevise);
+                }
+
+                // Валидация перед сохранением
+                foreach (var entity in entitiesForSaving)
+                {
+                    if ((entity.SavingCommand != null) && !(await entity.SavingCommand.ValidateBeforeSave()).IsSucceed)
+                    {
+                        saveResult.IsValidationFailed = true;
+                        return saveResult;
+                    }
+                }
 
                 bool? res = true;
                 if (modifiedEntities.Any() && modifiedEntities.First().ChangeTracker.GetIsModifiedRecursive())
                 {
-                    res = await GetUserConfirmation(devisesForSaving, true);
+                    res = await GetUserConfirmation(devisesForSaving, isCancelPossible);
                 }
                 if (res == null)
                 {
-                    return false;
+                    saveResult.IsCancelled = true;
+                    return saveResult;
                 }
-
                 if ((bool)res)
                 {
-                    var entitiesForSaving = new List<SaveCheckingEntity>();
-                    foreach (var devise in devisesForSaving)
-                    {
-                        entitiesForSaving.AddRange(devise.UnsavedEntitiesOfDevise);
-                    }
                     await _saveCheckingService.ExecuteSave(entitiesForSaving);
 
                     var dev = devisesForSaving.Where(el => el.IsRestartNecessry).ToList();
@@ -139,17 +150,15 @@ namespace BISC.Presentation.Services
                         await RestartAndReconnestDevices(dev);
                     }
                 }
+                else
+                {
+                    saveResult.IsDeclined = true;
+                    return saveResult;
+                }
             }
-
-            return true;
+            saveResult.IsSaved = true;
+            return saveResult;
         }
-
-        public async Task<bool> SaveСhangesToRegion(string regionName)
-        {
-            return true;
-        }
-
-
         #endregion
 
         #region private filds
@@ -260,7 +269,7 @@ namespace BISC.Presentation.Services
 
         private async Task<DevicesForSaving> GetDevicesForSaving(SaveCheckingEntity unsavedEntity, IDevice device = null)
         {
-            DevicesForSaving emptyDeviseForSaving = new DevicesForSaving (device)
+            DevicesForSaving emptyDeviseForSaving = new DevicesForSaving(device)
             {
                 IsRestartNecessry = unsavedEntity.SavingCommand != null && await unsavedEntity.SavingCommand.IsSavingByFtpNeeded()
             };

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using BISC.Presentation.Infrastructure.HelperEntities;
 
 
 namespace BISC.Presentation.Infrastructure.Services
 {
     public interface IGlobalSavingService
     {
-        Task<bool> SaveAllDevices(bool isReconnectIfNeed = true);
-        Task<bool> GetIsRegionCanBeClosed(string regionName);
-        Task<bool> SaveСhangesToRegion(string regionName);
+        Task<SaveResult> SaveAllDevices(bool isReconnectIfNeed = true);
+        Task<SaveResult> SaveСhangesToRegion(string regionName, bool isCancelPossible = false);
     }
 }
