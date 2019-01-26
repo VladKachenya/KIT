@@ -14,6 +14,7 @@ using System.Windows.Input;
 using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Device.Infrastructure.Events;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
 {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Input;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Presentation.Interfaces

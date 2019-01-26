@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Presentation.Docking;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Interfaces;

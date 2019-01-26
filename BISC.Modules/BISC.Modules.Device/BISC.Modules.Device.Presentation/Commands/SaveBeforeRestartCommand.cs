@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BISC.Modules.Device.Infrastructure.Commands;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.Commands

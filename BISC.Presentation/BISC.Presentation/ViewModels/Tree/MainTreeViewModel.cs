@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Services;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.Tree;
 using BISC.Presentation.Interfaces.Tree;

@@ -29,6 +29,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -233,6 +234,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 {
                     await SaveChangesAsync();
                 }
+                await UpdateDataSets(true);
+
             }
             catch (Exception e)
             {

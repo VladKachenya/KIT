@@ -12,6 +12,7 @@ using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.UiFromModel;

@@ -71,6 +71,10 @@
     <Compile Include="Events\SaveCheckEvent.cs" />
     <Compile Include="Events\ShellBlockEvent.cs" />
     <Compile Include="Factories\ICommandFactory.cs" />
+    <Compile Include="HelperEntities\SaveCheckingEntity.cs" />
+    <Compile Include="HelperEntities\SaveResult.cs" />
+    <Compile Include="HelperEntities\TreeItemIdentifier.cs" />
+    <Compile Include="HelperEntities\UnsavedEntitiesInfo.cs" />
     <Compile Include="Keys\KeysForNavigation.cs" />
     <Compile Include="Navigation\BiscNavigationContext.cs" />
     <Compile Include="Navigation\BiscNavigationParameters.cs" />

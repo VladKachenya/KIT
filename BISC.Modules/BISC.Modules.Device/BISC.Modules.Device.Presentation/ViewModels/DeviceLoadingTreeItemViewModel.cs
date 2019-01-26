@@ -16,6 +16,7 @@ using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 

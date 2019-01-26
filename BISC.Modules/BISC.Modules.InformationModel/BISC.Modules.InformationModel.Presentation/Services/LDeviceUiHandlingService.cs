@@ -7,6 +7,7 @@ using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.UiFromModel;

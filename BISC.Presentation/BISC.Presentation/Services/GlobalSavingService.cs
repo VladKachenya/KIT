@@ -9,18 +9,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Presentation.Services
 {
     public class GlobalSavingService : IGlobalSavingService
     {
-        private struct DevicesForSaving
+        private class DevicesForSaving
         {
-            public IDevice Device;
-            public bool IsRestartNecessry;
-            public List<SaveCheckingEntity> UnsavedEntitiesOfDevise;
-        }
+            public DevicesForSaving(IDevice device)
+            {
+                Device = device;
+                UnsavedEntitiesOfDevise = new List<SaveCheckingEntity>();
+            }
+            public IDevice Device { get;}
+            public bool IsRestartNecessry { get; set; }
+            public List<SaveCheckingEntity> UnsavedEntitiesOfDevise { get; }
 
+            public async Task AddUnsavedEntity(SaveCheckingEntity entity)
+            {
+                if(entity.SavingCommand != null &&
+                  await entity.SavingCommand.IsSavingByFtpNeeded())
+                {
+                    IsRestartNecessry = true;
+                }
+                UnsavedEntitiesOfDevise.Add(entity);
+            }
+        }
 
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly Func<IDeviceReconnectionService> _deviceReconnectionService;
@@ -48,7 +63,7 @@ namespace BISC.Presentation.Services
 
         #region Implementation of IGlobalSavingService
 
-        public async Task SaveAllDevices(bool isReconnectIfNeed = true)
+        public async Task<bool> SaveAllDevices(bool isReconnectIfNeed = true)
         {
             _globalEventsService.SendMessage(new ShellBlockEvent { IsBlocked = true });
             var allUnsavedEntities = _saveCheckingService.GetSaveCheckingEntities()
@@ -61,7 +76,7 @@ namespace BISC.Presentation.Services
 
                 if (!(bool)confirmResult)
                 {
-                    return;
+                    return false;
                 }
 
                 var savingRes = await _saveCheckingService.SaveAllUnsavedEntities(false);
@@ -69,7 +84,7 @@ namespace BISC.Presentation.Services
 
                 if (savingRes.IsValidationFailed)
                 {
-                    return;
+                    return false;
                 }
 
                 if (isReconnectIfNeed)
@@ -86,6 +101,8 @@ namespace BISC.Presentation.Services
                 _globalEventsService.SendMessage(new ShellBlockEvent { IsBlocked = false });
 
             }
+
+            return true;
         }
 
         public async Task<bool> GetIsRegionCanBeClosed(string regionName)
@@ -127,6 +144,12 @@ namespace BISC.Presentation.Services
             return true;
         }
 
+        public async Task<bool> SaveСhangesToRegion(string regionName)
+        {
+            return true;
+        }
+
+
         #endregion
 
         #region private filds
@@ -147,7 +170,7 @@ namespace BISC.Presentation.Services
                     if (res.Any(el => el.Device == null))
                     {
                         var emptyDeviseForSaving = res.First(el => el.Device == null);
-                        await ConfigureDeviceForSaving(emptyDeviseForSaving, unsavedEntity);
+                        await emptyDeviseForSaving.AddUnsavedEntity(unsavedEntity);
                     }
                     else
                     {
@@ -159,7 +182,7 @@ namespace BISC.Presentation.Services
                     if (res.Any(el => (el.Device != null) && (el.Device.Name == unsavedEntity.DeviceKey)))
                     {
                         var deviseForSaving = res.First(el => (el.Device != null) && (el.Device.Name == unsavedEntity.DeviceKey));
-                        await ConfigureDeviceForSaving(deviseForSaving, unsavedEntity);
+                        await deviseForSaving.AddUnsavedEntity(unsavedEntity);
                     }
                     else
                     {
@@ -237,21 +260,12 @@ namespace BISC.Presentation.Services
 
         private async Task<DevicesForSaving> GetDevicesForSaving(SaveCheckingEntity unsavedEntity, IDevice device = null)
         {
-            DevicesForSaving emptyDeviseForSaving;
-            emptyDeviseForSaving.Device = device;
-            emptyDeviseForSaving.IsRestartNecessry = unsavedEntity.SavingCommand != null && await unsavedEntity.SavingCommand.IsSavingByFtpNeeded();
-            emptyDeviseForSaving.UnsavedEntitiesOfDevise = new List<SaveCheckingEntity> { unsavedEntity };
-            return emptyDeviseForSaving;
-        }
-
-        private async Task ConfigureDeviceForSaving(DevicesForSaving devicesForSaving, SaveCheckingEntity unsavedEntity)
-        {
-            if (unsavedEntity.SavingCommand != null &&
-                await unsavedEntity.SavingCommand.IsSavingByFtpNeeded())
+            DevicesForSaving emptyDeviseForSaving = new DevicesForSaving (device)
             {
-                devicesForSaving.IsRestartNecessry = true;
-            }
-            devicesForSaving.UnsavedEntitiesOfDevise.Add(unsavedEntity);
+                IsRestartNecessry = unsavedEntity.SavingCommand != null && await unsavedEntity.SavingCommand.IsSavingByFtpNeeded()
+            };
+            emptyDeviseForSaving.UnsavedEntitiesOfDevise.Add(unsavedEntity);
+            return emptyDeviseForSaving;
         }
         #endregion
     }

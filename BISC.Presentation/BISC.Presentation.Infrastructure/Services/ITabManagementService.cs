@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 
 namespace BISC.Presentation.Infrastructure.Services

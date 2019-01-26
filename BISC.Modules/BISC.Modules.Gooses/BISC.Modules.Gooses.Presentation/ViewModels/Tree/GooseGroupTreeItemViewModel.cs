@@ -8,6 +8,7 @@ using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 

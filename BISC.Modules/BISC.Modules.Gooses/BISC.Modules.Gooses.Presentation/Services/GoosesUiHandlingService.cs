@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Gooses.Infrastructure.Keys;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.UiFromModel;

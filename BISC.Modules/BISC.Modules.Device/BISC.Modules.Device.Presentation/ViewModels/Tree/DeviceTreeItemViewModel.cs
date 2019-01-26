@@ -27,6 +27,7 @@ using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.FTP.Infrastructure.Serviсes;
 using BISC.Presentation.BaseItems.Common;
 using BISC.Presentation.Infrastructure.Commands;
+using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 {

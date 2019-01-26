@@ -2,38 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using BISC.Presentation.Infrastructure.ChangeTracker;
-using BISC.Presentation.Infrastructure.Commands;
+using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Presentation.Infrastructure.Services
 {
-    public class SaveCheckingEntity
-    {
-        public SaveCheckingEntity(IChangeTracker changeTracker, string entityFriendlyName,ISavingCommand savingCommand, string deviceKey, string regionName=null)
-        {
-
-            ChangeTracker = changeTracker;
-            EntityFriendlyName = entityFriendlyName;
-	        SavingCommand = savingCommand;
-	        DeviceKey = deviceKey;
-            RegionName = regionName;
-        }
-
-        public static string NavigationKey = "SaveCheckingEntity";
-        public IChangeTracker ChangeTracker { get; }
-        public string EntityFriendlyName { get; }
-	    public ISavingCommand SavingCommand { get; }
-	    public string RegionName { get; }
-        public string DeviceKey { get; }
-    }
-
-    public class SaveResult
-    {
-        public bool IsSaved { get; set; }
-        public bool IsDeclined { get; set; }
-        public bool IsCancelled { get; set; }
-		public  bool IsValidationFailed { get; set; }
-    }
     public interface ISaveCheckingService
     {
         void AddSaveCheckingEntity(SaveCheckingEntity saveCheckingEntity);
@@ -46,17 +18,5 @@ namespace BISC.Presentation.Infrastructure.Services
 
         Task<UnsavedEntitiesInfo> GetIsDeviceEntitiesSaved(string deviceName);
 
-    }
-
-    public class UnsavedEntitiesInfo
-    {
-        public UnsavedEntitiesInfo(bool isEntitiesSaved, List<SaveCheckingEntity> unsavedCheckingEntities)
-        {
-            IsEntitiesSaved = isEntitiesSaved;
-            UnsavedCheckingEntities = unsavedCheckingEntities;
-        }
-
-        public bool IsEntitiesSaved { get; }
-        public List<SaveCheckingEntity> UnsavedCheckingEntities { get; }
     }
 }

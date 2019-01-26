@@ -27,6 +27,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
 {

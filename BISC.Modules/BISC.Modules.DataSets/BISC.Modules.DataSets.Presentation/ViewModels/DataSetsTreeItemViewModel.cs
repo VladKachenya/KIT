@@ -16,6 +16,7 @@ using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Device.Infrastructure.Events;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Presentation.BaseItems.Events;
+using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {

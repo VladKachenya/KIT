@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using BISC.Presentation.BaseItems.Commands;
+﻿using BISC.Presentation.BaseItems.Commands;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Interfaces;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Input;
+using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Presentation.ViewModels
 {
@@ -79,11 +76,11 @@ namespace BISC.Presentation.ViewModels
 
         private void CloseView()
         {
-            DialogCommands.CloseDialogCommand.Execute(null,InputParameter as IInputElement);
+            DialogCommands.CloseDialogCommand.Execute(null, InputParameter as IInputElement);
         }
-    
 
-    public ICommand SaveCommand { get; }
+
+        public ICommand SaveCommand { get; }
         public ICommand DontSaveCommand { get; }
         public ICommand CancelCommand { get; }
     }

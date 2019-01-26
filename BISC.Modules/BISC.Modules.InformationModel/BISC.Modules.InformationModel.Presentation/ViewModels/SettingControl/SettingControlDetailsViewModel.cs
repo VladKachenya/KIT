@@ -17,6 +17,7 @@ using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.BaseItems.ViewModels.Behaviors;
 using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 
