@@ -23,16 +23,16 @@ namespace BISC.Modules.Reports.Presentation.Commands
 {
     public class ReportsSavingCommand : ISavingCommand
     {
-        private IInfoModelService _infoModelService;
-        private ILoggingService _loggingService;
-        private IConnectionPoolService _connectionPoolService;
-        private IProjectService _projectService;
-        private IReportsModelService _reportsModelService;
+        private readonly IInfoModelService _infoModelService;
+        private readonly ILoggingService _loggingService;
+        private readonly IConnectionPoolService _connectionPoolService;
+        private readonly IProjectService _projectService;
+        private readonly IReportsModelService _reportsModelService;
         private readonly IDatasetModelService _datasetModelService;
         private readonly IFtpReportModelService _ftpReportModelService;
-        private IReportControlsFactory _IReportControlsFactory;
+        private readonly IReportControlsFactory _IReportControlsFactory;
+
         private ObservableCollection<IReportControlViewModel> _reportsToSave;
-        private List<IReportControl> _reportsToDelete = new List<IReportControl>();
 
         private IDevice _device;
         private Func<bool> _isSavingInDevice;
@@ -53,27 +53,31 @@ namespace BISC.Modules.Reports.Presentation.Commands
             _ftpReportModelService = ftpReportModelService;
         }
 
-        internal void Initialize(ObservableCollection<IReportControlViewModel> reportsToSave, IDevice device,
+        internal void Initialize(ref ObservableCollection<IReportControlViewModel> reportsToSave, IDevice device,
             Func<bool> isSavingInDevice)
         {
             //_fineshSaving = fineshSaving;
             _reportsToSave = reportsToSave;
             _device = device;
-            _reportsToDelete.Clear();
-
-            List<IReportControl> reportControlsInDevice =
-                _reportsModelService.GetAllReportControlsOfDevice(_device);
-            foreach (var report in reportControlsInDevice)
-            {
-                if (!_reportsToSave.Any(el => el.Name == report.Name))
-                {
-                    _reportsToDelete.Add(report);
-                }
-            }
 
             _isSavingInDevice = isSavingInDevice;
         }
 
+        private List<IReportControl> GetReportsToDelete()
+        {
+            List<IReportControl> reportControlsInDevice =
+                _reportsModelService.GetAllReportControlsOfDevice(_device);
+            var reportsToDelete = new List<IReportControl>();
+            foreach (var report in reportControlsInDevice)
+            {
+                if (!_reportsToSave.Any(el => el.Name == report.Name))
+                {
+                    reportsToDelete.Add(report);
+                }
+            }
+
+            return reportsToDelete;
+        }
 
         public async Task<OperationResult<SavingCommandResultEnum>> SaveAsync()
         {
@@ -174,12 +178,12 @@ namespace BISC.Modules.Reports.Presentation.Commands
             List<IReportControl> reportControlsInDeviceToDelete =
                 reportControlsInDevice.Where((model => model.IsDynamic)).ToList();
             if (!reportsToSaveDynamic.Any(model => model.ChangeTracker.GetIsModifiedRecursive()) &&
-                !_reportsToDelete.Any())
+                !GetReportsToDelete().Any())
             {
                 return false;
             }
 
-            if (!reportsToSaveDynamic.Any() && !_reportsToDelete.Any())
+            if (!reportsToSaveDynamic.Any() && !GetReportsToDelete().Any())
             {
                 return false;
             }

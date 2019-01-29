@@ -98,12 +98,12 @@ namespace BISC.Modules.Reports.Presentation.Services
             if (isFromDevice)
             {
                 deviceOnlyReportViewModels.ForEach((model => model.ChangeTracker.SetModified()));
-                _reportsSavingCommand.Initialize(reportViewmodelsInDevice, devicesclModelInProject, () => false);
+                _reportsSavingCommand.Initialize(ref reportViewmodelsInDevice, devicesclModelInProject, () => false);
             }
             else
             {
                 projectOnlyReportViewModels.ForEach((model => model.ChangeTracker.SetModified()));
-                _reportsSavingCommand.Initialize(reportViewmodelsInProject, deviceInsclModelInDevice,
+                _reportsSavingCommand.Initialize(ref reportViewmodelsInProject, deviceInsclModelInDevice,
                     () => _connectionPoolService.GetConnection(devicesclModelInProject.Ip).IsConnected);
             }
 

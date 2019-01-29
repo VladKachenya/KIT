@@ -35,9 +35,9 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
     {
         private IDevice _device;
         private List<IDataSet> _dataSets;
-        private IDatasetModelService _datasetModelService;
-        private IDatasetViewModelFactory _datasetViewModelFactory;
-        private DatasetsSavingByFtpCommand _datasetsSavingCommand;
+        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDatasetViewModelFactory _datasetViewModelFactory;
+        private readonly DatasetsSavingByFtpCommand _datasetsSavingCommand;
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private readonly IConnectionPoolService _connectionPoolService;
@@ -156,7 +156,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             AddNewDataSetCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
-            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive());
+            //_datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker);
 
         }
 
@@ -179,14 +179,14 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _loggingService.LogUserAction($"Пользователь удаляет DataSet {element.SelectedParentLd + "." + element.SelectedParentLn + "." + element.EditableNamePart}");
             DataSets.Remove(element);
             AddNewDataSetCommand.RaiseCanExecute();
-            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive());
+            //_datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker);
         }
         private void OnAddNewDataSet()
         {
             _loggingService.LogUserAction($"Пользователь добавляет новый датасет в устройстве {_device.Name}");
             DataSets.Add(_datasetViewModelFactory.CreateDataSetViewModel(DataSets.Select((model => model.EditableNamePart)).ToList(), _device));
             AddNewDataSetCommand.RaiseCanExecute();
-            _datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker.GetIsModifiedRecursive());
+            //_datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker);
         }
 
         private bool IsAddNewDataSet()
@@ -262,6 +262,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             protected set
             {
                 SetProperty(ref _dataSets1, value);
+                _datasetsSavingCommand.Initialize(ref _dataSets1, _device, this.ChangeTracker);
             }
         }
         public string ModelRegionKey { get; }
@@ -303,11 +304,9 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public override void OnActivate()
         {
-            //ShowFtpBlockMessageIfNeeded();
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _userInterfaceComposingService.AddGlobalCommand(UpdateDataSetsCommand, $"Обновить DataSets {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewDataSetCommand, $"Добавить DataSet {_device.Name}", IconsKeys.AddIconKey, false, true);
-
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
 
             base.OnActivate();

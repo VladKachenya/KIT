@@ -51,9 +51,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private bool _isUpdateReports = true;
         private bool _isSaveСhanges = true;
 
-
-
-
         #region Ctor
         public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService, ISaveCheckingService saveCheckingService,
             IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService,
@@ -86,7 +83,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             if (obj is IReportControlViewModel reportControlViewModel)
             {
                 ReportControlViewModels.Remove(reportControlViewModel);
-                _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
                 AddNewReportCommand.RaiseCanExecute();
             }
         }
@@ -124,7 +120,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             ReportControlViewModels.Add(
                 _reportControlFactoryViewModel.CreateReportViewModel(
                     ReportControlViewModels.Select((model => model.ReportID)).ToList(), _device));
-            _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             AddNewReportCommand.RaiseCanExecute();
         }
 
@@ -154,7 +149,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             finally
             {
                 _isUpdateReports = true;
-                _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
                 (UpdateReportsCommad as IPresentationCommand)?.RaiseCanExecute();
             }
         }
@@ -164,15 +158,20 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         private async Task UpdateReports(bool updateFromDevice)
         {
-            BlockViewModelBehavior.SetBlock("Обновление данных", true);
-            if (updateFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
+            try
             {
-                await _reportControlLoadingService.EstimateProgress(_device);
-                await _reportControlLoadingService.Load(_device, null, _biscProject.MainSclModel.Value, new CancellationToken());
+                BlockViewModelBehavior.SetBlock("Обновление данных", true);
+                if (updateFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
+                {
+                    await _reportControlLoadingService.EstimateProgress(_device);
+                    await _reportControlLoadingService.Load(_device, null, _biscProject.MainSclModel.Value, new CancellationToken());
+                }
+                UpdateCurentChengeTracker();
             }
-
-            UpdateCurentChengeTracker();
-            BlockViewModelBehavior.Unlock();
+            finally
+            {
+                BlockViewModelBehavior.Unlock();
+            }
         }
 
         private void UpdateCurentChengeTracker()
@@ -185,7 +184,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             AddNewReportCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
-            _reportsSavingCommand.Initialize(ReportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
         }
 
         private void UpdateViewModels()
@@ -196,12 +194,16 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         #endregion
 
         #region public interface
+
         public ObservableCollection<IReportControlViewModel> ReportControlViewModels
         {
             get => _reportControlViewModels;
-            protected set => SetProperty(ref _reportControlViewModels, value);
+            protected set
+            {
+                SetProperty(ref _reportControlViewModels, value);
+                _reportsSavingCommand.Initialize(ref _reportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            }
         }
-
 
         public ICommand DeleteReportCommand { get; }
         public ICommand SaveСhangesCommand { get; }
@@ -220,7 +222,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
                 .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
             await UpdateReports(false);
             base.OnNavigatedTo(navigationContext);
-
         }
 
         public override void OnActivate()

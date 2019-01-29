@@ -1,26 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Animation;
-using BISC.Infrastructure.Global.Common;
-using BISC.Model.Infrastructure.Common;
-using BISC.Model.Infrastructure.Project;
+﻿using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
-using BISC.Modules.DataSets.Model.Mappers;
 using BISC.Modules.DataSets.Presentation.Commands;
 using BISC.Modules.DataSets.Presentation.ViewModels.Helpers;
 using BISC.Modules.Device.Infrastructure.HelpClasses;
 using BISC.Modules.Device.Infrastructure.Services;
-using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BISC.Modules.DataSets.Model.Services
 {
@@ -36,7 +29,7 @@ namespace BISC.Modules.DataSets.Model.Services
 
 
         public DatasetsConflictResolver(IDatasetModelService datasetModelService, IDeviceModelService deviceModelService, IConnectionPoolService connectionPoolService,
-            INavigationService navigationService,IDatasetViewModelFactory datasetViewModelFactory, IInfoModelService infoModelService, DatasetsSavingByFtpCommand datasetsSavingByFtpCommand)
+            INavigationService navigationService, IDatasetViewModelFactory datasetViewModelFactory, IInfoModelService infoModelService, DatasetsSavingByFtpCommand datasetsSavingByFtpCommand)
         {
             _datasetModelService = datasetModelService;
             _deviceModelService = deviceModelService;
@@ -70,7 +63,11 @@ namespace BISC.Modules.DataSets.Model.Services
             foreach (var datasetInDevice in datasetsInDevice)
             {
                 var datasetInProject = datasetsInProject.FirstOrDefault((ds => ds.Name == datasetInDevice.Name));
-                if (datasetInProject == null) return true;
+                if (datasetInProject == null)
+                {
+                    return true;
+                }
+
                 if (!datasetInDevice.ModelElementCompareTo(datasetInProject))
                 {
                     return true;
@@ -172,20 +169,27 @@ namespace BISC.Modules.DataSets.Model.Services
                 //{
                 //    return new ResolvingResult("Устройство не на связи");
                 //}
-                _datasetsSavingByFtpCommand.Initialize(datasetsViewModelsInProject, deviceInsclModelInDevice, isChengid);
-                if (await _datasetsSavingByFtpCommand.IsSavingByFtpNeeded())
+                if (_connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).IsConnected)
                 {
-                    isSavingByFtpNeeded = true;
+                    _datasetsSavingByFtpCommand.Initialize(ref datasetsViewModelsInProject, deviceInsclModelInDevice, datasetsViewModelsInProject.Select(el => el.ChangeTracker).ToArray());
+
+
+                    if (await _datasetsSavingByFtpCommand.IsSavingByFtpNeeded())
+                    {
+                        isSavingByFtpNeeded = true;
+                    }
+                    await _datasetsSavingByFtpCommand.SaveAsync();
+                    if (isSavingByFtpNeeded)
+                    {
+                        return new ResolvingResult() { IsRestartNeeded = true };
+                    }
                 }
-                await _datasetsSavingByFtpCommand.SaveAsync();
-                if (isSavingByFtpNeeded)
+                else
                 {
-                    return new ResolvingResult() { IsRestartNeeded = true };
+                    return new ResolvingResult("Устройтво не отвечает");
                 }
             }
             return ResolvingResult.SucceedResult;
-
-
         }
 
         public void ShowConflicts(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
@@ -211,12 +215,12 @@ namespace BISC.Modules.DataSets.Model.Services
                 datasetsInDeviceVm.ChangeTracker.AcceptChanges();
             }
 
-            projectOnlydatasets.ForEach((set => datasetsInProjectVms.FirstOrDefault((model =>model.EditableNamePart==set.Name ))?.ChangeTracker.SetModified()));
+            projectOnlydatasets.ForEach((set => datasetsInProjectVms.FirstOrDefault((model => model.EditableNamePart == set.Name))?.ChangeTracker.SetModified()));
             deviceOnlydatasets.ForEach((set => datasetsInDeviceVms.FirstOrDefault((model => model.EditableNamePart == set.Name))?.ChangeTracker.SetModified()));
 
-            _navigationService.OpenInWindow(DatasetKeys.DatasetViewModelKeys.DatasetConflictsWindow,$"Dataset конфликты в устройстве {deviceName}",
+            _navigationService.OpenInWindow(DatasetKeys.DatasetViewModelKeys.DatasetConflictsWindow, $"Dataset конфликты в устройстве {deviceName}",
                 new BiscNavigationParameters().AddParameterByName(DatasetKeys.DatasetViewModelKeys.DatasetsConflictContextKey,
-                    new DatasetsConflictContext(datasetsInDeviceVms,datasetsInProjectVms)));
+                    new DatasetsConflictContext(datasetsInDeviceVms, datasetsInProjectVms)));
 
         }
 

@@ -14,6 +14,7 @@ using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.Reports.Infrastructure.Services;
+using BISC.Presentation.Infrastructure.ChangeTracker;
 using BISC.Presentation.Infrastructure.Commands;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 {
     public class DatasetsSavingByFtpCommand : ISavingCommand
     {
+
         private readonly IDatasetModelService _datasetModelService;
         private readonly IInfoModelService _infoModelService;
         private readonly IDataSetFactory _dataSetFactory;
@@ -33,13 +35,14 @@ namespace BISC.Modules.DataSets.Presentation.Commands
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IBiscProject _biscProject;
-        private readonly IReportsModelService _reportsModelService;
         private readonly IFtpDataSetModelService _ftpDataSetModelService;
-        private ObservableCollection<IDataSetViewModel> _dataSetsToSave;
-        private bool? _isCheged = null;
         //private Action<bool> _fineshSaving;
 
         private IDevice _device;
+        private ObservableCollection<IDataSetViewModel> _dataSetsToSave;
+        private IChangeTracker[] _changeTrackers;
+
+
 
         private string _errorDeleteMessagePattern = $"Не удалось удалить DataSet {0} в устройстве: {1}";
         private string _successDeleteMessagePattern = $"DataSet {0} удален в устройстве: {1}";
@@ -56,23 +59,31 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             _connectionPoolService = connectionPoolService;
             _sclCommunicationModelService = sclCommunicationModelService;
             _biscProject = biscProject;
-            _reportsModelService = reportsModelService;
             _ftpDataSetModelService = ftpDataSetModelService;
         }
 
 
 
-        public void Initialize(ObservableCollection<IDataSetViewModel> dataSetsToSave, IModelElement device, bool? isCheged)
+        public void Initialize(ref ObservableCollection<IDataSetViewModel> dataSetsToSave, IModelElement device, params IChangeTracker[] changeTrackers)
         {
             _dataSetsToSave = dataSetsToSave;
             _device = device as IDevice;
-            _isCheged = isCheged;
-            //_fineshSaving = fineshSaving;
-
+            _changeTrackers = changeTrackers;
         }
+
         public Task<bool> IsSavingByFtpNeeded()
         {
-            if (_device == null || _isCheged == false)
+            var isCheged = false;
+            foreach (var changeTracker in _changeTrackers)
+            {
+                if (changeTracker.GetIsModifiedRecursive())
+                {
+                    isCheged = true;
+                    break;
+                }
+            }
+
+            if (_device == null || isCheged == false)
             {
                 return Task.FromResult(false);
             }
