@@ -122,9 +122,11 @@ namespace BISC.Model.Global.Services
                 biscProject = new BiscProject();
                 biscProject.MainSclModel.Value = new SclModel();
                 biscProject.CustomElements.Value = new ModelElement() { ElementName = "CustomElements" };
-                var stream = File.Create(CurrentProjectPath);
-                stream.Close();
+                SetApplicationTitle();
+                _biscProject.MainSclModel.Value = biscProject.MainSclModel.Value;
+                _biscProject.CustomElements.Value = biscProject.CustomElements.Value;
                 SaveCurrentProject();
+                return;
             }
             else
             {
