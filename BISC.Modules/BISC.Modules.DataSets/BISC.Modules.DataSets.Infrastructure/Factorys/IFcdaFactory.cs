@@ -13,6 +13,8 @@ namespace BISC.Modules.DataSets.Infrastructure.Factorys
     {
         IFcda GetFcda(IDai dai);
         IFcda GetStructFcda(IDoi doiParent,string fc);
+        IFcda GetStructFcda(IModelElement element);
+
 
     }
 }

@@ -1,5 +1,4 @@
-﻿using BISC.Infrastructure.Global.Logging;
-using BISC.Infrastructure.Global.Services;
+﻿using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
@@ -10,9 +9,7 @@ using BISC.Modules.DataSets.Infrastructure.ViewModels;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Services;
 using BISC.Modules.Device.Infrastructure.Model;
-using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
-using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.InformationModel.Presentation.ViewModels.Base;
@@ -32,6 +29,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
     public class DataSetViewModel : ViewModelBase, IDataSetViewModel, GongSolutions.Wpf.DragDrop.IDropTarget
     {
         #region private filds
+
         private IDataSet _model;
         private IFcdaViewModelFactory _fcdaViewModelFactory;
         private IFcdaAdderViewModelService _fcdaAdderViewModelService;
@@ -54,13 +52,17 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private IModelElement _device;
         private bool _isChanged;
         private bool _isInitialized = true;
+        private int _weight = 0;
 
         #endregion
 
         #region C-tor
+
         public DataSetViewModel(IFcdaViewModelFactory fcdaViewModelFactory, ICommandFactory commandFactory,
-            IFcdaAdderViewModelService fcdaAdderViewModelService, IDataTypeTemplatesModelService dataTypeTemplatesModelService,
-            IBiscProject biscProject, IFcdaFactory fcdaFactory, ISaveCheckingService saveCheckingService, IInfoModelService infoModelService,
+            IFcdaAdderViewModelService fcdaAdderViewModelService,
+            IDataTypeTemplatesModelService dataTypeTemplatesModelService,
+            IBiscProject biscProject, IFcdaFactory fcdaFactory, ISaveCheckingService saveCheckingService,
+            IInfoModelService infoModelService,
             ILoggingService loggingService, IFcdaInfoService fcdaInfoService)
         {
             _fcdaFactory = fcdaFactory;
@@ -71,14 +73,18 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _biscProject = biscProject;
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
             _fcdaViewModelFactory = fcdaViewModelFactory;
+            _fcdaAdderViewModelService = fcdaAdderViewModelService;
+
             DeleteFcdaCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteFcda);
             AddFcdaToDataset = commandFactory.CreatePresentationCommand(OnAddFcdaTpDataset, () => IsEditeble);
-            _fcdaAdderViewModelService = fcdaAdderViewModelService;
+
             FcdaViewModels = new ObservableCollection<IFcdaViewModel>();
         }
+
         #endregion
 
         #region private methods
+
         private void OnDeleteFcda(object obj)
         {
             FcdaViewModels.Remove(obj as IFcdaViewModel);
@@ -86,7 +92,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             {
                 _loggingService.LogUserAction(
                     $"Пользователь удалил FCDA {(obj as IFcdaViewModel).FullName} (устройство {(_device as IDevice)?.Name})");
-                OnPropertyChanged(nameof(Weight));
+                Weigh();
             }
         }
 
@@ -94,43 +100,17 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             _fcdaAdderViewModelService.OpenFcdaAdderView();
         }
+
         #endregion
 
         #region Implamentation of DataSetElementBaseViewModel
 
-        public int MaxSizeFcdaList 
-        {
-            get => 100;
-            //{
-            //    if (_isEditeble)
-            //    {
-            //        return 100;
-            //    }
-            //    else
-            //    {
-            //        return FcdaViewModels.Count;
-            //    }
-            //}
-        }
         public string Name
         {
             get => _name;
             set => SetProperty(ref _name, value);
         }
 
-        public int Weight
-        {
-            get
-            {
-                int weight = 0;
-                foreach (var fcdaViewModel in FcdaViewModels)
-                {
-                    weight = weight + fcdaViewModel.Weight;
-                }
-
-                return weight;
-            }
-        }
 
         public string ElementName => "DataSet";
 
@@ -141,18 +121,20 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             _model = model ?? throw new NullReferenceException();
             _device = model.GetFirstParentOfType<IDevice>();
-            FcdaViewModels = _fcdaViewModelFactory.CreateFcdaViewModelCollection(_device as IDevice, _model);
+            FcdaViewModels = _fcdaViewModelFactory.CreateFcdaViewModelCollection(_device as IDevice, _model, this);
             SelectedParentLn = (_model.ParentModelElement as ILogicalNode).Name;
 
             ParentLdList = _infoModelService.GetLDevicesFromDevices(_device)
                 .Select((device => device.Inst)).ToList();
 
             SelectedParentLd =
-                ParentLdList.FirstOrDefault((s => s == ((_model.ParentModelElement as ILogicalNode).ParentModelElement as ILDevice).Inst));
+                ParentLdList.FirstOrDefault((s =>
+                    s == ((_model.ParentModelElement as ILogicalNode).ParentModelElement as ILDevice).Inst));
             IsEditeble = model.IsDynamic;
 
             EditableNamePart = _model.Name;
             Name = model.Name;
+            Weigh();
         }
 
 
@@ -175,8 +157,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                     SelectedParentLn = ParentLnList.First((s => s == SelectedParentLn));
                 }
             }
-
-
         }
 
         public bool IsInitialized
@@ -191,7 +171,10 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             set
             {
                 if (_isEditing && !IsInitialized)
+                {
                     IsInitialized = true;
+                }
+
                 SetProperty(ref _isEditing, value, true);
             }
         }
@@ -199,12 +182,13 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public bool IsEditeble
         {
             get => _isEditeble;
-            set => SetProperty(ref _isEditeble, value, true); 
+            set => SetProperty(ref _isEditeble, value, true);
         }
+
         public bool IsChanged
         {
             get => _isChanged;
-            set => SetProperty(ref _isChanged, value, true); 
+            set => SetProperty(ref _isChanged, value, true);
         }
 
         #endregion
@@ -266,120 +250,52 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             _device = device;
         }
+
         #endregion
 
-        #region override of NavigationViewModelBase
+        #region Implementation of IWeigher
 
-        public void DragOver(IDropInfo dropInfo)
+        public int Weight
         {
-            TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;
-            TreeItemViewModelBase targetItem = dropInfo.TargetItem as TreeItemViewModelBase;
+            get => _weight;
+            protected set => SetProperty(ref _weight, value, true);
+        }
 
-            if (sourceItem != null && sourceItem.TypeName == InfoModelKeys.ModelKeys.DaiKey)
+        public bool CanSetWeight(int addedWeight, int removeWeight = 0)
+        {
+            return (Weight + addedWeight - removeWeight) <= MaxSizeFcdaList;
+        }
+
+        public int MaxSizeFcdaList
+        {
+            get => 100;
+        }
+
+        public void Weigh()
+        {
+
+            Weight = 0;
+            foreach (var fcdaViewModel in FcdaViewModels)
             {
-                if ((sourceItem.Model as IDai).GetFirstParentOfType<IDevice>() != _device)
-                {
-                    return;
-                }
-
-                if (!IsEditing)
-                {
-                    return;
-                }
-
-
-                IDa Da = _dataTypeTemplatesModelService.GetDaOfDai(sourceItem.Model as IDai,
-                    _biscProject.MainSclModel.Value);
-                if (Da.Fc == "ST" || Da.Fc == "MX")
-                {
-                    if (MaxSizeFcdaList >= (Weight + _fcdaInfoService.GetModelElementWeight(_device as IDevice, sourceItem.Model, Da.Fc)))
-                    {
-                        dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-                        dropInfo.Effects = System.Windows.DragDropEffects.Move;
-                    }
-                }
+                Weight = Weight + fcdaViewModel.SellectedFc.FcWeight;
             }
-            else if (sourceItem != null && sourceItem.TypeName == InfoModelKeys.ModelKeys.FcSetKey)
+
+            foreach (var fcdaElement in FcdaViewModels)
             {
-                if ((sourceItem.Model as IDoi).GetFirstParentOfType<IDevice>() != _device)
+                foreach (var fcElement in fcdaElement.FcCollection)
                 {
-                    return;
-                }
-
-                if (!IsEditing)
-                {
-                    return;
-                }
-
-                if (sourceItem.Header == "ST" || sourceItem.Header == "MX")
-                {
-                    if (MaxSizeFcdaList >= (Weight + _fcdaInfoService.GetModelElementWeight(_device as IDevice, sourceItem.Model, sourceItem.Header)))
-                    {
-                        dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-                        dropInfo.Effects = System.Windows.DragDropEffects.Move;
-                    }
-                }
-            }
-            else if (sourceItem != null && sourceItem.TypeName == InfoModelKeys.ModelKeys.DoiKey)
-            {
-                if ((sourceItem.Model as IDoi).GetFirstParentOfType<IDevice>() != _device)
-                {
-                    return;
-                }
-
-                if (!IsEditing)
-                {
-                    return;
-                }
-
-                if (sourceItem.ChildInfoModelItemViewModels.Count != 1 &&
-                    sourceItem.ChildInfoModelItemViewModels[0].TypeName == InfoModelKeys.ModelKeys.FcSetKey)
-                {
-                    return;
-                }
-
-                if (sourceItem.ChildInfoModelItemViewModels[0].TypeName == InfoModelKeys.ModelKeys.DaiKey)
-                {
-                    List<string> fcList = new List<string>();
-                    foreach (var viewModelElement in sourceItem.ChildInfoModelItemViewModels)
-                    {
-                        IDai daiElement = viewModelElement.Model as IDai;
-                        IDa DaElement = _dataTypeTemplatesModelService.GetDaOfDai(daiElement, _biscProject.MainSclModel.Value);
-                        if (!fcList.Contains(DaElement.Fc))
-                        {
-                            fcList.Add(DaElement.Fc);
-                        }
-                    }
-                    if (fcList.Count > 1)
-                    {
-                        return;
-                    }
-                }
-                string header = "";
-
-                if (sourceItem.ChildInfoModelItemViewModels[0].TypeName == InfoModelKeys.ModelKeys.DaiKey)
-                {
-                    IDai daiElement = sourceItem.ChildInfoModelItemViewModels[0].Model as IDai;
-                    IDa daElement = _dataTypeTemplatesModelService.GetDaOfDai(daiElement, _biscProject.MainSclModel.Value);
-                    header = daElement.Fc;
-                }
-                else
-                {
-                    header = sourceItem.ChildInfoModelItemViewModels[0].Header;
-                }
-
-                if (header == "ST" || header == "MX")
-                {
-                    if (MaxSizeFcdaList >= (Weight + _fcdaInfoService.GetModelElementWeight(_device as IDevice, sourceItem.Model, header)))
-                    {
-                        dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-                        dropInfo.Effects = System.Windows.DragDropEffects.Move;
-                    }
+                    fcElement.IsSellecteble =
+                        CanSetWeight(fcElement.FcWeight, fcdaElement.SellectedFc.FcWeight);
                 }
             }
         }
 
-        public void Drop(IDropInfo dropInfo)
+        #endregion
+
+
+        #region override of NavigationViewModelBase
+
+        public void DragOver(IDropInfo dropInfo)
         {
             if (!IsEditing)
             {
@@ -390,87 +306,62 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             {
                 return;
             }
-            IFcda fcdaModel = null;
-            TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;
-            var model = sourceItem.Model;
-            //TreeItemViewModelBase targetItem = dropInfo.TargetItem as TreeItemViewModelBase;
-            if (sourceItem.TypeName == InfoModelKeys.ModelKeys.DaiKey)
+
+            switch (dropInfo.Data)
             {
-                if (model is IDai)
-                {
-                    fcdaModel = _fcdaFactory.GetFcda((model as IDai));
-                }
-
-                if (fcdaModel != null)
-                {
-                    AddFcda(fcdaModel, dropInfo.InsertIndex);
-                }
+                case TreeItemViewModelBase sourceItem:
+                    if (!(sourceItem.Model is IDoi) && (sourceItem.Model.GetFirstParentOfType<IDoi>() == default(IDoi)))
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+                        dropInfo.Effects = System.Windows.DragDropEffects.Move;
+                        return;
+                    }
+                default: return;
             }
-            else if (sourceItem.TypeName == InfoModelKeys.ModelKeys.FcSetKey)
-            {
-
-                IDoi doiParent = model as IDoi;
-
-                if (doiParent != null)
-                {
-                    fcdaModel = _fcdaFactory.GetStructFcda(doiParent, sourceItem.Header);
-                }
-
-                if (fcdaModel != null)
-                {
-                    AddFcda(fcdaModel, dropInfo.InsertIndex);
-                }
-            }
-            else if (sourceItem.TypeName == InfoModelKeys.ModelKeys.DoiKey)
-            {
-                string header = "";
-
-                IDoi doiParent = model as IDoi;
-
-                if (sourceItem.ChildInfoModelItemViewModels[0].TypeName == InfoModelKeys.ModelKeys.DaiKey)
-                {
-                    IDai daiElement = sourceItem.ChildInfoModelItemViewModels[0].Model as IDai;
-                    IDa daElement = _dataTypeTemplatesModelService.GetDaOfDai(daiElement, _biscProject.MainSclModel.Value);
-                    header = daElement.Fc;
-                }
-                else
-                {
-                    header = sourceItem.ChildInfoModelItemViewModels[0].Header;
-                }
-
-                if (doiParent != null)
-                {
-                    fcdaModel = _fcdaFactory.GetStructFcda(doiParent, header);
-                }
-
-                if (fcdaModel != null)
-                {
-                    AddFcda(fcdaModel, dropInfo.InsertIndex);
-                }
-
-            }
-            // var element = _fcdaInfoService.GetFcdaWeight(_device as IDevice, fcdaModel);
-            //throw new NullReferenceException("Element not found!!");
         }
 
-        private void AddFcda(IFcda fcda, int insertIdex)
+        public void Drop(IDropInfo dropInfo)
         {
-            var existing =
-                FcdaViewModels.FirstOrDefault((model => model.GetFcda().ModelElementCompareTo(fcda)));
-            if (existing != null)
+            TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;
+            IFcda modelFcda = null;
+            if ((sourceItem.Model is IDoi) && sourceItem.TypeName == "Fc")
             {
-                _loggingService.LogMessage($"FCDA {existing.FullName} уже есть с списке", SeverityEnum.Warning);
+                modelFcda = _fcdaFactory.GetStructFcda(sourceItem.Model as IDoi, sourceItem.Header);
+            }
+            else if (sourceItem.Model is IDai)
+            {
+                modelFcda = _fcdaFactory.GetFcda(sourceItem.Model as IDai);
+            }
+            else
+            {
+                modelFcda = _fcdaFactory.GetStructFcda(sourceItem.Model);
+            }
+
+            AddFcda(modelFcda, dropInfo.InsertIndex, sourceItem.Model);
+        }
+
+        private void AddFcda(IFcda fcda, int insertIdex, IModelElement modelElement)
+        {
+            var newFcdaViewModel = _fcdaViewModelFactory.CreateFcdaViewModelElement(_device as IDevice, fcda, this);
+            if (!CanSetWeight(newFcdaViewModel.SellectedFc.FcWeight))
+            {
+                _loggingService.LogUserAction($"FCDA {newFcdaViewModel.FullName} не может быть добавлен");
                 return;
             }
 
-            var newFcdaViewModel = _fcdaViewModelFactory.CreateFcdaViewModelElement(_device as IDevice, fcda);
+            if (FcdaViewModels.Any(el => el.FullName == newFcdaViewModel.FullName))
+            {
+                _loggingService.LogUserAction($"FCDA {newFcdaViewModel.FullName} уже добавлен");
+                return;
+            }
+
             FcdaViewModels.Insert(insertIdex, newFcdaViewModel);
             _loggingService.LogUserAction($"Добавлен FCDA {newFcdaViewModel.FullName} через DragDrop");
-            OnPropertyChanged(nameof(Weight));
-        }
-        private bool CheckFc(object model)
-        {
-            return false;
+            Weigh();
         }
 
         #endregion

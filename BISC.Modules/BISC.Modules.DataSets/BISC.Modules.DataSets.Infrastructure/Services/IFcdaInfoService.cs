@@ -1,4 +1,5 @@
-﻿using BISC.Model.Infrastructure.Elements;
+﻿using System.Collections.Generic;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Model;
 
@@ -9,5 +10,7 @@ namespace BISC.Modules.DataSets.Infrastructure.Services
         IModelElement GetModelElementFromFcda(IDevice device,IFcda fcda);
         int GetModelElementWeight(IDevice device, IModelElement modelElement, string fc);
         int GetFcdaWeight(IDevice device, IFcda fcda);
+        List<string> GetFcsOfModelElement(IDevice device, IModelElement modelElement);
+
     }
 }

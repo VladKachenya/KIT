@@ -1,33 +1,32 @@
-﻿using BISC.Model.Infrastructure.Elements;
+﻿using BISC.Model.Infrastructure.Common;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.DataSets.Infrastructure.Factorys;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Model.Model;
-using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using System;
-using System.CodeDom;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Model.Infrastructure.Common;
+using BISC.Modules.DataSets.Infrastructure.Services;
+using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.DataSets.Model.Factorys
 {
- 
+
     public class FcdaFactory : IFcdaFactory
     {
-        IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
-        IBiscProject _biscProject;
+        private IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
+        private IBiscProject _biscProject;
+        private readonly IFcdaInfoService _fcdaInfoService;
 
 
-        public FcdaFactory(IDataTypeTemplatesModelService dataTypeTemplatesModelService, IBiscProject biscProject)
+        public FcdaFactory(IDataTypeTemplatesModelService dataTypeTemplatesModelService, IBiscProject biscProject, IFcdaInfoService fcdaInfoService)
         {
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
             _biscProject = biscProject;
+            _fcdaInfoService = fcdaInfoService;
         }
 
         public IFcda GetFcda(IDai dai)
@@ -42,7 +41,7 @@ namespace BISC.Modules.DataSets.Model.Factorys
             result.LnClass = ln.LnClass;
             result.LnInst = ln.Inst;
             result.DoName = GetDoNameRecursive(dai, String.Empty);
-            result.DaName = dai.Name; 
+            result.DaName = dai.Name;
             result.Prefix = ln.Prefix;
             result.Fc = GetDaFc(dai);
             return result;
@@ -57,30 +56,47 @@ namespace BISC.Modules.DataSets.Model.Factorys
             result.LnInst = ln.Inst;
             result.DoName = doiParent.Name;
             result.Prefix = ln.Prefix;
-            result.Fc =fc;
+            result.Fc = fc;
             return result;
         }
 
-       
+        public IFcda GetStructFcda(IModelElement element)
+        {
+            IFcda result = new Fcda();
+            result.LdInst = element.GetFirstParentOfType<ILDevice>().Inst;
+            var ln = element.GetFirstParentOfType<ILogicalNode>();
+            result.LnClass = ln.LnClass;
+            result.LnInst = ln.Inst;
+            result.DoName = GetDoNameRecursive(element, String.Empty);
+            result.Prefix = ln.Prefix;
+            result.Fc = _fcdaInfoService.GetFcsOfModelElement(element.GetFirstParentOfType<IDevice>(), element).First();
+            return result;
+        }
+
+
 
 
         #region privats methods
 
 
 
-        private string GetDoNameRecursive(IModelElement modelElement,string daName)
+        private string GetDoNameRecursive(IModelElement modelElement, string daName)
         {
             if (modelElement is IDoi doi)
             {
-                if(daName == "")
+                if (daName == "")
+                {
                     return doi.Name;
+                }
                 else
-                    return doi.Name+"."+daName;
+                {
+                    return doi.Name + "." + daName;
+                }
             }
 
             if (modelElement is IDai dai)
             {
-                
+
             }
             if (modelElement is ISdi sdi)
             {
@@ -100,12 +116,12 @@ namespace BISC.Modules.DataSets.Model.Factorys
         private string GetDaFc(IDai dai)
         {
             IDa da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel.Value);
-                return da.Fc;
+            return da.Fc;
         }
 
-       
 
-       
+
+
         #endregion
     }
 }

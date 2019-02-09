@@ -13,12 +13,10 @@ using BISC.Presentation.Infrastructure.ChangeTracker;
 
 namespace BISC.Modules.DataSets.Infrastructure.ViewModels
 {
-    public interface IDataSetViewModel  : IDataSetElementBaseViewModel<IDataSet>,IObjectWithChangeTracker
+    public interface IDataSetViewModel  : IDataSetElementBaseViewModel<IDataSet>, IWeigher, IObjectWithChangeTracker
     {
-        int MaxSizeFcdaList { get; }
         bool IsEditing { get; set; }
         bool IsChanged { get; set; }
-        int Weight { get; }
         bool IsInitialized { get; set; }
 
         ObservableCollection<IFcdaViewModel> FcdaViewModels { get;}

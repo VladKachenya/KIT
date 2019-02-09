@@ -57,9 +57,12 @@
     <Compile Include="Commands\DatasetsSavingByMmsCommand.cs" />
     <Compile Include="Factorys\DatasetViewModelFactory.cs" />
     <Compile Include="Factorys\FcdaViewModelFactory.cs" />
+    <Compile Include="HelperEntites\FcHelperEntity.cs" />
     <Compile Include="Interfaces\IDataSetSavingService.cs" />
     <Compile Include="Interfaces\IFtpDataSetModelService.cs" />
     <Compile Include="Interfaces\ViewModels\Base\IDataSetElementBaseViewModel.cs" />
+    <Compile Include="Interfaces\ViewModels\Base\IFunctionalConstrainter.cs" />
+    <Compile Include="Interfaces\ViewModels\Base\IWeigher.cs" />
     <Compile Include="Interfaces\ViewModels\Factorys\IDatasetViewModelFactory.cs" />
     <Compile Include="Interfaces\ViewModels\Factorys\IFcdaViewModelFactory.cs" />
     <Compile Include="Interfaces\ViewModels\IDataSetsTreeItemViewModel.cs" />

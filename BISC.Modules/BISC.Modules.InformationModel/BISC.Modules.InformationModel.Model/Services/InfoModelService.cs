@@ -97,6 +97,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             }
         }
 
+
         public List<ISettingControl> GetSettingControlsOfDevice(IModelElement device)
         {
             List<ISettingControl> settingControls=new List<ISettingControl>();

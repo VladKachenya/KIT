@@ -9,7 +9,7 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using System;
 using System.Collections.Generic;
-using BISC.Modules.InformationModel.Infrastucture.Services;
+using System.Linq;
 
 namespace BISC.Modules.DataSets.Model.Services
 {
@@ -54,7 +54,7 @@ namespace BISC.Modules.DataSets.Model.Services
             string[] Dos = fcda.DoName.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
             IModelElement daParint = lNode;
-            
+
             for (int i = 0; i < Dos.Length; i++)
             {
                 if (i == 0)
@@ -98,7 +98,7 @@ namespace BISC.Modules.DataSets.Model.Services
         public int GetModelElementWeight(IDevice device, IModelElement modelElement, string fc)
         {
             List<IDai> daisOfModelEment = new List<IDai>();
-            modelElement.GetAllChildrenOfType<IDai>(ref daisOfModelEment);
+            modelElement.GetAllChildrenOfType(ref daisOfModelEment);
 
 
             int weight = 0;
@@ -112,6 +112,31 @@ namespace BISC.Modules.DataSets.Model.Services
             }
             return weight;
         }
+
+        public List<string> GetFcsOfModelElement(IDevice device, IModelElement modelElement)
+        {
+            var res = new List<string>();
+            var daisOfModelEment = new List<IDai>();
+            if (modelElement is IDai)
+            {
+                daisOfModelEment.Add(modelElement as IDai);
+            }
+            else
+            {
+                modelElement.GetAllChildrenOfType<IDai>(ref daisOfModelEment);
+            }
+            foreach (var dai in daisOfModelEment)
+            {
+                IDa da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel.Value);
+                if (!res.Any(el => el == da.Fc))
+                {
+                    res.Add(da.Fc);
+                }
+            }
+
+            return res;
+        }
+
 
         #endregion
     }
