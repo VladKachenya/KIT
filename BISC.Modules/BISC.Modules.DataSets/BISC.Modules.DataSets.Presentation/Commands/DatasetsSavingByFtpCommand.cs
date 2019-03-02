@@ -62,6 +62,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             _ftpDataSetModelService = ftpDataSetModelService;
         }
 
+        public Action RefreshViewModel { get; set; }
 
 
         public void Initialize(ref ObservableCollection<IDataSetViewModel> dataSetsToSave, IModelElement device, params IChangeTracker[] changeTrackers)
@@ -116,7 +117,10 @@ namespace BISC.Modules.DataSets.Presentation.Commands
                 {
                     if (dataSetToSave.IsEditeble)
                     {
-                        if (!dataSetToSave.ChangeTracker.GetIsModifiedRecursive()) { continue; }
+                        if (!dataSetToSave.ChangeTracker.GetIsModifiedRecursive())
+                        {
+                            continue;
+                        }
 
                         var ldevice = _infoModelService.GetLDevicesFromDevices(_device)
                             .FirstOrDefault((lDevice => lDevice.Inst == dataSetToSave.SelectedParentLd));
@@ -134,11 +138,14 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
                     }
                 }
+
                 if (_connectionPoolService.GetConnection(_device.Ip).IsConnected)
                 {
-                    var dsToSaveByFtp = new List<IDataSetViewModel>(_dataSetsToSave).Where(ds => ds.IsEditeble).ToList();
+                    var dsToSaveByFtp = new List<IDataSetViewModel>(_dataSetsToSave).Where(ds => ds.IsEditeble)
+                        .ToList();
                     await _ftpDataSetModelService.WriteDatasetsToDevice(_device.Ip, dsToSaveByFtp);
                 }
+
                 _projectService.SaveCurrentProject();
                 _loggingService.LogMessage($"DataSets устройства {_device.Name} успешно сохранены",
                     SeverityEnum.Info);
@@ -149,6 +156,8 @@ namespace BISC.Modules.DataSets.Presentation.Commands
                     SeverityEnum.Warning);
 
             }
+
+            RefreshViewModel.Invoke();
             //_fineshSaving?.Invoke(await IsSavingByFtpNeeded());
 
             return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedOk);

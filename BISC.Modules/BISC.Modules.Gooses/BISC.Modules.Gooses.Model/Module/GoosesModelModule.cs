@@ -11,6 +11,7 @@ using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Model.Serializers;
+using BISC.Modules.Gooses.Model.Serializers.FtpMatrix;
 using BISC.Modules.Gooses.Model.Services;
 
 namespace BISC.Modules.Gooses.Model.Module
@@ -36,6 +37,11 @@ namespace BISC.Modules.Gooses.Model.Module
             modelElementsRegistryService.RegisterModelElement(new SubscriberDeviceSerializer(), GooseKeys.GooseModelKeys.SubscriberDeviceKey);
             modelElementsRegistryService.RegisterModelElement(new GooseRowSerializer(), GooseKeys.GooseModelKeys.GooseRowKey);
             modelElementsRegistryService.RegisterModelElement(new GooseMatrixSerializer(), GooseKeys.GooseModelKeys.GooseMatrixKey);
+            modelElementsRegistryService.RegisterModelElement(new GooseMatrixFtpSerializer(), GooseKeys.GooseModelKeys.GooseMatrixFtpKey);
+            modelElementsRegistryService.RegisterModelElement(new GooseRowFtpEntitySerializer(), GooseKeys.GooseModelKeys.GooseRowFtpEntityKey);
+            modelElementsRegistryService.RegisterModelElement(new GoCbFtpEntitySerializer(), GooseKeys.GooseModelKeys.GoCbFtpEntityKey);
+            modelElementsRegistryService.RegisterModelElement(new MacAddressEntitySerializer(), GooseKeys.GooseModelKeys.MacAddressEntityKey);
+            modelElementsRegistryService.RegisterModelElement(new GooseQualityRowFtpEntitySerializer(), GooseKeys.GooseModelKeys.GooseRowQualityFtpEntityKey);
 
             _injectionContainer.RegisterType<IDeviceElementLoadingService, GoosesLoadingService>(Guid.NewGuid().ToString());
 	        _injectionContainer.RegisterType<IDeviceElementLoadingService, GooseMatrixLoadingService>(Guid.NewGuid().ToString());

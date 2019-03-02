@@ -29,18 +29,15 @@
                     </ContentControl.Style>
                 </ContentControl>
             </Grid>
-            <Button Margin="4" ToolTip="Проверить, синхронизирована ли матрица проекта с устройством" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding CheckCommand}">
+            <Button Margin="4" ToolTip="Проверить, синхронизирована ли матрица проекта с устройством" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding CheckConformityCommand}">
                 <ContentControl ContentTemplate="{DynamicResource CheckIcon}"></ContentControl>
             </Button>
             <Button Margin="4" ToolTip="Закачать матрицу в устройство по FTP" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding SaveToDeviceCommand}">
                 <ContentControl ContentTemplate="{DynamicResource CallMadeIcon}"></ContentControl>
             </Button>
-            <Button Margin="4" ToolTip="Получить матрицу из устройства по FTP" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding GetFromCommand}">
-                <ContentControl ContentTemplate="{DynamicResource CallReceivedIcon}"></ContentControl>
-            </Button>
-            <Button Margin="4" ToolTip="Просмотреть существующую матрицу в устройстве" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding OverviewDeviceMatrixCommand}">
+            <!--<Button Margin="4" ToolTip="Просмотреть существующую матрицу в устройстве" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding OverviewDeviceMatrixCommand}">
                 <ContentControl ContentTemplate="{DynamicResource OpenInAppIcon}"></ContentControl>
-            </Button>
+            </Button>-->
             <Button Margin="50,4,4,4" ToolTip="Сохранить изменения в проект" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding SaveCommand}">
                 <ContentControl ContentTemplate="{DynamicResource SaveIcon}"></ContentControl>
             </Button>

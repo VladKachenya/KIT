@@ -49,10 +49,10 @@ namespace BISC.Modules.Gooses.Model.Services
         #region Implementation of IElementConflictResolver
 
         public string ConflictName => "Goose Controls";
-        public bool GetIfConflictsExists(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        public bool GetIfConflictsExists(Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
-            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
-            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
 
             var gooseControlsInDevice = _goosesModelService.GetGooseControlsOfDevice(deviceInsclModelInDevice);
@@ -78,10 +78,10 @@ namespace BISC.Modules.Gooses.Model.Services
 
         }
 
-        public async Task<ResolvingResult> ResolveConflict(bool isFromDevice, string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        public async Task<ResolvingResult> ResolveConflict(bool isFromDevice, Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
-            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
-            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
 
             var gooseControlsInDevice = _goosesModelService.GetGooseControlsOfDevice(deviceInsclModelInDevice);
@@ -102,7 +102,7 @@ namespace BISC.Modules.Gooses.Model.Services
                     _goosesModelService.AddGseControl(deviceOnlyGooseControl.GetFirstParentOfType<ILogicalNode>().Name, deviceOnlyGooseControl.GetFirstParentOfType<ILDevice>().Inst, devicesclModelInProject, deviceOnlyGooseControl);
                     var gseToAdd = _sclCommunicationModelService.GetGsesForDevice(deviceInsclModelInDevice.Name, sclModelInDevice)
                         .FirstOrDefault((gse => gse.CbName == deviceOnlyGooseControl.Name));
-                    _sclCommunicationModelService.AddGse(gseToAdd, sclModelInProject, deviceName);
+                    _sclCommunicationModelService.AddGse(gseToAdd, sclModelInProject, _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid).Name);
                 }
 
             }
@@ -116,7 +116,7 @@ namespace BISC.Modules.Gooses.Model.Services
                     gooseFtpDtos.Add(GetGooseFtpDto(projectOnlyGooseControl, gses.FirstOrDefault((gse => gse.CbName == projectOnlyGooseControl.Name))));
                 }
 
-                var res = await _ftpGooseModelService.WriteGooseDtosToDevice(deviceInsclModelInDevice.Ip, gooseFtpDtos);
+                var res = await _ftpGooseModelService.WriteGooseDtosToDevice(deviceInsclModelInDevice, gooseFtpDtos);
                 if (!res.IsSucceed)
                 {
                     return new ResolvingResult(res.GetFirstError());
@@ -126,10 +126,10 @@ namespace BISC.Modules.Gooses.Model.Services
             return ResolvingResult.SucceedResult;
         }
 
-        public void ShowConflicts(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        public void ShowConflicts(Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
-            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
-            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
 
             var gooseControlsInDevice = _goosesModelService.GetGooseControlsOfDevice(deviceInsclModelInDevice);
@@ -163,7 +163,7 @@ namespace BISC.Modules.Gooses.Model.Services
                 gooseControlsInDeviceVms.FirstOrDefault((model => model.Name == goose.Name))?.ChangeTracker
                     .SetModified()));
             _navigationService.OpenInWindow(GooseKeys.GoosePresentationKeys.GooseControlsConflictsView,
-                $"Конфликты в блоках управления Goose устройства {deviceName}",
+                $"Конфликты в блоках управления Goose устройства {deviceGuid}",
                 new BiscNavigationParameters().AddParameterByName(
                     GooseKeys.GoosePresentationKeys.GooseControlsConflictContext,
                     new GooseControlsConflictContext(

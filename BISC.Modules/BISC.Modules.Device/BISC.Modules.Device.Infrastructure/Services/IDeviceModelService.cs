@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BISC.Infrastructure.Global.Common;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
@@ -9,10 +10,10 @@ namespace BISC.Modules.Device.Infrastructure.Services
     public interface IDeviceModelService
     {
         List<IDevice> GetDevicesFromModel(ISclModel sclModel);
-        IDevice GetDeviceByName(ISclModel sclModel, string deviceName);
+        IDevice GetDeviceByGuid(ISclModel sclModel, Guid deviceGuid);
         OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device,ISclModel modelFrom);
         OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device);
-        OperationResult DeleteDeviceFromModel(ISclModel sclModel, string deviceName);
+        OperationResult DeleteDeviceFromModel(ISclModel sclModel, Guid deviceGuid);
         IDevice GetParentDevice(IModelElement childElement);
         string GetParentDeviceName(IModelElement childElement);
 

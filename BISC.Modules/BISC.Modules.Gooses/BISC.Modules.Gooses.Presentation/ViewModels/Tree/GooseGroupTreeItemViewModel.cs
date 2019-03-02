@@ -21,9 +21,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
         private readonly IGlobalEventsService _globalEventsService;
         private IDevice _device;
 
-        private TreeItemIdentifier _subscriptionIdentifier;
-        private TreeItemIdentifier _matrixIdentifier;
-        private TreeItemIdentifier _gooseEditIdentifier;
+        private UiEntityIdentifier _matrixIdentifier;
+        private UiEntityIdentifier _gooseEditIdentifier;
         private bool _isReportWarning;
 
 
@@ -32,24 +31,24 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
             _tabManagementService = tabManagementService;
             _deviceWarningsService = deviceWarningsService;
             _globalEventsService = globalEventsService;
+
             NavigateToGooseControlsCommand = commandFactory.CreatePresentationCommand(NavigateToGooseControls);
-            NavigateToSubscriptionCommand = commandFactory.CreatePresentationCommand(OnNavigateToSubscription);
             NavigateToMatrixCommand = commandFactory.CreatePresentationCommand(OnNavigateToMatrix);
             WarningsCollection=new ObservableCollection<string>();
         }
         private void OnDeviceWarningsChanged(DeviceWarningsChanged deviceWarningsChanged)
         {
-            if (deviceWarningsChanged.DeviceNameOfWarning != _device.Name) return;
+            if (deviceWarningsChanged.DeviceGuid != _device.DeviceGuid) return;
             WarningsCollection.Clear();
-            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name, GooseKeys.GooseWarningKeys.GooseSavedFtpKey))
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.DeviceGuid, GooseKeys.GooseWarningKeys.GooseSavedFtpKey))
             {
                 IsReportWarning = true;
-                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.Name, GooseKeys.GooseWarningKeys.GooseSavedFtpKey));
+                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.DeviceGuid, GooseKeys.GooseWarningKeys.GooseSavedFtpKey));
             }
-            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name, GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey))
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.DeviceGuid, GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey))
             {
                 IsReportWarning = true;
-                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.Name, GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey));
+                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.DeviceGuid, GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey));
             }
 
         }
@@ -60,13 +59,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
             _tabManagementService.NavigateToTab(GooseKeys.GoosePresentationKeys.GooseMatrixTabKey, biscNavigationParameters, $"Goose матрица {_device.Name}", _matrixIdentifier);
         }
 
-        private void OnNavigateToSubscription()
-        {
-            BiscNavigationParameters biscNavigationParameters=new BiscNavigationParameters();
-            biscNavigationParameters.AddParameterByName("IED", _device);
-            _tabManagementService.NavigateToTab(GooseKeys.GoosePresentationKeys.GooseSubscriptionTabKey, biscNavigationParameters, $"Подписка {_device.Name}", _subscriptionIdentifier);
-        }
-
         private void NavigateToGooseControls()
         {
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
@@ -75,7 +67,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
         }
 
         public ICommand NavigateToGooseControlsCommand { get; }
-        public ICommand NavigateToSubscriptionCommand { get; }
         public ICommand NavigateToMatrixCommand { get; }
         public bool IsReportWarning
         {
@@ -87,11 +78,10 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
             var treeItemIdentifier =
-                navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(
-                    TreeItemIdentifier.Key);
-            _subscriptionIdentifier=new TreeItemIdentifier(Guid.NewGuid(),treeItemIdentifier);
-            _matrixIdentifier = new TreeItemIdentifier(Guid.NewGuid(), treeItemIdentifier);
-            _gooseEditIdentifier = new TreeItemIdentifier(Guid.NewGuid(), treeItemIdentifier);
+                navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(
+                    UiEntityIdentifier.Key);
+            _matrixIdentifier = new UiEntityIdentifier(Guid.NewGuid(), treeItemIdentifier);
+            _gooseEditIdentifier = new UiEntityIdentifier(Guid.NewGuid(), treeItemIdentifier);
             _globalEventsService.Subscribe<DeviceWarningsChanged>(OnDeviceWarningsChanged);
 
             base.OnNavigatedTo(navigationContext);

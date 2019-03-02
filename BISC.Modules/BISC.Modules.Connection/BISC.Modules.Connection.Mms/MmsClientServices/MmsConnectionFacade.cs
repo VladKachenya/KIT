@@ -533,6 +533,17 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             return new InfoModelClientService(_state).ReadSettingsControls(lnMmsTypeDescription,fc,iedName,lnName,ldName);
         }
 
+        public async Task<bool> SetSettingsControl(string fc, string iedName, string lnName,
+            string ldName,string newVal)
+        {
+            var customParts=new List<string>();
+            customParts.Add("SGCB");
+            customParts.Add("ActSG");
+
+            var res =await new InfoModelClientService(_state).SendWriteAsync(tBasicTypeEnum.INT32U,iedName+ldName, lnName, fc, newVal,customParts);
+            return true;
+        }
+
 
         private MmsTypeDescription GetMmsTypeDescription(TypeDescription responseTypeDescription, string name)
         {

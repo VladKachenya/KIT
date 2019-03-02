@@ -20,8 +20,8 @@ namespace BISC.Presentation.Services
         private readonly IMainTreeViewModel _mainTreeViewModel;
         private readonly INavigationService _navigationService;
         private readonly ITabManagementService _tabManagementService;
-        private Dictionary<Guid, Tuple<TreeItemIdentifier, ITreeItemViewModel>> _mainTreeViewModels
-            = new Dictionary<Guid, Tuple<TreeItemIdentifier, ITreeItemViewModel>>();
+        private Dictionary<Guid, Tuple<UiEntityIdentifier, ITreeItemViewModel>> _mainTreeViewModels
+            = new Dictionary<Guid, Tuple<UiEntityIdentifier, ITreeItemViewModel>>();
 
 
 
@@ -33,49 +33,49 @@ namespace BISC.Presentation.Services
             _tabManagementService = tabManagementService;
         }
 
-        public TreeItemIdentifier AddTreeItem(BiscNavigationParameters parameters, string viewName, TreeItemIdentifier parentTreeItemIdentifier,string tag=null)
+        public UiEntityIdentifier AddTreeItem(BiscNavigationParameters parameters, string viewName, UiEntityIdentifier parentUiEntityIdentifier,string tag=null)
         {
             var newTreeItemGuid = Guid.NewGuid();
-            TreeItemIdentifier treeItemIdentifier = new TreeItemIdentifier(newTreeItemGuid, parentTreeItemIdentifier,tag);
+            UiEntityIdentifier uiEntityIdentifier = new UiEntityIdentifier(newTreeItemGuid, parentUiEntityIdentifier,tag);
             TreeItemViewModel newItemViewModel = new TreeItemViewModel();
             newItemViewModel.DynamicRegionId = newTreeItemGuid;
 
-            parameters.AddParameterByName(TreeItemIdentifier.Key, treeItemIdentifier);
-            if (parentTreeItemIdentifier != null && parentTreeItemIdentifier.ItemId.HasValue)
+            parameters.AddParameterByName(UiEntityIdentifier.Key, uiEntityIdentifier);
+            if (parentUiEntityIdentifier != null && parentUiEntityIdentifier.ItemId.HasValue)
             {
-                if (_mainTreeViewModels.ContainsKey(parentTreeItemIdentifier.ItemId.Value))
+                if (_mainTreeViewModels.ContainsKey(parentUiEntityIdentifier.ItemId.Value))
                 {
-                    _mainTreeViewModels[parentTreeItemIdentifier.ItemId.Value].Item2.ChildItemViewModels.Add(newItemViewModel);
+                    _mainTreeViewModels[parentUiEntityIdentifier.ItemId.Value].Item2.ChildItemViewModels.Add(newItemViewModel);
                 }
             }
             else
             {
                 _mainTreeViewModel.ChildItemViewModels.Add(newItemViewModel);
             }
-            _mainTreeViewModels.Add(newTreeItemGuid, new Tuple<TreeItemIdentifier, ITreeItemViewModel>(treeItemIdentifier, newItemViewModel));
+            _mainTreeViewModels.Add(newTreeItemGuid, new Tuple<UiEntityIdentifier, ITreeItemViewModel>(uiEntityIdentifier, newItemViewModel));
             _navigationService.NavigateViewToRegion(viewName, newTreeItemGuid.ToString(), parameters);
-            return treeItemIdentifier;
+            return uiEntityIdentifier;
         }
 
 
-        private bool GetIsChildRecursive(TreeItemIdentifier child, TreeItemIdentifier parent)
+        private bool GetIsChildRecursive(UiEntityIdentifier child, UiEntityIdentifier parent)
         {
-            if (child.ParenTreeItemIdentifier == null) return false;
+            if (child.ParenUiEntityIdentifier == null) return false;
 
-            if (parent.ItemId != null && child.ParenTreeItemIdentifier.ItemId != null &&
-                child.ParenTreeItemIdentifier.ItemId.Value == parent.ItemId.Value)
+            if (parent.ItemId != null && child.ParenUiEntityIdentifier.ItemId != null &&
+                child.ParenUiEntityIdentifier.ItemId.Value == parent.ItemId.Value)
             {
                 return true;
             }
-            return GetIsChildRecursive(child.ParenTreeItemIdentifier, parent);
+            return GetIsChildRecursive(child.ParenUiEntityIdentifier, parent);
         }
 
-        public void DeleteTreeItem(TreeItemIdentifier treeItemId)
+        public void DeleteTreeItem(UiEntityIdentifier uiEntityId)
         {
-            if (treeItemId.ItemId == null) return;
-            if (!_mainTreeViewModels.ContainsKey(treeItemId.ItemId.Value)) return;
-            var parent = _mainTreeViewModels.Values.First((tuple => tuple.Item1.ItemId.Value == treeItemId.ItemId.Value)).Item1;
-            var treeItemIdsToRemove=new List<TreeItemIdentifier>();
+            if (uiEntityId.ItemId == null) return;
+            if (!_mainTreeViewModels.ContainsKey(uiEntityId.ItemId.Value)) return;
+            var parent = _mainTreeViewModels.Values.First((tuple => tuple.Item1.ItemId.Value == uiEntityId.ItemId.Value)).Item1;
+            var treeItemIdsToRemove=new List<UiEntityIdentifier>();
 
             foreach (var mainTreeViewModel in _mainTreeViewModels)
             {
@@ -91,24 +91,24 @@ namespace BISC.Presentation.Services
             }
 
 
-            if (treeItemId.ParenTreeItemIdentifier?.ItemId == null)
+            if (uiEntityId.ParenUiEntityIdentifier?.ItemId == null)
             {
-                _mainTreeViewModel.ChildItemViewModels.Remove(_mainTreeViewModels[treeItemId.ItemId.Value].Item2);
+                _mainTreeViewModel.ChildItemViewModels.Remove(_mainTreeViewModels[uiEntityId.ItemId.Value].Item2);
             }
             else
             {
-                _mainTreeViewModels[treeItemId.ParenTreeItemIdentifier.ItemId.Value].Item2.ChildItemViewModels
-                    .Remove(_mainTreeViewModels[treeItemId.ItemId.Value].Item2);
+                _mainTreeViewModels[uiEntityId.ParenUiEntityIdentifier.ItemId.Value].Item2.ChildItemViewModels
+                    .Remove(_mainTreeViewModels[uiEntityId.ItemId.Value].Item2);
             }
-            _mainTreeViewModels.Remove(treeItemId.ItemId.Value);
+            _mainTreeViewModels.Remove(uiEntityId.ItemId.Value);
 
-            _navigationService.DisposeRegionViewModel(treeItemId.ItemId.Value.ToString());
+            _navigationService.DisposeRegionViewModel(uiEntityId.ItemId.Value.ToString());
 
         }
 
-	    public TreeItemIdentifier GetDeviceTreeItem(string deviceName)
+	    public UiEntityIdentifier GetDeviceTreeItem(Guid deviceGuid)
 	    {
-		    var deviceTreeItem = _mainTreeViewModels.FirstOrDefault((pair => pair.Value.Item1.Tag == deviceName));
+		    var deviceTreeItem = _mainTreeViewModels.FirstOrDefault((pair => pair.Value.Item1.Tag == deviceGuid.ToString()));
 		    return deviceTreeItem.Value.Item1;
 	    }
 

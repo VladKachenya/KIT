@@ -126,9 +126,9 @@ namespace BISC.Presentation.Services
         }
 
 
-        public async Task<SaveResult> SaveDeviceUnsavedEntities(string deviceName, bool isNeedToAsk)
+        public async Task<SaveResult> SaveDeviceUnsavedEntities(Guid deviceGuid, bool isNeedToAsk)
         {
-            return await SaveUnsavedEntities((entity => entity.DeviceKey == deviceName &&
+            return await SaveUnsavedEntities((entity => entity.DeviceGuid == deviceGuid &&
                                                         entity.ChangeTracker.GetIsModifiedRecursive()), isNeedToAsk);
         }
 
@@ -149,10 +149,10 @@ namespace BISC.Presentation.Services
             return true;
         }
 
-        public async Task<UnsavedEntitiesInfo> GetIsDeviceEntitiesSaved(string deviceName)
+        public async Task<UnsavedEntitiesInfo> GetIsDeviceEntitiesSaved(Guid deviceGuid)
         {
             var unsavedCheckingEntities = _saveCheckingEntities.Where((entity =>
-                 entity.DeviceKey == deviceName && entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
+                 entity.DeviceGuid == deviceGuid && entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
 
             return new UnsavedEntitiesInfo(!unsavedCheckingEntities.Any(), unsavedCheckingEntities);
         }

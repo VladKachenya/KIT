@@ -8,7 +8,7 @@ namespace BISC.Presentation.Infrastructure.UiFromModel
     public interface IUiFromModelElementRegistryService
     {
         void RegisterModelElement(IUiFromModelElementService modelElementUiService,string uiKey);
-        bool TryHandleModelElementInUiByKey(IModelElement modelElement,TreeItemIdentifier parentTreeItemIdentifier,string uiKey);
+        bool TryHandleModelElementInUiByKey(IModelElement modelElement,UiEntityIdentifier parentUiEntityIdentifier,string uiKey);
 
     }
 }

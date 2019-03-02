@@ -85,7 +85,7 @@ namespace BISC.Modules.Device.Presentation.Services
 
         #region Implementation of IDeviceRestartService
 
-        public async Task<bool> ReconnectDevice(IDevice existingDevice, TreeItemIdentifier treeItemIdToRemove)
+        public async Task<bool> ReconnectDevice(IDevice existingDevice, UiEntityIdentifier uiEntityIdToRemove)
         {
             if (!await _pingService.GetPing(
                 _sclCommunicationModelService.GetIpOfDevice(existingDevice.Name, _biscProject.MainSclModel.Value)))
@@ -94,15 +94,15 @@ namespace BISC.Modules.Device.Presentation.Services
                 return false;
             }
 
-            await Reconnect(existingDevice, treeItemIdToRemove, false);
+            await Reconnect(existingDevice, uiEntityIdToRemove, false);
             return true;
         }
 
-        private async Task Reconnect(IDevice existingDevice, TreeItemIdentifier treeItemIdToRemove, bool isRestarting)
+        private async Task Reconnect(IDevice existingDevice, UiEntityIdentifier uiEntityIdToRemove, bool isRestarting)
         {
-            _treeManagementService.DeleteTreeItem(treeItemIdToRemove);
+            _treeManagementService.DeleteTreeItem(uiEntityIdToRemove);
 
-            _tabManagementService.CloseTabWithChildren(treeItemIdToRemove.ItemId.ToString());
+            _tabManagementService.CloseTabWithChildren(uiEntityIdToRemove.ItemId.ToString());
 
             var sortedElements = _elementLoadingServices.OrderBy((service => service.Priority));
 
@@ -116,7 +116,7 @@ namespace BISC.Modules.Device.Presentation.Services
             var treeItemId = _treeManagementService.AddTreeItem(biscNavigationParameters,
                 DeviceKeys.DeviceRestartViewKey,
                 null);
-            restartDeviceContext.TreeItemIdentifier = treeItemId;
+            restartDeviceContext.UiEntityIdentifier = treeItemId;
             if (isRestarting)
             {
                 await Task.Delay(3000, cts.Token);
@@ -132,6 +132,7 @@ namespace BISC.Modules.Device.Presentation.Services
             }
 
             var device = deviceConnectResult.Item;
+            device.SetGuid(existingDevice.DeviceGuid);
             var sclModel = _sclModelCreator();
             var itemsCount = 0;
             try
@@ -151,7 +152,7 @@ namespace BISC.Modules.Device.Presentation.Services
                     await sortedElement.Load(device,
                         new Progress<object>(deviceLoadingEvent =>
                         {
-                            _globalEventsService.SendMessage(new DeviceLoadingEvent(device.Ip, device.Name,
+                            _globalEventsService.SendMessage(new DeviceLoadingEvent(device.DeviceGuid, device.Name,
                                 itemsCount, ++currentElementsCount));
                         }), sclModel, cts.Token);
                 }
@@ -169,7 +170,7 @@ namespace BISC.Modules.Device.Presentation.Services
                     _loggingService.LogMessage(
                         $"Ошибка загрузки устройства {e.Message + Environment.NewLine + e.StackTrace}",
                         SeverityEnum.Critical);
-                    _globalEventsService.SendMessage(new LoadErrorEvent(device.Ip, device.Name));
+                    _globalEventsService.SendMessage(new LoadErrorEvent(device.Ip, device.DeviceGuid));
 
                     // return new OperationResult($"Ошибка загрузка устройства {device.Name}");
                 }
@@ -179,7 +180,7 @@ namespace BISC.Modules.Device.Presentation.Services
             var hasConflics = false;
             _elementConflictResolvers.ForEach((resolver =>
             {
-                if (resolver.GetIfConflictsExists(device.Name, sclModel, _biscProject.MainSclModel.Value))
+                if (resolver.GetIfConflictsExists(device.DeviceGuid, sclModel, _biscProject.MainSclModel.Value))
                 {
                     hasConflics = true;
 
@@ -187,17 +188,17 @@ namespace BISC.Modules.Device.Presentation.Services
                 }
             }));
             restartDeviceContext.HaveConflicts = hasConflics;
-            _globalEventsService.SendMessage(new DeviceLoadingEvent(device.Ip) { IsFinished = true });
+            _globalEventsService.SendMessage(new DeviceLoadingEvent(device.DeviceGuid) { IsFinished = true });
             if (!hasConflics)
             {
                 _treeManagementService.DeleteTreeItem(treeItemId);
                 _deviceAddingService.AddDeviceToTree(existingDevice);
-                _deviceWarningsService.ClearDeviceWarningsOfDevice(existingDevice.Name);
+                _deviceWarningsService.ClearDeviceWarningsOfDevice(existingDevice.DeviceGuid);
             }
             else
             {
                 restartDeviceContext.DeviceConflictContext = new DeviceConflictContext(_biscProject.MainSclModel.Value,
-                    sclModel, existingDevice.Name);
+                    sclModel, existingDevice.DeviceGuid);
             }
         }
 
@@ -208,17 +209,17 @@ namespace BISC.Modules.Device.Presentation.Services
             _loggingService.LogMessage($"Перезагрузка устройства {existingDevice.Name}", SeverityEnum.Critical);
         }
 
-        public async Task RestartDevice(IDevice existingDevice, TreeItemIdentifier treeItemIdToRemove = null)
+        public async Task RestartDevice(IDevice existingDevice, UiEntityIdentifier uiEntityIdToRemove = null)
         {
             await RebootOnly(existingDevice);
-            if (treeItemIdToRemove == null)
+            if (uiEntityIdToRemove == null)
             {
-                await Reconnect(existingDevice, _treeManagementService.GetDeviceTreeItem(existingDevice.Name), true);
+                await Reconnect(existingDevice, _treeManagementService.GetDeviceTreeItem(existingDevice.DeviceGuid), true);
 
             }
             else
             {
-                await Reconnect(existingDevice, treeItemIdToRemove, true);
+                await Reconnect(existingDevice, uiEntityIdToRemove, true);
             }
         }
         #endregion

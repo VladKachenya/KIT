@@ -123,7 +123,7 @@ namespace BISC.Modules.Reports.Model.Services
             }
             catch (Exception e)
             {
-                _deviceWarningsService.SetWarningOfDevice(device.Name, ReportsKeys.ReportsPresentationKeys.ReportsLoadErrorWarningTag, "Ошибка вычитывания Reports из устройства");
+                _deviceWarningsService.SetWarningOfDevice(device.DeviceGuid, ReportsKeys.ReportsPresentationKeys.ReportsLoadErrorWarningTag, "Ошибка вычитывания Reports из устройства");
                 throw;
             }
         }

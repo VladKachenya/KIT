@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BISC.Presentation.Infrastructure.Keys;
 
 namespace BISC.Presentation.Services
 {
@@ -174,7 +175,7 @@ namespace BISC.Presentation.Services
             var sclModel = GetSclModel();
             foreach (var unsavedEntity in unsavedEntities)
             {
-                if (string.IsNullOrEmpty(unsavedEntity.DeviceKey))
+                if (unsavedEntity.DeviceGuid == new Guid(KeysForNavigation.AppGuids.NullGuid))
                 {
                     if (res.Any(el => el.Device == null))
                     {
@@ -188,14 +189,14 @@ namespace BISC.Presentation.Services
                 }
                 else
                 {
-                    if (res.Any(el => (el.Device != null) && (el.Device.Name == unsavedEntity.DeviceKey)))
+                    if (res.Any(el => (el.Device != null) && (el.Device.DeviceGuid == unsavedEntity.DeviceGuid)))
                     {
-                        var deviseForSaving = res.First(el => (el.Device != null) && (el.Device.Name == unsavedEntity.DeviceKey));
+                        var deviseForSaving = res.First(el => (el.Device != null) && (el.Device.DeviceGuid == unsavedEntity.DeviceGuid));
                         await deviseForSaving.AddUnsavedEntity(unsavedEntity);
                     }
                     else
                     {
-                        res.Add(await GetDevicesForSaving(unsavedEntity, _deviceModelService.GetDeviceByName(sclModel, unsavedEntity.DeviceKey)));
+                        res.Add(await GetDevicesForSaving(unsavedEntity, _deviceModelService.GetDeviceByGuid(sclModel, unsavedEntity.DeviceGuid)));
                     }
                 }
             }
@@ -204,7 +205,7 @@ namespace BISC.Presentation.Services
             {
                 if (deviceForSaving.IsRestartNecessry)
                 {
-                    var deviceChengests = await _saveCheckingService.GetIsDeviceEntitiesSaved(deviceForSaving.Device.Name);
+                    var deviceChengests = await _saveCheckingService.GetIsDeviceEntitiesSaved(deviceForSaving.Device.DeviceGuid);
                     if (!deviceChengests.IsEntitiesSaved)
                     {
                         deviceForSaving.UnsavedEntitiesOfDevise.Clear();

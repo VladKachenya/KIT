@@ -43,10 +43,10 @@ namespace BISC.Modules.InformationModel.Presentation.Services
 
         #region Implementation of IElementConflictResolver
 
-        public bool GetIfConflictsExists(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        public bool GetIfConflictsExists(Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
-            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
-            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
             var settingsGroupsInDevice = _infoModelService.GetSettingControlsOfDevice(deviceInsclModelInDevice);
             var settingsGroupsInProject = _infoModelService.GetSettingControlsOfDevice(devicesclModelInProject);
@@ -75,10 +75,10 @@ namespace BISC.Modules.InformationModel.Presentation.Services
         }
 
 
-        public async Task<ResolvingResult> ResolveConflict(bool isFromDevice, string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        public async Task<ResolvingResult> ResolveConflict(bool isFromDevice, Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
-            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
-            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
             var settingsGroupsInDevice = _infoModelService.GetSettingControlsOfDevice(deviceInsclModelInDevice);
             var settingsGroupsInProject = _infoModelService.GetSettingControlsOfDevice(devicesclModelInProject);
@@ -111,10 +111,10 @@ namespace BISC.Modules.InformationModel.Presentation.Services
             return ResolvingResult.SucceedResult;
         }
         public string ConflictName => "Setting Groups";
-        public void ShowConflicts(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        public void ShowConflicts(Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
-            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
-            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
             var settingsGroupsInDevice = _infoModelService.GetSettingControlsOfDevice(deviceInsclModelInDevice);
             var settingsGroupsInProject = _infoModelService.GetSettingControlsOfDevice(devicesclModelInProject);
@@ -140,7 +140,7 @@ namespace BISC.Modules.InformationModel.Presentation.Services
                 settingsGroupsInProjectVms.Add(vm);
             }
 
-            _navigationService.OpenInWindow(InfoModelKeys.SettingsControlConflictsViewKey, $"Конфликты Settings Group в устройстве {deviceName}",
+            _navigationService.OpenInWindow(InfoModelKeys.SettingsControlConflictsViewKey, $"Конфликты Settings Group в устройстве {deviceGuid}",
                 new BiscNavigationParameters().AddParameterByName(InfoModelKeys.SettingsControlConflictsContextKey,
                     new SettingsControlConflictsContext(settingsGroupsInDeviceVms, settingsGroupsInProjectVms)));
 

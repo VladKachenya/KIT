@@ -36,6 +36,8 @@ namespace BISC.Modules.Reports.Presentation.Commands
 
         private IDevice _device;
         private Func<bool> _isSavingInDevice;
+
+        public Action RefreshViewModel { get; set; }
         //private Action<bool> _fineshSaving;
 
         public ReportsSavingCommand(IInfoModelService infoModelService, ILoggingService loggingService,
@@ -161,6 +163,10 @@ namespace BISC.Modules.Reports.Presentation.Commands
                     SeverityEnum.Warning);
                 return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedWithErrors, false,
                     e.Message);
+            }
+            finally
+            {
+                RefreshViewModel?.Invoke();
             }
         }
 

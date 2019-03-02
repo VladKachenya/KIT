@@ -6,13 +6,57 @@
              xmlns:local="clr-namespace:BISC.Modules.Gooses.Presentation.Views.Matrix"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:entities="clr-namespace:BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities"
+             xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:BoolToVisConverter Invert="True" x:Key="boolToInVisConverter"></converters:BoolToVisConverter>
+    </UserControl.Resources>
     <Grid>
         <ScrollViewer VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <ItemsControl Name="itemsControl" ItemsSource="{Binding GooseControlBlockAssignmentItems}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="entities:GooseControlBlockAssignmentItem">
+                <ItemsControl.Resources>
+                    <DataTemplate DataType="{x:Type entities:GooseFtpOnlyAssignmentItem}">
+                        <Border x:Name="border"  Margin="3" BorderThickness="1" BorderBrush="Gray">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Orientation="Horizontal" Margin="5">
+                                        <ContentControl ContentTemplate="{StaticResource AlertBoxIcon}" Width="20" Height="20"  ToolTip="Ссылается на устройство, которого нет в проекте"></ContentControl>
+                                        <TextBlock Margin="10" VerticalAlignment="Center" Text="{Binding Signature}"></TextBlock>
+                                    </StackPanel>
+                                    <Grid Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                    </Grid>
+                                </Grid>
+                                <ListBox Grid.Column="1" ItemsSource="{ Binding FcdaAssignmentItems}" HorizontalAlignment="Stretch">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="entities:FcdaAssignmentItem">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Signature}" Margin="5"></TextBlock>
+                                                <Button Style="{StaticResource MaterialDesignFlatButton}"  Command="{Binding ElementName= border ,Path=DataContext.RemoveFcdaElement}" CommandParameter="{Binding .}">
+                                                    <Button.Content>
+                                                        <ContentControl Width="20" Height="20" ContentTemplate="{DynamicResource CloseIcon}"></ContentControl>
+                                                    </Button.Content>
+                                                </Button>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type entities:GooseInProjectAssignmentItem}">
                         <Border  Margin="3" BorderThickness="1" BorderBrush="Gray">
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -28,7 +72,7 @@
                                     <Grid Grid.Row="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition></ColumnDefinition>
-                                           <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
                                         <Button Grid.Column="0" ToolTip="Выделить все" Command="{Binding SelectAllCommand}" Style="{StaticResource MaterialDesignFlatButton}">
                                             <Button.Content>
@@ -50,9 +94,7 @@
                                                 </i:EventTrigger>
                                             </i:Interaction.Triggers>
                                         </Button>
-
                                     </Grid>
-
                                 </Grid>
                                 <ListBox Grid.Column="1" ItemsSource="{ Binding FcdaAssignmentItems}" HorizontalAlignment="Stretch">
                                     <ItemsControl.ItemTemplate>
@@ -73,7 +115,8 @@
                             </Grid>
                         </Border>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
+
+                </ItemsControl.Resources>
             </ItemsControl>
         </ScrollViewer>
     </Grid>

@@ -60,7 +60,6 @@ namespace BISC.Presentation.Module
 
 
             _injectionContainer.RegisterType<PresentationInitialization>(true);
-
             PresentationInitialization presentationInitialization = _injectionContainer.ResolveType(typeof(PresentationInitialization)) as PresentationInitialization;
         }
     }

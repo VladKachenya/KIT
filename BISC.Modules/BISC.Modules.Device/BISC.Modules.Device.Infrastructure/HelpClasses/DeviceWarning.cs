@@ -8,14 +8,14 @@ namespace BISC.Modules.Device.Infrastructure.HelpClasses
 {
    public class DeviceWarning
     {
-        public DeviceWarning(string deviceName, string warningTag, string warningMasage = null)
+        public DeviceWarning(Guid deviceGuid, string warningTag, string warningMasage = null)
         {
-            DeviceName = deviceName;
+            DeviceGuid = deviceGuid;
             WarningTag = warningTag;
             WarningMasage = warningMasage;
         }
 
-        public string DeviceName { get; }
+        public Guid DeviceGuid { get; }
         public string WarningTag { get; }
         public string WarningMasage { get; }
 

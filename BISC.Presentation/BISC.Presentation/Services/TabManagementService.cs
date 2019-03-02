@@ -18,7 +18,7 @@ namespace BISC.Presentation.Services
         private readonly INavigationService _navigationService;
         private readonly Func<ITabViewModel> _tabViewModelFactory;
         private readonly ISaveCheckingService _saveCheckingService;
-        private readonly Dictionary<TreeItemIdentifier,ITabViewModel> _tabViewModelsDictionary=new Dictionary<TreeItemIdentifier, ITabViewModel>();
+        private readonly Dictionary<UiEntityIdentifier,ITabViewModel> _tabViewModelsDictionary=new Dictionary<UiEntityIdentifier, ITabViewModel>();
         public TabManagementService(ITabHostViewModel tabHostViewModel,INavigationService navigationService,Func<ITabViewModel> tabViewModelFactory,ISaveCheckingService saveCheckingService)
         {
             _tabHostViewModel = tabHostViewModel;
@@ -26,7 +26,7 @@ namespace BISC.Presentation.Services
             _tabViewModelFactory = tabViewModelFactory;
             _saveCheckingService = saveCheckingService;
         }
-        public void NavigateToTab(string viewName, BiscNavigationParameters navigationParameters, string header, TreeItemIdentifier owner)
+        public void NavigateToTab(string viewName, BiscNavigationParameters navigationParameters, string header, UiEntityIdentifier owner)
         {
             var newTab = _tabViewModelFactory.Invoke();
             Guid newTabId = Guid.NewGuid();
@@ -43,13 +43,18 @@ namespace BISC.Presentation.Services
                 _tabHostViewModel.ActiveTabViewModel = newTab;
             }
 
-            navigationParameters.AddParameterByName(TreeItemIdentifier.Key, new TreeItemIdentifier(newTabId,owner));
+            if (navigationParameters == null)
+            {
+                navigationParameters=new BiscNavigationParameters();
+            }
+                
+            navigationParameters.AddParameterByName(UiEntityIdentifier.Key, new UiEntityIdentifier(newTabId,owner));
 
             _tabHostViewModel.TabViewModels.Insert(0,newTab);
             _navigationService.NavigateViewToRegion(viewName,newTabId.ToString(),navigationParameters);
         }
 
-        public void CloseTab(TreeItemIdentifier owner)
+        public void CloseTab(UiEntityIdentifier owner)
         {
             if (_tabViewModelsDictionary.ContainsKey(owner))
             {
@@ -74,7 +79,7 @@ namespace BISC.Presentation.Services
 
         public void CloseTabWithChildren(string regionId)
         {
-            var idsToRemove=new List<TreeItemIdentifier>();
+            var idsToRemove=new List<UiEntityIdentifier>();
             foreach (var identifier in _tabViewModelsDictionary.Keys)
             {
                 if (IsTreeItemIdentifierIsChildOfRegion(regionId, identifier))
@@ -88,18 +93,18 @@ namespace BISC.Presentation.Services
             }
         }
 
-        private bool IsTreeItemIdentifierIsChildOfRegion(string regionId,TreeItemIdentifier treeItemIdentifier)
+        private bool IsTreeItemIdentifierIsChildOfRegion(string regionId,UiEntityIdentifier uiEntityIdentifier)
         {
-            if (treeItemIdentifier.ItemId.ToString() == regionId)
+            if (uiEntityIdentifier.ItemId.ToString() == regionId)
             {
                 return true;
             }
-            if (treeItemIdentifier.ParenTreeItemIdentifier == null)
+            if (uiEntityIdentifier.ParenUiEntityIdentifier == null)
             {
                 return false;
             }
 
-            return IsTreeItemIdentifierIsChildOfRegion(regionId, treeItemIdentifier.ParenTreeItemIdentifier);
+            return IsTreeItemIdentifierIsChildOfRegion(regionId, uiEntityIdentifier.ParenUiEntityIdentifier);
         }
     }
 }

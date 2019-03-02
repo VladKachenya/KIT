@@ -18,6 +18,8 @@ namespace BISC.Infrastructure.Global.Services
         public const string BookMultipleIconKey = "BookMultipleIcon";
         public const string SettingsIconKey = "SettingsIcon";
         public const string EthernetIconKey = "EthernetIcon";
+        public const string LanPendingIconKey = "LanPendingIcon";
+
     }
 
     public interface IUserInterfaceComposingService

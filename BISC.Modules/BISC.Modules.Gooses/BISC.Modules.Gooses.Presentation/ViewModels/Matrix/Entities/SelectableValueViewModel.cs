@@ -45,8 +45,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
             if(selectableBoxEventArgs.IsFocused)return;
             if (_configurationService.IsAutoEnabledValidityInGooseReceiving)
             {
-                if ((this.Parent.Model.GooseRowType=="State") &&
-                    (selectableBoxEventArgs.SelectableValueViewModel.Parent.Model.GooseRowType== "State") &&
+                if ((this.Parent.GooseRowType=="State") &&
+                    (selectableBoxEventArgs.SelectableValueViewModel.Parent.GooseRowType== "State") &&
                     this.ColumnNumber == selectableBoxEventArgs.SelectableValueViewModel.ColumnNumber &&
                     this.Parent.Parent == selectableBoxEventArgs.SelectableValueViewModel.Parent.Parent)
                 {
@@ -56,8 +56,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
             }
             if (_configurationService.IsAutoEnabledQualityInGooseReceiving)
             {
-                if ((this.Parent.Model.GooseRowType == "Quality") &&
-                    (selectableBoxEventArgs.SelectableValueViewModel.Parent.Model.GooseRowType == "Quality") &&
+                if ((this.Parent.GooseRowType == "Quality") &&
+                    (selectableBoxEventArgs.SelectableValueViewModel.Parent.GooseRowType == "Quality") &&
                     this.ColumnNumber == selectableBoxEventArgs.SelectableValueViewModel.ColumnNumber)
                 {
                     if (this.Parent.RowName.Remove(this.Parent.RowName.Length - 6) ==

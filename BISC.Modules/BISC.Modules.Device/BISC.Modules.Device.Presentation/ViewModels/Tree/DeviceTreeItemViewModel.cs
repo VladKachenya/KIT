@@ -52,7 +52,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 
         private string _deviceName;
         private IDevice _device;
-        private TreeItemIdentifier _treeItemIdentifier;
+        private UiEntityIdentifier _uiEntityIdentifier;
         private bool _isDeviceConnected;
         private bool _isReportWarning;
 
@@ -92,7 +92,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         {
             _navigationService.NavigateViewToGlobalRegion(DeviceKeys.ReconnectDeviceViewKey,
                 new BiscNavigationParameters().AddParameterByName(DeviceKeys.ReconnectDeviceContextKey,
-                    new ReconnectDeviceContext(_device, _treeItemIdentifier)));
+                    new ReconnectDeviceContext(_device, _uiEntityIdentifier)));
         }
 
         private bool CanConnectDevice()
@@ -133,7 +133,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         {
             _loggingService.LogMessage($"Устройство {_device.Name} перезагружается", SeverityEnum.Info);
 
-            await _deviceReconnectionService.RestartDevice(_device, _treeItemIdentifier);
+            await _deviceReconnectionService.RestartDevice(_device, _uiEntityIdentifier);
         }
 
         private bool IsResetDeviceViaFtp()
@@ -147,7 +147,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         {
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
             biscNavigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, _device);
-            _tabManagementService.NavigateToTab(DeviceKeys.DeviceDetailsViewKey, biscNavigationParameters, $"IED {_device.Name}", _treeItemIdentifier);
+            _tabManagementService.NavigateToTab(DeviceKeys.DeviceDetailsViewKey, biscNavigationParameters, $"IED {_device.Name}", _uiEntityIdentifier);
         }
 
         public bool IsDeviceConnected
@@ -162,12 +162,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 
         private void OnDeviceWarningsChanged(DeviceWarningsChanged deviceWarningsChanged)
         {
-            if (deviceWarningsChanged.DeviceNameOfWarning != _device.Name) return;
+            if (deviceWarningsChanged.DeviceGuid != _device.DeviceGuid) return;
             WarningsCollection.Clear();
-            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name))
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.DeviceGuid))
             {
                 List<string> warningList =
-                    _deviceWarningsService.GetWarningMassagesOfDevice(deviceWarningsChanged.DeviceNameOfWarning);
+                    _deviceWarningsService.GetWarningMassagesOfDevice(deviceWarningsChanged.DeviceGuid);
                 if (warningList == null) return;
                 IsReportWarning = true;
                 warningList.ForEach(warningMassage => WarningsCollection.Add(warningMassage));
@@ -178,7 +178,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         {
             Dispose();
             _loggingService.LogUserAction("Пользователь удаляет устройство " + _device.Name);
-            var isSaved = (await _saveCheckingService.GetIsDeviceEntitiesSaved(_device.Name)).IsEntitiesSaved;
+            var isSaved = (await _saveCheckingService.GetIsDeviceEntitiesSaved(_device.DeviceGuid)).IsEntitiesSaved;
             if (!isSaved)
             {
                 var res = await _userInteractionService.ShowOptionToUser("Несохраненные изменения",
@@ -189,16 +189,17 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
                     return;
                 }
             }
-            var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, _device.Name);
+            var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, _device.DeviceGuid);
             if (result.IsSucceed)
             {
+                // тут необходимо скорее всего через Guid делать
                 _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject.MainSclModel.Value,
                     _device.Name);
 
-                _treeManagementService.DeleteTreeItem(_treeItemIdentifier);
+                _treeManagementService.DeleteTreeItem(_uiEntityIdentifier);
                 _connectionPoolService.GetConnection(_device.Ip).StopConnection();
-                _tabManagementService.CloseTabWithChildren(_treeItemIdentifier.ItemId.ToString());
-                _deviceWarningsService.ClearDeviceWarningsOfDevice(_device.Name);
+                _tabManagementService.CloseTabWithChildren(_uiEntityIdentifier.ItemId.ToString());
+                _deviceWarningsService.ClearDeviceWarningsOfDevice(_device.DeviceGuid);
             }
         }
 
@@ -221,8 +222,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             IDevice device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
-            _treeItemIdentifier =
-                navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key);
+            _uiEntityIdentifier =
+                navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key);
             DeviceName = device.Name;
             _device = device;
             IsDeviceConnected = _connectionPoolService.GetConnection(_device.Ip).IsConnected;
@@ -246,7 +247,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 
         private void OnResetByFtpEvent(ResetByFtpEvent ea)
         {
-            if (ea.Ip == _device.Ip && ea.DeviceName == _device.Name && IsDeviceConnected)
+            if (ea.Ip == _device.Ip && ea.DeviceGuid == _device.DeviceGuid && IsDeviceConnected)
             {
                 ResetDeviceByFtp();
             }

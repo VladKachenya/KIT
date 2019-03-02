@@ -11,12 +11,12 @@ namespace BISC.Presentation.Infrastructure.Services
         void AddSaveCheckingEntity(SaveCheckingEntity saveCheckingEntity);
         void RemoveSaveCheckingEntityByOwner(string regionName);
         Task<SaveResult> SaveAllUnsavedEntities(bool isNeedToAsk);
-	    Task<SaveResult> SaveDeviceUnsavedEntities(string deviceName,bool isNeedToAsk);
+	    Task<SaveResult> SaveDeviceUnsavedEntities(Guid deviceGuid,bool isNeedToAsk);
         Task ExecuteSave(List<SaveCheckingEntity> entitiesToSave);
         List<SaveCheckingEntity> GetSaveCheckingEntities();
         Task<bool> GetIsRegionSaved(string regionName);
 
-        Task<UnsavedEntitiesInfo> GetIsDeviceEntitiesSaved(string deviceName);
+        Task<UnsavedEntitiesInfo> GetIsDeviceEntitiesSaved(Guid deviceGuid);
 
     }
 }

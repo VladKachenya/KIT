@@ -59,6 +59,11 @@
     <Compile Include="Module\GoosesModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers\ExternalGooseRefSerializer.cs" />
+    <Compile Include="Serializers\FtpMatrix\GoCbFtpEntitySerializer.cs" />
+    <Compile Include="Serializers\FtpMatrix\GooseMatrixFtpSerializer.cs" />
+    <Compile Include="Serializers\FtpMatrix\GooseQualityRowFtpEntitySerializer.cs" />
+    <Compile Include="Serializers\FtpMatrix\GooseRowFtpEntitySerializer.cs" />
+    <Compile Include="Serializers\FtpMatrix\MacAddressEntitySerializer.cs" />
     <Compile Include="Serializers\GooseControlSerializer.cs" />
     <Compile Include="Serializers\GooseInputSerializer.cs" />
     <Compile Include="Serializers\GooseMatrixSerializer.cs" />

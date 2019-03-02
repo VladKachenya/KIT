@@ -96,7 +96,7 @@ namespace BISC.Modules.Gooses.Model.Services
                 // Работать сдесь
                 if (!res.IsSucceed)
                 {
-                    _deviceWarningsService.SetWarningOfDevice(device.Name, GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey, "Ошибка вычитывания Goose из устройства");
+                    _deviceWarningsService.SetWarningOfDevice(device.DeviceGuid, GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey, "Ошибка вычитывания Goose из устройства");
                 }
                 var dynamicGooseControls = res.Item;
 

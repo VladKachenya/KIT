@@ -6,8 +6,32 @@
              xmlns:local="clr-namespace:BISC.Modules.Gooses.Presentation.Views.Tabs"
              xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:subscriptions="clr-namespace:BISC.Modules.Gooses.Presentation.ViewModels.Subscriptions"
+             xmlns:converters="clr-namespace:BISC.Modules.Gooses.Presentation.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:DataRowViewConverter x:Key="drvc" />
+
+        <DataTemplate  x:Key="SubscriptionValueTemplate">
+            <CheckBox DataContext="{Binding RelativeSource={RelativeSource AncestorType=DataGridCell}, Converter={StaticResource drvc}}" IsEnabled="{Binding Path=IsValueEditable}" IsChecked="{Binding Path=IsSelected}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Checked" >
+                        <i:InvokeCommandAction Command="{Binding Source={x:Reference DataGrid}, Path=DataContext.SaveChangesCommand}" ></i:InvokeCommandAction>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="Unchecked" >
+                        <i:InvokeCommandAction Command="{Binding Source={x:Reference DataGrid}, Path=DataContext.SaveChangesCommand}" ></i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </CheckBox>
+        </DataTemplate>
+
+
+        <DataTemplate x:Key="StringTemplate">
+            <TextBlock  DataContext="{Binding RelativeSource={RelativeSource AncestorType=DataGridCell}, Converter={StaticResource drvc}}" Text="{Binding }"></TextBlock>
+        </DataTemplate>
+
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -19,12 +43,8 @@
             </Button>
         </Grid>-->
         <Grid Grid.Row="1">
-            <DataGrid  CanUserSortColumns="False" AutoGenerateColumns="True" Name="DataGrid" MouseUp="Control_OnMouseDoubleClick" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding GooseSubscriptionTable}" Grid.Row="0">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseUp" >
-                        <i:InvokeCommandAction Command="{Binding SaveChangesCommand}" ></i:InvokeCommandAction>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+            <DataGrid CanUserSortColumns="False" AutoGenerateColumns="True" Name="DataGrid" PreviewMouseUp="Control_OnMouseDoubleClick" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn" 
+                       CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding GooseSubscriptionTable}" Grid.Row="0">
             </DataGrid>
         </Grid>
 

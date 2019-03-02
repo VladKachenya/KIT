@@ -32,7 +32,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         {
             
             _deviceReconnectionService.ReconnectDevice(_reconnectDeviceContext.Device,
-                _reconnectDeviceContext.DeviceTreeItemIdentifier);
+                _reconnectDeviceContext.DeviceUiEntityIdentifier);
             DialogCommands.CloseDialogCommand?.Execute(null, null);
         }
 

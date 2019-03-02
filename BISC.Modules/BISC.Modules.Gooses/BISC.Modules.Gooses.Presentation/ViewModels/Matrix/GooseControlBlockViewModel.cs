@@ -12,7 +12,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 {
     public class GooseControlBlockViewModel : ViewModelBase 
     {
-        private readonly GooseRowViewModelFactory _gooseRowViewModelFactory;
         //private readonly IEventAggregator _eventAggregator;
         //private IGooseControlBlock _model;
 	    private string _macAddressString;
@@ -24,25 +23,13 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 
 
 
-        public GooseControlBlockViewModel(GooseRowViewModelFactory gooseRowViewModelFactory)
+        public GooseControlBlockViewModel()
         {
-            _gooseRowViewModelFactory = gooseRowViewModelFactory;
 			GooseRowViewModels=new List<IGooseRowViewModel>();
         }
 
 
-        public void SetRows(List<IGooseRow> rowsForBlock)
-        {
-            var rowVms=new List<IGooseRowViewModel>();
-            foreach (var row in rowsForBlock)
-            {
-              var rowVm=  _gooseRowViewModelFactory.CreateGooseRowViewModelOld(row, this);
-                rowVms.Add(rowVm);
-            }
-			GooseRowViewModels.Clear();
-            GooseRowViewModels.AddRange(rowVms);
-        }
-
+       
 
         //#region Implementation of IGooseControlBlockViewModel
 
@@ -82,7 +69,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         //    }
         //}
 
-        public List<IGooseRowViewModel> GooseRowViewModels { get; }
+        public List<IGooseRowViewModel> GooseRowViewModels { get; set; }
 
 	    //public string MacAddressString
         //{

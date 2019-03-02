@@ -25,7 +25,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Factories
         {
             if (elementConflictResolver.ConflictType == ConflictType.ManualResolveNeeded)
             {
-                var haveConflict = elementConflictResolver.GetIfConflictsExists(deviceConflictContext.DeviceName,
+                var haveConflict = elementConflictResolver.GetIfConflictsExists(deviceConflictContext.DeviceGuid,
                     deviceConflictContext.SclModelDevice, deviceConflictContext.SclModelProject);
                 DeviceManualConflictViewModel deviceManualConflictViewModel = _deviceConflictViewModelFunc();
                 deviceManualConflictViewModel.ConflictTitle = elementConflictResolver.ConflictName;
@@ -33,7 +33,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Factories
                 deviceManualConflictViewModel.IsConflictResolved = !haveConflict;
                 deviceManualConflictViewModel.ShowConflictInTool = _commandFactory.CreatePresentationCommand((() =>
                 {
-                    elementConflictResolver.ShowConflicts(deviceConflictContext.DeviceName,
+                    elementConflictResolver.ShowConflicts(deviceConflictContext.DeviceGuid,
                         deviceConflictContext.SclModelDevice, deviceConflictContext.SclModelProject);
                 }));
                 return deviceManualConflictViewModel;
@@ -41,14 +41,14 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Factories
             else
             {
                 DeviceAutomaticResolveConflictViewModel deviceAutomaticResolveConflictViewModel=new DeviceAutomaticResolveConflictViewModel();
-                   var haveConflict = elementConflictResolver.GetIfConflictsExists(deviceConflictContext.DeviceName,
+                   var haveConflict = elementConflictResolver.GetIfConflictsExists(deviceConflictContext.DeviceGuid,
                     deviceConflictContext.SclModelDevice, deviceConflictContext.SclModelProject);
 
                 deviceAutomaticResolveConflictViewModel.ConflictTitle = elementConflictResolver.ConflictName;
                 deviceAutomaticResolveConflictViewModel.IsConflictOk = !haveConflict;
                 deviceAutomaticResolveConflictViewModel.ShowConflictInTool = _commandFactory.CreatePresentationCommand((() =>
                 {
-                    elementConflictResolver.ShowConflicts(deviceConflictContext.DeviceName,
+                    elementConflictResolver.ShowConflicts(deviceConflictContext.DeviceGuid,
                         deviceConflictContext.SclModelDevice, deviceConflictContext.SclModelProject);
                 }));
                 return deviceAutomaticResolveConflictViewModel;

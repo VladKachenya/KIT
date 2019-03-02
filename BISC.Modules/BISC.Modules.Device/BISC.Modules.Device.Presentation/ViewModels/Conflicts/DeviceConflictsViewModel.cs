@@ -58,7 +58,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
                 var res = await _elementConflictResolvers.FirstOrDefault((resolver =>
                         resolver.ConflictName == deviceConflictViewModel.ConflictTitle))?
                     .ResolveConflict(isConflictResolvedFromDevice,
-                        _conflictContext.DeviceName,
+                        _conflictContext.DeviceGuid,
                         _conflictContext.SclModelDevice, _conflictContext.SclModelProject);
                 if (res.IsRestartNeeded)
                 {

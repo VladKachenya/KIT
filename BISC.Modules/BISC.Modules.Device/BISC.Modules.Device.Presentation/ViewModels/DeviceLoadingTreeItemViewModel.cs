@@ -50,15 +50,15 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         {
             _cts.Cancel();
             _treeManagementService.DeleteTreeItem(
-                _navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier
+                _navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier
                     .Key));
         }
 
         private void OnCancelEvent(LoadErrorEvent loadErrorEvent)
         {
-            if (loadErrorEvent.Ip != _device.Ip || loadErrorEvent.DeviceName != DeviceName) return;
+            if (loadErrorEvent.Ip != _device.Ip || loadErrorEvent.DeviceGuid != _device.DeviceGuid) return;
             _treeManagementService.DeleteTreeItem(
-                _navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier
+                _navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier
                     .Key));
         }
 
@@ -101,7 +101,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private void OnDeviceLoadingEvent(DeviceLoadingEvent deviceLoadingEvent)
         {
             IsIntermetiateProgress = false;
-           if(deviceLoadingEvent.Ip!=_device.Ip)return;
+           if(deviceLoadingEvent.DeviceGuid !=_device.DeviceGuid) return;
             if (deviceLoadingEvent.TotalProgressCount != null)
             {
                 TotalProgress = deviceLoadingEvent.TotalProgressCount.Value;

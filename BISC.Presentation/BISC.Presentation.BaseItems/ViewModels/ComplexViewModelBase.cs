@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Presentation.Infrastructure.ViewModel;
+﻿using BISC.Presentation.Infrastructure.ViewModel;
 
 namespace BISC.Presentation.BaseItems.ViewModels
 {
-    public class ComplexViewModelBase:ViewModelBase,IEditableViewModel,ISelectableViewModel
+    public class ComplexViewModelBase : ViewModelBase, IEditableViewModel, ISelectableViewModel
     {
         private bool _isEditable;
         private bool _isSelected;
@@ -15,7 +10,7 @@ namespace BISC.Presentation.BaseItems.ViewModels
         public bool IsEditable
         {
             get => _isEditable;
-            set =>SetProperty(ref _isEditable,value,true);
+            set => SetProperty(ref _isEditable, value, true);
         }
 
         public virtual void SetIsEditable(bool isEditable)
@@ -26,12 +21,12 @@ namespace BISC.Presentation.BaseItems.ViewModels
         public bool IsSelected
         {
             get => _isSelected;
-            set => SetProperty(ref _isSelected, value,true);
+            set => SetProperty(ref _isSelected, value, true);
         }
 
-       public virtual void SetIsSelected(bool isSelected)
-       {
-           IsSelected = isSelected;
-       }
+        public virtual void SetIsSelected(bool isSelected)
+        {
+            IsSelected = isSelected;
+        }
     }
 }

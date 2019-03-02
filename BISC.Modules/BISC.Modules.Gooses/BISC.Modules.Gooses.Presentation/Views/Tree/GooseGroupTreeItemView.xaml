@@ -35,9 +35,9 @@
                 </Button.ToolTip>
                 <ContentControl  ContentTemplate="{DynamicResource MessageAlertIcon}"/>
             </Button>
-            <Button Margin="4" Grid.Column="1" ToolTip="Настройка Goose подписок" Width="18" Height="18" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToSubscriptionCommand}">
+            <!--<Button Margin="4" Grid.Column="1" ToolTip="Настройка Goose подписок" Width="18" Height="18" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToSubscriptionCommand}">
                 <ContentControl ContentTemplate="{DynamicResource LanPendingIcon}"></ContentControl>
-            </Button>
+            </Button>-->
             <Button Margin="4" Grid.Column="2" ToolTip="Goose матрица" Width="18" Height="18" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding NavigateToMatrixCommand}">
                 <ContentControl ContentTemplate="{DynamicResource ViewGridIcon}"></ContentControl>
             </Button>

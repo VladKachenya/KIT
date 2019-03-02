@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BISC.Modules.Gooses.Presentation.ViewModels.Subscriptions;
 using BISC.Modules.Gooses.Presentation.ViewModels.Tabs;
 
 namespace BISC.Modules.Gooses.Presentation.Views.Tabs
@@ -33,6 +34,29 @@ namespace BISC.Modules.Gooses.Presentation.Views.Tabs
             //CollectionViewSource.GetDefaultView(DataGrid.ItemsSource).Refresh();
             DataGrid.Items.Refresh();
             
+        }
+
+        private void DataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            DataTemplate dt = null;
+            if (e.PropertyType == typeof(SubscriptionValue))
+                dt = (DataTemplate)Resources["SubscriptionValueTemplate"];
+            if (e.PropertyType == typeof(string))
+                dt = (DataTemplate)Resources["StringTemplate"];
+
+            if (dt != null)
+            {
+                DataGridTemplateColumn c = new DataGridTemplateColumn()
+                {
+                    CellTemplate = dt,
+                    Header = e.Column.Header,
+                    HeaderTemplate = e.Column.HeaderTemplate,
+                    HeaderStringFormat = e.Column.HeaderStringFormat,
+                    SortMemberPath = e.PropertyName // this is used to index into the DataRowView so it MUST be the property's name (for this implementation anyways)
+                };
+                e.Column = c;
+            }
+
         }
     }
 }

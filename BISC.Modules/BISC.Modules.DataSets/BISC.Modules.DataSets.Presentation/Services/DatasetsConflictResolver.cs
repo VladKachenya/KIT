@@ -1,4 +1,5 @@
-﻿using BISC.Model.Infrastructure.Project;
+﻿using System;
+using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
@@ -47,10 +48,10 @@ namespace BISC.Modules.DataSets.Model.Services
         public string ConflictName => "DataSets";
         public ConflictType ConflictType => ConflictType.ManualResolveNeeded;
 
-        public bool GetIfConflictsExists(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        public bool GetIfConflictsExists(Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
-            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
-            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
             var datasetsInDevice = _datasetModelService.GetAllDataSetOfDevice(deviceInsclModelInDevice);
             var datasetsInProject = _datasetModelService.GetAllDataSetOfDevice(devicesclModelInProject);
@@ -77,10 +78,10 @@ namespace BISC.Modules.DataSets.Model.Services
 
         }
 
-        public async Task<ResolvingResult> ResolveConflict(bool isFromDevice, string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        public async Task<ResolvingResult> ResolveConflict(bool isFromDevice, Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
-            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
-            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
             var datasetsInDevice = _datasetModelService.GetAllDataSetOfDevice(deviceInsclModelInDevice);
             var datasetsInProject = _datasetModelService.GetAllDataSetOfDevice(devicesclModelInProject);
@@ -192,10 +193,10 @@ namespace BISC.Modules.DataSets.Model.Services
             return ResolvingResult.SucceedResult;
         }
 
-        public void ShowConflicts(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        public void ShowConflicts(Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
-            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
-            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
             var datasetsInDevice = _datasetModelService.GetAllDataSetOfDevice(deviceInsclModelInDevice);
             var datasetsInProject = _datasetModelService.GetAllDataSetOfDevice(devicesclModelInProject);
@@ -218,7 +219,7 @@ namespace BISC.Modules.DataSets.Model.Services
             projectOnlydatasets.ForEach((set => datasetsInProjectVms.FirstOrDefault((model => model.EditableNamePart == set.Name))?.ChangeTracker.SetModified()));
             deviceOnlydatasets.ForEach((set => datasetsInDeviceVms.FirstOrDefault((model => model.EditableNamePart == set.Name))?.ChangeTracker.SetModified()));
 
-            _navigationService.OpenInWindow(DatasetKeys.DatasetViewModelKeys.DatasetConflictsWindow, $"Dataset конфликты в устройстве {deviceName}",
+            _navigationService.OpenInWindow(DatasetKeys.DatasetViewModelKeys.DatasetConflictsWindow, $"Dataset конфликты в устройстве {deviceGuid}",
                 new BiscNavigationParameters().AddParameterByName(DatasetKeys.DatasetViewModelKeys.DatasetsConflictContextKey,
                     new DatasetsConflictContext(datasetsInDeviceVms, datasetsInProjectVms)));
 

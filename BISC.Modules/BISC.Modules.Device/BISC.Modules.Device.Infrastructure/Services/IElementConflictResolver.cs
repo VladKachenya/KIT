@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.HelpClasses;
@@ -9,9 +10,9 @@ namespace BISC.Modules.Device.Infrastructure.Services
     {
         string ConflictName { get; }
         ConflictType ConflictType { get; }
-        bool GetIfConflictsExists(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject);
-        Task<ResolvingResult> ResolveConflict(bool isFromDevice, string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject);
-        void ShowConflicts(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject);
+        bool GetIfConflictsExists(Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject);
+        Task<ResolvingResult> ResolveConflict(bool isFromDevice, Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject);
+        void ShowConflicts(Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject);
     }
 
     public enum ConflictType

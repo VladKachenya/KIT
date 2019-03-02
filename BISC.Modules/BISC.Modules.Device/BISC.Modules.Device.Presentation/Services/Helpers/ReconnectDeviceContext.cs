@@ -11,12 +11,12 @@ namespace BISC.Modules.Device.Presentation.Services.Helpers
 {
    public class ReconnectDeviceContext
     {
-        public ReconnectDeviceContext(IDevice device, TreeItemIdentifier deviceTreeItemIdentifier)
+        public ReconnectDeviceContext(IDevice device, UiEntityIdentifier deviceUiEntityIdentifier)
         {
             Device = device;
-            DeviceTreeItemIdentifier = deviceTreeItemIdentifier;
+            DeviceUiEntityIdentifier = deviceUiEntityIdentifier;
         }
         public IDevice Device { get; }
-        public TreeItemIdentifier DeviceTreeItemIdentifier { get; }
+        public UiEntityIdentifier DeviceUiEntityIdentifier { get; }
     }
 }

@@ -20,5 +20,6 @@ namespace BISC.Modules.Gooses.Model.Model.Matrix
 		public ChildModelsList<IMacAddressEntity> MacAddressList =>new ChildModelsList<IMacAddressEntity>(this,GooseKeys.GooseModelKeys.MacAddressEntityKey);
 		public ChildModelsList<IGoCbFtpEntity> GoCbFtpEntities =>new ChildModelsList<IGoCbFtpEntity>(this,GooseKeys.GooseModelKeys.GoCbFtpEntityKey);
 		public ChildModelsList<IGooseRowFtpEntity> GooseRowFtpEntities =>new ChildModelsList<IGooseRowFtpEntity>(this,GooseKeys.GooseModelKeys.GooseRowFtpEntityKey);
-	}
+	    public ChildModelsList<IGooseRowQualityFtpEntity> GooseRowQualityFtpEntities => new ChildModelsList<IGooseRowQualityFtpEntity>(this, GooseKeys.GooseModelKeys.GooseRowQualityFtpEntityKey);
+    }
 }

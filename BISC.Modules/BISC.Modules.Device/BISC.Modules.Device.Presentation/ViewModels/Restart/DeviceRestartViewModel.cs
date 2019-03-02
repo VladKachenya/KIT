@@ -64,12 +64,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
             if (_restartDeviceContext.DeviceConflictContext.IsRestartNeeded)
             {
                await _deviceReconnectionService.RestartDevice(_restartDeviceContext.Device,
-                    _restartDeviceContext.TreeItemIdentifier);
+                    _restartDeviceContext.UiEntityIdentifier);
                 return;
             }
             _elementConflictResolvers.ForEach((resolver =>
             {
-                if (resolver.GetIfConflictsExists(_restartDeviceContext.Device.Name,
+                if (resolver.GetIfConflictsExists(_restartDeviceContext.Device.DeviceGuid,
                     _restartDeviceContext.DeviceConflictContext.SclModelDevice, _restartDeviceContext.DeviceConflictContext.SclModelProject))
                 {
                     hasConflics = true;
@@ -77,24 +77,24 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
             }));
             if (!hasConflics)
             {
-                _treeManagementService.DeleteTreeItem(_restartDeviceContext.TreeItemIdentifier);
+                _treeManagementService.DeleteTreeItem(_restartDeviceContext.UiEntityIdentifier);
 
                 _deviceAddingService.AddDeviceToTree(_restartDeviceContext.Device);
-                _deviceWarningsService.ClearDeviceWarningsOfDevice(_restartDeviceContext.Device.Name);
+                _deviceWarningsService.ClearDeviceWarningsOfDevice(_restartDeviceContext.Device.DeviceGuid);
             }
         }
 
         private void OnCancelEvent(LoadErrorEvent loadErrorEvent)
         {
-            if(loadErrorEvent.Ip != _restartDeviceContext.Device.Ip || loadErrorEvent.DeviceName != _restartDeviceContext.Device.Name) return;
-            _treeManagementService.DeleteTreeItem(_restartDeviceContext.TreeItemIdentifier);
+            if(loadErrorEvent.Ip != _restartDeviceContext.Device.Ip || loadErrorEvent.DeviceGuid != _restartDeviceContext.Device.DeviceGuid) return;
+            _treeManagementService.DeleteTreeItem(_restartDeviceContext.UiEntityIdentifier);
             _deviceAddingService.AddDeviceToTree(_restartDeviceContext.Device);
         }
 
         private void OnCancel()
         {
             _restartDeviceContext.Cts.Cancel();
-            _treeManagementService.DeleteTreeItem(_restartDeviceContext.TreeItemIdentifier);
+            _treeManagementService.DeleteTreeItem(_restartDeviceContext.UiEntityIdentifier);
             _deviceAddingService.AddDeviceToTree(_restartDeviceContext.Device);
         }
 
@@ -162,7 +162,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
 
         private void OnDeviceLoadingEvent(DeviceLoadingEvent deviceLoadingEvent)
         {
-            if (_restartDeviceContext.Device.Ip != deviceLoadingEvent.Ip) return;
+            if (_restartDeviceContext.Device.DeviceGuid != deviceLoadingEvent.DeviceGuid) return;
             if (deviceLoadingEvent.TotalProgressCount.HasValue)
             {
                 TotalProgress = deviceLoadingEvent.TotalProgressCount.Value;

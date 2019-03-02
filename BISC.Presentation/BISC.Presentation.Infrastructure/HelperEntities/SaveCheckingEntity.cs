@@ -1,17 +1,18 @@
-﻿using BISC.Presentation.Infrastructure.ChangeTracker;
+﻿using System;
+using BISC.Presentation.Infrastructure.ChangeTracker;
 using BISC.Presentation.Infrastructure.Commands;
 
 namespace BISC.Presentation.Infrastructure.HelperEntities
 {
     public class SaveCheckingEntity
     {
-        public SaveCheckingEntity(IChangeTracker changeTracker, string entityFriendlyName,ISavingCommand savingCommand, string deviceKey, string regionName=null)
+        public SaveCheckingEntity(IChangeTracker changeTracker, string entityFriendlyName,ISavingCommand savingCommand, Guid deviceGuid, string regionName=null)
         {
 
             ChangeTracker = changeTracker;
             EntityFriendlyName = entityFriendlyName;
             SavingCommand = savingCommand;
-            DeviceKey = deviceKey;
+            DeviceGuid = deviceGuid;
             RegionName = regionName;
         }
 
@@ -20,6 +21,6 @@ namespace BISC.Presentation.Infrastructure.HelperEntities
         public string EntityFriendlyName { get; }
         public ISavingCommand SavingCommand { get; }
         public string RegionName { get; }
-        public string DeviceKey { get; }
+        public Guid DeviceGuid { get; }
     }
 }

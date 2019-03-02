@@ -24,7 +24,7 @@ namespace BISC.Modules.InformationModel.Presentation.Services
         }
 
 
-        public TreeItemIdentifier HandleModelElement(IModelElement modelElement, TreeItemIdentifier uiParentId, string uiKey)
+        public UiEntityIdentifier HandleModelElement(IModelElement modelElement, UiEntityIdentifier uiParentId, string uiKey)
         {
             if (uiParentId == null) return null;
             List<ILDevice> lDevices=new List<ILDevice>();

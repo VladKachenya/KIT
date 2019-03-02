@@ -27,95 +27,59 @@ namespace BISC.Modules.Gooses.Presentation.FileParsers
             _goosesModelService = goosesModelService;
         }
 
-        public string GetFileStringFromGooseModel(ObservableCollection<GooseControlBlockViewModel> gooseControlBlockViewModels,IDevice device)
+        public string GetFileStringFromGooseModel(IDevice device)
         {
             StringBuilder sb = new StringBuilder();
             TextWriter streamWriter = new StringWriter(sb);
-            Write(gooseControlBlockViewModels, streamWriter,device);
+            Write(streamWriter,device);
             return sb.ToString();
         }
 
 
-        private void Write(ObservableCollection<GooseControlBlockViewModel> gooseControlBlockViewModels, TextWriter streamWriter,IDevice device)
+        private void Write(TextWriter streamWriter,IDevice device)
         {
-            var goosesForDevice = _goosesModelService.GetGooseControlsSubscribed(device,_biscProject.MainSclModel.Value);
+            var gooseMatrix = _goosesModelService.GetGooseMatrixFtpForDevice(device);
 
             using (streamWriter)
             {
                 //streamWriter.WriteLine("# MAC адреса гусов для приёма и фильтрации если нужно макс 8шт.");
                 streamWriter.WriteLine("MAC{");
-                foreach (var gooseControlBlockViewModel in gooseControlBlockViewModels)
+                foreach (var macAddressEntity in gooseMatrix.MacAddressList)
                 {
-                    var deviceForGoose =
-                        goosesForDevice.First((tuple => tuple.Item2.AppId == gooseControlBlockViewModel.AppId)).Item1;
-                    var gses = _sclCommunicationModelService.GetGsesForDevice(deviceForGoose.Name, _biscProject.MainSclModel.Value);
-                 
-                    var mac = gses.FirstOrDefault((gse => gse.CbName == gooseControlBlockViewModel.Name))?.MacAddress;
-                    if (mac != null)
-                        streamWriter.WriteLine(mac);
-
+                    if (macAddressEntity.MacAddress != null)
+                        streamWriter.WriteLine(macAddressEntity.MacAddress);
                 }
                 streamWriter.WriteLine("}");
                 //  streamWriter.WriteLine("# gocbref{[номер]: LD/LN$FC$goID,AppID} {1: MR771N127LD0/LLN0$GO$gcbIn}");
                 streamWriter.WriteLine("gocbRef{");
-                foreach (var gooseControlBlockViewModel in gooseControlBlockViewModels)
+                foreach (var goCbFtpEntity in gooseMatrix.GoCbFtpEntities)
                 {
-                    var deviceForGoose =
-                        goosesForDevice.First((tuple => tuple.Item2.AppId == gooseControlBlockViewModel.AppId)).Item1;
-                    var gses = _sclCommunicationModelService.GetGsesForDevice(deviceForGoose.Name, _biscProject.MainSclModel.Value);
-
-                    var appId = gses.FirstOrDefault((gse => gse.CbName == gooseControlBlockViewModel.Name))?.AppIdDec;
-                    streamWriter.WriteLine($"{gooseControlBlockViewModels.IndexOf(gooseControlBlockViewModel) + 1}:{gooseControlBlockViewModel.GoCbReference},{int.Parse(appId)}");
+                 
+                    streamWriter.WriteLine($"{goCbFtpEntity.IndexOfGoose}:{goCbFtpEntity.GoCbReference},{goCbFtpEntity.AppId}");
 
                 }
                 streamWriter.WriteLine("}");
 
                 // streamWriter.WriteLine("# config{ [номер гуса], [номер записи в датасете гуса], [номер бита в базе прибора], [подмешивать валидность]}");
 
-                bool isConfigHasAnyRows = false;
+             //   bool isConfigHasAnyRows = false;
                 streamWriter.WriteLine("config{");
 
-                foreach (var gooseControlBlock in gooseControlBlockViewModels)
+                foreach (var gooseRowFtpEntity in gooseMatrix.GooseRowFtpEntities)
                 {
-                    foreach (var gooseRow in gooseControlBlock.GooseRowViewModels)
-                    {
-                        for (int i = 0; i < gooseRow.SelectableValueViewModels.Count; i++)
-                        {
-                            if (gooseRow.SelectableValueViewModels[i].SelectedValue)
-                            {
-                                if (gooseRow.Model.GooseRowType=="State")
-                                {
-                                    isConfigHasAnyRows = true;
-                                    streamWriter.WriteLine(
-                                        $"{gooseControlBlockViewModels.IndexOf(gooseControlBlock) + 1},{(gooseRow.Model).NumberOfFcdaInDataSetOfGoose + 1},{i + 1},{0}");
-
-                                }
-                                if (gooseRow.Model.GooseRowType=="Quality")
-                                {
-                                    isConfigHasAnyRows = true;
-                                    int validityInt = gooseControlBlock.GooseRowViewModels
-                                        .First((row => row.Model.GooseRowType=="Validity")).SelectableValueViewModels[i].SelectedValue
-                                        ? 1
-                                        : 0;
-                                    streamWriter.WriteLine(
-                                        $"{gooseControlBlockViewModels.IndexOf(gooseControlBlock) + 1},{(gooseRow.Model).NumberOfFcdaInDataSetOfGoose + 1},{i + 64 + 1},{validityInt}");
-
-                                }
-                            }
-                        }
-
-                    }
-
-
-
+                    streamWriter.WriteLine($"{gooseRowFtpEntity.IndexOfGoose},{gooseRowFtpEntity.NumberOfFcdaInDataSetOfGoose},{gooseRowFtpEntity.BitIndex},0");
                 }
-
+                foreach (var gooseRowQuality in gooseMatrix.GooseRowQualityFtpEntities)
+                {
+                    var validityInt = gooseRowQuality.IsValiditySelected ? 1 : 0;
+                    streamWriter.WriteLine($"{gooseRowQuality.IndexOfGoose},{gooseRowQuality.NumberOfFcdaInDataSetOfGoose},{gooseRowQuality.BitIndex+64},{validityInt}");
+                }
 
                 streamWriter.WriteLine("}");
-                if (!isConfigHasAnyRows)
-                {
-                    streamWriter.Flush();
-                }
+                //if (!isConfigHasAnyRows)
+                //{
+                //    streamWriter.Flush();
+                //}
 
             }
 

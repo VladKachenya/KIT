@@ -9,17 +9,19 @@ namespace BISC.Modules.Gooses.Infrastructure.Model.Matrix
 		ChildModelsList<IMacAddressEntity> MacAddressList { get; }
 		ChildModelsList<IGoCbFtpEntity> GoCbFtpEntities { get; }
 		ChildModelsList<IGooseRowFtpEntity> GooseRowFtpEntities { get;  }
-	}
+	    ChildModelsList<IGooseRowQualityFtpEntity> GooseRowQualityFtpEntities { get; }
 
-	public interface IMacAddressEntity:IModelElement
+    }
+
+    public interface IMacAddressEntity:IModelElement
 	{
 		string MacAddress { get; set; }
 	}
 	public interface IGoCbFtpEntity:IModelElement
 	{
 		int IndexOfGoose { get; set; }
-		string GoCbReference { get; set; }
-		string AppId { get; set; }
+		string GoCbReference { get; set; } // MR771N125LD0/LLN0$GO$gcbIn
+        string AppId { get; set; }
 	}
 
 	public interface IGooseRowFtpEntity : IModelElement

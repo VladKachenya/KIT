@@ -9,11 +9,11 @@ namespace BISC.Modules.Device.Infrastructure.Events
 {
    public class DeviceWarningsChanged
    {
-       public DeviceWarningsChanged(string deviceNameOfWarning)
+       public DeviceWarningsChanged(Guid deviceGuid)
        {
-           DeviceNameOfWarning = deviceNameOfWarning;
+           DeviceGuid = deviceGuid;
        }
 
-       public string DeviceNameOfWarning { get; }
+       public Guid DeviceGuid { get; }
    }
 }

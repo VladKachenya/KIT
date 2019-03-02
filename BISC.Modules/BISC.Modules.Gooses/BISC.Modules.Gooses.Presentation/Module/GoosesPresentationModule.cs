@@ -52,11 +52,17 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<GooseControlBlockViewModel>();
         //    _injectionContainer.RegisterType<ResultFileParser>();
             _injectionContainer.RegisterType<GooseMatrixViewModel>();
-            _injectionContainer.RegisterType<IGooseControlBlockViewModelFactory, GooseControlBlockViewModelFactory>();
+            _injectionContainer.RegisterType<IGooseControlBlockViewModelFactory, GooseControlBlockViewModelFromFtpFactory>();
             _injectionContainer.RegisterType<GooseControlsSavingCommand>();
+            _injectionContainer.RegisterType<GooseMatrixSavingCommand>();
+
+
+            _injectionContainer.RegisterType<GooseControlAssignmentSavingCommand>();
+
             _injectionContainer.RegisterType<GooseControlsConflictsViewModel>();
             _injectionContainer.RegisterType<IElementConflictResolver, GoosesControlsConflictResolver>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IGooseRowViewModelFactory, GooseRowViewModelFactory>();
+            _injectionContainer.RegisterType<IGooseControlBlockAssignmentItemFactory, GooseControlBlockAssignmentItemFactory>();
 
             _injectionContainer.RegisterType<object,GooseGroupTreeItemView>(GooseKeys.GoosePresentationKeys.GooseGroupTreeItemViewKey);
             _injectionContainer.RegisterType<object, GooseSubscriptionTab>(GooseKeys.GoosePresentationKeys.GooseSubscriptionTabKey);
@@ -66,6 +72,8 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<object, GooseControlAssignmentView>(GooseKeys.GoosePresentationKeys.GooseControlAssignmentViewKey);
             _injectionContainer.RegisterType<object, GooseControlsConflictsView>(GooseKeys.GoosePresentationKeys.GooseControlsConflictsView);
 
+            _injectionContainer.RegisterType<GoosePresentationInitialization>(true);
+            GoosePresentationInitialization presentationInitialization = _injectionContainer.ResolveType(typeof(GoosePresentationInitialization)) as GoosePresentationInitialization;
         }
 
         #endregion

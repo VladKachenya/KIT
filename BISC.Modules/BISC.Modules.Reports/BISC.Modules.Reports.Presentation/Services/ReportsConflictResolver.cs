@@ -1,4 +1,5 @@
-﻿using BISC.Model.Infrastructure.Project;
+﻿using System;
+using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.HelpClasses;
 using BISC.Modules.Device.Infrastructure.Services;
@@ -40,10 +41,10 @@ namespace BISC.Modules.Reports.Presentation.Services
         #region Implementation of IElementConflictResolver
 
         public string ConflictName => "Report Controls";
-        public bool GetIfConflictsExists(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        public bool GetIfConflictsExists(Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
-            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
-            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
             var reportsInDevice = _reportsModelService.GetAllReportControlsOfDevice(deviceInsclModelInDevice);
             var reportsInProject = _reportsModelService.GetAllReportControlsOfDevice(devicesclModelInProject);
@@ -69,10 +70,10 @@ namespace BISC.Modules.Reports.Presentation.Services
 
         }
 
-        public async Task<ResolvingResult> ResolveConflict(bool isFromDevice, string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        public async Task<ResolvingResult> ResolveConflict(bool isFromDevice, Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
-            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
-            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
             var reportsInDevice = _reportsModelService.GetAllReportControlsOfDevice(deviceInsclModelInDevice);
             var reportsInProject = _reportsModelService.GetAllReportControlsOfDevice(devicesclModelInProject);
@@ -119,10 +120,10 @@ namespace BISC.Modules.Reports.Presentation.Services
             return ResolvingResult.SucceedResult;
         }
 
-        public void ShowConflicts(string deviceName, ISclModel sclModelInDevice, ISclModel sclModelInProject)
+        public void ShowConflicts(Guid deviceGuid, ISclModel sclModelInDevice, ISclModel sclModelInProject)
         {
-            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByName(sclModelInDevice, deviceName);
-            var devicesclModelInProject = _deviceModelService.GetDeviceByName(sclModelInProject, deviceName);
+            var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
+            var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
             var reportsInDevice = _reportsModelService.GetAllReportControlsOfDevice(deviceInsclModelInDevice);
             var reportsInProject = _reportsModelService.GetAllReportControlsOfDevice(devicesclModelInProject);
 
@@ -143,7 +144,7 @@ namespace BISC.Modules.Reports.Presentation.Services
             deviceOnlyReportViewModels.ForEach((report => reportViewmodelsInDevice.FirstOrDefault((model => model.Name == report.Name))?.ChangeTracker.SetModified()));
             projectOnlyReportViewModels.ForEach((report => reportViewmodelsInProject.FirstOrDefault((model => model.Name == report.Name))?.ChangeTracker.SetModified()));
 
-            _navigationService.OpenInWindow(ReportsKeys.ReportsPresentationKeys.ReportsConflictsWindow, $"Конфликты в блоках управления отчетами в устройстве {deviceName}",
+            _navigationService.OpenInWindow(ReportsKeys.ReportsPresentationKeys.ReportsConflictsWindow, $"Конфликты в блоках управления отчетами в устройстве {deviceGuid}",
                 new BiscNavigationParameters().AddParameterByName(ReportsKeys.ReportsPresentationKeys.ReportsConflictsContext,
                     new ReportsConflictsContext(reportViewmodelsInDevice, reportViewmodelsInProject)));
 

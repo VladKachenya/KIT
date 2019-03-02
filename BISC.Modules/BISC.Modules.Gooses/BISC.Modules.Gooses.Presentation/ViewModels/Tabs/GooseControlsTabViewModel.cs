@@ -175,11 +175,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
             _regionName = navigationContext.BiscNavigationParameters
-                .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
+                .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
             await UpdateGooses(false);
             _gooseControlsSavingCommand.Initialize(GooseControlViewModels, _device);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker, $"Блоки управления GOOSE {_device.Name}", _gooseControlsSavingCommand,
-                _device.Name, _regionName));
+                _device.DeviceGuid, _regionName));
             base.OnNavigatedTo(navigationContext);
         }
 

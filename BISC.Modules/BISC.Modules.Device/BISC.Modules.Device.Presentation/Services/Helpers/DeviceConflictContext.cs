@@ -9,16 +9,16 @@ namespace BISC.Modules.Device.Presentation.Services.Helpers
 {
   public  class DeviceConflictContext
     {
-        public DeviceConflictContext(ISclModel sclModelProject, ISclModel sclModelDevice, string deviceName)
+        public DeviceConflictContext(ISclModel sclModelProject, ISclModel sclModelDevice, Guid deviceGuid)
         {
             SclModelProject = sclModelProject;
             SclModelDevice = sclModelDevice;
-            DeviceName = deviceName;
+            DeviceGuid = deviceGuid;
         }
 
         public ISclModel SclModelProject { get; }
         public ISclModel SclModelDevice { get; }
-        public string DeviceName { get; }
+        public Guid DeviceGuid { get; }
         public bool IsRestartNeeded { get; set; }
 
     }

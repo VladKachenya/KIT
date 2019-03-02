@@ -15,18 +15,29 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
         void StopConnection();
         Task<OperationResult<List<string>>> IdentifyAsync();
         Task<OperationResult<List<string>>> GetLdListAsync();
-        Task<OperationResult<List<string>>> GetListValiablesAsync(string ldInst,bool acceptCache);
-        Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescription(string ldName, string lnName,bool acceptCache);
+        Task<OperationResult<List<string>>> GetListValiablesAsync(string ldInst, bool acceptCache);
+        Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescription(string ldName, string lnName, bool acceptCache);
         Task<OperationResult<List<string>>> GetListDataSetsAsync(string ldInst, bool acceptCache);
-        Task<OperationResult<DataSetDto>> GetListDataSetInfoAsync(string ldInst,string lnName,string datasetName, bool acceptCache);
-        Task<OperationResult<List<GooseDto>>> GetListGoosesAsync(string fullLdPath, string lnName,string deviceName);
-        Task<OperationResult<List<IReportControl>>> GetListReportsAsync(string fullLdPath, string lnName, string deviceName,string reportType);
-        Task<OperationResult> WriteReportDataAsync(string ldFullPath, string rptId, string itemValueName, object valueToSave);
-        Task<OperationResult> DeleteDataSet(string ln,string ld,string ied,string name);
-        Task<OperationResult> AddDataSet(string ln, string ld, string ied , string nameDataSet, List<FcdaDto> fcdaDtos);
+
+        Task<OperationResult<DataSetDto>> GetListDataSetInfoAsync(string ldInst, string lnName, string datasetName,
+            bool acceptCache);
+
+        Task<OperationResult<List<GooseDto>>> GetListGoosesAsync(string fullLdPath, string lnName, string deviceName);
+
+        Task<OperationResult<List<IReportControl>>> GetListReportsAsync(string fullLdPath, string lnName,
+            string deviceName, string reportType);
+
+        Task<OperationResult> WriteReportDataAsync(string ldFullPath, string rptId, string itemValueName,
+            object valueToSave);
+
+        Task<OperationResult> DeleteDataSet(string ln, string ld, string ied, string name);
+        Task<OperationResult> AddDataSet(string ln, string ld, string ied, string nameDataSet, List<FcdaDto> fcdaDtos);
 
         Task<SettingsControlDto> GetSettingsControl(MmsTypeDescription lnMmsTypeDescription, string fc, string iedName,
             string lnName, string ldName);
+
+        Task<bool> SetSettingsControl(string fc, string iedName, string lnName,
+            string ldName, string newVal);
     }
 
     public class FcdaDto

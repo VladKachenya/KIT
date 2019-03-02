@@ -91,7 +91,7 @@ namespace BISC.Modules.Device.Presentation.Services
                     await sortedElement.Load(device,
                         new Progress<object>(deviceLoadingEvent =>
                         {
-                            _globalEventsService.SendMessage(new DeviceLoadingEvent(device.Ip, device.Name,
+                            _globalEventsService.SendMessage(new DeviceLoadingEvent(device.DeviceGuid, device.Name,
                                 itemsCount, ++currentElementsCount));
                         }), sclModel, cts.Token);
                 }

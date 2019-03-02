@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BISC.Modules.Device.Infrastructure.Services
 {
     public interface IDeviceWarningsService
     {
-        void SetWarningOfDevice(string deviceName, string warningTag, string warningMassage = null);
-        void ClearDeviceWarningsOfDevice(string deviceName);
-        void RemoveDeviceWarning(string deviceName, string warningTag);
-        bool GetIsDeviceWarningRegistered(string deviceName);
-        bool GetIsDeviceWarningRegistered(string deviceName, string warningTag);
-        string GetWarningMassage(string deviceName, string warningTag);
-        List<string> GetWarningMassagesOfDevice(string deviceName);
+        void SetWarningOfDevice(Guid deviceGuid, string warningTag, string warningMassage = null);
+        void ClearDeviceWarningsOfDevice(Guid deviceGuid);
+        void RemoveDeviceWarning(Guid deviceGuid, string warningTag);
+        bool GetIsDeviceWarningRegistered(Guid deviceGuid);
+        bool GetIsDeviceWarningRegistered(Guid deviceGuid, string warningTag);
+        string GetWarningMassage(Guid deviceGuid, string warningTag);
+        List<string> GetWarningMassagesOfDevice(Guid deviceGuid);
 
 
     }

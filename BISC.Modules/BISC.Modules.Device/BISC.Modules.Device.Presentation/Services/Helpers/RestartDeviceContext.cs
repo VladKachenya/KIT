@@ -22,7 +22,7 @@ namespace BISC.Modules.Device.Presentation.Services.Helpers
         public IDevice Device { get; }
         public CancellationTokenSource Cts { get; }
         public bool HaveConflicts { get; set; }
-        public TreeItemIdentifier TreeItemIdentifier { get; set; }
+        public UiEntityIdentifier UiEntityIdentifier { get; set; }
         public DeviceConflictContext DeviceConflictContext { get; set; }
     }
 }

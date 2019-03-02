@@ -38,7 +38,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
            _tabManagementService.NavigateToTab(InfoModelKeys.InfoModelTreeItemDetailsViewKey,
                _navigationContext.BiscNavigationParameters,
                $"Logical Device {LDeviceName} устройства {_physicalDeviceName}",
-               _navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier
+               _navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier
                    .Key));
         }
 

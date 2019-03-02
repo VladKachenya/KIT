@@ -15,6 +15,8 @@ namespace BISC.Modules.DataSets.Model.Model
     {
         public Fcda(string iecAddress, string doName, string daName, string fc):this()
         {
+            ElementName = DatasetKeys.DatasetModelKeys.FcdaModelKey;
+
             if (doName != null)
             {
                 this.DoName = doName;
@@ -80,6 +82,7 @@ namespace BISC.Modules.DataSets.Model.Model
 
             if (this.Prefix == null)
                 this.Prefix = "";
+
         }
         public Fcda()
         {

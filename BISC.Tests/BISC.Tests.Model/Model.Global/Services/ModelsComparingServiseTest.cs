@@ -143,7 +143,7 @@ namespace BISC.Tests.Model.Model.Global.Services
         {
             IModelElement[] childrens =
                 {
-                    new Device() { ElementName = "DeviceElementName", Namespace = "DeviceNamespace", Name = "DeviceName", Ip = "DeviceIp", Description = "DeviceDescription", Manufacturer = "DeviceManufacturer", Type = "DeviceType", Revision = "DeviceRevision" },
+                    new Device() { ElementName = "DeviceElementName", Namespace = "DeviceNamespace", Name = "DeviceGuid", Ip = "DeviceIp", Description = "DeviceDescription", Manufacturer = "DeviceManufacturer", Type = "DeviceType", Revision = "DeviceRevision" },
                 };
             element.ChildModelElements.AddRange(childrens);
         }

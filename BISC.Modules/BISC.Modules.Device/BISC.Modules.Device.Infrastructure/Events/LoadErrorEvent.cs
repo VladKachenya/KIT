@@ -1,14 +1,16 @@
-﻿namespace BISC.Modules.Device.Infrastructure.Events
+﻿using System;
+
+namespace BISC.Modules.Device.Infrastructure.Events
 {
     public class LoadErrorEvent
     {
         public string Ip { get; }
-        public string DeviceName { get; }
+        public Guid DeviceGuid { get; }
 
-        public LoadErrorEvent(string ip, string deviceName)
+        public LoadErrorEvent(string ip, Guid deviceGuid)
         {
             Ip = ip;
-            DeviceName = deviceName;
+            DeviceGuid = deviceGuid;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
+using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Presentation.Interfaces;
 using BISC.Presentation.BaseItems.ViewModels;
@@ -22,39 +23,42 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Rows
         }
         #region Implementation of IGooseRowViewModel
 
-        public IGooseRow Model
-        {
-            get
-            {
-                _model.ValueList.Clear();
-                foreach (var selectableValueViewModel in SelectableValueViewModels)
-                {
-                    _model.ValueList.Add(selectableValueViewModel.SelectedValue);
-                }
-                return _model;
-            }
-            set
-            {
-                _model = value;
-                RowName = _model.Signature;
-                SelectableValueViewModels.Clear();
+        //public IGooseRow Model
+        //{
+        //    get
+        //    {
+        //        _model.ValueList.Clear();
+        //        foreach (var selectableValueViewModel in SelectableValueViewModels)
+        //        {
+        //            _model.ValueList.Add(selectableValueViewModel.SelectedValue);
+        //        }
+        //        return _model;
+        //    }
+        //    set
+        //    {
+        //        _model = value;
+        //        RowName = _model.Signature;
+        //        SelectableValueViewModels.Clear();
 
-                for (int i = 0; i < _model.ValueList.Count; i++)
-                {
-                    ISelectableValueViewModel selectableValueViewModel = StaticContainer.CurrentContainer.ResolveType<ISelectableValueViewModel>();
-                    selectableValueViewModel.SelectedValue = _model.ValueList[i];
-                    selectableValueViewModel.ColumnNumber = i;
-                    selectableValueViewModel.Parent = this;
-                    selectableValueViewModel.ToolTip = RowName + "     " + (i + 1);
-                    SelectableValueViewModels.Add(selectableValueViewModel);
+        //        for (int i = 0; i < _model.ValueList.Count; i++)
+        //        {
+        //            ISelectableValueViewModel selectableValueViewModel = StaticContainer.CurrentContainer.ResolveType<ISelectableValueViewModel>();
+        //            selectableValueViewModel.SelectedValue = _model.ValueList[i];
+        //            selectableValueViewModel.ColumnNumber = i;
+        //            selectableValueViewModel.Parent = this;
+        //            selectableValueViewModel.ToolTip = RowName + "     " + (i + 1);
+        //            SelectableValueViewModels.Add(selectableValueViewModel);
 
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
 
         public List<ISelectableValueViewModel> SelectableValueViewModels { get;}
         public string RowName { get; set; }
         public GooseControlBlockViewModel Parent { get; set; }
+        public string GooseRowType { get; set; }
+        public int NumberOfFcdaInDataSet { get; set; }
+        public IDataSet RelatedDataSet { get; set; }
 
         #endregion
 

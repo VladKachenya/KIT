@@ -12,7 +12,7 @@ namespace BISC.Modules.Reports.Presentation.Services
         
         public ObservableCollection<IReportControlViewModel> SortReportViewModels(IEnumerable<IReportControlViewModel> reportControlViewModels)
         {
-            var coll = reportControlViewModels.OrderBy(el=> !el.IsDynamic).ThenBy(el=> !el.IsBuffered).
+            var coll = reportControlViewModels.OrderBy(el=> el.IsDynamic).ThenBy(el=> !el.IsBuffered).
                 ThenBy(el => el.Name.Trim(new[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', })).
                 ThenBy(el => TrimNamber(el.Name));
             return new ObservableCollection<IReportControlViewModel>(coll);

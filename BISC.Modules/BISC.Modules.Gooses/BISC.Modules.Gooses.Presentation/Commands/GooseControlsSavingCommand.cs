@@ -81,7 +81,7 @@ namespace BISC.Modules.Gooses.Presentation.Commands
 			{
 				List<GooseFtpDto> gooseFtpDtos = _gooseControlViewModelsToSave.Where((model => model.IsDynamic)).Select((GetGooseFtpDtosFromViewModel)).ToList();
 
-				var res = await _ftpGooseModelService.WriteGooseDtosToDevice(_device.Ip, gooseFtpDtos);
+				var res = await _ftpGooseModelService.WriteGooseDtosToDevice(_device, gooseFtpDtos);
 
 				if (!res.IsSucceed)
 				{

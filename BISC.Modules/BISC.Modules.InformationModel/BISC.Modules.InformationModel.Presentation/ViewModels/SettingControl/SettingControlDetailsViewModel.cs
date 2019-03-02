@@ -6,11 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Services;
+using BISC.Model.Infrastructure.Common;
 using BISC.Modules.Connection.Infrastructure.Events;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
+using BISC.Modules.InformationModel.Model.Elements;
+using BISC.Modules.InformationModel.Model.Extensions;
 using BISC.Modules.InformationModel.Presentation.Factories;
 using BISC.Modules.InformationModel.Presentation.Services;
 using BISC.Presentation.BaseItems.ViewModels;
@@ -59,6 +63,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
         {
             BlockViewModelBehavior.SetBlock("Сохранение", true);
             await _settingsControlSavingService.SaveSettingControlsAsync(SettingControlViewModels.ToList(), _device);
+            await UpdateSettingsControls();
             BlockViewModelBehavior.Unlock();
         }
 
@@ -68,26 +73,56 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
 
         #region Overrides of NavigationViewModelBase
 
-        protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
+        protected async override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
+           
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
-           var settingsVm=new ObservableCollection<SettingControlViewModel>();
+            UpdateVm();
+            await UpdateSettingsControls();
+            
+            _regionName = navigationContext.BiscNavigationParameters
+                .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
+      
+            _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
+            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
+                $"Setting Groups устройства {_device.Name}",null, _device.DeviceGuid, _regionName));
+          
+            _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
+            base.OnNavigatedTo(navigationContext);
+        }
+
+        private void UpdateVm()
+        {
+            var settingsVm = new ObservableCollection<SettingControlViewModel>();
             var settingControls = _infoModelService.GetSettingControlsOfDevice(_device);
             foreach (var settingControl in settingControls)
             {
                 settingsVm.Add(_settingControlViewModelFactory.CreateSettingControlViewModel(settingControl));
             }
             SettingControlViewModels = settingsVm;
-            _regionName = navigationContext.BiscNavigationParameters
-                .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
-      
-            _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
-            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"Setting Groups устройства {_device.Name}",null, _device.Name, _regionName));
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
-            _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
-            base.OnNavigatedTo(navigationContext);
+        }
+
+        private async Task UpdateSettingsControls()
+        {
+
+            var connection = _connectionPoolService.GetConnection(_device.Ip);
+            if (!connection.IsConnected) return;
+            foreach (var settingControlViewModel in SettingControlViewModels)
+            {
+                var ld = settingControlViewModel.Model.GetFirstParentOfType<ILDevice>();
+                var ln = settingControlViewModel.Model.GetFirstParentOfType<ILogicalNode>();
+
+                var doiTypeDesc =(await connection.MmsConnection.GetMmsTypeDescription(_device.Name+ld.Inst, "LLN0", false)).Item;
+                var settingsControlDto = await connection.MmsConnection.GetSettingsControl(doiTypeDesc, "SP", _device.Name, "LLN0", ld.Inst);
+                if (settingsControlDto != null)
+                {
+                    (ln as LogicalNodeZero).SettingControl.Value = settingsControlDto.MapSettingControl();
+                }
+            }
+            UpdateVm();
+          
         }
 
         private void OnConnectionChanged(ConnectionEvent connectionEvent)

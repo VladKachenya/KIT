@@ -180,7 +180,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"Reports устройства {_device.Name}", _reportsSavingCommand, _device.Name, _regionName));
+                $"Reports устройства {_device.Name}", _reportsSavingCommand, _device.DeviceGuid, _regionName));
             AddNewReportCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
@@ -202,6 +202,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             {
                 SetProperty(ref _reportControlViewModels, value);
                 _reportsSavingCommand.Initialize(ref _reportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+                _reportsSavingCommand.RefreshViewModel =
+                    async () => { await UpdateReports(false); };
             }
         }
 
@@ -219,7 +221,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             _regionName = navigationContext.BiscNavigationParameters
-                .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
+                .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
             await UpdateReports(false);
             base.OnNavigatedTo(navigationContext);
         }

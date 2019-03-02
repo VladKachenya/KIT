@@ -171,7 +171,7 @@ namespace BISC.Modules.DataSets.Model.Services
             }
             catch (Exception e)
             {
-                _deviceWarningsService.SetWarningOfDevice(device.Name, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey, "Ошибка вычитывания DataSets из устройства. Проверьте подключение");
+                _deviceWarningsService.SetWarningOfDevice(device.DeviceGuid, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey, "Ошибка вычитывания DataSets из устройства. Проверьте подключение");
                 throw;
             }
         }

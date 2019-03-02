@@ -1,15 +1,13 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Xml.Linq;
-using BISC.Model.Infrastructure;
+﻿using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Serializing;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
-using BISC.Modules.InformationModel.Infrastucture.Services;
+using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace BISC.Modules.Device.Model.Services
 {
@@ -36,8 +34,13 @@ namespace BISC.Modules.Device.Model.Services
             var devicesToRemove = _deviceModelService.GetDevicesFromModel(sclModelClone);
             foreach (var deviceToRemove in devicesToRemove)
             {
-                if (deviceToRemove.Name == device.Name) continue;
-                _deviceModelService.DeleteDeviceFromModel(sclModelClone, deviceToRemove.Name);
+                // Тут возмозно стоит сравнивать устройства по структуре через ModelElementCompareTo
+                if (deviceToRemove.Name == device.Name)
+                {
+                    continue;
+                }
+
+                _deviceModelService.DeleteDeviceFromModel(sclModelClone, deviceToRemove.DeviceGuid);
             }
             OrderSclModelElements(sclModelClone);
             if (File.Exists(filePath))

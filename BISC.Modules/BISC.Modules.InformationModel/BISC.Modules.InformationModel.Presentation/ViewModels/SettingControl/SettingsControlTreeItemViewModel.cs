@@ -19,21 +19,21 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
    {
        private readonly ITabManagementService _tabManagementService;
        private BiscNavigationContext _navigationContext;
-       private TreeItemIdentifier _detailsIdentifier;
+       private UiEntityIdentifier _detailsIdentifier;
 
         public SettingsControlTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService)
        {
            _tabManagementService = tabManagementService;
-           NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute, () => false);
+           NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
        }
 
        private void OnNavigateToDetailsExecute()
        {
 
-           var treeItemIdentifier = _navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(
-               TreeItemIdentifier
+           var treeItemIdentifier = _navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(
+               UiEntityIdentifier
                    .Key);
-           _detailsIdentifier = new TreeItemIdentifier(Guid.NewGuid(), treeItemIdentifier);
+           _detailsIdentifier = new UiEntityIdentifier(Guid.NewGuid(), treeItemIdentifier);
            BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
            biscNavigationParameters.AddParameterByName("IED", _navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED"));
             _tabManagementService.NavigateToTab(InfoModelKeys.SettingControlDetailsViewKey,

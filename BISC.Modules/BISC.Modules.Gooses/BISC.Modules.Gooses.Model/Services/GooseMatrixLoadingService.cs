@@ -42,23 +42,23 @@ namespace BISC.Modules.Gooses.Model.Services
 
 		public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel, CancellationToken cancellationToken)
 		{
-			deviceLoadingProgress.Report(new object());
-            //if (device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
-            //{
-            //    var resMatrix = await _ftpGooseModelService.GetGooseMatrixByFtp(device.Ip);
-            //    if (!resMatrix.IsSucceed)
-            //    {
-            //        _deviceWarningsService.SetWarningOfDevice(device.Name,
-            //            GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey,
-            //            "Ошибка вычитывания Goose матрицы из устройства");
-            //    }
-            //    else
-            //    {
-            //        _goosesModelService.SetGooseMatrixFtpForDevice(device, resMatrix.Item);
+			deviceLoadingProgress?.Report(new object());
+            if (device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer)
+            {
+                var resMatrix = await _ftpGooseModelService.GetGooseMatrixByFtp(device.Ip);
+                if (!resMatrix.IsSucceed)
+                {
+                    _deviceWarningsService.SetWarningOfDevice(device.DeviceGuid,
+                        GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey,
+                        "Ошибка вычитывания Goose матрицы из устройства");
+                }
+                else
+                {
+                    _goosesModelService.SetGooseMatrixFtpForDevice(device, resMatrix.Item);
 
-            //    }
-            //}
-            deviceLoadingProgress.Report(new object());
+                }
+            }
+            deviceLoadingProgress?.Report(new object());
 		}
 
 		public int Priority => 20;

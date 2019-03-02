@@ -23,22 +23,22 @@ namespace BISC.Modules.Device.Presentation.Services
 
         #region Implementation of IDeviceWarningsService
 
-        public void SetWarningOfDevice(string deviceName, string warningTag, string deviceMassage = null)
+        public void SetWarningOfDevice(Guid deviceGuid, string warningTag, string deviceMassage = null)
         {
-            if (GetIsDeviceWarningRegistered(deviceName, warningTag))
+            if (GetIsDeviceWarningRegistered(deviceGuid, warningTag))
             {
                 return;
             }
             else
             {
-                _deviceWarnings.Add(new DeviceWarning(deviceName, warningTag, deviceMassage));
-                _globalEventsService.SendMessage(new DeviceWarningsChanged(deviceName));
+                _deviceWarnings.Add(new DeviceWarning(deviceGuid, warningTag, deviceMassage));
+                _globalEventsService.SendMessage(new DeviceWarningsChanged(deviceGuid));
             }
         }
 
-        public void ClearDeviceWarningsOfDevice(string deviceName)
+        public void ClearDeviceWarningsOfDevice(Guid deviceGuid)
         {
-            var warningsToRemove = _deviceWarnings.Where((warning => warning.DeviceName == deviceName)).ToList();
+            var warningsToRemove = _deviceWarnings.Where((warning => warning.DeviceGuid == deviceGuid)).ToList();
             foreach (var warningToRemove in warningsToRemove)
             {
                 {
@@ -47,10 +47,10 @@ namespace BISC.Modules.Device.Presentation.Services
             }
         }
 
-        public void RemoveDeviceWarning(string deviceName, string warningTag)
+        public void RemoveDeviceWarning(Guid deviceGuid, string warningTag)
         {
             var warningsToRemove = _deviceWarnings
-                .Where((warning => warning.DeviceName == deviceName && warning.WarningTag == warningTag)).ToList();
+                .Where((warning => warning.DeviceGuid == deviceGuid && warning.WarningTag == warningTag)).ToList();
             foreach (var warningToRemove in warningsToRemove)
             {
                 {
@@ -59,31 +59,31 @@ namespace BISC.Modules.Device.Presentation.Services
             }
             if (warningsToRemove.Any())
             {
-                _globalEventsService.SendMessage(new DeviceWarningsChanged(deviceName));
+                _globalEventsService.SendMessage(new DeviceWarningsChanged(deviceGuid));
             }
         }
 
-        public bool GetIsDeviceWarningRegistered(string deviceName, string warningTag)
+        public bool GetIsDeviceWarningRegistered(Guid deviceGuid, string warningTag)
         {
             return _deviceWarnings.Any(
-                (warning => warning.DeviceName == deviceName && warning.WarningTag == warningTag));
+                (warning => warning.DeviceGuid == deviceGuid && warning.WarningTag == warningTag));
         }
 
-        public bool GetIsDeviceWarningRegistered(string deviceName)
+        public bool GetIsDeviceWarningRegistered(Guid deviceGuid)
         {
-            return _deviceWarnings.Any( (warning => warning.DeviceName == deviceName) );
+            return _deviceWarnings.Any( (warning => warning.DeviceGuid == deviceGuid) );
         }
 
-        public string GetWarningMassage(string deviceName, string warningTag)
+        public string GetWarningMassage(Guid deviceGuid, string warningTag)
         {
             return _deviceWarnings
-                .FirstOrDefault(warning => warning.DeviceName == deviceName && warning.WarningTag == warningTag)
+                .FirstOrDefault(warning => warning.DeviceGuid == deviceGuid && warning.WarningTag == warningTag)
                 ?.WarningMasage;
         }
 
-        public List<string> GetWarningMassagesOfDevice(string deviceName)
+        public List<string> GetWarningMassagesOfDevice(Guid deviceGuid)
         {
-            return _deviceWarnings.Where(warning => warning.DeviceName == deviceName).Select(warning => warning.WarningMasage).ToList();
+            return _deviceWarnings.Where(warning => warning.DeviceGuid == deviceGuid).Select(warning => warning.WarningMasage).ToList();
         }
 
         #endregion

@@ -54,14 +54,18 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private bool _isModelShowed;
         private bool _issUpdateDataSets = true;
         private bool _isSaveСhanges = true;
+
         #region C-tor
 
         public DataSetsDetailsViewModel(ICommandFactory commandFactory,
-            IBiscProject biscProject, IDatasetModelService datasetModelService, IDatasetViewModelFactory datasetViewModelFactory,
+            IBiscProject biscProject, IDatasetModelService datasetModelService,
+            IDatasetViewModelFactory datasetViewModelFactory,
             ISaveCheckingService saveCheckingService, IUserInterfaceComposingService userInterfaceComposingService,
             IConnectionPoolService connectionPoolService, IGlobalEventsService globalEventsService,
-            INavigationService navigationService, ILoggingService loggingService, DatasetsLoadingService datasetsLoadingService,
-            DatasetsSavingByFtpCommand datasetsSavingByFtpCommandCommand, IDeviceWarningsService deviceWarningsService, IGlobalSavingService globalSavingService)
+            INavigationService navigationService, ILoggingService loggingService,
+            DatasetsLoadingService datasetsLoadingService,
+            DatasetsSavingByFtpCommand datasetsSavingByFtpCommandCommand, IDeviceWarningsService deviceWarningsService,
+            IGlobalSavingService globalSavingService)
         {
             _userInterfaceComposingService = userInterfaceComposingService;
             _connectionPoolService = connectionPoolService;
@@ -83,7 +87,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             AddNewDataSetCommand = commandFactory.CreatePresentationCommand(OnAddNewDataSet, IsAddNewDataSet);
             DeleteDataSetViewModelCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteDataSetViewModel);
             ModelRegionKey = Guid.NewGuid().ToString();
-            UpdateDataSetsCommand = commandFactory.CreatePresentationCommand(OnUpdateDataSets, () => _issUpdateDataSets);
+            UpdateDataSetsCommand =
+                commandFactory.CreatePresentationCommand(OnUpdateDataSets, () => _issUpdateDataSets);
         }
 
         private async void OnUpdateDataSets()
@@ -94,8 +99,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _issUpdateDataSets = true;
             (UpdateDataSetsCommand as IPresentationCommand)?.RaiseCanExecute();
         }
-
-
 
 
         private async Task UpdateDataSets(bool updateFromDevice)
@@ -110,13 +113,16 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                         await _datasetsLoadingService.EstimateProgress(_device);
                         await _datasetsLoadingService.Load(_device, null, _biscProject.MainSclModel.Value,
                             new CancellationToken());
-                        _loggingService.LogMessage($"DataSets устройства {_device.Name} вычитанны успешно", SeverityEnum.Info);
+                        _loggingService.LogMessage($"DataSets устройства {_device.Name} вычитанны успешно",
+                            SeverityEnum.Info);
                     }
                     catch (Exception e)
                     {
-                        _loggingService.LogMessage($"Ошибка вычитывания DataSets устройства {_device.Name}", SeverityEnum.Warning);
+                        _loggingService.LogMessage($"Ошибка вычитывания DataSets устройства {_device.Name}",
+                            SeverityEnum.Warning);
                     }
                 }
+
                 UpdateCurentChengeTracker();
                 await Task.Delay(500);
             }
@@ -138,26 +144,29 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             {
                 if (DataSets == null && _dataSets != null)
                 {
-                    _loggingService.LogMessage($"Невозможно сформировать DataSet на основании модели устройства {_device.Name}.", SeverityEnum.Critical);
-                    _deviceWarningsService.SetWarningOfDevice(_device.Name, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey, "Невозможно сформировать DataSets");
-
-
+                    _loggingService.LogMessage(
+                        $"Невозможно сформировать DataSet на основании модели устройства {_device.Name}.",
+                        SeverityEnum.Critical);
+                    _deviceWarningsService.SetWarningOfDevice(_device.DeviceGuid,
+                        DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey,
+                        "Невозможно сформировать DataSets");
                 }
                 else
                 {
                     _loggingService.LogMessage(e.Message, SeverityEnum.Critical);
                 }
+
                 DataSets = new ObservableCollection<IDataSetViewModel>();
                 _dataSets = new List<IDataSet>();
             }
+
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"DataSets устройства {_device.Name}", _datasetsSavingCommand, _device.Name, _regionName));
+                $"DataSets устройства {_device.Name}", _datasetsSavingCommand, _device.DeviceGuid, _regionName));
             AddNewDataSetCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
             //_datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker);
-
         }
 
         private void OnCollapseModel()
@@ -173,18 +182,23 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #endregion
 
         #region privat methods
+
         private void OnDeleteDataSetViewModel(object dataSetViewModel)
         {
             var element = dataSetViewModel as IDataSetViewModel;
-            _loggingService.LogUserAction($"Пользователь удаляет DataSet {element.SelectedParentLd + "." + element.SelectedParentLn + "." + element.EditableNamePart}");
+            _loggingService.LogUserAction(
+                $"Пользователь удаляет DataSet {element.SelectedParentLd + "." + element.SelectedParentLn + "." + element.EditableNamePart}");
             DataSets.Remove(element);
             AddNewDataSetCommand.RaiseCanExecute();
             //_datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker);
         }
+
         private void OnAddNewDataSet()
         {
             _loggingService.LogUserAction($"Пользователь добавляет новый датасет в устройстве {_device.Name}");
-            DataSets.Add(_datasetViewModelFactory.CreateDataSetViewModel(DataSets.Select((model => model.EditableNamePart)).ToList(), _device));
+            DataSets.Add(
+                _datasetViewModelFactory.CreateDataSetViewModel(
+                    DataSets.Select((model => model.EditableNamePart)).ToList(), _device));
             AddNewDataSetCommand.RaiseCanExecute();
             //_datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker);
         }
@@ -247,10 +261,12 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                     notIsDynamicDataSets.Add(element);
                 }
             }
+
             _dataSets.Clear();
             _dataSets.AddRange(notIsDynamicDataSets);
             _dataSets.AddRange(isDynamicDataSets);
         }
+
         #endregion
 
 
@@ -263,8 +279,14 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             {
                 SetProperty(ref _dataSets1, value);
                 _datasetsSavingCommand.Initialize(ref _dataSets1, _device, this.ChangeTracker);
+                _datasetsSavingCommand.RefreshViewModel =
+                    async () =>
+                    {
+                        await UpdateDataSets(false);
+                    };
             }
         }
+
         public string ModelRegionKey { get; }
 
         public ICommand SaveСhangesCommand { get; }
@@ -293,7 +315,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             _regionName = navigationContext.BiscNavigationParameters
-                .GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier.Key).ItemId.ToString();
+                .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
             _navigationService.NavigateViewToRegion(InfoModelKeys.InfoModelTreeItemDetailsViewKey, ModelRegionKey,
                 new BiscNavigationParameters().AddParameterByName("IED", _device));
             await UpdateDataSets(false);
@@ -301,24 +323,26 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         }
 
 
-
         public override void OnActivate()
         {
-            _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
-            _userInterfaceComposingService.AddGlobalCommand(UpdateDataSetsCommand, $"Обновить DataSets {_device.Name}", IconsKeys.UpdateIconKey, false, true);
-            _userInterfaceComposingService.AddGlobalCommand(AddNewDataSetCommand, $"Добавить DataSet {_device.Name}", IconsKeys.AddIconKey, false, true);
+            _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand,
+                $"Сохранить DataSets устройства {_device.Name}",
+                _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            _userInterfaceComposingService.AddGlobalCommand(UpdateDataSetsCommand, $"Обновить DataSets {_device.Name}",
+                IconsKeys.UpdateIconKey, false, true);
+            _userInterfaceComposingService.AddGlobalCommand(AddNewDataSetCommand, $"Добавить DataSet {_device.Name}",
+                IconsKeys.AddIconKey, false, true);
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
 
             base.OnActivate();
-
         }
 
         private void OnConnectionChanged(ConnectionEvent connectionEvent)
         {
             if (connectionEvent.Ip == _device.Ip)
             {
-                _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить DataSets устройства { _device.Name}", connectionEvent.IsConnected);
-
+                _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand,
+                    $"Сохранить DataSets устройства {_device.Name}", connectionEvent.IsConnected);
             }
         }
 
@@ -333,7 +357,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         }
 
 
-
         protected override void OnDisposing()
         {
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
@@ -341,8 +364,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             base.OnDisposing();
         }
 
-
         #endregion
-
     }
 }

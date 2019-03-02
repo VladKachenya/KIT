@@ -21,14 +21,14 @@ namespace BISC.Presentation.UiFromModel
 
         }
 
-        public bool TryHandleModelElementInUiByKey(IModelElement modelElement, TreeItemIdentifier parentTreeItemIdentifier,
+        public bool TryHandleModelElementInUiByKey(IModelElement modelElement, UiEntityIdentifier parentUiEntityIdentifier,
             string uiKey)
         {
             foreach (var serviceKeyTuple in _servicesKeysList)
             {
                 if (serviceKeyTuple.Item1 == uiKey)
                 {
-                    serviceKeyTuple.Item2.HandleModelElement(modelElement,parentTreeItemIdentifier,uiKey);
+                    serviceKeyTuple.Item2.HandleModelElement(modelElement,parentUiEntityIdentifier,uiKey);
                 }
             }
 

@@ -28,7 +28,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private IDevice _device;
         private bool _isReportWarning;
 
-        private TreeItemIdentifier _dataSetDetailsIdentifier;
+        private UiEntityIdentifier _dataSetDetailsIdentifier;
         #region C-tor
         public DataSetsTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService, IDeviceWarningsService deviceWarningsService,
             IGlobalEventsService globalEventsService)
@@ -45,12 +45,12 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #region private filds
         private void OnDeviceWarningsChanged(DeviceWarningsChanged deviceWarningsChanged)
         {
-            if (deviceWarningsChanged.DeviceNameOfWarning != _device.Name) return;
+            if (deviceWarningsChanged.DeviceGuid != _device.DeviceGuid) return;
             WarningsCollection.Clear();
-            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.Name, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey))
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.DeviceGuid, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey))
             {
                 IsReportWarning = true;
-                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.Name, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey));
+                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.DeviceGuid, DatasetKeys.DataSetWarningKeys.DataSetLoadErrorWarningTagKey));
             }
         }
 
@@ -86,9 +86,9 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
             var treeItemIdentifier =
-                navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(
-                    TreeItemIdentifier.Key);
-            _dataSetDetailsIdentifier = new TreeItemIdentifier(Guid.NewGuid(),treeItemIdentifier);
+                navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(
+                    UiEntityIdentifier.Key);
+            _dataSetDetailsIdentifier = new UiEntityIdentifier(Guid.NewGuid(),treeItemIdentifier);
             _globalEventsService.Subscribe<DeviceWarningsChanged>(OnDeviceWarningsChanged);
             base.OnNavigatedTo(navigationContext);
         }

@@ -1,4 +1,5 @@
-﻿using BISC.Infrastructure.Global.Common;
+﻿using System;
+using BISC.Infrastructure.Global.Common;
 using BISC.Model.Global.Common;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Elements;
@@ -40,16 +41,16 @@ namespace BISC.Modules.Device.Model.Services
             return devices;
         }
 
-        public IDevice GetDeviceByName(ISclModel sclModel, string deviceName)
+        public IDevice GetDeviceByGuid(ISclModel sclModel, Guid deviceGuid)
         {
             List<IDevice> devices = new List<IDevice>();
             sclModel.GetAllChildrenOfType<IDevice>(ref devices);
-            return devices.FirstOrDefault((device => device.Name == deviceName));
+            return devices.FirstOrDefault((device => device.DeviceGuid == deviceGuid));
         }
 
         public OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device, ISclModel modelFrom)
         {
-            if (GetIsDeviceExists(sclModel, device.Name))
+            if (GetIsDeviceExists(sclModel, device.DeviceGuid))
             {
                 return new OperationResult($"Устройство с именем {device.Name} уже существует в модели");
             }
@@ -62,7 +63,7 @@ namespace BISC.Modules.Device.Model.Services
 
         public OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device)
         {
-            if (GetIsDeviceExists(sclModel, device.Name))
+            if (GetIsDeviceExists(sclModel, device.DeviceGuid))
             {
                 return new OperationResult($"Устройство с именем {device.Name} уже существует в модели");
             }
@@ -98,14 +99,14 @@ namespace BISC.Modules.Device.Model.Services
             return connectedAccessPointFinded;
         }
 
-        private bool GetIsDeviceExists(ISclModel sclModel, string deviceName)
+        private bool GetIsDeviceExists(ISclModel sclModel, Guid deviceGuid)
         {
             var isExists = false;
             foreach (var modelChildModelElement in sclModel.ChildModelElements)
             {
                 if (modelChildModelElement.ElementName == DeviceKeys.DeviceModelKey)
                 {
-                    if ((modelChildModelElement as IDevice).Name == deviceName)
+                    if ((modelChildModelElement as IDevice)?.DeviceGuid == deviceGuid)
                     {
                         isExists = true;
                     }
@@ -114,18 +115,19 @@ namespace BISC.Modules.Device.Model.Services
 
             return isExists;
         }
-        public OperationResult DeleteDeviceFromModel(ISclModel sclModel, string deviceName)
+        public OperationResult DeleteDeviceFromModel(ISclModel sclModel, Guid deviceGuid)
         {
-            if (!GetIsDeviceExists(sclModel, deviceName))
+            if (!GetIsDeviceExists(sclModel, deviceGuid))
             {
-                return new OperationResult($"Устройство с именем {deviceName} не существует в модели");
+                return new OperationResult($"Удаляемого устройства не существет в модели");
             };
 
             List<ILDevice> devicesToRemove = new List<ILDevice>();
             List<ILDevice> devicesToLeave = new List<ILDevice>();
-            _sclCommunicationModelService.DeleteAccessPoint(sclModel, deviceName);
 
-            var device = GetDevicesFromModel(sclModel).First((device1 => device1.Name == deviceName));
+            var device = GetDevicesFromModel(sclModel).First((device1 => device1.DeviceGuid == deviceGuid));
+            _sclCommunicationModelService.DeleteAccessPoint(sclModel, device.Name);
+
             device.FillChildModelElements(devicesToRemove);
             sclModel.FillChildModelElements(devicesToLeave);
             devicesToLeave = devicesToLeave.Where((lDevice => !devicesToRemove.Any((remove => lDevice == remove))))

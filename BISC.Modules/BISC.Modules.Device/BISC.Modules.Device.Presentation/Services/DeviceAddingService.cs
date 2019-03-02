@@ -62,7 +62,7 @@ namespace BISC.Modules.Device.Presentation.Services
         }
 
 
-        public TreeItemIdentifier HandleModelElement(IModelElement modelElement, TreeItemIdentifier parentTreeId, string uiKey)
+        public UiEntityIdentifier HandleModelElement(IModelElement modelElement, UiEntityIdentifier parentTreeId, string uiKey)
         {
             if (parentTreeId != null) return null;
             var sclModel = modelElement as ISclModel;
@@ -82,7 +82,7 @@ namespace BISC.Modules.Device.Presentation.Services
             BiscNavigationParameters navigationParameters = new BiscNavigationParameters();
             navigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, device);
             var resultTreeItem =
-                _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null,device.Name);
+                _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null,device.DeviceGuid.ToString());
             _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(device, resultTreeItem, "IED");
         }
     }

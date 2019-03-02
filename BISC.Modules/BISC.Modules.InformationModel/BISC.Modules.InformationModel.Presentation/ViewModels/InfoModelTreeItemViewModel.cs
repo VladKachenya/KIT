@@ -33,7 +33,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
             _tabManagementService.NavigateToTab(InfoModelKeys.InfoModelTreeItemDetailsViewKey,
                 _navigationContext.BiscNavigationParameters,
                 $"Model {_navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey).Name}",
-                _navigationContext.BiscNavigationParameters.GetParameterByName<TreeItemIdentifier>(TreeItemIdentifier
+                _navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier
                     .Key));
         }
 
