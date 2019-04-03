@@ -544,6 +544,291 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             return true;
         }
 
+        public async Task<OperationResult<ValueDescription>> ReadValuesAsync(string fc, string iedName, string lnName, string ldName, List<string> customItemPathParts = null)
+        {
+            var res = await new ReadingValuesClientService(_state).SendReadAsync(iedName + ldName, lnName, fc,
+                customItemPathParts);
+            if (res.Confirmed_ResponsePDU?.Service?.Read?.ListOfAccessResult?.All(
+                    (result => result.isSuccessSelected())) != true)
+            {
+                return new OperationResult<ValueDescription>($"Не удалось прочитать значения {iedName}.{ldName}.{lnName}.[{fc}] {string.Join(".",customItemPathParts)}");
+            }
+            else
+            {
+                return new OperationResult<ValueDescription>(GetValueDescription(res.Confirmed_ResponsePDU?.Service?.Read?.ListOfAccessResult));
+            }
+        }
+
+        private ValueDescription GetValueDescription(ICollection<AccessResult> results)
+        {
+            ValueDescription valueDescription = new ValueDescription();
+            valueDescription.IsStructure = true;
+            valueDescription.BasicType = tBasicTypeEnum.Struct;
+            foreach (var result in results)
+            {
+                valueDescription.IsStructure = result.Success.isStructureSelected();
+                if (result.Success.Structure != null)
+                {
+                    valueDescription.Components = MapData(result.Success.Structure);
+                }
+
+            }
+
+            return valueDescription;
+        }
+
+        public static DateTime ConvertFromUnixTimestamp(double timestamp)
+        {
+            DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            return origin.AddSeconds(timestamp);
+        }
+
+
+        private string GetStringValue( Data asn1Data)
+        {
+            if (asn1Data == null) return String.Empty;
+            if (asn1Data.isIntegerSelected())
+            {
+                return asn1Data.Integer.ToString();
+            }
+            else if (asn1Data.isBcdSelected())
+            {
+                return asn1Data.Bcd.ToString();
+            }
+            else if (asn1Data.isBooleanSelected())
+            {
+               return asn1Data.Boolean.ToString();
+            }
+            else if (asn1Data.isFloating_pointSelected())
+            {
+                if (asn1Data.Floating_point.Value.Length == 5)
+                {
+                    float k = 0.0F;
+                    byte[] tmp = new byte[4];
+                    tmp[0] = asn1Data.Floating_point.Value[4];
+                    tmp[1] = asn1Data.Floating_point.Value[3];
+                    tmp[2] = asn1Data.Floating_point.Value[2];
+                    tmp[3] = asn1Data.Floating_point.Value[1];
+                    k = BitConverter.ToSingle(tmp, 0);
+                    return k.ToString();
+                }
+                else if (asn1Data.Floating_point.Value.Length == 9)
+                {
+                    double k = 0.0;
+                    byte[] tmp = new byte[8];
+                    tmp[0] = asn1Data.Floating_point.Value[8];
+                    tmp[1] = asn1Data.Floating_point.Value[7];
+                    tmp[2] = asn1Data.Floating_point.Value[6];
+                    tmp[3] = asn1Data.Floating_point.Value[5];
+                    tmp[4] = asn1Data.Floating_point.Value[4];
+                    tmp[5] = asn1Data.Floating_point.Value[3];
+                    tmp[6] = asn1Data.Floating_point.Value[2];
+                    tmp[7] = asn1Data.Floating_point.Value[1];
+                    k = BitConverter.ToDouble(tmp, 0);
+                    return k.ToString();
+                }
+            }
+            else if (asn1Data.isGeneralized_timeSelected())
+            {
+                return asn1Data.Generalized_time.ToString();
+            }
+            else if (asn1Data.isMMSStringSelected())
+            {
+               return asn1Data.MMSString.Value.ToString();
+            }
+            else if (asn1Data.isObjIdSelected())
+            {
+                return asn1Data.ObjId.Value.ToString();
+            }
+            else if (asn1Data.isOctet_stringSelected())
+            {
+                System.Text.Decoder ascii = (new ASCIIEncoding()).GetDecoder();
+                int bytesUsed = 0;
+                int charsUsed = 0;
+                bool completed = false;
+                char[] chars = new char[asn1Data.Octet_string.Length];
+                ascii.Convert(asn1Data.Octet_string, 0, asn1Data.Octet_string.Length, chars, 0,
+                    asn1Data.Octet_string.Length, true, out bytesUsed, out charsUsed, out completed);
+                return new String(chars);
+            }
+            else if (asn1Data.isUnsignedSelected())
+            {
+                return asn1Data.Unsigned.ToString();
+            }
+            else if (asn1Data.isUtc_timeSelected())
+            {
+                long seconds;
+                long millis;
+
+                //if (actualNode.Address == "BayControllerQ/LTRK1.ApcFTrk.T")
+                //    iecs.logger.LogDebug("BayControllerQ/LTRK1.ApcFTrk.T"); ;
+                if (asn1Data.Utc_time.Value != null && asn1Data.Utc_time.Value.Length == 8)
+                {
+                    seconds = (asn1Data.Utc_time.Value[0] << 24) +
+                              (asn1Data.Utc_time.Value[1] << 16) +
+                              (asn1Data.Utc_time.Value[2] << 8) +
+                              (asn1Data.Utc_time.Value[3]);
+
+                    millis = 0;
+                    for (int i = 0; i < 24; i++)
+                    {
+                        if (((asn1Data.Utc_time.Value[(i / 8) + 4] << (i % 8)) & 0x80) > 0)
+                        {
+                            millis += 1000000 / (1 << (i + 1));
+                        }
+                    }
+                    millis /= 1000;
+
+
+                    DateTime dt = ConvertFromUnixTimestamp(seconds);
+                    dt = dt.AddMilliseconds(millis);
+                    return dt.ToLocalTime().ToString();
+                }
+                else
+                {
+                    return DateTime.Now.ToString();
+                }
+            }
+
+            else if (asn1Data.isVisible_stringSelected())
+            {
+                return asn1Data.Visible_string;
+            }
+            else if (asn1Data.isBinary_timeSelected())
+            {
+                ulong millis;
+                ulong days = 0;
+                DateTime origin;
+
+                millis = (ulong)(asn1Data.Binary_time.Value[0] << 24) +
+                         (ulong)(asn1Data.Binary_time.Value[1] << 16) +
+                         (ulong)(asn1Data.Binary_time.Value[2] << 8) +
+                         (ulong)(asn1Data.Binary_time.Value[3]);
+                if (asn1Data.Binary_time.Value.Length == 6)
+                {
+                    days = (ulong)(asn1Data.Binary_time.Value[4] << 8) +
+                           (ulong)(asn1Data.Binary_time.Value[5]);
+                    origin = new DateTime(1984, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+                    //millis *= 1000;
+                }
+                else
+                {
+                    origin = DateTime.UtcNow.Date;
+                }
+
+                double dMillis = (double)(millis + days * 24 * 3600 * 1000);
+                origin = origin.AddMilliseconds(dMillis);
+
+                return origin.ToLocalTime().ToString();
+            }
+            else if (asn1Data.isBit_stringSelected())
+            {
+                string bitString = String.Empty;
+                asn1Data.Bit_string.Value.ForEach((b => bitString = bitString + b.ToString()));
+                if (asn1Data.Bit_string.Value.Length == 0)
+                {
+
+                }
+                return bitString;
+            }
+         return String.Empty;
+        }
+
+
+        private List<ValueDescription> MapData(ICollection<Data> datas)
+        {
+            List<ValueDescription> valueDescriptions = new List<ValueDescription>();
+
+
+            foreach (var data in datas)
+            {
+               ValueDescription valueDescription=new ValueDescription();
+                valueDescription.IsStructure = data.isStructureSelected();
+                if (data.Structure != null)
+                {
+                    if (valueDescription.Components == null)
+                    {
+                        valueDescription.Components=new List<ValueDescription>();
+                    }
+                    valueDescription.Components.AddRange(MapData(data.Structure));
+                }
+                else
+                {
+                    valueDescription.Value = GetStringValue(data);
+                    //if (data.isBit_stringSelected())
+                    //{
+
+                    //    valueDescription.BasicType = tBasicTypeEnum.bit_string;
+
+                    //}
+                    //else if (data.isArraySelected())
+                    //{
+                    //    valueDescription.BasicType = tBasicTypeEnum.Struct;
+                    //}
+                    //else if (data.isIntegerSelected())
+                    //{
+                    //    valueDescription.Value = data.Integer;
+                    //    valueDescription.BasicType = tBasicTypeEnum.INT32;
+                    //}
+                    //else if (data.isBcdSelected())
+                    //{
+                    //}
+                    //else if (data.isBooleanSelected())
+                    //{
+                    //    valueDescription.BasicType = tBasicTypeEnum.BOOLEAN;
+                    //    valueDescription.Value = data.Boolean;
+                    //}
+                    //else if (data.isFloating_pointSelected())
+                    //{
+
+
+                    //    valueDescription.BasicType = tBasicTypeEnum.FLOAT32;
+                    //    valueDescription.Value = data.Floating_point.Value;
+                    //}
+
+                    //else if (data.isGeneralized_timeSelected() ||
+                    //         data.isUtc_timeSelected() || data.isBinary_timeSelected())
+                    //{
+                    //    mmsTypeDescription.BasicType = tBasicTypeEnum.Timestamp;
+                    //}
+                    //else if (data.isOctet_stringSelected())
+                    //{
+                    //    mmsTypeDescription.BasicType = tBasicTypeEnum.Octet64;
+                    //}
+                    //else if (data.isVisible_stringSelected())
+                    //{
+                    //    switch (responseTypeDescription.Visible_string.Value)
+                    //    {
+                    //        case 255:
+                    //        case -255:
+                    //            mmsTypeDescription.BasicType = tBasicTypeEnum.VisString255;
+                    //            break;
+                    //        case 129:
+                    //        case -129:
+                    //            mmsTypeDescription.BasicType = tBasicTypeEnum.VisString129;
+                    //            break;
+                    //        case 64:
+                    //        case -64:
+                    //            mmsTypeDescription.BasicType = tBasicTypeEnum.VisString64;
+                    //            break;
+                    //        case 32:
+                    //        case -32:
+                    //            mmsTypeDescription.BasicType = tBasicTypeEnum.VisString32;
+                    //            break;
+                    //        case 65:
+                    //        case -65:
+                    //            mmsTypeDescription.BasicType = tBasicTypeEnum.VisString65;
+                    //            break;
+                    //    }
+                    //}
+                    
+                }
+                valueDescriptions.Add(valueDescription);
+            }
+
+            return valueDescriptions;
+        }
+
 
         private MmsTypeDescription GetMmsTypeDescription(TypeDescription responseTypeDescription, string name)
         {

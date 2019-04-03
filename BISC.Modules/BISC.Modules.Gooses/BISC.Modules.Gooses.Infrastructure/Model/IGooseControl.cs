@@ -12,6 +12,6 @@ namespace BISC.Modules.Gooses.Infrastructure.Model
         bool IsDynamic { get; set; }
         bool FixedOffs { get; set; }
         string GooseType { get; set; }
-        ChildModelsList<ISubscriberDevice> SubscriberDevice { get;}
+        //ChildModelsList<ISubscriberDevice> SubscriberDevice { get;}
     }
 }

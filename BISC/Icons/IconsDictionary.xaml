@@ -151,8 +151,17 @@
     <DataTemplate x:Key="EthernetIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Ethernet" />
     </DataTemplate>
+    <DataTemplate x:Key="SettingsBoxIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="SettingsBox" />
+    </DataTemplate>
     <DataTemplate x:Key="RefreshIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Refresh" />
+    </DataTemplate>
+    <DataTemplate x:Key="DeleteIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Delete" />
+    </DataTemplate>
+    <DataTemplate x:Key="DragIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="Drag" />
     </DataTemplate>
     <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
         <Style.Resources >

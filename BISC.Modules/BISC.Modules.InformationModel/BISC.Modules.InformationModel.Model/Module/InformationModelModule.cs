@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Model.Infrastructure;
+using BISC.Model.Infrastructure.Serializing;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.Services;

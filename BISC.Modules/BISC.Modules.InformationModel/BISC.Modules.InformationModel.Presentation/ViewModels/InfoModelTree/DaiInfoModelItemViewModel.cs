@@ -19,15 +19,26 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
         //private readonly IProjectSclModel _projectSclModel;
         //private readonly IValuesEditingController _valuesEditingController;
         private List<IInfoModelDetail> _treeItemDetails;
-        private string _value;
+    
+
         private string _valueLocal;
         private bool _isByteTransferred;
         private Guid _daiTreeItemViewModelGuid;
+        private string _value;
+
         public DaiInfoModelItemViewModel(ITreeItemDetailsBuilder treeItemDetailsBuilder)
         {
             _treeItemDetailsBuilder = treeItemDetailsBuilder;        
             _daiTreeItemViewModelGuid = Guid.NewGuid();
         
+        }
+
+        public void UpdateValue()
+        {
+            if ((_model as IDai)?.Value?.Value?.Value != null)
+            {
+                Value = ((IDai) _model).Value.Value.Value;
+            }
         }
 
         //private void OnDeviceConnectonChanged()
@@ -92,11 +103,14 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
         public override Brush TypeColorBrush =>new SolidColorBrush(Color.FromArgb(0x5F,0x55,0x00,0x50));
         public override string TypeName => "DAI";
 
+        public string Value
+        {
+            get => _value;
+            set => SetProperty(ref _value , value);
+        }
         //public ICommand EditDeviceValueCommand { get; }
         //public ICommand EditLocalValueCommand { get; }
         //public ICommand TransferValueFromLocalToDeviceCommand { get; }
-
-
 
 
         public override List<IInfoModelDetail> TreeItemDetails
@@ -116,6 +130,10 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
             _treeItemDetailsBuilder.Reset();
             _treeItemDetailsBuilder.AddStringDetail("Имя", dai.Name);
             _treeItemDetails = _treeItemDetailsBuilder.Build();
+            if (dai.Value?.Value?.Value!= null)
+            {
+                Value = dai.Value.Value.Value;
+            }
             //if (_projectSclModel.Scl.IsLoadedFromFile && dai.Val != null)
             //{
             //    ValueLocal = dai.Val;

@@ -14,7 +14,7 @@ using Prism.Mvvm;
 
 namespace BISC.Presentation.BaseItems.ViewModels
 {
-    public class ViewModelBase : INotifyPropertyChanged, IDisposable,IObjectWithChangeTracker
+    public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable,IObjectWithChangeTracker
     {
 
         #region [Ctor's]

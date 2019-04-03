@@ -64,6 +64,7 @@
     <Compile Include="Elements\Sdi.cs" />
     <Compile Include="Elements\SettingControl.cs" />
     <Compile Include="Elements\Val.cs" />
+    <Compile Include="Helpers\IdeNameInStringReplacer.cs" />
     <Compile Include="LoadingFromConnection\LogicalNodeDTO.cs" />
     <Compile Include="Extensions\MappingExtensions.cs" />
     <Compile Include="Module\InformationModelModule.cs" />

@@ -55,6 +55,9 @@
     <Compile Include="DataTypeTemplates\IDataTypeTemplatesModelService.cs" />
     <Compile Include="DataTypeTemplates\LNodeType\IDo.cs" />
     <Compile Include="DataTypeTemplates\LNodeType\ILNodeType.cs" />
+    <Compile Include="DataTypeTemplates\TemplatesBase\IParentOfIds.cs" />
+    <Compile Include="DataTypeTemplates\TemplatesBase\ITemplateWithId.cs" />
+    <Compile Include="DataTypeTemplates\TemplatesBase\IDataEntityWithType.cs" />
     <Compile Include="Elements\IDai.cs" />
     <Compile Include="Elements\IDeviceAccessPoint.cs" />
     <Compile Include="Elements\IDeviceServer.cs" />

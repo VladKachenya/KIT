@@ -152,6 +152,12 @@ namespace BISC.Modules.DataSets.Model.Services
             return dataSets;
         }
 
+
+        public IDataSet GetDataSetOfDevice(IModelElement device, string dataSetName)
+        {
+            return GetAllDataSetOfDevice(device).First(ds => ds.Name == dataSetName);
+        }
+
         #endregion
     }
 }

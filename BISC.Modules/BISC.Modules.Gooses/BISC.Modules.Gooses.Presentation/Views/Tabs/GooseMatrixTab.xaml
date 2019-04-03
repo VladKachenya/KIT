@@ -9,51 +9,37 @@
              xmlns:keys1="clr-namespace:BISC.Modules.Device.Infrastructure.Keys;assembly=BISC.Modules.Device.Infrastructure"
              xmlns:keys="clr-namespace:BISC.Modules.Gooses.Infrastructure.Keys;assembly=BISC.Modules.Gooses.Infrastructure"
              xmlns:views="clr-namespace:BISC.Presentation.BaseItems.Views;assembly=BISC.Presentation.BaseItems"
+             xmlns:userControl="clr-namespace:BISC.Modules.Gooses.Presentation.Views.UserControl"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
-        <Style  x:Key="ToggleLikeButtonStyleForGooseControl" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsGooseControlAssignmentSelected}" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource MaterialDesignFlatButtonClick}"></Setter>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style  x:Key="ToggleLikeButtonStyleForMatrix" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsGooseControlAssignmentSelected}" Value="False">
-                    <Setter Property="Background" Value="{DynamicResource MaterialDesignFlatButtonClick}"></Setter>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
-    <Grid Margin="5">
-        <Grid.ColumnDefinitions></Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition  Height="Auto"></RowDefinition>
-        </Grid.RowDefinitions>
-
-
+    <ContentControl Style="{StaticResource BlockedContentStyle}">
         <Grid>
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Button Style="{StaticResource ToggleLikeButtonStyleForGooseControl}" Command="{Binding SelectGooseControlAssignmentCommand}" Content="Назначить блоки управления гусами">
-
-            </Button>
-            <Button Style="{StaticResource ToggleLikeButtonStyleForMatrix}" Command="{Binding SelectMatrixEditCommand}" Grid.Column="1" Content="Редактировать матрицу">
-
-            </Button>
-
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <!--<StackPanel Orientation="Horizontal">
+                <Grid>
+                    <ContentControl Margin="4"  Background="White" ToolTip="Синхронизированы ли данные (устройство - проект)"  Width="25" Height="25" ContentTemplate="{DynamicResource SyncIcon}">
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSynchronizedWithDevice}" Value="True">
+                                        <Setter Property="Foreground" Value="DarkGreen"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsSynchronizedWithDevice}" Value="False">
+                                        <Setter Property="Foreground" Value="DarkRed"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                </Grid>
+                <Button Margin="4" ToolTip="Проверить, синхронизирована ли матрица проекта с устройством" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding CheckConformityCommand}">
+                    <ContentControl ContentTemplate="{DynamicResource CheckIcon}"></ContentControl>
+                </Button>
+            </StackPanel>-->
+            <userControl:GooseGrid IsActive="{Binding IsActive}" Grid.Row="1" x:Name="gooseGrid" GoInCount="64" GooseControlBlockViewModels="{Binding GooseControlBlockViewModels}"></userControl:GooseGrid>
         </Grid>
-        <Grid Margin="8" Grid.Row="1">
-            <views:DynamicRegion HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin ="2" RegionKey="{x:Static keys:GooseKeys+GoosePresentationKeys.GooseMatrixTabFieldKey}" />
-
-        </Grid>
-      
-    </Grid>
+    </ContentControl>
 </UserControl>

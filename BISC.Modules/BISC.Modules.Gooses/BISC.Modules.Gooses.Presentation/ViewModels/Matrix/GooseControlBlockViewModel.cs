@@ -1,35 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
-using BISC.Modules.Gooses.Presentation.Factories;
-using BISC.Modules.Gooses.Presentation.Interfaces;
+﻿using BISC.Modules.Gooses.Presentation.Interfaces;
 using BISC.Presentation.BaseItems.ViewModels;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 {
-    public class GooseControlBlockViewModel : ViewModelBase 
+    public class GooseControlBlockViewModel : ViewModelBase
     {
         //private readonly IEventAggregator _eventAggregator;
         //private IGooseControlBlock _model;
-	    private string _macAddressString;
+        private string _macAddressString;
         private bool _isReferenceEnabled;
         private string _gocbReferenceString;
         private string _dataSetName;
         private string _name;
         private string _appId;
-
+        private List<IGooseRowViewModel> _gooseRowViewModels;
 
 
         public GooseControlBlockViewModel()
         {
-			GooseRowViewModels=new List<IGooseRowViewModel>();
+            GooseRowViewModels = new List<IGooseRowViewModel>();
         }
 
+        public List<IGooseRowViewModel> GooseRowViewModels
+        {
+            get => _gooseRowViewModels;
+            set => SetProperty(ref _gooseRowViewModels, value);
+        }
 
-       
+        public string DataSetName
+        {
+            get { return _dataSetName; }
+            set
+            {
+                SetProperty(ref _dataSetName, value);
+            }
+        }
+
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                SetProperty(ref _name, value);
+            }
+        }
+
+        public string AppId
+        {
+            get { return _appId; }
+            set
+            {
+                SetProperty(ref _appId, value);
+            }
+        }
+
+        public string GoCbReference { get; set; }
+
+        protected override void OnDisposing()
+        {
+
+            foreach (var gooseRowViewModel in GooseRowViewModels)
+            {
+                gooseRowViewModel.Dispose();
+            }
+            base.OnDisposing();
+        }
 
         //#region Implementation of IGooseControlBlockViewModel
 
@@ -69,9 +106,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         //    }
         //}
 
-        public List<IGooseRowViewModel> GooseRowViewModels { get; set; }
 
-	    //public string MacAddressString
+        //public string MacAddressString
         //{
         //    get { return _macAddressString; }
         //    set
@@ -106,48 +142,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         //    }
         //}
 
-        public string DataSetName
-        {
-            get { return _dataSetName; }
-            set
-            {
-                SetProperty(ref _dataSetName, value);
-            }
-        }
-
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                SetProperty(ref _name, value);
-            }
-        }
-
-        public string AppId
-        {
-            get { return _appId; }
-            set
-            {
-                SetProperty(ref _appId , value);
-            }
-        }
-
-        public string GoCbReference { get; set; }
-
 
         //#region Overrides of DisposableBindableBase
-
-        protected override void OnDisposing()
-        {
-
-            foreach (var gooseRowViewModel in GooseRowViewModels)
-            {
-                gooseRowViewModel.Dispose();
-            }
-            base.OnDisposing();
-        }
-
         //#endregion
 
         //#endregion

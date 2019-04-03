@@ -9,6 +9,7 @@ using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Presentation.Interfaces;
 using BISC.Modules.InformationModel.Presentation.Interfaces.InfoModelDetails;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.BaseItems.ViewModels.Behaviors;
 
 namespace BISC.Modules.InformationModel.Presentation.ViewModels.Base
 {
@@ -24,10 +25,9 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.Base
         private bool _isSelected;
 
 
-        public TreeItemViewModelBase()
+        protected TreeItemViewModelBase()
         {
             ChildInfoModelItemViewModels = new ObservableCollection<IInfoModelItemViewModel>();
-
         }
         
         #region Implementation of IViewModel

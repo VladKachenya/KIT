@@ -111,7 +111,7 @@ namespace BISC.Presentation.Services
             if (_saveCheckingService.GetSaveCheckingEntities().Any((entity => entity.RegionName == regionName)))
             {
                 var modifiedEntities = _saveCheckingService.GetSaveCheckingEntities().Where((entity =>
-                    entity.RegionName == regionName)).ToList();
+                    entity.RegionName == regionName&&entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
                 // Получение всех связанных изменений
                 var devisesForSaving = await GetDevicesForSaving(modifiedEntities);
 

@@ -8,6 +8,7 @@ using BISC.Model.Global.Model.Communication;
 using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project.Communication;
+using BISC.Model.Infrastructure.Serializing;
 
 namespace BISC.Model.Global.Serializators.Communication
 {

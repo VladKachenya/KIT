@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using BISC.Model.Infrastructure;
-using BISC.Model.Infrastructure.Elements;
+﻿using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplate.TemplatesBase;
 
 namespace BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DaType
 {
-    public interface IDaType : IModelElement
+    public interface IDaType : IModelElement, ITemplateWithId
     {
-        string Id { get; set; }
         ChildModelsList<IBda> Bdas { get; }
     }
 }

@@ -75,6 +75,7 @@
     <Compile Include="Converters\TypeNameToIsDragSourceConverter.cs" />
     <Compile Include="Factories\InfoModelTreeFactory.cs" />
     <Compile Include="Factories\SettingControlViewModelFactory.cs" />
+    <Compile Include="Helpers\ModelValuesLoadingHelper.cs" />
     <Compile Include="Helpers\SettingsControlConflictsContext.cs" />
     <Compile Include="Helpers\TreeItemDetailsBuilder.cs" />
     <Compile Include="Interfaces\Factories\IInfoModelTreeFactory.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Services\LDeviceUiHandlingService.cs" />
     <Compile Include="Services\SettingControlConflictResolver.cs" />
     <Compile Include="Services\SettingsControlSavingService.cs" />
+    <Compile Include="TemplateSelectors\ModelItemTemplateSelector.cs" />
     <Compile Include="ViewModels\Base\InfoModelItemViewModelBase.cs" />
     <Compile Include="ViewModels\InfoModelDetails\BoolInfoModelDetail.cs" />
     <Compile Include="ViewModels\InfoModelDetails\DefaultInfoModelDetail.cs" />

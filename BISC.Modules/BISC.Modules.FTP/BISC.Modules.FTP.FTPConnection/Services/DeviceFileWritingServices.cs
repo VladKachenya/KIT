@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Common;
 
 namespace BISC.Modules.FTP.FTPConnection.Services
 {
@@ -21,7 +22,7 @@ namespace BISC.Modules.FTP.FTPConnection.Services
 
         #region Implementation of IDeviceFileWritingController
 
-        public async Task<bool> WriteFileStringInDevice(string ip, List<string> filesStrings, List<string> fileNamesWithExt)
+        public async Task<OperationResult> WriteFileStringInDevice(string ip, List<string> filesStrings, List<string> fileNamesWithExt)
         { 
             try
             {
@@ -30,17 +31,17 @@ namespace BISC.Modules.FTP.FTPConnection.Services
             }
             catch (Exception e)
             {
-                return false;
+                return new OperationResult(e.Message);
             }
             finally
             {
                 await _ftpClientWrapper.Disconnect();
 
             }
-            return true;
+            return OperationResult.SucceedResult;
         }
 
-        public async Task<string> ReadFileStringFromDevice(string ip, string dirPath, string fileNamesWithExt)
+        public async Task<OperationResult<string>> ReadFileStringFromDevice(string ip, string dirPath, string fileNamesWithExt)
         {
             //string dirPath = path;
             //string fileNamesWithExt;
@@ -52,14 +53,14 @@ namespace BISC.Modules.FTP.FTPConnection.Services
             }
             catch (Exception e)
             {
-                return null;
+                return new OperationResult<string>(e.Message);
             }
             finally
             {
                 await _ftpClientWrapper.Disconnect();
 
             }
-            return file;
+            return new OperationResult<string>(file,true);
         }
 
 

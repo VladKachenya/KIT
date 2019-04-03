@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="BISC.Modules.Device.Presentation.Views.Config.DeviceConfigView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BISC.Modules.Device.Presentation.Views.Config"
+             xmlns:config="clr-namespace:BISC.Modules.Device.Presentation.ViewModels.Config"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance config:DeviceConfigViewModel}"
+             d:DesignHeight="300" d:DesignWidth="500">
+    <ContentControl HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{DynamicResource BlockedContentStyle}">
+        <StackPanel CanHorizontallyScroll="True" Margin="10" Orientation="Vertical">
+            <Grid VerticalAlignment="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Margin="2" Text="Статический MAC-адрес:"></TextBlock>
+                <TextBox Margin="2" HorizontalAlignment="Left" Grid.Row="1" Width="400" Text="{Binding StaticMacAddress}"></TextBox>
+            </Grid>
+            <Grid VerticalAlignment="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Margin="2" Text="Технический ключ устройства:"></TextBlock>
+                <TextBox Margin="2" HorizontalAlignment="Left" Grid.Row="1" Width="400" Text="{Binding TechKey}"></TextBox>
+            </Grid>
+
+            <Grid VerticalAlignment="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Margin="2" Text="Версия прошивки головного процессора:"></TextBlock>
+                <TextBox Margin="2" HorizontalAlignment="Left" Grid.Row="1" Width="400" Text="{Binding Version}"></TextBox>
+            </Grid>
+            <Grid VerticalAlignment="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Margin="2" Text="Режим работы свича:"></TextBlock>
+                <ComboBox Margin="2" HorizontalAlignment="Left" Grid.Row="1" Width="100" SelectedItem="{Binding SwitchMode}" ItemsSource="{Binding SwitchModeList}"></ComboBox>
+            </Grid>
+
+            <Grid VerticalAlignment="Top">
+                <local:MacFilterView DataContext="{Binding MacFilterAViewModel}"></local:MacFilterView>
+            </Grid>
+
+
+            <Grid VerticalAlignment="Top">
+                <local:MacFilterView DataContext="{Binding MacFilterBViewModel}"></local:MacFilterView>
+            </Grid>
+        </StackPanel>
+    </ContentControl>
+</UserControl>

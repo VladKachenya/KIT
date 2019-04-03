@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using BISC.Model.Infrastructure;
-using BISC.Model.Infrastructure.Elements;
-using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
+﻿using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplate.TemplatesBase;
 
 namespace BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.LNodeType
 {
-    public interface ILNodeType : IModelElement
+    public interface ILNodeType : IModelElement, ITemplateWithId
     {
-        string Id { get; set; }
         string LnClass { get; set; }
 
         ChildModelsList<IDo> DoList { get; }

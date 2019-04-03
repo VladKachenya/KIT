@@ -34,6 +34,8 @@ namespace BISC.Modules.Gooses.Presentation.Commands
 		private readonly ILoggingService _loggingService;
 		private readonly IConnectionPoolService _connectionPoolService;
 
+	    private Func<bool> _isConnected;
+
 
 		public GooseControlsSavingCommand(IFtpGooseModelService ftpGooseModelService, IGoosesModelService goosesModelService,
 			IProjectService projectService, ISclCommunicationModelService sclCommunicationModelService, IBiscProject biscProject,
@@ -51,20 +53,18 @@ namespace BISC.Modules.Gooses.Presentation.Commands
 		private ObservableCollection<GooseControlViewModel> _gooseControlViewModelsToSave;
 		private IDevice _device;
 
-		internal void Initialize(ObservableCollection<GooseControlViewModel> gooseControlViewModelsToSave, IDevice device)
+		internal void Initialize(ObservableCollection<GooseControlViewModel> gooseControlViewModelsToSave, IDevice device, Func<bool> isConnected)
 		{
 			_gooseControlViewModelsToSave = gooseControlViewModelsToSave;
 			_device = device;
+		    _isConnected = isConnected;
+
 		}
-	
-
-
-
 	
 		public async Task<bool> IsSavingByFtpNeeded()
 		{
 			var isSavingNeeded = _gooseControlViewModelsToSave.Any((model =>
-				model.ChangeTracker.GetIsModifiedRecursive() && model.IsDynamic));
+				model.ChangeTracker.GetIsModifiedRecursive() && model.IsDynamic)) && _isConnected();
 			return isSavingNeeded;
 		}
 

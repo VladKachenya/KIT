@@ -38,6 +38,9 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
 
         Task<bool> SetSettingsControl(string fc, string iedName, string lnName,
             string ldName, string newVal);
+
+
+        Task<OperationResult<ValueDescription>> ReadValuesAsync(string fc, string iedName, string lnName, string ldName, List<string> customItemPathParts = null);
     }
 
     public class FcdaDto
@@ -61,6 +64,21 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
         public bool IsStructure { get; set; }
         public bool IsArray { get; set; }
         public List<MmsTypeDescription> Components { get; }
+        public tBasicTypeEnum? BasicType { get; set; }
+    }
+
+
+    public class ValueDescription
+    {
+        public ValueDescription()
+        {
+            Components = new List<ValueDescription>();
+
+        }
+        public string Value { get; set; }
+        public string TypeName { get; set; }
+        public bool IsStructure { get; set; }
+        public List<ValueDescription> Components { get; set; }
         public tBasicTypeEnum? BasicType { get; set; }
     }
 

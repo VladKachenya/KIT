@@ -34,11 +34,13 @@ namespace BISC.Model.Infrastructure.Elements
 
         #region Implementation of ICollection<T>
 
+        // Тут ОШИБКА, операция Add добавляет элементы не в самый конец.
         public void Add(T item)
         {
-            var lastIndex = _parent.ChildModelElements.Where((element =>
-                element.ElementName == _childElementName && element is T)).Count();
-            _parent.ChildModelElements.Insert(lastIndex,item);
+            //var lastIndex = _parent.ChildModelElements.Where((element =>
+            //    element.ElementName == _childElementName && element is T)).Count();
+            var lastIndex = _parent.ChildModelElements.Count;
+            _parent.ChildModelElements.Insert(lastIndex, item);
             item.ParentModelElement = _parent;
         }
 

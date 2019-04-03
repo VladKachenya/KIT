@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Modules.Device.Presentation.Services
@@ -46,6 +47,7 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly IPingService _pingService;
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInteractionService _userInteractionService;
+        private readonly IModelsComparingServise _comparingServise;
 
         public DeviceReconnectionService(IDeviceFileWritingServices deviceFileWritingServices,
             IDeviceConnectionService deviceConnectionService, IDeviceModelService deviceModelService,
@@ -57,7 +59,7 @@ namespace BISC.Modules.Device.Presentation.Services
             IBiscProject biscProject, IDeviceAddingService deviceAddingService,
             IDeviceWarningsService deviceWarningsService,
             ISclCommunicationModelService sclCommunicationModelService, IPingService pingService,
-            ISaveCheckingService saveCheckingService, IUserInteractionService userInteractionService)
+            ISaveCheckingService saveCheckingService, IUserInteractionService userInteractionService, IModelsComparingServise comparingServise)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
             _deviceConnectionService = deviceConnectionService;
@@ -76,6 +78,7 @@ namespace BISC.Modules.Device.Presentation.Services
             _pingService = pingService;
             _saveCheckingService = saveCheckingService;
             _userInteractionService = userInteractionService;
+            _comparingServise = comparingServise;
             _elementLoadingServices = injectionContainer.ResolveAll(typeof(IDeviceElementLoadingService))
                 .Cast<IDeviceElementLoadingService>().ToList();
             _elementConflictResolvers = injectionContainer.ResolveAll(typeof(IElementConflictResolver))
@@ -140,6 +143,13 @@ namespace BISC.Modules.Device.Presentation.Services
                 foreach (var sortedElement in sortedElements)
                 {
                     itemsCount += await sortedElement.EstimateProgress(device);
+                }
+
+                if (existingDevice.Name != device.Name)
+                {
+                    await ShowMissing($"Несоответствие имён {existingDevice.Name} и {device.Name}");
+                    await CancellationLoading(treeItemId, existingDevice);
+                    return;
                 }
 
                 _deviceModelService.AddDeviceInModel(sclModel, device);
@@ -223,5 +233,19 @@ namespace BISC.Modules.Device.Presentation.Services
             }
         }
         #endregion
+
+        private async Task ShowMissing(string miissingMessage)
+        {
+            await _userInteractionService.ShowOptionToUser("Не соответстие модели устройства", miissingMessage,
+                new List<string>() { "Ок" });
+        }
+
+        private async Task CancellationLoading(UiEntityIdentifier treeItemIdForRmove, IDevice existingDevice)
+        {
+            _treeManagementService.DeleteTreeItem(treeItemIdForRmove);
+            await _deviceConnectionService.DisconnectDevice(existingDevice.Ip);
+            _deviceAddingService.AddDeviceToTree(existingDevice);
+        }
+
     }
 }

@@ -17,10 +17,12 @@ namespace BISC.Presentation.BaseItems.ViewModels.Behaviors
         private bool _isBusy;
         private string _unlockMessage;
         private bool _isUnlockOptionAvailable;
+        private bool _isLightView;
 
         public BlockViewModelBehavior()
         {
             UnlockCommands=new ObservableCollection<UnlockCommandEntity>();
+            IsBlocked = false;
         }
 
         private void OnUnlock()
@@ -40,6 +42,11 @@ namespace BISC.Presentation.BaseItems.ViewModels.Behaviors
             get => _isBusy;
             set => SetProperty(ref _isBusy , value);
         }
+        public bool IsLightView
+        {
+            get => _isLightView;
+            set => SetProperty(ref _isLightView, value);
+        }
 
         public string BlockingMessage
         {
@@ -52,8 +59,15 @@ namespace BISC.Presentation.BaseItems.ViewModels.Behaviors
             set => SetProperty(ref _isUnlockOptionAvailable , value);
         }
 
+        public void SetLightBlock()
+        {
+            IsLightView = true;
+            IsBlocked = true;
+        }
+
         public void SetBlock(string message, bool isBusy)
         {
+            IsLightView = false;
             BlockingMessage = message;
             IsBlocked = true;
             IsBusy = isBusy;
@@ -82,6 +96,7 @@ namespace BISC.Presentation.BaseItems.ViewModels.Behaviors
         {
             IsBusy = false;
             IsBlocked = false;
+            IsLightView = false;
             UnlockCommands.Clear();
         }
     }

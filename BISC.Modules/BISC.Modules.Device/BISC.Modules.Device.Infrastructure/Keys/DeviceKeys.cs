@@ -28,6 +28,7 @@ namespace BISC.Modules.Device.Infrastructure.Keys
         public const string DeviceConflictsViewKey = "DeviceConflictsView";
         public const string ReconnectDeviceViewKey = "ReconnectDeviceView";
         public const string ReconnectDeviceTreeItemViewKey = "ReconnectDeviceTreeItemView";
+        public const string DeviceConfigViewKey = "DeviceConfigView";
 
         public static class DeviceManufacturer
         {

@@ -1,4 +1,5 @@
-﻿using BISC.Infrastructure.Global.Logging;
+﻿using System;
+using BISC.Infrastructure.Global.Logging;
 
 namespace BISC.Infrastructure.Global.Services
 {
@@ -6,5 +7,7 @@ namespace BISC.Infrastructure.Global.Services
     {
         void LogUserAction(string actionName);
         void LogMessage(string message,SeverityEnum severity);
-    }
+	    void LogException(Exception exception, SeverityEnum severity=SeverityEnum.Critical);
+
+	}
 }

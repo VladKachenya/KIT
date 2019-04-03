@@ -56,6 +56,7 @@ namespace BISC.Modules.InformationModel.Presentation.Module
             _injectionContainer.RegisterType<IElementConflictResolver, SettingControlConflictResolver>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<SettingsControlConflivtsViewModel>();
             _injectionContainer.RegisterType<SettingsControlSavingService>();
+            _injectionContainer.RegisterType<ModelValuesLoadingHelper>();
 
             _injectionContainer.RegisterType<IDeviceElementLoadingService, InfoModelLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<InfoModelLoadingTreeItemViewModel>();

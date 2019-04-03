@@ -156,7 +156,6 @@ namespace BISC.Tests.Model.Model.Global.Services
                         GooseRowType = "GooseRowGooseRowType", NumberOfFcdaInDataSetOfGoose = 5, ValueList = new List<bool>() { true, false, true, false} },
                     new SubscriberDevice() { ElementName = "SubscriberDeviceElementName", Namespace = "SubscriberDeviceNamespace", LdInst = "SubscriberDeviceLdInst",
                         ApRef = "SubscriberDeviceApRef", LnClass = "SubscriberDeviceLnClass", DeviceName = "SubscriberDeviceDeviceName" },
-                    new GooseMatrix() { ElementName = "GooseMatrixElementName", Namespace = "GooseMatrixNamespace", RelatedIedName = "GooseMatrixRelatedIedName" },
                     new ExternalGooseRef() { ElementName = "ExternalGooseRefElementName", Namespace = "ExternalGooseRefNamespace", LdInst = "ExternalGooseRefLdInst",
                         Prefix = "ExternalGooseRefPrefix", LnClass = "ExternalGooseRefLnClass", LnInst = "ExternalGooseRefLnInst", DoName = "ExternalGooseRefDoName",
                         DaName = "ExternalGooseRefDaName" },

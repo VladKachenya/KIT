@@ -109,11 +109,11 @@ namespace BISC.Modules.Gooses.Model.Services
             else
             {
                 var gooseFtpDtos = new List<GooseFtpDto>();
-                foreach (var projectOnlyGooseControl in projectOnlyGooseControls)
+                foreach (var gooseControlInProject in gooseControlsInProject)
                 {
                     var gses = _sclCommunicationModelService.GetGsesForDevice(devicesclModelInProject.Name,
                         sclModelInProject);
-                    gooseFtpDtos.Add(GetGooseFtpDto(projectOnlyGooseControl, gses.FirstOrDefault((gse => gse.CbName == projectOnlyGooseControl.Name))));
+                    gooseFtpDtos.Add(GetGooseFtpDto(gooseControlInProject, gses.FirstOrDefault((gse => gse.CbName == gooseControlInProject.Name))));
                 }
 
                 var res = await _ftpGooseModelService.WriteGooseDtosToDevice(deviceInsclModelInDevice, gooseFtpDtos);

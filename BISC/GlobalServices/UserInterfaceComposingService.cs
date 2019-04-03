@@ -1,14 +1,13 @@
-﻿using System;
+﻿using BISC.Infrastructure.Global.Modularity;
+using BISC.Infrastructure.Global.Services;
+using BISC.Interfaces;
+using BISC.Presentation.Infrastructure.Factories;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using BISC.Infrastructure.Global.Modularity;
-using BISC.Infrastructure.Global.Services;
-using BISC.Interfaces;
 
 namespace BISC.GlobalServices
 {
@@ -17,26 +16,36 @@ namespace BISC.GlobalServices
         private readonly IShellViewModel _shellViewModel;
         private readonly Func<IGlobalCommand> _globalCommandFactory;
         private readonly Func<IGlobalCommandGroup> _globalCommandGroupFactoryFunc;
+        private readonly ICommandFactory _commandFactory;
         private readonly ObservableCollection<IGlobalCommand> _globalMenuCommands = new ObservableCollection<IGlobalCommand>();
         private readonly ObservableCollection<IGlobalCommand> _globalToolbarCommands = new ObservableCollection<IGlobalCommand>();
         private readonly ObservableCollection<IGlobalCommandGroup> _globalToolbarCommandGroups = new ObservableCollection<IGlobalCommandGroup>();
 
 
-        public UserInterfaceComposingService(IShellViewModel shellViewModel, Func<IGlobalCommand> globalCommandFactory, Func<IGlobalCommandGroup> globalCommandGroupFactoryFunc)
+        public UserInterfaceComposingService(IShellViewModel shellViewModel, Func<IGlobalCommand> globalCommandFactory,
+            Func<IGlobalCommandGroup> globalCommandGroupFactoryFunc, ICommandFactory commandFactory)
         {
             _shellViewModel = shellViewModel;
             _globalCommandFactory = globalCommandFactory;
             _globalCommandGroupFactoryFunc = globalCommandGroupFactoryFunc;
+            _commandFactory = commandFactory;
         }
-        
+
 
         public void AddGlobalCommand(ICommand command, string name, string iconId, bool isAddToMenu = false, bool isAddToToolBar = false)
         {
+            if (command == null)
+            {
+                command = _commandFactory.CreatePresentationCommand(() => { return; }, () => false);
+                name = "";
+                iconId = IconsKeys.DragIconKey;
+            }
+
             IGlobalCommand globalCommand = _globalCommandFactory();
             globalCommand.Command = command;
             globalCommand.CommandName = name;
             globalCommand.IconId = iconId;
-            if (isAddToToolBar&&!_globalToolbarCommands.Any((command1 =>command1.Command==globalCommand.Command)))
+            if (isAddToToolBar && !_globalToolbarCommands.Any((command1 => command1.Command == globalCommand.Command)))
             {
                 _globalToolbarCommands.Add(globalCommand);
             }
@@ -46,7 +55,7 @@ namespace BISC.GlobalServices
             }
         }
 
-        public void AddGlobalCommandGroup(List<ICommand> commands, List<string> names, string groupName, string iconId = null, 
+        public void AddGlobalCommandGroup(List<ICommand> commands, List<string> names, string groupName, string iconId = null,
             List<string> iconIds = null, bool isAddToMenu = false, bool isAddToToolBar = false)
         {
             IGlobalCommandGroup globalCommandGroup = _globalCommandGroupFactoryFunc.Invoke();
@@ -79,8 +88,8 @@ namespace BISC.GlobalServices
             {
                 _globalMenuCommands.Remove(deletingCommand);
             }
-             deletingCommand =
-                 _globalToolbarCommands.FirstOrDefault((globalCommand => globalCommand.Command == command));
+            deletingCommand =
+                _globalToolbarCommands.FirstOrDefault((globalCommand => globalCommand.Command == command));
             if (deletingCommand != null)
             {
                 _globalToolbarCommands.Remove(deletingCommand);
@@ -103,19 +112,21 @@ namespace BISC.GlobalServices
                 globalCommand.IconId = IconsKeys.SaveIconKey;
 
             }
-            Application.Current.Dispatcher.Invoke(() => {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
                 _globalToolbarCommands.Add(globalCommand);
             });
-           
+
         }
 
         public void ClearCurrentSaveCommand()
         {
             var existingSaveCommand =
-                _globalToolbarCommands.FirstOrDefault(globalCommandFinded => globalCommandFinded.IconId == IconsKeys.SaveIconKey|| globalCommandFinded.IconId == IconsKeys.UploadNetworkKey);
+                _globalToolbarCommands.FirstOrDefault(globalCommandFinded => globalCommandFinded.IconId == IconsKeys.SaveIconKey || globalCommandFinded.IconId == IconsKeys.UploadNetworkKey);
             if (existingSaveCommand != null)
             {
-                Application.Current.Dispatcher.Invoke(() => {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
                     _globalToolbarCommands.Remove(existingSaveCommand);
                 });
             }

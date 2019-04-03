@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.InformationModel.Presentation.Interfaces;
 using BISC.Modules.InformationModel.Presentation.Interfaces.Factories;
 using BISC.Modules.InformationModel.Presentation.ViewModels.Base;
@@ -25,12 +26,13 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
         private readonly IBiscProject _biscProject;
         private readonly Func<SetFcTreeItemViewModel> _fcSetCreator;
+        private readonly IInfoModelService _infoModelService;
 
         public InfoModelTreeFactory(Func<LogicalNodeInfoModelItemViewModel> lnViewModelCreator,
             Func<LogicalNodeZeroInfoModelItemViewModel> ln0ViewModelCreator,
             Func<LDeviceInfoModelItemViewModel> ldeviceViewModelCreator, Func<DoiInfoModelItemViewModel> doiCreator,
             Func<DaiInfoModelItemViewModel> daiCreator, Func<SdiInfoModelItemViewModel> sdiCreator,
-            IDataTypeTemplatesModelService dataTypeTemplatesModelService, IBiscProject biscProject, Func<SetFcTreeItemViewModel> fcSetCreator)
+            IDataTypeTemplatesModelService dataTypeTemplatesModelService, IBiscProject biscProject, Func<SetFcTreeItemViewModel> fcSetCreator,IInfoModelService infoModelService)
         {
             _lnViewModelCreator = lnViewModelCreator;
             _ln0ViewModelCreator = ln0ViewModelCreator;
@@ -41,6 +43,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
             _biscProject = biscProject;
             _fcSetCreator = fcSetCreator;
+            _infoModelService = infoModelService;
         }
 
 
@@ -86,7 +89,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                 doiInfoModelItemViewModel.ChildInfoModelItemViewModels.Clear();
                 if (isFcSortingEnabled)
                 {
-                    var fcs = GetAllFcs(doi.DaiCollection.ToList(), doi.SdiCollection.ToList()).Distinct().ToList();
+                    var fcs = _infoModelService.GetAllFcs(doi.DaiCollection.ToList(), doi.SdiCollection.ToList()).Distinct().ToList();
                     foreach (var fc in fcs)
                     {
                         SetFcTreeItemViewModel fcTreeItemViewModel = _fcSetCreator();
@@ -116,26 +119,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             return infoModelItemViewModels;
         }
 
-        private List<string> GetAllFcs(List<IDai> dais, List<ISdi> sdis)
-        {
-            List<string> fcList = new List<string>();
-            foreach (var dai in dais)
-            {
-                var da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel.Value);
-                if (da == null)
-                {
-                    continue;
-                }
-                fcList.Add(da.Fc);
-            }
-
-            foreach (var sdi in sdis)
-            {
-                fcList.AddRange(GetAllFcs(sdi.DaiCollection.ToList(), sdi.SdiCollection.ToList()));
-            }
-
-            return fcList;
-        }
+      
 
         private List<TreeItemViewModelBase> GetChildListByFc(List<IDai> dais, List<ISdi> sdis, string fc)
         {

@@ -7,6 +7,7 @@ using BISC.Model.Global.Model;
 using BISC.Model.Global.Serializators;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Infrastucture;
+using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplate.TemplatesBase;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 
 namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType
@@ -21,6 +22,12 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType
         public string Cdc { get; set; }
         public ChildModelsList<IDa> DaList => new ChildModelsList<IDa>(this, "DA");
         public ChildModelsList<ISdo> SdoList=>new ChildModelsList<ISdo>(this,"SDO");
+        public List<IDataEntityWithType> GetAllITypes()
+        {
+            var res = new List<IDataEntityWithType>(DaList);
+            res.AddRange(SdoList);
+            return res;
+        }
         public override bool ModelElementCompareTo(IModelElement obj)
         {
             if (!base.ModelElementCompareTo(obj)) return false;

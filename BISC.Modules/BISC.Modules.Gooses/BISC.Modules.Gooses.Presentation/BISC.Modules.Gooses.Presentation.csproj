@@ -53,22 +53,22 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\GooseControlAssignmentSavingCommand.cs" />
     <Compile Include="Commands\GooseControlsSavingCommand.cs" />
     <Compile Include="Commands\GooseMatrixSavingCommand.cs" />
+    <Compile Include="Commands\GooseSubscriptionMatrixSavingCommand.cs" />
+    <Compile Include="Commands\GooseSubscriptionSavingCommand.cs" />
     <Compile Include="Converters\DataRowViewConverter.cs" />
     <Compile Include="Converters\IsEnabledToSelectableBoxBackgroundConverter.cs" />
     <Compile Include="Events\GooseControlBlockEnableChangedEventArgs.cs" />
     <Compile Include="Events\SelectableBoxEventArgs.cs" />
-    <Compile Include="Factories\GooseControlBlockAssignmentItemFactory.cs" />
-    <Compile Include="Factories\GooseControlBlockViewModelFactory.cs" />
     <Compile Include="Factories\GooseControlBlockViewModelFromFtpFactory.cs" />
     <Compile Include="Factories\GooseControlViewModelFactory.cs" />
     <Compile Include="Factories\GooseRowViewModelFactory.cs" />
+    <Compile Include="Factories\GooseSubscriptionDataTableFactory.cs" />
     <Compile Include="FileParsers\ResultFileParser.cs" />
-    <Compile Include="Interfaces\Factories\IGooseControlBlockAssignmentItemFactory.cs" />
     <Compile Include="Interfaces\Factories\IGooseControlBlockViewModelFactory.cs" />
     <Compile Include="Interfaces\Factories\IGooseRowViewModelFactory.cs" />
+    <Compile Include="Interfaces\Factories\IGooseSubscriptionDataTableFactory.cs" />
     <Compile Include="Interfaces\IGooseRowViewModel.cs" />
     <Compile Include="Interfaces\ISelectableValueViewModel.cs" />
     <Compile Include="Module\GoosePresentationInitialization.cs" />
@@ -81,14 +81,12 @@
     <Compile Include="ViewModels\GooseControls\GooseControlViewModel.cs" />
     <Compile Include="ViewModels\Matrix\Entities\FcdaAssignmentItem.cs" />
     <Compile Include="ViewModels\Matrix\Entities\GooseControlBlockAssignmentItem.cs" />
+    <Compile Include="ViewModels\Matrix\Entities\GooseDescriptionEntity.cs" />
     <Compile Include="ViewModels\Matrix\Entities\GooseFtpOnlyAssignmentItem.cs" />
     <Compile Include="ViewModels\Matrix\Entities\GooseInProjectAssignmentItem.cs" />
     <Compile Include="ViewModels\Matrix\Entities\SelectableValueViewModel.cs" />
-    <Compile Include="ViewModels\Matrix\GooseControlAssignmentViewModel.cs" />
     <Compile Include="ViewModels\Matrix\GooseControlBlockViewModel.cs" />
-    <Compile Include="ViewModels\Matrix\GooseMatrixViewModel.cs" />
     <Compile Include="ViewModels\Matrix\Rows\GooseRowViewModelBase.cs" />
-    <Compile Include="ViewModels\Matrix\SelectableValueViewModel.cs" />
     <Compile Include="ViewModels\Subscriptions\SubscriptionValue.cs" />
     <Compile Include="ViewModels\Tabs\GooseControlsTabViewModel.cs" />
     <Compile Include="ViewModels\Tabs\GooseMatrixTabViewModel.cs" />
@@ -98,12 +96,6 @@
     </Compile>
     <Compile Include="Views\GooseControlsReadonlyView.xaml.cs">
       <DependentUpon>GooseControlsReadonlyView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Matrix\GooseControlAssignmentView.xaml.cs">
-      <DependentUpon>GooseControlAssignmentView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Matrix\GooseMatrixView.xaml.cs">
-      <DependentUpon>GooseMatrixView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Tabs\GooseControlsTab.xaml.cs">
       <DependentUpon>GooseControlsTab.xaml</DependentUpon>
@@ -121,7 +113,6 @@
       <DependentUpon>GooseTreeItemView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Tree\GooseGroupTreeItemViewModel.cs" />
-    <Compile Include="ViewModels\Tree\GooseTreeItemViewModel.cs" />
     <Compile Include="Views\UserControl\GooseGrid.xaml.cs">
       <DependentUpon>GooseGrid.xaml</DependentUpon>
     </Compile>
@@ -135,14 +126,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GooseControlsReadonlyView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Matrix\GooseControlAssignmentView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Matrix\GooseMatrixView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

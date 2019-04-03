@@ -19,6 +19,7 @@ namespace BISC.Infrastructure.Global.Services
         public const string SettingsIconKey = "SettingsIcon";
         public const string EthernetIconKey = "EthernetIcon";
         public const string LanPendingIconKey = "LanPendingIcon";
+        public const string DragIconKey = "DragIcon";
 
     }
 

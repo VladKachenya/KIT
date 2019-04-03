@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Modules.InformationModel.Presentation.Interfaces;
 using BISC.Modules.InformationModel.Presentation.Interfaces.Helpers;
 using BISC.Modules.InformationModel.Presentation.Interfaces.InfoModelDetails;
 using BISC.Modules.InformationModel.Presentation.ViewModels.Base;
@@ -19,6 +21,27 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
         public DoiInfoModelItemViewModel(ITreeItemDetailsBuilder treeItemDetailsBuilder)
         {
             _treeItemDetailsBuilder = treeItemDetailsBuilder;
+        }
+
+        public void UpdateChildsValues()
+        {
+            UpdateChildItemValues(ChildInfoModelItemViewModels);
+        }
+
+        private void UpdateChildItemValues(ObservableCollection<IInfoModelItemViewModel> children)
+        {
+            if(children==null) return;
+            foreach (var child in children)
+            {
+                if (child is DaiInfoModelItemViewModel daiInfoModelItemViewModel)
+                {
+                    daiInfoModelItemViewModel.UpdateValue();
+                }
+                else
+                {
+                    UpdateChildItemValues(child.ChildInfoModelItemViewModels);
+                }
+            }
         }
 
 

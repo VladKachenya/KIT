@@ -1,8 +1,7 @@
 ﻿using System.Xml.Linq;
 using BISC.Model.Infrastructure.Elements;
-using BISC.Model.Infrastructure.Serializing;
 
-namespace BISC.Model.Infrastructure
+namespace BISC.Model.Infrastructure.Serializing
 {
     public interface IModelElementsRegistryService
     {

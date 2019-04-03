@@ -1,19 +1,15 @@
 ﻿using BISC.Infrastructure.Global.IoC;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model;
+using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
-using BISC.Modules.Gooses.Infrastructure.Services;
-using BISC.Modules.Gooses.Model.Model;
-using BISC.Modules.Gooses.Model.Model.Matrix;
 using BISC.Modules.Gooses.Presentation.Interfaces;
 using BISC.Modules.Gooses.Presentation.Interfaces.Factories;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Rows;
+using System.Collections.Generic;
+using System.Linq;
+using BISC.Modules.Gooses.Infrastructure.Keys;
 
 namespace BISC.Modules.Gooses.Presentation.Factories
 {
@@ -29,229 +25,92 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
         #region Implementation of IGooseRowViewModelFactory
 
-        public List<IGooseRowViewModel> CreateGooseFtpOnlyRowsViewModel(List<IGooseRowFtpEntity> gooseRowFtpEntities, GooseControlBlockViewModel parent)
+        public List<IGooseRowViewModel> BuildGooseRowViewModels(GooseControlBlockViewModel parent, IGooseInputModelInfo gooseModelInfo, IGooseMatrixFtp gooseMatrix)
         {
-            List<IGooseRowViewModel> gooseRowViewModels = new List<IGooseRowViewModel>();
-            IGooseRowViewModel validityGooseRowViewModel = new GooseRowViewModel();
-            InitailizeColumns(validityGooseRowViewModel);
-
-            validityGooseRowViewModel.GooseRowType = "Validity";
-
-            foreach (var gooseRowFtpEntity in gooseRowFtpEntities)
+            var res = CreateRowsViewModel(parent, gooseModelInfo);
+            var relatedGoCb = gooseMatrix.GoCbFtpEntities.FirstOrDefault((entity =>
+                entity.GoCbReference == gooseModelInfo.GocbRef));
+            if (relatedGoCb != null)
             {
-                if (gooseRowFtpEntity is IGooseRowQualityFtpEntity qualityFtpEntity)
-                {
-                    if (qualityFtpEntity.IsValiditySelected)
-                    {
-                        validityGooseRowViewModel.SelectableValueViewModels[qualityFtpEntity.BitIndex - 1]
-                            .SelectedValue = true;
-                    }
-                    gooseRowViewModels.Add(BuildQualityRowViewModel(qualityFtpEntity, parent, true));
-                }
-                else
-                {
-                    IGooseRowViewModel stateGooseRowViewModel = new GooseRowViewModel();
-                    stateGooseRowViewModel.GooseRowType = "State";
-                    InitailizeColumns(stateGooseRowViewModel);
+                var rows =
+                    gooseMatrix.GooseRowFtpEntities.Where(entity => entity.IndexOfGoose == relatedGoCb.IndexOfGoose).ToList();
+                rows.AddRange(gooseMatrix.GooseRowQualityFtpEntities.Where(entit => entit.IndexOfGoose == relatedGoCb.IndexOfGoose));
+                FillGooseRowViewModel(ref res, rows);
 
-                    stateGooseRowViewModel.SelectableValueViewModels[gooseRowFtpEntity.BitIndex - 1]
-                        .SelectedValue = true;
-                    stateGooseRowViewModel.RowName =
-                        parent.AppId + " [" + gooseRowFtpEntity.NumberOfFcdaInDataSetOfGoose + "] (" + stateGooseRowViewModel.GooseRowType + ")";
-                    gooseRowViewModels.Add(stateGooseRowViewModel);
-                    stateGooseRowViewModel.NumberOfFcdaInDataSet = gooseRowFtpEntity.NumberOfFcdaInDataSetOfGoose;
-                    //CheckQualityRowExisting(gooseRowFtpEntity, gooseRowFtpEntities,gooseRowViewModels,parent);
-                }
+
             }
 
-            gooseRowViewModels.Add(validityGooseRowViewModel);
-
-            gooseRowViewModels.ForEach((model => model.Parent = parent));
-            return gooseRowViewModels;
+            return res;
         }
 
-        public List<IGooseRowViewModel> CreateGooseProjectRowsViewModel(List<IGooseRowFtpEntity> gooseRowFtpEntities, IDataSet relatedDataset,
-            GooseControlBlockViewModel parent, IGooseInput gooseInput)
+        private void FillGooseRowViewModel(ref List<IGooseRowViewModel> parent, List<IGooseRowFtpEntity> gooseRowFtpEntities)
+        {
+            foreach (var gooseRowFtpEntitie in gooseRowFtpEntities)
+            {
+                parent.First(el => el.NumberOfFcdaInDataSet == gooseRowFtpEntitie.NumberOfFcdaInDataSetOfGoose - 1).
+                    SelectableValueViewModels[gooseRowFtpEntitie.BitIndex - 1].SelectedValue = true;
+                if (gooseRowFtpEntitie is IGooseRowQualityFtpEntity validity && validity.IsValiditySelected)
+                {
+                    parent.First(el => el.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.ValidityKey).
+                        SelectableValueViewModels[gooseRowFtpEntitie.BitIndex - 1].
+                        SelectedValue = true;
+                }
+            }
+        }
+
+       
+        public List<IGooseRowViewModel> CreateRowsViewModel(GooseControlBlockViewModel parent, IGooseInputModelInfo gooseInput)
         {
             List<IGooseRowViewModel> gooseRowViewModels = new List<IGooseRowViewModel>();
-           // CheckBlockRows(gooseRowFtpEntities, relatedDataset, new List<string>());
             IGooseRowViewModel validityGooseRowViewModel = new GooseRowViewModel();
-            InitailizeColumns(validityGooseRowViewModel);
-            validityGooseRowViewModel.GooseRowType = "Validity";
-            
-            foreach (var gooseRowFtpEntity in gooseRowFtpEntities)
-            {
-                if (gooseRowFtpEntity is IGooseRowQualityFtpEntity qualityFtpEntity)
-                {
-                    if (qualityFtpEntity.IsValiditySelected)
-                    {
-                        validityGooseRowViewModel.SelectableValueViewModels[qualityFtpEntity.BitIndex - 1]
-                            .SelectedValue = true;
-                    }
+            validityGooseRowViewModel.RowName = $"{gooseInput.EmittingGooseControl.Value.Name} {GooseKeys.GooseSubscriptionPresentationKeys.ValidityKey}";
 
-                    var qualityRowViewModel = BuildQualityRowViewModel(qualityFtpEntity, parent, true);
-                    qualityRowViewModel.RelatedDataSet = relatedDataset;
-                    gooseRowViewModels.Add(qualityRowViewModel);
+            InitailizeColumns(validityGooseRowViewModel);
+            validityGooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.ValidityKey;
+
+            foreach (var fcda in gooseInput.EmittingDataSet.Value.FcdaList)
+            {
+                var indexOfFcda = gooseInput.EmittingDataSet.Value.FcdaList.IndexOf(fcda);
+
+                if (fcda.DaName == "q")
+                {
+                    IGooseRowViewModel qualityGooseRowViewModel = new GooseRowViewModel();
+                    qualityGooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.QualityKey;
+                    qualityGooseRowViewModel.NumberOfFcdaInDataSet = indexOfFcda;
+                    qualityGooseRowViewModel.RowName =
+                    parent.AppId + " [" + fcda.DoName + "." + fcda.DaName + "] (" + qualityGooseRowViewModel.GooseRowType + ")";
+                    InitailizeColumns(qualityGooseRowViewModel);
+                    qualityGooseRowViewModel.RelatedDataSet = gooseInput.EmittingDataSet.Value;
+
+                    gooseRowViewModels.Add(qualityGooseRowViewModel);
+
                 }
-                else
+                else if (fcda.DaName == "stVal")
                 {
                     IGooseRowViewModel stateGooseRowViewModel = new GooseRowViewModel();
-                    stateGooseRowViewModel.GooseRowType = "State";
-                    InitailizeColumns(stateGooseRowViewModel);
-                    stateGooseRowViewModel.NumberOfFcdaInDataSet = gooseRowFtpEntity.NumberOfFcdaInDataSetOfGoose;
-                    stateGooseRowViewModel.SelectableValueViewModels[gooseRowFtpEntity.BitIndex - 1]
-                        .SelectedValue = true;
-                    stateGooseRowViewModel.RelatedDataSet = relatedDataset;
+                    stateGooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.StateKey;
+                    stateGooseRowViewModel.NumberOfFcdaInDataSet = indexOfFcda;
+                    stateGooseRowViewModel.RelatedDataSet = gooseInput.EmittingDataSet.Value;
+
                     stateGooseRowViewModel.RowName =
-                        parent.AppId + " [" + gooseRowFtpEntity.NumberOfFcdaInDataSetOfGoose + "] (" + stateGooseRowViewModel.GooseRowType + ")";
+                        parent.AppId + " [" + fcda.DoName + "." + fcda.DaName + "] (" + stateGooseRowViewModel.GooseRowType + ")";
+                    InitailizeColumns(stateGooseRowViewModel);
                     gooseRowViewModels.Add(stateGooseRowViewModel);
-
-                    //CheckQualityRowExisting(gooseRowFtpEntity, gooseRowFtpEntities,gooseRowViewModels,parent);
                 }
             }
-
-
-            foreach (var externalGooseReference in gooseInput.ExternalGooseReferences)
-            {
-                var fcda = relatedDataset.FcdaList.FirstOrDefault((fcda1 =>
-                    CompareFcdaAndExtRef(externalGooseReference, fcda1)));
-
-                var indexOfFcda = relatedDataset.FcdaList.IndexOf(fcda);
-                if (!gooseRowFtpEntities.Any((entity => entity.NumberOfFcdaInDataSetOfGoose == indexOfFcda)))
-                {
-                    if (externalGooseReference.DaName=="q")
-                    {
-                        IGooseRowViewModel qualityGooseRowViewModel = new GooseRowViewModel();
-                        qualityGooseRowViewModel.GooseRowType = "Quality";
-                        qualityGooseRowViewModel.NumberOfFcdaInDataSet = relatedDataset.FcdaList.IndexOf(fcda);
-                            qualityGooseRowViewModel.RowName =
-                            parent.AppId + " [" +fcda.DoName + "." + fcda.DaName + "] (" + qualityGooseRowViewModel.GooseRowType + ")";
-                        InitailizeColumns(qualityGooseRowViewModel);
-                        qualityGooseRowViewModel.RelatedDataSet = relatedDataset;
-
-                        gooseRowViewModels.Add(qualityGooseRowViewModel);
-
-                    }
-                    else if(externalGooseReference.DaName == "stVal")
-                    {
-                        IGooseRowViewModel stateGooseRowViewModel = new GooseRowViewModel();
-                        stateGooseRowViewModel.GooseRowType = "State";
-                        InitailizeColumns(stateGooseRowViewModel);
-                        stateGooseRowViewModel.NumberOfFcdaInDataSet = relatedDataset.FcdaList.IndexOf(fcda);
-                        stateGooseRowViewModel.RelatedDataSet = relatedDataset;
-
-                        stateGooseRowViewModel.RowName =
-                            parent.AppId + " [" + fcda.DoName + "." + fcda.DaName + "] (" + stateGooseRowViewModel.GooseRowType + ")";
-                        gooseRowViewModels.Add(stateGooseRowViewModel);
-
-                        //CheckQualityRowExisting(gooseRowFtpEntity, gooseRowFtpEntities,gooseRowViewModels,parent);
-                    }
-
-                }
-
-            }
-
 
             gooseRowViewModels.Add(validityGooseRowViewModel);
             gooseRowViewModels.ForEach((model => model.Parent = parent));
             return gooseRowViewModels;
         }
 
-        private bool CompareFcdaAndExtRef(IExternalGooseRef externalGooseRef, IFcda fcda)
-        {
-            if (externalGooseRef.Prefix != fcda.Prefix) return false;
-            if (externalGooseRef.DaName != fcda.DaName) return false;
-            if (externalGooseRef.DoName != fcda.DoName) return false;
-            if (externalGooseRef.LdInst != fcda.LdInst) return false;
-            if (externalGooseRef.LnInst != fcda.LnInst) return false;
-            if (externalGooseRef.LnClass != fcda.LnClass) return false;
-            return true;
-        }
-
-        private void CheckBlockRows(List<IGooseRowFtpEntity> rowsForBlock, IDataSet relatedDataset, List<string> messagesList)
-        {
-            List<IGooseRowFtpEntity> rowsToRemove = new List<IGooseRowFtpEntity>();
-            foreach (var gooseRow in rowsForBlock)
-            {
-                var relatedFcda = relatedDataset.FcdaList[gooseRow.NumberOfFcdaInDataSetOfGoose];
-
-
-                switch (relatedFcda.DaName)
-                {
-                    case "stVal":
-                        if (!rowsForBlock.Any((row =>
-                        {
-                            var relatedFcdaForRow = relatedDataset.FcdaList[gooseRow.NumberOfFcdaInDataSetOfGoose];
-                            return (relatedFcdaForRow.DaName == "q") && row.IndexOfGoose == gooseRow.IndexOfGoose;
-                        })))
-                        {
-                            messagesList.Add(
-                                $"Элемент состояния GOOSE.Dataset  {relatedFcda.DoName + "." + relatedFcda.DaName} не дублируется качеством");
-                            rowsToRemove.Add(gooseRow);
-                        }
-
-                        break;
-                    case "q":
-                        if (!rowsForBlock.Any((row =>
-                        {
-                            var relatedFcdaForRow = relatedDataset.FcdaList[gooseRow.NumberOfFcdaInDataSetOfGoose];
-                            return (relatedFcdaForRow.DaName == "stVal") && row.IndexOfGoose == gooseRow.IndexOfGoose;
-                        })))
-                        {
-                            messagesList.Add(
-                                $"Элемент качества GOOSE.Dataset {relatedFcda.DoName + "." + relatedFcda.DaName} не дублируется состоянием");
-                            rowsToRemove.Add(gooseRow);
-                        }
-
-                        break;
-                }
-            }
-
-            rowsToRemove.ForEach((row => rowsForBlock.Remove(row)));
-        }
-
-
-        private IGooseRowViewModel BuildQualityRowViewModel(IGooseRowQualityFtpEntity qualityFtpEntity, GooseControlBlockViewModel parent, bool value)
-        {
-            IGooseRowViewModel qualityGooseRowViewModel = new GooseRowViewModel();
-            qualityGooseRowViewModel.GooseRowType = "Quality";
-
-            qualityGooseRowViewModel.RowName =
-                parent.AppId + " [" + qualityFtpEntity.NumberOfFcdaInDataSetOfGoose + "] (" + qualityGooseRowViewModel.GooseRowType + ")";
-            InitailizeColumns(qualityGooseRowViewModel);
-            qualityGooseRowViewModel.NumberOfFcdaInDataSet = qualityFtpEntity.NumberOfFcdaInDataSetOfGoose;
-            qualityGooseRowViewModel.SelectableValueViewModels[qualityFtpEntity.BitIndex - 1]
-                .SelectedValue = value;
-            return qualityGooseRowViewModel;
-        }
-
-
-        //private void CheckQualityRowExisting(IGooseRowFtpEntity stateRowFtpEntity,
-        //    List<IGooseRowFtpEntity> gooseRowFtpEntities, List<IGooseRowViewModel> gooseRowViewModels,
-        //    GooseControlBlockViewModel parent)
-        //{
-        //    var entitiesWithSameBit =
-        //        gooseRowFtpEntities.Where((entity => entity.BitIndex == stateRowFtpEntity.BitIndex)).ToList();
-        //    if (!entitiesWithSameBit.Any((entity => entity is IGooseRowQualityFtpEntity)))
-        //    {
-        //        gooseRowViewModels.Add(BuildQualityRowViewModel(
-        //            new GooseRowQualityFtpEntity()
-        //            {
-        //                BitIndex = stateRowFtpEntity.BitIndex,
-        //                IndexOfGoose = stateRowFtpEntity.IndexOfGoose,
-        //                IsValiditySelected = false
-        //            }, parent,false));
-        //    }
-        //}
-
-
+       
 
         private void InitailizeColumns(IGooseRowViewModel gooseRowViewModel)
         {
             for (int i = 0; i < 64; i++)
             {
                 ISelectableValueViewModel selectableValueViewModel = StaticContainer.CurrentContainer.ResolveType<ISelectableValueViewModel>();
-                // selectableValueViewModel.SelectedValue = columnIndexes.Any((columnIndex => columnIndex == i));
                 selectableValueViewModel.ColumnNumber = i;
                 selectableValueViewModel.Parent = gooseRowViewModel;
                 selectableValueViewModel.ToolTip = gooseRowViewModel.RowName + "     " + (i + 1);

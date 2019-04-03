@@ -124,7 +124,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 }
 
                 UpdateCurentChengeTracker();
-                await Task.Delay(500);
             }
             finally
             {
@@ -316,8 +315,9 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
+            //Для чего так сделанно
             _navigationService.NavigateViewToRegion(InfoModelKeys.InfoModelTreeItemDetailsViewKey, ModelRegionKey,
-                new BiscNavigationParameters().AddParameterByName("IED", _device));
+                new BiscNavigationParameters().AddParameterByName("IED", _device).AddParameterByName("IsHideButtons", true));
             await UpdateDataSets(false);
             base.OnNavigatedTo(navigationContext);
         }

@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Model.Global.Model.Communication;
+﻿using BISC.Model.Global.Model.Communication;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Project.Communication;
 using BISC.Model.Infrastructure.Services.Communication;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BISC.Model.Global.Services.CommunicationModel
 {
     public class SclCommunicationModelService : ISclCommunicationModelService
     {
+
+
         private string GetNextApName(List<string> existingApNames)
         {
             string nextApName = String.Empty;
@@ -56,11 +56,20 @@ namespace BISC.Model.Global.Services.CommunicationModel
         {
             if (!sclCommunicationModel.SubNetworks.Any())
             {
-                sclCommunicationModel.SubNetworks.Add(new SubNetwork() {Name = "WA1", Type = "8-MMS"});
+                sclCommunicationModel.SubNetworks.Add(new SubNetwork() { Name = "WA1", Type = "8-MMS" });
             }
         }
 
+        public void ReplaceAccessPointIp(ISclModel sclModel, string iedName, string newIp)
+        {
+            var ap = GetConnectedAccessPoint(sclModel, iedName);
+            (ap.SclAddresses.First(el => el is SclAddress) as SclAddress).SetProperty("IP", newIp);
+        }
 
+        public void ReplaceAccessPointIdeName(ISclModel sclModel, string iedName, string newIdeName)
+        {
+            GetConnectedAccessPoint(sclModel, iedName).IedName = newIdeName;
+        }
 
         private void AddCommunicationToSclIfItNeeded(ISclModel sclModel)
         {
@@ -141,7 +150,7 @@ namespace BISC.Model.Global.Services.CommunicationModel
             return address?.GetProperty("IP");
         }
 
-        public void DeleteGseOfDevice(string deviceName, string cbName,ISclModel sclModel)
+        public void DeleteGseOfDevice(string deviceName, string cbName, ISclModel sclModel)
         {
             ISclCommunicationModel sclCommunicationModel =
                 (sclModel.ChildModelElements.FirstOrDefault((element => (element is ISclCommunicationModel))) as

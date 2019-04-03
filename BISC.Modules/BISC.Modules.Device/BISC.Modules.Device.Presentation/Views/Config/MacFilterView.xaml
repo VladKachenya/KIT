@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="BISC.Modules.Device.Presentation.Views.Config.MacFilterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BISC.Modules.Device.Presentation.Views.Config"
+             xmlns:config="clr-namespace:BISC.Modules.Device.Presentation.ViewModels.Config"
+             mc:Ignorable="d"  
+             d:DataContext="{d:DesignInstance config:MacFiltersViewModel}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
+    </UserControl.Resources>
+    <Grid VerticalAlignment="Top" Background="Transparent" x:Name="grid">
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Margin="2" 
+                       ToolTip="фильтрация пакетов через порт по мак адресу. 8 адресов предел, включая фильтр на порт, отключается проброс всего остального, кроме записей которые будут сконфигурированы. Отключится динамическая таблица MAC" 
+                       Text="{Binding Title}"></TextBlock>
+            <Button  Visibility="{Binding ElementName=grid,Path=IsMouseOver,Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="delButton" Margin="5" Width="20" Height="20" Style="{DynamicResource MenuTreeItemStyle}" Command="{Binding DeleteFilterCommand}" CommandParameter="{Binding ElementName=macslistBox,Path=SelectedItem}">
+                <ContentControl ContentTemplate="{DynamicResource DeleteIcon}"></ContentControl>
+            </Button>
+            <Button Visibility="{Binding ElementName=grid,Path=IsMouseOver,Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="addButton" Margin="5" Width="20" Height="20" Style="{DynamicResource MenuTreeItemStyle}" Command="{Binding AddFilterCommand}">
+                <ContentControl ContentTemplate="{DynamicResource PlusOutlineIcon}"></ContentControl>
+            </Button>
+        </StackPanel>
+        <ListBox x:Name="macslistBox" Margin="2" HorizontalAlignment="Stretch" Grid.Row="1"  ItemsSource="{Binding MacAddresses}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBox MinWidth="200" Text="{Binding Value}"></TextBox>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

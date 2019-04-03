@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BISC.Model.Global.Model;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.InformationModel.Infrastucture;
+using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplate.TemplatesBase;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DaType;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
@@ -29,5 +30,18 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates
         public ChildModelsList<IEnumType> EnumTypes => new ChildModelsList<IEnumType>(this, InfoModelKeys.DataTypeTemplateKeys.EnumTypeModelItemKey);
 
         #endregion
+
+        #region Implementation of IParentOfIds
+        public List<ITemplateWithId> GetAllIds()
+        {
+            var res = new List<ITemplateWithId>(LNodeTypes);
+            res.AddRange(DoTypes);
+            res.AddRange(DaTypes);
+            res.AddRange(EnumTypes);
+            return res;
+        }
+
+        #endregion
+
     }
 }

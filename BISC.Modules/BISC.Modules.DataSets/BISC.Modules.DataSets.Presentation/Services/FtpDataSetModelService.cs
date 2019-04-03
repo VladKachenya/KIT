@@ -38,10 +38,11 @@ namespace BISC.Modules.DataSets.Presentation.Services
                 TextWriter streamWriter = new StringWriter(sb);
                 Write(dataSetsToSave, streamWriter);
                 var fileString = sb.ToString();
-                if (!await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() { fileString },
-                    new List<string>() { "DATASETS.CFG" }))
+	            var res = await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() {fileString},
+		            new List<string>() {"DATASETS.CFG"});
+                if (!res.IsSucceed)
                 {
-                    return new OperationResult($"{ip}: FTP не отвечает");
+                    return new OperationResult($"{ip}: FTP не отвечает: {res.GetFirstError()}");
                 }
             }
             catch (Exception e)

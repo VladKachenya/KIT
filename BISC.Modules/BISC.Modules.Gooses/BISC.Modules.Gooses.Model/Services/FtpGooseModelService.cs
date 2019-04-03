@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using BISC.Infrastructure.Global.Common;
+﻿using BISC.Infrastructure.Global.Common;
+using BISC.Model.Infrastructure.Serializing;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.FTP.Infrastructure.Serviсes;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
@@ -14,16 +7,31 @@ using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Model.Model;
 using BISC.Modules.Gooses.Model.Model.Matrix;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using BISC.Modules.Gooses.Model.Helpers;
 
 namespace BISC.Modules.Gooses.Model.Services
 {
     public class FtpGooseModelService : IFtpGooseModelService
     {
         private readonly IDeviceFileWritingServices _deviceFileWritingServices;
+        private readonly IModelElementsRegistryService _elementsRegistryService;
+        private readonly Func<GooseMatrixFtpToFileParser> _gooseMatrixFtpToFileParser;
 
-        public FtpGooseModelService(IDeviceFileWritingServices deviceFileWritingServices)
+        public FtpGooseModelService(IDeviceFileWritingServices deviceFileWritingServices, IModelElementsRegistryService elementsRegistryService,
+            Func<GooseMatrixFtpToFileParser> gooseMatrixFtpToFileParser)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
+            _elementsRegistryService = elementsRegistryService;
+            _gooseMatrixFtpToFileParser = gooseMatrixFtpToFileParser;
         }
 
 
@@ -31,10 +39,15 @@ namespace BISC.Modules.Gooses.Model.Services
 
         public async Task<OperationResult<List<GooseFtpDto>>> GetGooseDtosFromDevice(string ip)
         {
-            string fileInDevice =
+            var fileInDeviceRes =
                 await _deviceFileWritingServices.ReadFileStringFromDevice(ip, "1:/CFG", "GOOSETR.CFG");
+            if (!fileInDeviceRes.IsSucceed)
+            {
+                return new OperationResult<List<GooseFtpDto>>(fileInDeviceRes.GetFirstError());
+            }
             try
             {
+                var fileInDevice = fileInDeviceRes.Item;
                 var gooseStrings = GetGooseNamesListFromFile(fileInDevice);
 
 
@@ -58,18 +71,18 @@ namespace BISC.Modules.Gooses.Model.Services
             {
                 StringBuilder sb = new StringBuilder();
                 TextWriter streamWriter = new StringWriter(sb);
-                Write(device,gooseDtos, streamWriter);
+                Write(device, gooseDtos, streamWriter);
                 string fileString = sb.ToString();
 
                 var res = await _deviceFileWritingServices.WriteFileStringInDevice(device.Ip, new List<string>() { fileString },
                     new List<string>() { "GOOSETR.CFG" });
-                if (res)
+                if (res.IsSucceed)
                 {
                     return OperationResult.SucceedResult;
                 }
                 else
                 {
-                    return new OperationResult("Не удалось обновить блоки управления GOOSE по FTP");
+                    return new OperationResult($"Не удалось обновить блоки управления GOOSE по FTP: {res.GetFirstError()}");
                 }
             }
             catch (Exception e)
@@ -80,9 +93,16 @@ namespace BISC.Modules.Gooses.Model.Services
 
         public async Task<OperationResult<IGooseMatrixFtp>> GetGooseMatrixByFtp(string ip)
         {
-            string fileInDevice =
+            var fileInDeviceRes =
                 await _deviceFileWritingServices.ReadFileStringFromDevice(ip, "1:/CFG", "GOOSERE.CFG");
             IGooseMatrixFtp gooseMatrixFtp = new GooseMatrixFtp();
+
+            if (!fileInDeviceRes.IsSucceed)
+            {
+                return new OperationResult<IGooseMatrixFtp>(fileInDeviceRes.GetFirstError());
+            }
+
+            var fileInDevice = fileInDeviceRes.Item;
             if (string.IsNullOrWhiteSpace(fileInDevice))
             {
                 return new OperationResult<IGooseMatrixFtp>(gooseMatrixFtp);
@@ -154,11 +174,62 @@ namespace BISC.Modules.Gooses.Model.Services
             }
         }
 
-        public async Task<OperationResult> WriteGooseMatrixToDevice(string ip, List<GooseFtpDto> gooseDtos)
+        public async Task<OperationResult> WriteGooseMatrixFtpToDevice(string ip, IGooseMatrixFtp gooseMatrixFtp)
         {
-
-            return OperationResult.SucceedResult;
+            try
+            {
+                var text = _gooseMatrixFtpToFileParser().GetFileStringFromMatrixModel(gooseMatrixFtp);
+                return await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() { text },
+                    new List<string>() { "GOOSERE.CFG" });
+            }
+            catch (Exception e)
+            {
+                return new OperationResult(e.Message);
+            }
         }
+
+        public async Task<OperationResult<List<IGooseInputModelInfo>>> GetGooseDeviceInputFromDevice(string ip, string deviceName)
+        {
+            try
+            {
+                var readResult = await _deviceFileWritingServices.ReadFileStringFromDevice(ip, "1:/CFG", "GOOSEIN.ZIP");
+                IGooseDeviceInput gooseDeviceInput;
+                if (readResult.Item == null)
+                {
+                    gooseDeviceInput = new GooseDeviceInput(){DeviceOwnerName = deviceName};
+                }
+                else
+                {
+                    gooseDeviceInput =
+                        _elementsRegistryService.DeserializeModelElement<IGooseDeviceInput>(
+                            XElement.Parse(readResult.Item));
+                }
+                return new OperationResult<List<IGooseInputModelInfo>>(gooseDeviceInput.GooseInputModelInfoList.ToList());
+            }
+            catch (Exception e)
+            {
+                return new OperationResult<List<IGooseInputModelInfo>>(null, false, e.Message);
+            }
+        }
+
+        public async Task<OperationResult> WriteGooseDeviceInputFromDevice(string ip,
+            List<IGooseInputModelInfo> gooseInputModelInfos)
+        {
+            var gooseDeviceInput = new GooseDeviceInput();
+            gooseInputModelInfos.ForEach(el => gooseDeviceInput.GooseInputModelInfoList.Add(el));
+            try
+            {
+                var text = _elementsRegistryService.SerializeModelElement(gooseDeviceInput, SerializingType.Extended).ToString();
+                return await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() {text},
+                    new List<string>() {"GOOSEIN.ZIP"});
+            }
+            catch (Exception e)
+            {
+                return new OperationResult(e.Message);
+            }
+           
+        }
+
 
 
         private void Write(IDevice device, List<GooseFtpDto> gooseDtosToParse, TextWriter streamWriter)
@@ -169,7 +240,7 @@ namespace BISC.Modules.Gooses.Model.Services
                 var matches = reg.Matches(device.Name);
                 if (matches.Count > 0)
                 {
-                    streamWriter.WriteLine($"Dev{matches[0]}");
+                    streamWriter.WriteLine($"Dev({matches[0]})");
                 }
                 foreach (var gooseDtoObj in gooseDtosToParse)
                 {
@@ -212,7 +283,11 @@ namespace BISC.Modules.Gooses.Model.Services
                     if (gooseCbRegex.IsMatch(line))
                     {
                         var gooseCbStrings = line.Split(' ');
-                        if (gooseCbStrings.Length != 8) continue;
+                        if (gooseCbStrings.Length != 8)
+                        {
+                            continue;
+                        }
+
                         var gooseName = gooseCbStrings[1];
                         gooseNames.Add(gooseName);
                     }

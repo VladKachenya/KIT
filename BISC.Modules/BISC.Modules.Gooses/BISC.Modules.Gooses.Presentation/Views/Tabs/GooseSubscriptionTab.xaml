@@ -17,10 +17,10 @@
             <CheckBox DataContext="{Binding RelativeSource={RelativeSource AncestorType=DataGridCell}, Converter={StaticResource drvc}}" IsEnabled="{Binding Path=IsValueEditable}" IsChecked="{Binding Path=IsSelected}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Checked" >
-                        <i:InvokeCommandAction Command="{Binding Source={x:Reference DataGrid}, Path=DataContext.SaveChangesCommand}" ></i:InvokeCommandAction>
+                        <i:InvokeCommandAction Command="{Binding Source={x:Reference DataGrid}, Path=DataContext.CheckChangesCommand}" ></i:InvokeCommandAction>
                     </i:EventTrigger>
                     <i:EventTrigger EventName="Unchecked" >
-                        <i:InvokeCommandAction Command="{Binding Source={x:Reference DataGrid}, Path=DataContext.SaveChangesCommand}" ></i:InvokeCommandAction>
+                        <i:InvokeCommandAction Command="{Binding Source={x:Reference DataGrid}, Path=DataContext.CheckChangesCommand}" ></i:InvokeCommandAction>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </CheckBox>
@@ -32,6 +32,7 @@
         </DataTemplate>
 
     </UserControl.Resources>
+    <ContentControl Style="{StaticResource BlockedContentStyle}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -48,5 +49,6 @@
             </DataGrid>
         </Grid>
 
-    </Grid>
+        </Grid>
+    </ContentControl>
 </UserControl>

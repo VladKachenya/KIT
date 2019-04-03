@@ -18,13 +18,16 @@ namespace BISC.Modules.Gooses.Presentation.FileParsers
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IBiscProject _biscProject;
         private readonly IGoosesModelService _goosesModelService;
+        private readonly IGooseMatrixFtpService _gooseMatrixFtpService;
 
 
-        public ResultFileParser(ISclCommunicationModelService sclCommunicationModelService, IBiscProject biscProject,IGoosesModelService goosesModelService)
+        public ResultFileParser(ISclCommunicationModelService sclCommunicationModelService, IBiscProject biscProject,
+            IGoosesModelService goosesModelService, IGooseMatrixFtpService gooseMatrixFtpService)
         {
             _sclCommunicationModelService = sclCommunicationModelService;
             _biscProject = biscProject;
             _goosesModelService = goosesModelService;
+            _gooseMatrixFtpService = gooseMatrixFtpService;
         }
 
         public string GetFileStringFromGooseModel(IDevice device)
@@ -38,7 +41,7 @@ namespace BISC.Modules.Gooses.Presentation.FileParsers
 
         private void Write(TextWriter streamWriter,IDevice device)
         {
-            var gooseMatrix = _goosesModelService.GetGooseMatrixFtpForDevice(device);
+            var gooseMatrix = _gooseMatrixFtpService.GetGooseMatrixFtpForDevice(device);
 
             using (streamWriter)
             {
@@ -82,14 +85,6 @@ namespace BISC.Modules.Gooses.Presentation.FileParsers
                 //}
 
             }
-
-
-
-
-
-
-
-
         }
     }
 }

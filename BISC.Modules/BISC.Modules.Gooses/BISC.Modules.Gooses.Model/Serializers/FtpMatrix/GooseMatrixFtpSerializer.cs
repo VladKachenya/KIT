@@ -13,7 +13,7 @@ namespace BISC.Modules.Gooses.Model.Serializers.FtpMatrix
     {
         public GooseMatrixFtpSerializer()
         {
-            RegisterProperty(nameof(GooseMatrixFtp.DeviceOwnerName), "deviceOwnerName");
+            //RegisterProperty(nameof(GooseMatrixFtp.DeviceOwnerName), "deviceOwnerName");
         }
         
         public override IModelElement GetConcreteObject()

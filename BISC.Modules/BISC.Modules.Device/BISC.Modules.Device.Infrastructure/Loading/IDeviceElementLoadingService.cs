@@ -10,7 +10,7 @@ namespace BISC.Modules.Device.Infrastructure.Loading
     {
         Task<int> EstimateProgress(IDevice device);
         Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel,CancellationToken cancellationToken);
-        //  
+        
         int Priority { get; }
     }
 }

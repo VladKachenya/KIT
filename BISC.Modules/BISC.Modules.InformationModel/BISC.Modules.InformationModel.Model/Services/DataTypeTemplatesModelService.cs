@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Model.Iec61850Ed2.DataTypeTemplates;
-using BISC.Model.Infrastructure.Common;
+﻿using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
@@ -16,13 +9,15 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.LNodeType;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType;
 using BISC.Modules.InformationModel.Model.DataTypeTemplates.LNodeType;
+using BISC.Modules.InformationModel.Model.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BISC.Modules.InformationModel.Model.Services
 {
     public class DataTypeTemplatesModelService : IDataTypeTemplatesModelService
     {
-
-
         private IDataTypeTemplates GetDataTypeTemplates(ISclModel sclModel)
         {
             if (sclModel.TryGetFirstChildOfType(out IDataTypeTemplates dataTypeTemplates))
@@ -43,7 +38,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             var dttFrom = GetDataTypeTemplates(sclModelFrom);
             foreach (var doType in dttFrom.DoTypes)
             {
-               var resid= AddDoType(doType, sclModelTo);
+                var resid = AddDoType(doType, sclModelTo);
                 if (resid != doType.Id)
                 {
                     List<IDo> doList = new List<IDo>();
@@ -58,7 +53,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             }
             foreach (var daType in dttFrom.DaTypes)
             {
-               var resId= AddDaType(daType, sclModelTo);
+                var resId = AddDaType(daType, sclModelTo);
                 if (daType.Id != resId)
                 {
                     List<IDa> daList = new List<IDa>();
@@ -86,7 +81,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             }
             foreach (var enumType in dttFrom.EnumTypes)
             {
-              var resId=  AddEnumType(enumType, sclModelTo);
+                var resId = AddEnumType(enumType, sclModelTo);
                 if (enumType.Id != resId)
                 {
 
@@ -109,9 +104,11 @@ namespace BISC.Modules.InformationModel.Model.Services
             foreach (var lnTypeToExcludeFiltered in lnTypesToExcludeFiltered)
             {
                 var removeItem = dataTypeTemplates.LNodeTypes.FirstOrDefault((type => type.Id == lnTypeToExcludeFiltered));
-                if (removeItem == null) continue;
-                
-                
+                if (removeItem == null)
+                {
+                    continue;
+                }
+
                 doTypesToExclude.AddRange(removeItem.DoList.Select((ddo => ddo.Type)));
                 dataTypeTemplates.LNodeTypes.Remove(removeItem);
             }
@@ -158,7 +155,10 @@ namespace BISC.Modules.InformationModel.Model.Services
                 }
             }
             if (doTypesToExcludeNew.Count > 0)
+            {
                 RemoveDoTypes(dataTypeTemplates, doTypesToExcludeNew);
+            }
+
             List<string> daTypesToLeave = new List<string>();
             dataTypeTemplates.DoTypes.ToList().ForEach((type => type.DaList.ToList().ForEach((da => daTypesToLeave.Add(da.Type)))));
 
@@ -206,7 +206,9 @@ namespace BISC.Modules.InformationModel.Model.Services
             dataTypeTemplates.DaTypes.ToList().ForEach((type => type.Bdas.ToList().ForEach((bda =>
             {
                 if (bda.BType == "Enum")
+                {
                     enumTypesToLeave.Add(bda.Type);
+                }
             }))));
             var enumTypesToExcludeFiltered =
                 enumTypesToExclude.Where((exclude => !enumTypesToLeave.Any((leave => leave == exclude)))).Distinct().ToList();
@@ -214,8 +216,10 @@ namespace BISC.Modules.InformationModel.Model.Services
             foreach (var enumTypeToExcludeFiltered in enumTypesToExcludeFiltered)
             {
                 var removeItem = dataTypeTemplates.EnumTypes.FirstOrDefault((type => type.Id == enumTypeToExcludeFiltered));
-                if(removeItem!=null)
-                dataTypeTemplates.EnumTypes.Remove(removeItem);
+                if (removeItem != null)
+                {
+                    dataTypeTemplates.EnumTypes.Remove(removeItem);
+                }
             }
 
         }
@@ -243,7 +247,10 @@ namespace BISC.Modules.InformationModel.Model.Services
         {
             IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
             if (lNodeType == null)
+            {
                 return null;
+            }
+
             var existing = GetExisting(lNodeType, dataTypeTemplates);
             if (existing == null)
             {
@@ -320,7 +327,10 @@ namespace BISC.Modules.InformationModel.Model.Services
             }
             IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
             if (dotype == null)
+            {
                 return null;
+            }
+
             var existing = CheckExisting(dotype, dataTypeTemplates);
             if (existing == null)
             {
@@ -338,7 +348,10 @@ namespace BISC.Modules.InformationModel.Model.Services
                 foreach (IDa da in dotype.DaList)
                 {
 
-                    if (CheckIfExist(dotype, da)) continue;
+                    if (CheckIfExist(dotype, da))
+                    {
+                        continue;
+                    }
 
                     if (da.Name == "stVal")
                     // костыль для того, чтобы stVal был первым в списке,чтобы контроллер читал файл 
@@ -363,7 +376,9 @@ namespace BISC.Modules.InformationModel.Model.Services
             foreach (IDoType dotypeitem in dataTypeTemplates.DoTypes)
             {
                 if (dotypeitem.Id == dotype.Id)
+                {
                     return dotypeitem;
+                }
             }
             //foreach (IDoType dotypeitem in dataTypeTemplates.DoTypes)
             //{
@@ -386,7 +401,11 @@ namespace BISC.Modules.InformationModel.Model.Services
 
         public bool CheckIfExist(IDoType do1, IDa newDa)
         {
-            if (do1.DaList.Contains(newDa)) return true;
+            if (do1.DaList.Contains(newDa))
+            {
+                return true;
+            }
+
             foreach (var daitem in do1.DaList)
             {
                 if ((newDa.Type == daitem.Type) &&
@@ -396,7 +415,10 @@ namespace BISC.Modules.InformationModel.Model.Services
                     //(newDa.dchg == daitem.dchg) &&
                     //(newDa.qchg == daitem.qchg) &&
                     //(newDa.dupd == daitem.dupd) &&
-                    (newDa.Fc == daitem.Fc)) return true;
+                    (newDa.Fc == daitem.Fc))
+                {
+                    return true;
+                }
             }
             return false;
         }
@@ -409,7 +431,10 @@ namespace BISC.Modules.InformationModel.Model.Services
         public string AddDaType(IDaType datype, ISclModel sclModel)
         {
             if (datype == null)
+            {
                 return null;
+            }
+
             IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
             IDaType existing = CheckExistingUsual(datype, dataTypeTemplates);
             if (existing == null)
@@ -430,10 +455,15 @@ namespace BISC.Modules.InformationModel.Model.Services
                     bool b = true;
                     foreach (IBda bda in datypeitem.Bdas)
                     {
-                        if (!CheckIfBDAExist(datypeitem, bda)) b = false;
+                        if (!CheckIfBDAExist(datypeitem, bda))
+                        {
+                            b = false;
+                        }
                     }
                     if (b)
+                    {
                         return datypeitem;
+                    }
                 }
 
             }
@@ -446,7 +476,9 @@ namespace BISC.Modules.InformationModel.Model.Services
                 if ((bda.Type == bdaitem.Type) &&
                     (bda.BType == bdaitem.BType) &&
                     (bda.Name == bdaitem.Name))
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -455,7 +487,10 @@ namespace BISC.Modules.InformationModel.Model.Services
             IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
 
             if (enumtype == null)
+            {
                 return null;
+            }
+
             IEnumType existing = CheckIfExist(enumtype, dataTypeTemplates);
             if (existing == null)
             {
@@ -516,7 +551,9 @@ namespace BISC.Modules.InformationModel.Model.Services
                 {
                     var parentSdo = parentDoType.SdoList.FirstOrDefault((sdo => sdo.Name == sdiParent.Name));
                     if (parentSdo != null)
+                    {
                         parentDoType = dataTypeTemplates.DoTypes.First((type => type.Id == parentSdo.Type));
+                    }
                     else
                     {
                         return parentDoType.DaList.First((da => da.Name == sdiParent.Name));
@@ -533,7 +570,10 @@ namespace BISC.Modules.InformationModel.Model.Services
         {
             foreach (IEnumType enumtypeitem in dataTypeTemplates.EnumTypes)
             {
-                if (IsEqual(enumtypeitem, enumtype)) return enumtypeitem;
+                if (IsEqual(enumtypeitem, enumtype))
+                {
+                    return enumtypeitem;
+                }
             }
             return null;
         }
@@ -542,14 +582,24 @@ namespace BISC.Modules.InformationModel.Model.Services
         {
             try
             {
-                if ((obj1.Id != obj2.Id) && !obj1.Id.Contains(obj2.Id) && !obj2.Id.Contains(obj1.Id)) return false;
+                if ((obj1.Id != obj2.Id) && !obj1.Id.Contains(obj2.Id) && !obj2.Id.Contains(obj1.Id))
+                {
+                    return false;
+                }
 
+                if (obj1.EnumValList.Count != obj2.EnumValList.Count)
+                {
+                    return false;
+                }
 
-                if (obj1.EnumValList.Count != obj2.EnumValList.Count) return false;
                 int i = 0;
                 foreach (IEnumVal enumvalitem in obj1.EnumValList)
                 {
-                    if ((enumvalitem.Ord != obj2.EnumValList[i].Ord) || (enumvalitem.Value != obj2.EnumValList[i].Value)) return false;
+                    if ((enumvalitem.Ord != obj2.EnumValList[i].Ord) || (enumvalitem.Value != obj2.EnumValList[i].Value))
+                    {
+                        return false;
+                    }
+
                     i++;
                 }
                 return true;
@@ -561,7 +611,18 @@ namespace BISC.Modules.InformationModel.Model.Services
 
             }
             return true;
-
         }
+
+        public void UpdateTemplatesUnderIdeName(ISclModel sclModel, string oldIdeName, string newIdeName)
+        {
+            var templatesWithId = GetDataTypeTemplates(sclModel).GetAllIds();
+            var replaser = new IdeNameInStringReplacer();
+            foreach (var id in templatesWithId)
+            {
+                id.Id = replaser.ReplaseIdeNameInStringWithoutExeption(id.Id, oldIdeName, newIdeName);
+                id.GetAllITypes().ForEach(el => el.Type = replaser.ReplaseIdeNameInStringWithoutExeption(el.Type, oldIdeName, newIdeName));
+            }
+        }
+
     }
 }

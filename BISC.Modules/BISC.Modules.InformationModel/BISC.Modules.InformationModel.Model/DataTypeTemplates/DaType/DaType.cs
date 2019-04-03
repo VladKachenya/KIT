@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplate.TemplatesBase;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DaType;
 
 namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DaType
@@ -17,6 +18,11 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DaType
         }
         public string Id { get; set; }
         public ChildModelsList<IBda> Bdas =>new ChildModelsList<IBda>(this, "BDA");
+
+        public List<IDataEntityWithType> GetAllITypes()
+        {
+            return new List<IDataEntityWithType>(Bdas);
+        }
         public override bool ModelElementCompareTo(IModelElement obj)
         {
             if (!base.ModelElementCompareTo(obj)) return false;

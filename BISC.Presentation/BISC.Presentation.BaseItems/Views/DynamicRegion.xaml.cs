@@ -66,7 +66,7 @@ namespace BISC.Presentation.BaseItems.Views
 
             regionContentControl.Unloaded += DynamicRegionBehavior_Unloaded;
             regionContentControl.Loaded += DynamicRegionBehavior_Loaded;
-
+          
         }
 
         private void DynamicRegionBehavior_Loaded(object sender, RoutedEventArgs e)

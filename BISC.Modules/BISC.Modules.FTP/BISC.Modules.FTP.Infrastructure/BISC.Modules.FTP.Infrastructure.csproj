@@ -67,6 +67,10 @@
     <Compile Include="ViewModels\IFTPServiceViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">
+      <Project>{E28FB4BB-B14A-441A-A1B7-2EC9E37A33DF}</Project>
+      <Name>BISC.Infrastructure.Global</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules.Connection\BISC.Modules.Connection.Presentation\BISC.Modules.Connection.Presentation.csproj">
       <Project>{48F6571C-ED09-4ED9-B76A-AC78EF9E9890}</Project>
       <Name>BISC.Modules.Connection.Presentation</Name>

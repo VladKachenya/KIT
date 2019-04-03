@@ -15,7 +15,12 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock Margin="10" Text="{Binding DeviceName}" Grid.Row="0" FontSize="16"/>
-        <view:IpAddressView DataContext="{Binding IpAddressViewModel}" Grid.Row="1"></view:IpAddressView>
+        <StackPanel Grid.Row="1">
+            <view:IpAddressView DataContext="{Binding IpAddressViewModel}"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Margin="5" Command="{Binding ChengeIpCommand}" Content="Изменить Ip устройства" />
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </UserControl>
 

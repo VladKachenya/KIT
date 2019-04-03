@@ -77,7 +77,7 @@ namespace BISC.Presentation.Services
                 var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, device.DeviceGuid);
                 if (result.IsSucceed)
                 {
-                    _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject.MainSclModel.Value, device.Name);
+                    _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject, device.Name);
                     _connectionPoolService.GetConnection(device.Ip).StopConnection();
                     _deviceWarningsService.ClearDeviceWarningsOfDevice(device.DeviceGuid);
                 }

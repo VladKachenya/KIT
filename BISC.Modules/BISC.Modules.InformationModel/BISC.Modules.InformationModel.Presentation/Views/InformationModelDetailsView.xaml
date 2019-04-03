@@ -10,6 +10,8 @@
              xmlns:infoModelDetails="clr-namespace:BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelDetails"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              xmlns:interfaces="clr-namespace:BISC.Modules.InformationModel.Presentation.Interfaces"
+             xmlns:templateSelectors="clr-namespace:BISC.Modules.InformationModel.Presentation.TemplateSelectors"
+             xmlns:infoModelTree="clr-namespace:BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree"
              mc:Ignorable="d" >
 
     <UserControl.Resources>
@@ -62,87 +64,47 @@
             HorizontalAlignment="Stretch"
             ItemsSource="{Binding Path=AllIecTreeItems}"
             dd:DragDrop.IsDragSource="True" 
-            dd:DragDrop.IsDropTarget="False" >
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="interfaces:IInfoModelItemViewModel" ItemsSource="{Binding ChildInfoModelItemViewModels}">
-                        <StackPanel Orientation="Horizontal">
-                            <Border Margin="2"  Background="{Binding TypeColorBrush}" >
-                                <TextBlock Margin="2"  Text="{Binding TypeName}"></TextBlock>
-                            </Border>
-                            <TextBlock Margin="4" Text="{Binding Header}"></TextBlock>
-                        </StackPanel>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
+            dd:DragDrop.IsDropTarget="False">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                        <Setter Property="IsExpanded" Value="False"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.ItemTemplateSelector>
+                    <templateSelectors:ModelItemTemplateSelector>
+                        <templateSelectors:ModelItemTemplateSelector.ValueDataTemplate>
+                            <HierarchicalDataTemplate DataType="infoModelTree:DaiInfoModelItemViewModel" ItemsSource="{Binding ChildInfoModelItemViewModels}">
+                                <Grid HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Margin="2"  Background="{Binding TypeColorBrush}" >
+                                        <TextBlock Margin="2"  Text="{Binding TypeName}"></TextBlock>
+                                    </Border>
+                                    <TextBlock Grid.Column="1" Margin="4" Text="{Binding Header}"></TextBlock>
+                                    <TextBlock Grid.Column="3" Text="{Binding Value}"></TextBlock>
+                                </Grid>
+                            </HierarchicalDataTemplate>
+                        </templateSelectors:ModelItemTemplateSelector.ValueDataTemplate>
+                        <templateSelectors:ModelItemTemplateSelector.NoValueDataTemplate>
+                            <HierarchicalDataTemplate DataType="interfaces:IInfoModelItemViewModel" ItemsSource="{Binding ChildInfoModelItemViewModels}">
+                                <ContentControl Style="{DynamicResource BlockedContentStyle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Margin="2"  Background="{Binding TypeColorBrush}" >
+                                            <TextBlock Margin="2"  Text="{Binding TypeName}"></TextBlock>
+                                        </Border>
+                                        <TextBlock Margin="4" Text="{Binding Header}"></TextBlock>
+                                    </StackPanel>
+                                </ContentControl>
+                            </HierarchicalDataTemplate>
+                        </templateSelectors:ModelItemTemplateSelector.NoValueDataTemplate>
+                    </templateSelectors:ModelItemTemplateSelector>
+                </TreeView.ItemTemplateSelector>
             </TreeView>
-            <!--<ListView
-            Name="SclListView"
-       >
-                <i:Interaction.Behaviors>
-                    <behaviors:TreeGridBehavior />
-                </i:Interaction.Behaviors>
-                <ListView.View>
-                    <GridView >
-                        <GridView.Columns>
-                            <GridViewColumn  Width="{Binding ElementName=dummywidth1, Path=ActualWidth}" Header="Элемент">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                <ColumnDefinition Width="*"></ColumnDefinition>
-
-                                            </Grid.ColumnDefinitions>
-
-                                            <ToggleButton
-                                                Name="LevelTreeToggleButton"
-                                                Grid.Column="0"
-                                                Width="15"   Padding="2"                                           
-                                                Height="15"
-                                                Style="{DynamicResource MaterialDesignFlatPrimaryToggleButton}"
-                                                Margin="{Binding Level, Converter={StaticResource LevelToMarginConverter}}"
-                                                Tag="{Binding ElementName=SclListView, Path=ItemsSource}">
-                                                <i:Interaction.Behaviors>
-                                                    <behaviors:TreeViewToggleButtonBehavior />
-                                                </i:Interaction.Behaviors>
-                                                <ContentControl ContentTemplate="{DynamicResource ArrowBottomRight}"></ContentControl>
-                                            </ToggleButton>
-                                            <Border Margin="2" Grid.Column="1" Background="{Binding TypeColorBrush}" >
-                                                <TextBlock Margin="2"  Text="{Binding TypeName}"></TextBlock>
-                                            </Border>
-                                            <TextBlock Margin="4" Grid.Column="2" Text="{Binding Header}"></TextBlock>
-
-
-
-                                        </Grid>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn  Width="{Binding ElementName=dummywidth2, Path=ActualWidth}">
-                                <GridViewColumnHeader Width="{Binding ElementName=dummywidth2}"
-                                Visibility="{Binding IsDeviceConnected, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                                behaviors:CollapseableColumnBehavior.CollapseableColumn="True" >Данные (устройство)</GridViewColumnHeader>
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <ContentControl Content="{Binding Value}"></ContentControl>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn  Width="{Binding ElementName=dummywidth3, Path=ActualWidth}">
-                                <GridViewColumnHeader 
-                                                  Visibility="{Binding IsLocalValuesShowing, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                                                  behaviors:CollapseableColumnBehavior.CollapseableColumn="True" >Данные (файл)</GridViewColumnHeader>
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <ContentControl Content="{Binding ValueLocal}">
-                                        </ContentControl>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView.Columns>
-                    </GridView>
-                </ListView.View>
-            </ListView>-->
         </Grid>
         <Grid HorizontalAlignment="Stretch" Grid.Row="2" DataContext="{Binding Source={x:Reference Name=SclTreeView},Path=SelectedItem}">
             <Expander Name="expanderBottom" IsExpanded="True" Header="Выбранный элемент">

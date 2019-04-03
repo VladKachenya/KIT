@@ -11,17 +11,21 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Logging;
+using BISC.Infrastructure.Global.Services;
 
 namespace BISC.Modules.Reports.Model.Services
 {
     public class FtpReportModelService : IFtpReportModelService
     {
         private readonly IDeviceFileWritingServices _deviceFileWritingServices;
+	    private readonly ILoggingService _loggingService;
 
-        public FtpReportModelService(IDeviceFileWritingServices deviceFileWritingServices)
-        {
-            _deviceFileWritingServices = deviceFileWritingServices;
-        }
+	    public FtpReportModelService(IDeviceFileWritingServices deviceFileWritingServices,ILoggingService loggingService)
+	    {
+		    _deviceFileWritingServices = deviceFileWritingServices;
+		    _loggingService = loggingService;
+	    }
 
 
 
@@ -34,7 +38,14 @@ namespace BISC.Modules.Reports.Model.Services
             {
 
 
-                var fileString = await _deviceFileWritingServices.ReadFileStringFromDevice(ip, "1:/CFG", "XRCB.CFG");
+                var fileStringRes = await _deviceFileWritingServices.ReadFileStringFromDevice(ip, "1:/CFG", "XRCB.CFG");
+	            if (!fileStringRes.IsSucceed)
+	            {
+					_loggingService.LogMessage($"Ошибка чтения отчетов: {fileStringRes.GetFirstError()}",SeverityEnum.Warning);
+					return new List<IReportControl>(); 
+	            }
+
+	            var fileString = fileStringRes.Item;
                 TextReader textReader = new StringReader(fileString);
                 string reportPatternBr = "RCB(.*[$]BR[$].*)";
                 Regex reportRegexBr = new Regex(reportPatternBr);
@@ -79,10 +90,11 @@ namespace BISC.Modules.Reports.Model.Services
                 TextWriter streamWriter = new StringWriter(sb);
                 Write(reportControls, streamWriter, lDevice);
                 var fileString = sb.ToString();
-                if (!await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() { fileString },
-                    new List<string>() { "XRCB.CFG" }))
+	            var res = await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() {fileString},
+		            new List<string>() {"XRCB.CFG"});
+                if (!res.IsSucceed)
                 {
-                    return new OperationResult($"{ip}: FTP не отвечает");
+                    return new OperationResult($"{ip}: FTP не отвечает: {res.GetFirstError()}");
                 }
             }
             catch (Exception e)

@@ -1,19 +1,28 @@
-﻿using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
-using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Services;
-using BISC.Modules.Gooses.Presentation.ViewModels.Subscriptions;
-using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Modules.Gooses.Model.Services;
+using BISC.Modules.Gooses.Presentation.Commands;
+using BISC.Modules.Gooses.Presentation.Interfaces.Factories;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.BaseItems.ViewModels.Behaviors;
+using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
+using BISC.Presentation.Infrastructure.Services;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using BISC.Modules.Gooses.Model.Services.LoadingServices;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 {
@@ -21,145 +30,181 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
     {
         private readonly IDeviceModelService _deviceModelService;
         private readonly IBiscProject _biscProject;
-        private readonly IGoosesModelService _goosesModelService;
         private readonly ICommandFactory _commandFactory;
-        private readonly IProjectService _projectService;
+        private readonly IUserInterfaceComposingService _userInterfaceComposingService;
+        private readonly ISaveCheckingService _saveCheckingService;
+        private readonly IGlobalSavingService _globalSavingService;
+        private readonly IGooseSubscriptionDataTableFactory _dataTableFactory;
+        private readonly GooseInputModelInfosLoadingService _gooseInputModelInfosLoadingService;
+        private readonly ILoggingService _loggingService;
+        private readonly IConnectionPoolService _connectionPoolService;
         private List<IDevice> _devices;
-        private DataTable _gooseSubscriptionTable = new DataTable();
+        private DataTable _gooseSubscriptionTable;
+        private GooseSubscriptionSavingCommand _gooseSubscriptionSavingCommand;
+        private string _regionName;
 
+        private bool _isEneble = true;
 
-        public GooseSubscriptionTabViewModel(IDeviceModelService deviceModelService, IBiscProject biscProject, IGoosesModelService goosesModelService, ICommandFactory commandFactory, IProjectService projectService)
+        public GooseSubscriptionTabViewModel(IDeviceModelService deviceModelService, IBiscProject biscProject, IGoosesModelService goosesModelService,
+            ICommandFactory commandFactory, IUserInterfaceComposingService userInterfaceComposingService, ISaveCheckingService saveCheckingService,
+            GooseSubscriptionSavingCommand gooseSubscriptionSavingCommand, IGlobalSavingService globalSavingService, IGooseSubscriptionDataTableFactory dataTableFactory,
+            GooseInputModelInfosLoadingService gooseInputModelInfosLoadingService, ILoggingService loggingService, IConnectionPoolService connectionPoolService)
         {
             _deviceModelService = deviceModelService;
             _biscProject = biscProject;
-            _goosesModelService = goosesModelService;
             _commandFactory = commandFactory;
-            _projectService = projectService;
-            SaveChangesCommand = _commandFactory.CreatePresentationCommand(OnSaveChanges);
+            _userInterfaceComposingService = userInterfaceComposingService;
+            _saveCheckingService = saveCheckingService;
+            _globalSavingService = globalSavingService;
+            _dataTableFactory = dataTableFactory;
+            _gooseInputModelInfosLoadingService = gooseInputModelInfosLoadingService;
+            _loggingService = loggingService;
+            _connectionPoolService = connectionPoolService;
+            SaveChangesCommand = _commandFactory.CreatePresentationCommand(OnSaveChanges, () => _isEneble);
+            UpdateTableCommand = _commandFactory.CreatePresentationCommand(OnUpdateTable, () => _isEneble);
+            CheckChangesCommand = _commandFactory.CreatePresentationCommand(OnCheckChangesCommand);
+
+            _gooseSubscriptionSavingCommand = gooseSubscriptionSavingCommand;
+            BlockViewModelBehavior = new BlockViewModelBehavior();
         }
 
-        private void OnSaveChanges()
+        public ICommand CheckChangesCommand { get; set; }
+        private void OnCheckChangesCommand()
         {
-            var allDevices = _deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel.Value);
-            //  _gooseSubscriptionTable.AcceptChanges();
-            var table = GooseSubscriptionTable.ToTable();
-            for (int rowIndex = 0; rowIndex < table.Rows.Count; rowIndex++)
-            {
-                for (int colimnIndex = 1; colimnIndex < table.Columns.Count; colimnIndex++)
-                {
-                    var deviceName = table.Columns[colimnIndex].Caption;
-                    // Тут необходимо делать поиск по Guid
-                    var device = allDevices.First((device1 => device1.Name == deviceName));
-                    var rowValuew = table.Rows[rowIndex].ItemArray[colimnIndex];
-
-                    if (rowValuew is SubscriptionValue subscriptionValue && subscriptionValue.IsValueEditable && subscriptionValue.IsSelected.HasValue)
-                    {
-                        var rowHeader = table.Rows[rowIndex][0].ToString();
-                        var deviceNameForRow = rowHeader.Split('.')[0];
-                        // Тут должен быть Guid
-                        var deviceForRow = _devices.FirstOrDefault((d => d.Name == deviceNameForRow));
-                        var gooseControlName = rowHeader.Split('.')[1];
-                        var gooseControlsForRow = _goosesModelService.GetGooseControlsOfDevice(deviceForRow);
-                        var gooseControl = gooseControlsForRow.First((control => control.Name == gooseControlName));
-                        _goosesModelService.SetGooseControlSubscriber(subscriptionValue.IsSelected.Value, gooseControl, device);
-                    }
-                }
-            }
-
-            Task.Run((() => _projectService.SaveCurrentProject()));
+            ChangeTracker.SetModified();
         }
+
+        public ICommand UpdateTableCommand { get; set; }
 
         public ICommand SaveChangesCommand { get; }
 
+        public DataView GooseSubscriptionTable => GooseSubcriptionDataTable?.DefaultView;
+
+        public DataTable GooseSubcriptionDataTable
+        {
+            get => _gooseSubscriptionTable;
+            set
+            {
+                SetProperty(ref _gooseSubscriptionTable, value);
+                _gooseSubscriptionSavingCommand.Initialize(_gooseSubscriptionTable);
+                OnPropertyChanged(nameof(GooseSubscriptionTable));
+            }
+        }
+        #region Overrides of NavigationViewModelBase
+
         protected override void OnDisposing()
         {
+            _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             base.OnDisposing();
         }
 
-        public DataView GooseSubscriptionTable => _gooseSubscriptionTable.DefaultView;
-        #region Overrides of NavigationViewModelBase
-
         protected override async void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
+            BlockViewModelBehavior.SetBlock("Загрузка...", true);
             _devices = _deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel.Value);
-            await LoadSubscriptions();
+            _regionName = navigationContext.BiscNavigationParameters
+                .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
+            await LoadSubscriptionsTable(false);
+
             base.OnNavigatedTo(navigationContext);
+            BlockViewModelBehavior.Unlock();
         }
 
-
-        private async Task LoadSubscriptions()
+        public override void OnActivate()
         {
-            _gooseSubscriptionTable = new DataTable();
+            _userInterfaceComposingService.AddGlobalCommand(UpdateTableCommand, $"Обновить таблицу", IconsKeys.UpdateIconKey, false, true);
+            _userInterfaceComposingService.SetCurrentSaveCommand(SaveChangesCommand, "Сохранить подписку GOOSE для всех устройств", false);
+            base.OnActivate();
+        }
+
+        public override void OnDeactivate()
+        {
+            _userInterfaceComposingService.ClearCurrentSaveCommand();
+            _userInterfaceComposingService.DeleteGlobalCommand(UpdateTableCommand);
+            _userInterfaceComposingService.DeleteGlobalCommand(SaveChangesCommand);
+            base.OnDeactivate();
+        }
+        #endregion
 
 
-            var devicesInProject = _deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel.Value);
-            _gooseSubscriptionTable.Columns.Add(new DataColumn("GooseControl", typeof(string)));
-            _gooseSubscriptionTable.Columns[0].ReadOnly = true;
-            foreach (var deviceInProject in devicesInProject)
+        #region private methods
+
+        private void SetCommandsEneble(bool isEneble)
+        {
+            _isEneble = isEneble;
+            (SaveChangesCommand as IPresentationCommand)?.RaiseCanExecute();
+            (UpdateTableCommand as IPresentationCommand)?.RaiseCanExecute();
+        }
+
+        private async void OnSaveChanges()
+        {
+            SetCommandsEneble(false);
+            try
             {
-                _gooseSubscriptionTable.Columns.Add(new DataColumn(deviceInProject.Name, typeof(SubscriptionValue)));
+                BlockViewModelBehavior.SetBlock("Загрузка...", true);
+                await _globalSavingService.SaveСhangesToRegion(_regionName);
+                await LoadSubscriptionsTable(true);
+            }
+            finally
+            {
+                BlockViewModelBehavior.Unlock();
+                SetCommandsEneble(true);
+            }
+        }
+
+        private async void OnUpdateTable()
+        {
+            SetCommandsEneble(false);
+            try
+            {
+
+                BlockViewModelBehavior.SetBlock("Загрузка...", true);
+                await LoadSubscriptionsTable(true);
+            }
+            finally
+            {
+                BlockViewModelBehavior.Unlock();
+                SetCommandsEneble(true);
+            }
+        }
+
+        private async Task LoadSubscriptionsTable(bool updateFromDevice)
+        {
+
+            if (updateFromDevice)
+            {
+                await LoadSubscriptionsFromDevices();
             }
 
-            var isSavingNeeded = false;
-            foreach (var deviceInProject in devicesInProject)
+            _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
+            GooseSubcriptionDataTable = _dataTableFactory.GetGooseSubscriptionDataTableFactory();
+            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
+                $"Подписка GOOSE для всех устройств", _gooseSubscriptionSavingCommand, Guid.NewGuid(), _regionName));
+            ChangeTracker.AcceptChanges();
+            ChangeTracker.SetTrackingEnabled(true);
+        }
+
+        private async Task LoadSubscriptionsFromDevices()
+        {
+            foreach (var device in _devices)
             {
-                var gooseControls = _goosesModelService.GetGooseControlsOfDevice(deviceInProject);
-                foreach (var gooseControl in gooseControls)
+                if (_connectionPoolService.GetConnection(device.Ip).IsConnected)
                 {
-
-                    var goooseMatrixFtpForDevice = _goosesModelService.GetGooseMatrixFtpForDevice(deviceInProject);
-                    var rowValues = new List<object>();
-                    rowValues.Add(deviceInProject.Name + "." + gooseControl.Name);
-                    foreach (var deviceInnerIteration in devicesInProject)
+                    try
                     {
-                        if (deviceInnerIteration == deviceInProject)
-                        {
-                            rowValues.Add(new SubscriptionValue(null, false)); // самого на себя не подписывать
-                            continue;
-                        }
-
-                        var isSubscribed = false;
-                        if (gooseControl.SubscriberDevice.Any((subscriberDevice =>
-                            subscriberDevice.DeviceName == deviceInnerIteration.Name)))
-                        {
-                            isSubscribed = true;
-                        }
-                        else
-                        {
-                            if (goooseMatrixFtpForDevice != null)
-                            {
-                                var ldOfGooseControl = gooseControl.GetFirstParentOfType<ILDevice>().Inst;
-                                isSubscribed = goooseMatrixFtpForDevice.GoCbFtpEntities.Any((gocbRef =>
-                                      GoReferenceConformityCheck(gocbRef.GoCbReference, deviceInnerIteration.Name,
-                                          gooseControl.Name, ldOfGooseControl)));
-                                if (isSubscribed)
-                                    isSavingNeeded = true;
-
-                            }
-                        }
-
-                        rowValues.Add(new SubscriptionValue(isSubscribed));
+                        await _gooseInputModelInfosLoadingService.EstimateProgress(device);
+                        await _gooseInputModelInfosLoadingService.Load(device, null, _biscProject.MainSclModel.Value,
+                            new CancellationToken());
+                        _loggingService.LogMessage($"GooseInputModelInfo устройства {device.Name} вычитанны успешно",
+                            SeverityEnum.Info);
                     }
-                    _gooseSubscriptionTable.Rows.Add(rowValues.ToArray());
+                    catch (Exception e)
+                    {
+                        _loggingService.LogMessage($"Ошибка вычитывания GooseInputModelInfo устройства {device.Name}",
+                            SeverityEnum.Warning);
+                    }
                 }
             }
-
-            if (isSavingNeeded)
-            {
-                SaveChangesCommand?.Execute(null);
-            }
-        }
-
-        private bool GoReferenceConformityCheck(string referenceValue, string deviceName, string gooseName, string ldNameOfGoose)
-        {
-            var referenceValueParts = referenceValue.Split('/', '$');
-            if (referenceValueParts.Last() != gooseName) return false;
-            return referenceValueParts.First() == deviceName + ldNameOfGoose;
-        }
-
-        protected override void OnNavigatedFrom(BiscNavigationContext navigationContext)
-        {
-            base.OnNavigatedFrom(navigationContext);
         }
 
         #endregion

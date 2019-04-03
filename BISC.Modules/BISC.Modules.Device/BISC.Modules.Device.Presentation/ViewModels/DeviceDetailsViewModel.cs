@@ -1,4 +1,5 @@
-﻿using BISC.Infrastructure.Global.Services;
+﻿using System.Windows.Input;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Infrastructure.Events;
@@ -7,8 +8,11 @@ using BISC.Modules.Connection.Presentation.Interfaces.Factorys;
 using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces;
+using BISC.Modules.Device.Presentation.Interfaces.Services;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 
@@ -16,40 +20,43 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 {
     public class DeviceDetailsViewModel : NavigationViewModelBase, IDeviceDetailsViewModel
     {
+
         private readonly ISclCommunicationModelService _sclCommunicationModel;
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly IBiscProject _biscProject;
         private readonly IIpAddressViewModelFactory _ipAddressViewModelFactory;
         private readonly IGlobalEventsService _globalEventsService;
+        private readonly IDeviceIdentificationService _deviceIdentificationService;
+        private readonly IDeviceIpChangingService _deviceIpChangingService;
 
         private string _deviceName;
         private IDevice _device;
-        private string _regionName;
+        private UiEntityIdentifier _uiEntityIdentifier;
         private string _deviceIp;
         private bool _isIpUnchangeable;
 
-        public DeviceDetailsViewModel(ISclCommunicationModelService sclCommunicationModel, 
-            IConnectionPoolService connectionPoolService, IBiscProject biscProject, 
-            IIpAddressViewModelFactory ipAddressViewModelFactory, IGlobalEventsService globalEventsService)
+        public DeviceDetailsViewModel(ISclCommunicationModelService sclCommunicationModel,
+            IConnectionPoolService connectionPoolService, IBiscProject biscProject,
+            IIpAddressViewModelFactory ipAddressViewModelFactory, IGlobalEventsService globalEventsService,
+            ICommandFactory commandFactory, IDeviceIdentificationService deviceIdentificationService,
+            IDeviceIpChangingService deviceIpChangingService)
         {
             _sclCommunicationModel = sclCommunicationModel;
             _connectionPoolService = connectionPoolService;
             _biscProject = biscProject;
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
             _globalEventsService = globalEventsService;
+            _deviceIdentificationService = deviceIdentificationService;
+            _deviceIpChangingService = deviceIpChangingService;
+            ChengeIpCommand = commandFactory.CreatePresentationCommand(OnChengeIpCommand);
         }
 
         #region public methods
-
+        public bool IsBemnManufacturer { get; protected set; }
         public string DeviceName
         {
             get => _deviceName;
             set { SetProperty(ref _deviceName, value); }
-        }
-        public string DeviceIp
-        {
-            get => _deviceIp;
-            set { SetProperty(ref _deviceIp, value); }
         }
 
         public bool IsIpUnchangeable
@@ -59,26 +66,31 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         }
 
         public IIpAddressViewModel IpAddressViewModel { get; protected set; }
+
+        public ICommand ChengeIpCommand { get; }
+
         #endregion
 
         #region override methods
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
-            _regionName = navigationContext.BiscNavigationParameters
-                .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
+            _uiEntityIdentifier = navigationContext.BiscNavigationParameters
+                .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key);
             DeviceName = _device.Name;
+            IsBemnManufacturer = (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer);
+            string ip;
             if (_device.Ip != null)
             {
-                DeviceIp = _device.Ip;
+                ip = _device.Ip;
             }
             else
             {
-                DeviceIp = _sclCommunicationModel.GetIpOfDevice(_device.Name, _biscProject.MainSclModel.Value);
+                ip = _sclCommunicationModel.GetIpOfDevice(_device.Name, _biscProject.MainSclModel.Value);
             }
-            IsIpUnchangeable = _connectionPoolService.GetConnection(DeviceIp).IsConnected;
-            IpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel(DeviceIp,
-                _connectionPoolService.GetConnection(DeviceIp).IsConnected);
+            IsIpUnchangeable = _connectionPoolService.GetConnection(ip).IsConnected;
+            IpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel(ip,
+               !IsBemnManufacturer || _connectionPoolService.GetConnection(ip).IsConnected);
             _globalEventsService.Subscribe<LossConnectionEvent>(OnLostConnectionEvent);
             base.OnNavigatedTo(navigationContext);
         }
@@ -94,10 +106,16 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         private void OnLostConnectionEvent(LossConnectionEvent lossConnectionEvent)
         {
+            if (!IsBemnManufacturer) { return; }
             if (lossConnectionEvent.Ip == _device.Ip)
             {
                 (IpAddressViewModel as ComplexViewModelBase)?.SetIsEditable(!_connectionPoolService.GetConnection(_device.Ip).IsConnected);
             }
+        }
+
+        private void OnChengeIpCommand()
+        {
+            _deviceIpChangingService.ChengeDeviceIp(_device, IpAddressViewModel.FullIp, _uiEntityIdentifier.ParenUiEntityIdentifier);
         }
 
 

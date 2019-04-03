@@ -12,9 +12,10 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
     {
         Task<OperationResult<List<GooseFtpDto>>> GetGooseDtosFromDevice(string ip);
         Task<OperationResult> WriteGooseDtosToDevice(IDevice device, List<GooseFtpDto> gooseDtos);
-
 	    Task<OperationResult<IGooseMatrixFtp>> GetGooseMatrixByFtp(string ip);
-	    Task<OperationResult> WriteGooseMatrixToDevice(string ip, List<GooseFtpDto> gooseDtos);
+        Task<OperationResult> WriteGooseMatrixFtpToDevice(string ip, IGooseMatrixFtp gooseMatrixFtp);
+        Task<OperationResult<List<IGooseInputModelInfo>>> GetGooseDeviceInputFromDevice(string ip, string deviceName);
+        Task<OperationResult> WriteGooseDeviceInputFromDevice(string ip, List<IGooseInputModelInfo> gooseInputModelInfos);
 
-	}
+    }
 }

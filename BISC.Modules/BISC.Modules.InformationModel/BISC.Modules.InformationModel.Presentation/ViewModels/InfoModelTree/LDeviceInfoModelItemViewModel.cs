@@ -9,6 +9,7 @@ using BISC.Modules.InformationModel.Presentation.Interfaces;
 using BISC.Modules.InformationModel.Presentation.Interfaces.Helpers;
 using BISC.Modules.InformationModel.Presentation.Interfaces.InfoModelDetails;
 using BISC.Modules.InformationModel.Presentation.ViewModels.Base;
+using BISC.Presentation.BaseItems.ViewModels.Behaviors;
 
 namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
 {
@@ -20,6 +21,8 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
         public LDeviceInfoModelItemViewModel(ITreeItemDetailsBuilder treeItemDetailsBuilder)
         {
             _treeItemDetailsBuilder = treeItemDetailsBuilder;
+            BlockViewModelBehavior = new BlockViewModelBehavior();
+
         }
 
         public override List<IInfoModelDetail> TreeItemDetails

@@ -55,6 +55,10 @@ namespace BISC.Modules.Device.Model.Services
                 return new OperationResult($"Устройство с именем {device.Name} уже существует в модели");
             }
 
+	        if (string.IsNullOrEmpty(device.Ip))
+	        {
+		        device.Ip=_sclCommunicationModelService.GetIpOfDevice(device.Name, modelFrom);
+	        }
             _dataTypeTemplatesModelService.MergeDataTypeTemplates(sclModel, modelFrom);
             _sclCommunicationModelService.AddConnectedAccessPoint(sclModel, FindConnectedAccessPointOfTheDevice(modelFrom, device.Name));
             sclModel.ChildModelElements.Add(device);
@@ -137,6 +141,8 @@ namespace BISC.Modules.Device.Model.Services
             sclModel.ChildModelElements.Remove(device);
             return OperationResult.SucceedResult;
         }
+
+     
 
         public IDevice GetParentDevice(IModelElement childElement)
         {

@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml.Linq;
+using BISC.Model.Infrastructure.Serializing;
 
 namespace BISC.Modules.Reports.Presentation.Factorys
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,10 +16,10 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Rows
     {
    
         private IGooseRow _model;
+        private List<ISelectableValueViewModel> _selectableValueViewModels;
 
         public GooseRowViewModel()
         {
-          
             SelectableValueViewModels = new List<ISelectableValueViewModel>();
         }
         #region Implementation of IGooseRowViewModel
@@ -53,7 +54,12 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Rows
         //    }
         //}
 
-        public List<ISelectableValueViewModel> SelectableValueViewModels { get;}
+        public List<ISelectableValueViewModel> SelectableValueViewModels
+        {
+            get => _selectableValueViewModels;
+            protected set => SetProperty(ref _selectableValueViewModels, value);
+        }
+
         public string RowName { get; set; }
         public GooseControlBlockViewModel Parent { get; set; }
         public string GooseRowType { get; set; }
@@ -67,7 +73,10 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Rows
 
         protected override void OnDisposing()
         {
-            SelectableValueViewModels.ForEach((model => model.Dispose()));
+            foreach (var model in SelectableValueViewModels)
+            {
+                model.Dispose();
+            }
             base.OnDisposing();
         }
 

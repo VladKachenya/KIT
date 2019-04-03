@@ -63,6 +63,7 @@ namespace BISC.Presentation.Module
 
             userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(projectManagementService.SaveProjectAsync),
                 "Сохранить все изменения", IconsKeys.ContentSaveAllKey, false, true);
+            userInterfaceComposingService.AddGlobalCommand(null, null, null, false, true); //Separator
             userInterfaceComposingService.AddGlobalCommand
                 (commandFactory.CreatePresentationCommand(OnApplicatoinSettingsAdding, null), "Настройки", IconsKeys.SettingsIconKey, true, false);
 

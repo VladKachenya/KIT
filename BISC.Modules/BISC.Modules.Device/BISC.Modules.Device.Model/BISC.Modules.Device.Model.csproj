@@ -52,6 +52,7 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Config\DeviceFtpConfig.cs" />
     <Compile Include="Model\Device.cs" />
     <Compile Include="Module\DeviceModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -69,6 +70,8 @@
     </Compile>
     <Compile Include="Serialization\DeviceSerializer.cs" />
     <Compile Include="Services\DeviceConnectionService.cs" />
+    <Compile Include="Services\DeviceIdentificationService.cs" />
+    <Compile Include="Services\DeviceFtpConfigService.cs" />
     <Compile Include="Services\DeviceModelService.cs" />
     <Compile Include="Services\DeviceSerializingService.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -96,6 +99,10 @@
     <ProjectReference Include="..\..\BISC.Modules.Connection\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
       <Project>{84925CA6-959A-4094-9688-622DC28B7452}</Project>
       <Name>BISC.Modules.Connection.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BISC.Modules.FTP\BISC.Modules.FTP.Infrastructure\BISC.Modules.FTP.Infrastructure.csproj">
+      <Project>{60A162A1-2A6A-4A39-B349-4B718BA1FA1F}</Project>
+      <Name>BISC.Modules.FTP.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Infrastucture\BISC.Modules.InformationModel.Infrastucture.csproj">
       <Project>{1642183D-562D-4E50-B8F7-22205D731E45}</Project>

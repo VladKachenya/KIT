@@ -24,17 +24,20 @@ namespace BISC.Presentation.Services
         private readonly IRegionManager _regionManager;
         private readonly IUserNotificationService _userNotificationService;
         private readonly IInjectionContainer _injectionContainer;
+        private readonly ILoggingService _loggingService;
+
         private Dictionary<string, Tuple<string, BiscNavigationParameters>> _waitingRegionsdictionary =
             new Dictionary<string, Tuple<string, BiscNavigationParameters>>();
 
 
 
 
-        public NavigationService(IRegionManager regionManager, IUserNotificationService userNotificationService, IInjectionContainer injectionContainer)
+        public NavigationService(IRegionManager regionManager, IUserNotificationService userNotificationService, IInjectionContainer injectionContainer, ILoggingService loggingService)
         {
             _regionManager = regionManager;
             _userNotificationService = userNotificationService;
             _injectionContainer = injectionContainer;
+            _loggingService = loggingService;
         }
 
 
@@ -64,7 +67,7 @@ namespace BISC.Presentation.Services
                  {
                      if (result.Error != null)
                      {
-
+                         _loggingService.LogException(result.Error);
                      }
                  }), navigationParameters?.ToNavigationParameters());
 

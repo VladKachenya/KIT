@@ -1,4 +1,5 @@
-﻿using BISC.Presentation.Infrastructure.ViewModel;
+﻿using BISC.Presentation.BaseItems.ViewModels.Behaviors;
+using BISC.Presentation.Infrastructure.ViewModel;
 
 namespace BISC.Presentation.BaseItems.ViewModels
 {
@@ -6,7 +7,7 @@ namespace BISC.Presentation.BaseItems.ViewModels
     {
         private bool _isEditable;
         private bool _isSelected;
-
+        public BlockViewModelBehavior BlockViewModelBehavior { get; set; }=new BlockViewModelBehavior();
         public bool IsEditable
         {
             get => _isEditable;

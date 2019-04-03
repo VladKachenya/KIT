@@ -3,10 +3,8 @@ using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Events;
 using BISC.Modules.Connection.Infrastructure.Services;
-using BISC.Modules.Device.Infrastructure.Events;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
-using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Model.Services;
 using BISC.Modules.Gooses.Presentation.Commands;
@@ -25,6 +23,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Modules.Gooses.Model.Services.LoadingServices;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 {
@@ -77,6 +76,27 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             UpdateGoosesCommand = commandFactory.CreatePresentationCommand(OnUpdateGooses, () => _isUpdateGooses);
         }
 
+        #region public interfase
+
+        public ObservableCollection<GooseControlViewModel> GooseControlViewModels
+        {
+            get => _gooseControlViewModels;
+            set
+            {
+                SetProperty(ref _gooseControlViewModels, value);
+                _gooseControlsSavingCommand.Initialize(GooseControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            }
+        }
+        public ICommand DeleteGooseCommand { get; }
+        public IPresentationCommand AddGooseCommand { get; }
+
+        public ICommand UpdateGoosesCommand { get; }
+
+
+        public ICommand SaveCommand { get; }
+
+        #endregion
+
         private async void OnUpdateGooses()
         {
             _isUpdateGooses = false;
@@ -109,6 +129,9 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             }
             UpdateViewModels();
             AddGooseCommand.RaiseCanExecute();
+            _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
+            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker, $"Блоки управления GOOSE {_device.Name}", _gooseControlsSavingCommand,
+                _device.DeviceGuid, _regionName));
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
             BlockViewModelBehavior.Unlock();
@@ -151,13 +174,12 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
                 _loggingService.LogUserAction(
                     $"Пользователь сохряняет изменения в Goose CB устройства {_device.Name})");
-                _gooseControlsSavingCommand.Initialize(GooseControlViewModels, _device);
+                //_gooseControlsSavingCommand.Initialize(GooseControlViewModels, _device);
                 BlockViewModelBehavior.SetBlock("Сохранение блоков управления Goose", true);
                 var savingResult = await _globalSavingService.SaveСhangesToRegion(_regionName);
                 if (savingResult.IsSaved)
                 {
-                    UpdateViewModels();
-                    ChangeTracker.AcceptChanges();
+                    await UpdateGooses(true);
                 }
             }
             finally
@@ -177,9 +199,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
             await UpdateGooses(false);
-            _gooseControlsSavingCommand.Initialize(GooseControlViewModels, _device);
-            _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker, $"Блоки управления GOOSE {_device.Name}", _gooseControlsSavingCommand,
-                _device.DeviceGuid, _regionName));
+            
             base.OnNavigatedTo(navigationContext);
         }
 
@@ -189,19 +209,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             GooseControlViewModels = new ObservableCollection<GooseControlViewModel>(_gooseControlViewModelFactory.CreateGooseControlViewModel(_device, gooseControls));
         }
 
-
-        public ObservableCollection<GooseControlViewModel> GooseControlViewModels
-        {
-            get => _gooseControlViewModels;
-            set { SetProperty(ref _gooseControlViewModels, value); }
-        }
-        public ICommand DeleteGooseCommand { get; }
-        public IPresentationCommand AddGooseCommand { get; }
-
-        public ICommand UpdateGoosesCommand { get; }
-
-
-        public ICommand SaveCommand { get; }
         public override void OnActivate()
         {
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить блоки управления GOOSE устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);

@@ -80,12 +80,20 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _navigationService = navigationService;
             DeleteDeviceCommand = commandFactory.CreatePresentationCommand(OnDeleteDeviceExecute);
             NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
-            ResetDeviceViaFtpCommand = commandFactory.CreatePresentationCommand(OnResetDeviceViaFtp, IsResetDeviceViaFtp);
+            ResetDeviceViaFtpCommand = commandFactory.CreatePresentationCommand(OnResetDeviceViaFtp, IsDeviceReadyForFtpOps);
+            NavigateToConfigCommand = commandFactory.CreatePresentationCommand(OnNavigateToConfig, IsDeviceReadyForFtpOps);
             ExportCidDeviceCommand = commandFactory.CreatePresentationCommand(OnExportCidDevice);
             DisconnectDeviceCommand = commandFactory.CreatePresentationCommand(OnDisconnectDevice, CanDisconnectDevice);
             ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDevice, CanConnectDevice);
             WarningsCollection = new ObservableCollection<string>();
 
+        }
+
+        private void OnNavigateToConfig()
+        {
+            BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
+            biscNavigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, _device);
+            _tabManagementService.NavigateToTab(DeviceKeys.DeviceConfigViewKey, biscNavigationParameters, $"IED Config {_device.Name}", _uiEntityIdentifier);
         }
 
         private void OnConnectDevice()
@@ -136,11 +144,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             await _deviceReconnectionService.RestartDevice(_device, _uiEntityIdentifier);
         }
 
-        private bool IsResetDeviceViaFtp()
+        private bool IsDeviceReadyForFtpOps()
         {
-            if (!IsDeviceConnected) return false;
-            if (_device.Manufacturer != DeviceKeys.DeviceManufacturer.BemnManufacturer) return false;
-            return true;
+			if (!IsDeviceConnected) return false;
+			if (_device.Manufacturer != DeviceKeys.DeviceManufacturer.BemnManufacturer) return false;
+			return true;
         }
 
         private void OnNavigateToDetailsExecute()
@@ -182,18 +190,19 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             if (!isSaved)
             {
                 var res = await _userInteractionService.ShowOptionToUser("Несохраненные изменения",
-                      "В устройстве имеются несохраненные изменения." + Environment.NewLine + "Все равно удалить?",
-                      new List<string>() { "Удалить", "Отмена" });
+                    "В устройстве имеются несохраненные изменения." + Environment.NewLine + "Все равно удалить?",
+                    new List<string>() {"Удалить", "Отмена"});
                 if (res == 1)
                 {
                     return;
                 }
             }
             var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, _device.DeviceGuid);
+            
             if (result.IsSucceed)
             {
                 // тут необходимо скорее всего через Guid делать
-                _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject.MainSclModel.Value,
+                _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject,
                     _device.Name);
 
                 _treeManagementService.DeleteTreeItem(_uiEntityIdentifier);
@@ -272,6 +281,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         public ICommand DeleteDeviceCommand { get; }
         public ICommand NavigateToDetailsCommand { get; }
         public ICommand ResetDeviceViaFtpCommand { get; }
+        public ICommand NavigateToConfigCommand { get; }
 
         public ICommand ExportCidDeviceCommand { get; }
 

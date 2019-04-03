@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model;
+using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 
 namespace BISC.Modules.Gooses.Infrastructure.Services
@@ -14,22 +16,18 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
         void AddGseControl(string lnName, string ldName, IModelElement devcice, IGooseControl gooseControl);
         List<IGooseInput> GetGooseInputsOfDevice(IDevice device);
         List<IGooseControl> GetGooseControlsOfDevice(IDevice device);
-        void DeleteAllDeviceReferencesInGooseControlsInModel(ISclModel sclModel, string iedName);
-        //void AddSubscriberDevice(IDevice device,ISclModel sclModelOfDevice,)
-        void SetGooseControlSubscriber(bool isSubscribed, IGooseControl gooseControl, IDevice device);
-        void AddGooseExternalReferenceToDevice(IFcda fcda, IDevice device, string deviceNameOfFcda);
+        void DeleteAllDeviceReferencesInGooseControlsInModel(IBiscProject biscProject, string iedName);
+
+        //void AddGooseExternalReferenceToDevice(IFcda fcda, IDevice device, string deviceNameOfFcda);
         List<Tuple<IDevice, IGooseControl>> GetGooseControlsSubscribed(IDevice deviceSubscriber, ISclModel sclModel);
+        IGooseDeviceInput GetGooseDeviceInputOfProject(IBiscProject biscProject, IDevice device);
+        void SetGooseInputModelInfosToProject(IBiscProject biscProject, IDevice device, List<IGooseInputModelInfo> inputs);
 
-        void SetGooseMatrixForDevice(IDevice device,IGooseMatrix gooseMatrix);
+        List<IGooseInputModelInfo> GetGooseInputModelInfos(IDevice device);
 
-        IGooseMatrix GetGooseMatrixForDevice(IDevice device);
+        void DeleteGooseCbAndGseByName(string name, IDevice device);
 
-	    void SetGooseMatrixFtpForDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp);
-
-	    IGooseMatrixFtp GetGooseMatrixFtpForDevice(IDevice device);
-
-		void DeleteGooseCbAndGseByName(string name, IDevice device);
-        bool CompareFcdaAndExtRef(IExternalGooseRef externalGooseRef, IFcda fcda);
         void DeleteAllGoosesFromDevice(IDevice device);
+
     }
 }

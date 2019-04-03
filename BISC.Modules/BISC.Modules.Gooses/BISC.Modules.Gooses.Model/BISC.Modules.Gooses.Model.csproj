@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Factorys\GooseInputModelIngoFactory.cs" />
+    <Compile Include="Helpers\GooseMatrixFtpToFileParser.cs" />
+    <Compile Include="Helpers\StaticGooseStringHelper.cs" />
     <Compile Include="Model\ExternalGooseRef.cs" />
     <Compile Include="Model\GoCbFtpEntity.cs" />
     <Compile Include="Model\GooseControl.cs" />
@@ -52,7 +55,7 @@
     <Compile Include="Model\GooseRowFtpEntity.cs" />
     <Compile Include="Model\GooseRowQualityFtpEntity.cs" />
     <Compile Include="Model\MacAddressEntity.cs" />
-    <Compile Include="Model\Matrix\GooseMatrix.cs" />
+    <Compile Include="Model\Matrix\GooseDeviceInput.cs" />
     <Compile Include="Model\Matrix\GooseMatrixFtp.cs" />
     <Compile Include="Model\Matrix\GooseRow.cs" />
     <Compile Include="Model\SubscriberDevice.cs" />
@@ -60,18 +63,23 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers\ExternalGooseRefSerializer.cs" />
     <Compile Include="Serializers\FtpMatrix\GoCbFtpEntitySerializer.cs" />
+    <Compile Include="Model\Matrix\GooseInputModelInfo.cs" />
+    <Compile Include="Serializers\FtpMatrix\GooseDeviceInputSerializer.cs" />
+    <Compile Include="Serializers\FtpMatrix\GooseInputModelInfoSerializer.cs" />
     <Compile Include="Serializers\FtpMatrix\GooseMatrixFtpSerializer.cs" />
     <Compile Include="Serializers\FtpMatrix\GooseQualityRowFtpEntitySerializer.cs" />
     <Compile Include="Serializers\FtpMatrix\GooseRowFtpEntitySerializer.cs" />
     <Compile Include="Serializers\FtpMatrix\MacAddressEntitySerializer.cs" />
     <Compile Include="Serializers\GooseControlSerializer.cs" />
     <Compile Include="Serializers\GooseInputSerializer.cs" />
-    <Compile Include="Serializers\GooseMatrixSerializer.cs" />
     <Compile Include="Serializers\GooseRowSerializer.cs" />
     <Compile Include="Serializers\SubscriberDeviceSerializer.cs" />
     <Compile Include="Services\FtpGooseModelService.cs" />
-    <Compile Include="Services\GooseMatrixLoadingService.cs" />
-    <Compile Include="Services\GoosesLoadingService.cs" />
+    <Compile Include="Services\GooseMatrixFtpService.cs" />
+    <Compile Include="Services\LoadingServices\GooseInputModelInfosLoadingService.cs" />
+    <Compile Include="Services\LoadingServices\GooseMatrixLoadingService.cs" />
+    <Compile Include="Services\GooseSavingService.cs" />
+    <Compile Include="Services\LoadingServices\GoosesLoadingService.cs" />
     <Compile Include="Services\GoosesModelService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +94,10 @@
     <ProjectReference Include="..\..\..\BISC.Model\BISC.Model.Infrastructure\BISC.Model.Infrastructure.csproj">
       <Project>{11F8EB7F-9804-4902-942B-3631A8D83B06}</Project>
       <Name>BISC.Model.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\BISC.Presentation\BISC.Presentation.Infrastructure\BISC.Presentation.Infrastructure.csproj">
+      <Project>{D4FEAC3B-C8F9-4DE7-8953-988C75F0F9AA}</Project>
+      <Name>BISC.Presentation.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules.Connection\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
       <Project>{84925CA6-959A-4094-9688-622DC28B7452}</Project>

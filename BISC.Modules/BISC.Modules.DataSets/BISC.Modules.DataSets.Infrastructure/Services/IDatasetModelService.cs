@@ -10,5 +10,6 @@ namespace BISC.Modules.DataSets.Infrastructure.Services
         void DeleteDatasetFromDevice(IDataSet dataSet, IModelElement device, string ldName = null, string lnFullName = null);
         void DeleteAllDatasetsFromDevice(IModelElement device);
         List<IDataSet> GetAllDataSetOfDevice(IModelElement device);
+        IDataSet GetDataSetOfDevice(IModelElement device, string dataSetName);
     }
 }

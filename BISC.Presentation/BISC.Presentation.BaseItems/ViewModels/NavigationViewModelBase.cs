@@ -25,7 +25,7 @@ namespace BISC.Presentation.BaseItems.ViewModels
         }
 
 
-        public BlockViewModelBehavior BlockViewModelBehavior { get; set; }
+    
 
         public bool IsActive
         {

@@ -15,17 +15,17 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
             public static string GooseControlKey => "GSEControl";
             public static string SubscriberDeviceKey => "IEDName";
             public static string GooseRowKey => "GooseRow";
-            public static string GooseMatrixKey => "GooseMatrix";
-
 	        public static string GooseMatrixFtpKey => "GooseMatrixFtp";
 	        public static string GoCbFtpEntityKey => "GoCbFtpEntity";
 	        public static string GooseRowFtpEntityKey => "GooseRowFtpEntity";
 	        public static string MacAddressEntityKey => "MacAddressEntity";
 	        public static string GooseRowQualityFtpEntityKey => "GooseRowQualityFtpEntity";
+	        public static string GooseInputModelInfoKey => "GooseInputModelInfo";
 
+            public static string GooseDeviceInputKey => "GooseDeviceInput";
 
-		}
-		public static class GoosePresentationKeys
+        }
+        public static class GoosePresentationKeys
         {
   
             public static string GooseGroupTreeItemViewKey => "GooseGroupTreeItemView";
@@ -39,8 +39,6 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
 
             public static string GooseMatrixViewKey => "GooseMatrixView";
 
-
-
         }
         public static class GooseWarningKeys
         {
@@ -48,7 +46,13 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
             public static string GooseSavedFtpKey => "GooseSavedFtp";
             public static string ErrorGettingGooseOutOfDeviceKey => "ErrorGettingGooseOutOfDevice";
 
+        }
 
+        public static class GooseSubscriptionPresentationKeys
+        {
+            public static string ValidityKey = "Validity";
+            public static string QualityKey = "Quality";
+            public static string StateKey = "State";
 
         }
     }

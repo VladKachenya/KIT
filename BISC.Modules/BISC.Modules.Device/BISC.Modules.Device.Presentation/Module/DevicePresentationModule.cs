@@ -16,11 +16,13 @@ using BISC.Modules.Device.Presentation.Interfaces.Factories;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
 using BISC.Modules.Device.Presentation.Services;
 using BISC.Modules.Device.Presentation.ViewModels;
+using BISC.Modules.Device.Presentation.ViewModels.Config;
 using BISC.Modules.Device.Presentation.ViewModels.Conflicts;
 using BISC.Modules.Device.Presentation.ViewModels.Factories;
 using BISC.Modules.Device.Presentation.ViewModels.Restart;
 using BISC.Modules.Device.Presentation.ViewModels.Tree;
 using BISC.Modules.Device.Presentation.Views;
+using BISC.Modules.Device.Presentation.Views.Config;
 using BISC.Modules.Device.Presentation.Views.Conflicts;
 using BISC.Modules.Device.Presentation.Views.Restart;
 using BISC.Presentation.Infrastructure.Commands;
@@ -53,6 +55,7 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<object, DeviceConflictsView>(DeviceKeys.DeviceConflictsViewKey);
             _injectionContainer.RegisterType<object, ReconnectDeviceView>(DeviceKeys.ReconnectDeviceViewKey);
             _injectionContainer.RegisterType<object, ReconnectDeviceTreeItemView>(DeviceKeys.ReconnectDeviceTreeItemViewKey);
+            _injectionContainer.RegisterType<object, DeviceConfigView>(DeviceKeys.DeviceConfigViewKey);
 
             _injectionContainer.RegisterType<DeviceAddingViewModel>();
             _injectionContainer.RegisterType<IFileViewModel, FileViewModel>();
@@ -72,16 +75,19 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<DeviceTreeItemViewModel>();
             _injectionContainer.RegisterType<DeviceDetailsViewModel>();
             _injectionContainer.RegisterType<IDeviceReconnectionService, DeviceReconnectionService>();
+            _injectionContainer.RegisterType<MacFiltersViewModel>();
 
             _injectionContainer.RegisterType<DeviceFromFileAddingViewModel>();
             _injectionContainer.RegisterType<DeviceConnectingViewModel>();
 
             _injectionContainer.RegisterType<DeviceRestartViewModel>();
 
-            
+            _injectionContainer.RegisterType<DeviceConfigViewModel>();
+
 
             _injectionContainer.RegisterType<DeviceLoadingTreeItemViewModel>();
             _injectionContainer.RegisterType<IDeviceLoadingService, DeviceLoadingService>();
+            _injectionContainer.RegisterType<IDeviceIpChangingService, DeviceIpIpChangingService>();
 
             var presentationInitialization = _injectionContainer.ResolveType(typeof(DevicePresentationInitialization)) as DevicePresentationInitialization;
 
