@@ -46,7 +46,7 @@ namespace BISC.Modules.Gooses.Presentation.Module
 
             _injectionContainer.RegisterType<IGooseControlBlockViewModelFactory, GooseControlBlockViewModelFromFtpFactory>();
             _injectionContainer.RegisterType<GooseControlsSavingCommand>();
-            _injectionContainer.RegisterType<GooseMatrixSavingCommand>();
+            //_injectionContainer.RegisterType<GooseMatrixSavingCommand>();
 
             _injectionContainer.RegisterType<GooseSubscriptionSavingCommand>();
 

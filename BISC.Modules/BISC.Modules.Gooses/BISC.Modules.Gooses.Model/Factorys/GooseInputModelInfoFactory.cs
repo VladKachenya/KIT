@@ -17,14 +17,14 @@ using BISC.Modules.InformationModel.Infrastucture.Elements;
 
 namespace BISC.Modules.Gooses.Model.Factorys
 {
-    public class GooseInputModelIngoFactory : IGooseInputModelIngoFactory
+    public class GooseInputModelInfoFactory : IGooseInputModelInfoFactory
     {
 
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IBiscProject _biscProject;
         private readonly IDatasetModelService _datasetModelService;
 
-        public GooseInputModelIngoFactory(ISclCommunicationModelService sclCommunicationModelService, 
+        public GooseInputModelInfoFactory(ISclCommunicationModelService sclCommunicationModelService, 
             IBiscProject biscProject, IDatasetModelService datasetModelService)
         {
             _sclCommunicationModelService = sclCommunicationModelService;

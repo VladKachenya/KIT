@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Logging;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading;
@@ -17,14 +19,17 @@ namespace BISC.Modules.Gooses.Model.Services.LoadingServices
 		private readonly IFtpGooseModelService _ftpGooseModelService;
 		private readonly IDeviceWarningsService _deviceWarningsService;
 	    private readonly IGooseMatrixFtpService _gooseMatrixFtpService;
+	    private readonly ILoggingService _loggingService;
 
 	    public GooseMatrixLoadingService(IGoosesModelService goosesModelService,
-			IFtpGooseModelService ftpGooseModelService,IDeviceWarningsService deviceWarningsService, IGooseMatrixFtpService gooseMatrixFtpService)
+			IFtpGooseModelService ftpGooseModelService,IDeviceWarningsService deviceWarningsService, IGooseMatrixFtpService gooseMatrixFtpService,
+	        ILoggingService loggingService)
 		{
 			_goosesModelService = goosesModelService;
 			_ftpGooseModelService = ftpGooseModelService;
 			_deviceWarningsService = deviceWarningsService;
 		    _gooseMatrixFtpService = gooseMatrixFtpService;
+		    _loggingService = loggingService;
 		}
 
 
@@ -49,6 +54,7 @@ namespace BISC.Modules.Gooses.Model.Services.LoadingServices
                     _deviceWarningsService.SetWarningOfDevice(device.DeviceGuid,
                         GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey,
                         "Ошибка вычитывания Goose матрицы из устройства");
+                    _loggingService.LogMessage(resMatrix.GetFirstError(), SeverityEnum.Critical);
                 }
                 else
                 {

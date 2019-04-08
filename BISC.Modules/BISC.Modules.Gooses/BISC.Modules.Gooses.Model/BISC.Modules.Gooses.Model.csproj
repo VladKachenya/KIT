@@ -45,7 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Factorys\GooseInputModelIngoFactory.cs" />
+    <Compile Include="Factorys\GoCbFtpEntityFactory.cs" />
+    <Compile Include="Factorys\GooseInputModelInfoFactory.cs" />
     <Compile Include="Helpers\GooseMatrixFtpToFileParser.cs" />
     <Compile Include="Helpers\StaticGooseStringHelper.cs" />
     <Compile Include="Model\ExternalGooseRef.cs" />

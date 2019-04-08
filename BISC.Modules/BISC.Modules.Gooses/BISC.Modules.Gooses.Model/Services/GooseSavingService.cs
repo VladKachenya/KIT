@@ -4,36 +4,36 @@ using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Factorys;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
+using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 
 namespace BISC.Modules.Gooses.Model.Services
 {
     public class GooseSavingService : IGooseSavingService
     {
-        private readonly IGooseInputModelIngoFactory _gooseInputModelIngoFactory;
+        private readonly IGooseInputModelInfoFactory _gooseInputModelIngoFactory;
         private readonly IGoosesModelService _goosesModelService;
         private readonly IConnectionPoolService _connectionPoolService;
-        private readonly IModelElementsRegistryService _elementsRegistryService;
         private readonly IBiscProject _biscProject;
         private readonly Func<IFtpGooseModelService> _ftpGooseModelService;
         private readonly IGooseMatrixFtpService _gooseMatrixFtpService;
+        private readonly IGoCbFtpEntityFactory _cbFtpEntityFactory;
 
-        public GooseSavingService(IGooseInputModelIngoFactory gooseInputModelIngoFactory, IGoosesModelService goosesModelService,
-            IConnectionPoolService connectionPoolService, IModelElementsRegistryService elementsRegistryService, IBiscProject biscProject,
-            Func<IFtpGooseModelService> ftpGooseModelService, IGooseMatrixFtpService gooseMatrixFtpService)
+        public GooseSavingService(IGooseInputModelInfoFactory gooseInputModelIngoFactory, IGoosesModelService goosesModelService,
+            IConnectionPoolService connectionPoolService, IBiscProject biscProject,
+            Func<IFtpGooseModelService> ftpGooseModelService, IGooseMatrixFtpService gooseMatrixFtpService, IGoCbFtpEntityFactory cbFtpEntityFactory)
         {
             _gooseInputModelIngoFactory = gooseInputModelIngoFactory;
             _goosesModelService = goosesModelService;
             _connectionPoolService = connectionPoolService;
-            _elementsRegistryService = elementsRegistryService;
             _biscProject = biscProject;
             _ftpGooseModelService = ftpGooseModelService;
             _gooseMatrixFtpService = gooseMatrixFtpService;
+            _cbFtpEntityFactory = cbFtpEntityFactory;
         }
 
         #region Implementation of IGooseSavingService
@@ -43,7 +43,7 @@ namespace BISC.Modules.Gooses.Model.Services
         public async Task SaveSubscriptionGooces(IDevice subscribingDevice, List<IGooseInputModelInfo> acceptedGooses)
         {
             WriteGooseInputsModelInfoToMainProjectIDevice(subscribingDevice, acceptedGooses);
-           
+
 
             var gooseMatrix = _gooseMatrixFtpService.GetGooseMatrixFtpForDevice(subscribingDevice);
             var gooseInputModelInfoList = _goosesModelService.GetGooseDeviceInputOfProject(_biscProject, subscribingDevice).GooseInputModelInfoList.ToList();
@@ -55,7 +55,6 @@ namespace BISC.Modules.Gooses.Model.Services
                 await WriteGooseInputsModelInfoToDevice(subscribingDevice, acceptedGooses);
                 await WriteGooseMatrixToDevice(subscribingDevice, gooseMatrix);
             }
-            //Добавить запись матрицы по FTP
         }
 
         public async Task SaveSubscriptionMatrix(IDevice device, List<Tuple<string, IGooseRowFtpEntity>> subscriptionEntity)
@@ -64,7 +63,7 @@ namespace BISC.Modules.Gooses.Model.Services
             _gooseMatrixFtpService.SetSubscriptionRowsToMatrix(subscriptionMatrix, subscriptionEntity);
             if (_connectionPoolService.GetConnection(device.Ip).IsConnected)
             {
-                await _ftpGooseModelService().WriteGooseMatrixFtpToDevice(device.Ip, subscriptionMatrix);
+                await _ftpGooseModelService().WriteGooseMatrixFtpToDevice(device, subscriptionMatrix);
             }
         }
         #endregion
@@ -73,14 +72,15 @@ namespace BISC.Modules.Gooses.Model.Services
 
         private void MatchMatrixToInputs(IGooseMatrixFtp gooseMatrix, List<IGooseInputModelInfo> gooseInputModelInfoList)
         {
-            var goosesToMatrixRefs = gooseMatrix.GoCbFtpEntities.Select(el => el.GoCbReference).ToList();
-            var goosesToInputModelInfoRef = gooseInputModelInfoList.Select(el => el.GocbRef).ToList();
+            var goosesToMatrixRefs = gooseMatrix.GoCbFtpEntities;
+            var goosesToInputModelInfoRef = gooseInputModelInfoList.Select(el => _cbFtpEntityFactory.GetIGoCbFtpEntityFromGooseInputModelInfo(el)).ToList();
             var macAddressesToInputs = gooseInputModelInfoList.Select(el => el.EmittingGse.Value.MacAddress).ToList();
 
             // Удаление неотмеченых 
-            foreach (var gooseRef in goosesToMatrixRefs)
+            //var forEnumeration = ;
+            foreach (var gooseRef in new List<IGoCbFtpEntity>(goosesToMatrixRefs))
             {
-                if (!goosesToInputModelInfoRef.Contains(gooseRef))
+                if (!goosesToInputModelInfoRef.Any(el => el.ModelElementCompareTo(gooseRef)))
                 {
                     _gooseMatrixFtpService.DeleteGooseSubscription(gooseMatrix, gooseRef);
                 }
@@ -90,13 +90,14 @@ namespace BISC.Modules.Gooses.Model.Services
             // Добавление отмеченых
             foreach (var element in gooseInputModelInfoList)
             {
-                _gooseMatrixFtpService.AddGooseCdFtpEntityToMatrix(gooseMatrix, element.GocbRef, element.EmittingGse.Value.AppId);
+                _gooseMatrixFtpService.AddGooseCdFtpEntityToMatrix(gooseMatrix, element.GocbRef, element.EmittingGse.Value.AppId,
+                    (uint)element.EmittingGooseControl.Value.ConfRev);
                 _gooseMatrixFtpService.AddMacAddressToMatrix(gooseMatrix, element.EmittingGse.Value.MacAddress);
             }
 
             //Сопоставление мак адресов
-            gooseMatrix.MacAddressList.Clear();
-            macAddressesToInputs.ForEach(el => _gooseMatrixFtpService.AddMacAddressToMatrix(gooseMatrix, el));
+            //gooseMatrix.MacAddressList.Clear();
+            //macAddressesToInputs.ForEach(el => _gooseMatrixFtpService.AddMacAddressToMatrix(gooseMatrix, el));
 
         }
 
@@ -123,7 +124,7 @@ namespace BISC.Modules.Gooses.Model.Services
         {
 
             var writingResult =
-                await _ftpGooseModelService().WriteGooseMatrixFtpToDevice(device.Ip, gooseMatrixFtp);
+                await _ftpGooseModelService().WriteGooseMatrixFtpToDevice(device, gooseMatrixFtp);
             if (!writingResult.IsSucceed)
             {
                 throw new Exception($"Ошибка при записи файла подписок в устройство {device.Name}");

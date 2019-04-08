@@ -6,7 +6,7 @@ using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Services;
-using BISC.Modules.Gooses.Model.Services;
+using BISC.Modules.Gooses.Model.Services.LoadingServices;
 using BISC.Modules.Gooses.Presentation.Commands;
 using BISC.Modules.Gooses.Presentation.Factories;
 using BISC.Modules.Gooses.Presentation.ViewModels.GooseControls;
@@ -23,7 +23,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using BISC.Modules.Gooses.Model.Services.LoadingServices;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 {
@@ -84,7 +83,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             set
             {
                 SetProperty(ref _gooseControlViewModels, value);
-                _gooseControlsSavingCommand.Initialize(GooseControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+                _gooseControlsSavingCommand.Initialize(GooseControlViewModels, _device,
+                    () => _connectionPoolService.GetConnection(_device.Ip).IsConnected && this.ChangeTracker.GetIsModifiedRecursive());
             }
         }
         public ICommand DeleteGooseCommand { get; }
@@ -199,7 +199,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
             await UpdateGooses(false);
-            
+
             base.OnNavigatedTo(navigationContext);
         }
 

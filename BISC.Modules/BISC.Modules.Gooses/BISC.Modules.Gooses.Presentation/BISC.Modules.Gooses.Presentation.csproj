@@ -54,7 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\GooseControlsSavingCommand.cs" />
-    <Compile Include="Commands\GooseMatrixSavingCommand.cs" />
     <Compile Include="Commands\GooseSubscriptionMatrixSavingCommand.cs" />
     <Compile Include="Commands\GooseSubscriptionSavingCommand.cs" />
     <Compile Include="Converters\DataRowViewConverter.cs" />
@@ -65,7 +64,6 @@
     <Compile Include="Factories\GooseControlViewModelFactory.cs" />
     <Compile Include="Factories\GooseRowViewModelFactory.cs" />
     <Compile Include="Factories\GooseSubscriptionDataTableFactory.cs" />
-    <Compile Include="FileParsers\ResultFileParser.cs" />
     <Compile Include="Interfaces\Factories\IGooseControlBlockViewModelFactory.cs" />
     <Compile Include="Interfaces\Factories\IGooseRowViewModelFactory.cs" />
     <Compile Include="Interfaces\Factories\IGooseSubscriptionDataTableFactory.cs" />

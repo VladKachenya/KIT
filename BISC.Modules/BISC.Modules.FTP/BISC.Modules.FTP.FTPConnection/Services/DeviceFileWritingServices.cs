@@ -63,6 +63,25 @@ namespace BISC.Modules.FTP.FTPConnection.Services
             return new OperationResult<string>(file,true);
         }
 
+        public async Task<OperationResult> DeletFileStringFromDevice(string ip, string filePath)
+        {
+            try
+            {
+                var ftpClient = await _ftpClientWrapper.Connect(ip);
+                await ftpClient.DeleteFileAsync(filePath);
+            }
+            catch (Exception e)
+            {
+                return new OperationResult(e.Message);
+            }
+            finally
+            {
+                await _ftpClientWrapper.Disconnect();
+
+            }
+            return new OperationResult();
+        }
+
 
         public async Task ResetDevice(string ip)
         {

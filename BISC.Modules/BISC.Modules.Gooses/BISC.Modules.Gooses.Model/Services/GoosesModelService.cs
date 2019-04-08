@@ -29,11 +29,11 @@ namespace BISC.Modules.Gooses.Model.Services
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IDatasetModelService _datasetModelService;
         private readonly IFtpGooseModelService _ftpGooseModelService;
-        private readonly IGooseInputModelIngoFactory _gooseInputModelIngoFactory;
+        private readonly IGooseInputModelInfoFactory _gooseInputModelIngoFactory;
 
         public GoosesModelService(IInfoModelService infoModelService, IDeviceModelService deviceModelService, IBiscProject biscProject,
             ISclCommunicationModelService sclCommunicationModelService, IDatasetModelService datasetModelService, IFtpGooseModelService ftpGooseModelService,
-            IGooseInputModelIngoFactory gooseInputModelIngoFactory)
+            IGooseInputModelInfoFactory gooseInputModelIngoFactory)
         {
             _infoModelService = infoModelService;
             _deviceModelService = deviceModelService;

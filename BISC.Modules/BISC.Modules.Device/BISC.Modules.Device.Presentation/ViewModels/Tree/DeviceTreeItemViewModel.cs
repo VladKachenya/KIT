@@ -86,7 +86,6 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             DisconnectDeviceCommand = commandFactory.CreatePresentationCommand(OnDisconnectDevice, CanDisconnectDevice);
             ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDevice, CanConnectDevice);
             WarningsCollection = new ObservableCollection<string>();
-
         }
 
         private void OnNavigateToConfig()
@@ -233,6 +232,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             IDevice device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             _uiEntityIdentifier =
                 navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key);
+            _deviceWarningsService.ClearDeviceWarningsOfDevice(device.DeviceGuid);
             DeviceName = device.Name;
             _device = device;
             IsDeviceConnected = _connectionPoolService.GetConnection(_device.Ip).IsConnected;

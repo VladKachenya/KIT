@@ -1,10 +1,13 @@
 ﻿using BISC.Infrastructure.Global.Common;
 using BISC.Model.Infrastructure.Serializing;
+using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.FTP.Infrastructure.Serviсes;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Infrastructure.Services;
+using BISC.Modules.Gooses.Model.Helpers;
 using BISC.Modules.Gooses.Model.Model;
 using BISC.Modules.Gooses.Model.Model.Matrix;
 using System;
@@ -13,10 +16,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using BISC.Modules.Gooses.Model.Helpers;
 
 namespace BISC.Modules.Gooses.Model.Services
 {
@@ -25,13 +26,15 @@ namespace BISC.Modules.Gooses.Model.Services
         private readonly IDeviceFileWritingServices _deviceFileWritingServices;
         private readonly IModelElementsRegistryService _elementsRegistryService;
         private readonly Func<GooseMatrixFtpToFileParser> _gooseMatrixFtpToFileParser;
+        private readonly IPingService _pingService;
 
         public FtpGooseModelService(IDeviceFileWritingServices deviceFileWritingServices, IModelElementsRegistryService elementsRegistryService,
-            Func<GooseMatrixFtpToFileParser> gooseMatrixFtpToFileParser)
+            Func<GooseMatrixFtpToFileParser> gooseMatrixFtpToFileParser, IPingService pingService)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
             _elementsRegistryService = elementsRegistryService;
             _gooseMatrixFtpToFileParser = gooseMatrixFtpToFileParser;
+            _pingService = pingService;
         }
 
 
@@ -97,21 +100,17 @@ namespace BISC.Modules.Gooses.Model.Services
                 await _deviceFileWritingServices.ReadFileStringFromDevice(ip, "1:/CFG", "GOOSERE.CFG");
             IGooseMatrixFtp gooseMatrixFtp = new GooseMatrixFtp();
 
-            if (!fileInDeviceRes.IsSucceed)
-            {
-                return new OperationResult<IGooseMatrixFtp>(fileInDeviceRes.GetFirstError());
-            }
-
-            var fileInDevice = fileInDeviceRes.Item;
-            if (string.IsNullOrWhiteSpace(fileInDevice))
+            if (fileInDeviceRes.Item == null || string.IsNullOrWhiteSpace(fileInDeviceRes.Item))
             {
                 return new OperationResult<IGooseMatrixFtp>(gooseMatrixFtp);
             }
+            var fileInDevice = fileInDeviceRes.Item;
+
             try
             {
 
                 string macAddressesPattern = "MAC{([^.}])*}";
-                string gocbrefPattern = "gocbRef{([^.}])*}";
+                string gocbrefPattern = "GocbRef{([^.}])*}";
                 string configPattern = "config{([^.}])*}";
                 var macAddressesPatternRegEx = new Regex(macAddressesPattern, RegexOptions.Singleline);
                 var gocbrefPatternRegEx = new Regex(gocbrefPattern, RegexOptions.Singleline);
@@ -121,9 +120,9 @@ namespace BISC.Modules.Gooses.Model.Services
                 var gocbMatch = gocbrefPatternRegEx.Match(fileInDevice);
                 var configMatch = configPatternRegEx.Match(fileInDevice);
 
-                var macs = macMatch.Value.Replace("MAC{\r\n", String.Empty).Replace("\r\n}", String.Empty).Replace("\r", String.Empty).Split('\n');
-                var gocbs = gocbMatch.Value.Replace("gocbRef{\r\n", String.Empty).Replace("\r\n}", String.Empty).Replace("\r", String.Empty).Split('\n');
-                var configs = configMatch.Value.Replace("config{\r\n", String.Empty).Replace("\r\n}", String.Empty).Replace("\r", String.Empty).Split('\n');
+                var macs = macMatch.Value.Replace("MAC{\r\n", String.Empty).Replace("\r\n}", String.Empty).Replace("}", String.Empty).Replace("\r", String.Empty).Split('\n');
+                var gocbs = gocbMatch.Value.Replace("GocbRef{\r\n", String.Empty).Replace("\r\n}", String.Empty).Replace("}", String.Empty).Replace("\r", String.Empty).Split('\n');
+                var configs = configMatch.Value.Replace("config{\r\n", String.Empty).Replace("\r\n}", String.Empty).Replace("}", String.Empty).Replace("\r", String.Empty).Split('\n');
 
                 foreach (var mac in macs)
                 {
@@ -132,16 +131,25 @@ namespace BISC.Modules.Gooses.Model.Services
 
                 foreach (var gocb in gocbs)
                 {
+                    if (string.IsNullOrEmpty(gocb))
+                    {
+                        continue;
+                    }
                     IGoCbFtpEntity goCbFtpEntity = new GoCbFtpEntity();
                     var entries = gocb.Split(',', ':');
                     goCbFtpEntity.IndexOfGoose = int.Parse(entries[0]);
                     goCbFtpEntity.GoCbReference = entries[1];
                     goCbFtpEntity.AppId = entries[2];
+                    goCbFtpEntity.ConfRev = uint.Parse(entries[3]);
 
                     gooseMatrixFtp.GoCbFtpEntities.Add(goCbFtpEntity);
                 }
                 foreach (var config in configs)
                 {
+                    if (string.IsNullOrEmpty(config))
+                    {
+                        continue;
+                    }
                     IGooseRowFtpEntity gooseRowFtpEntity = new GooseRowFtpEntity();
                     var entries = config.Split(',');
                     int bitIndex = int.Parse(entries[2]);
@@ -170,16 +178,35 @@ namespace BISC.Modules.Gooses.Model.Services
             }
             catch (Exception e)
             {
-                return new OperationResult<IGooseMatrixFtp>(null, false, "Goose read error");
+                return new OperationResult<IGooseMatrixFtp>(null, false, "Goose matrix read error");
             }
         }
 
-        public async Task<OperationResult> WriteGooseMatrixFtpToDevice(string ip, IGooseMatrixFtp gooseMatrixFtp)
+        public async Task<OperationResult> WriteGooseMatrixFtpToDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp)
         {
+            //RestartProces
+
             try
             {
+                await _deviceFileWritingServices.DeletFileStringFromDevice(device.Ip, "1:/CFG/GOOSERE.CFG");
+                await _deviceFileWritingServices.ResetDevice(device.Ip);
+                // Ожидание перезагрузки устройства
+                bool isPing;
+                int counter = 0;
+                do
+                {
+                    if (counter >= 5)
+                    {
+                        return new OperationResult("Устройство не отвечает!");
+                    }
+
+                    await Task.Delay(2000);
+                    isPing = await _pingService.GetPing(device.Ip);
+                    counter++;
+                } while (!isPing);
+
                 var text = _gooseMatrixFtpToFileParser().GetFileStringFromMatrixModel(gooseMatrixFtp);
-                return await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() { text },
+                return await _deviceFileWritingServices.WriteFileStringInDevice(device.Ip, new List<string>() { text },
                     new List<string>() { "GOOSERE.CFG" });
             }
             catch (Exception e)
@@ -196,7 +223,7 @@ namespace BISC.Modules.Gooses.Model.Services
                 IGooseDeviceInput gooseDeviceInput;
                 if (readResult.Item == null)
                 {
-                    gooseDeviceInput = new GooseDeviceInput(){DeviceOwnerName = deviceName};
+                    gooseDeviceInput = new GooseDeviceInput() { DeviceOwnerName = deviceName };
                 }
                 else
                 {
@@ -220,14 +247,14 @@ namespace BISC.Modules.Gooses.Model.Services
             try
             {
                 var text = _elementsRegistryService.SerializeModelElement(gooseDeviceInput, SerializingType.Extended).ToString();
-                return await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() {text},
-                    new List<string>() {"GOOSEIN.ZIP"});
+                return await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() { text },
+                    new List<string>() { "GOOSEIN.ZIP" });
             }
             catch (Exception e)
             {
                 return new OperationResult(e.Message);
             }
-           
+
         }
 
 
@@ -298,5 +325,7 @@ namespace BISC.Modules.Gooses.Model.Services
         }
 
         #endregion
+
+
     }
 }

@@ -6,7 +6,7 @@ using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 
 namespace BISC.Modules.Gooses.Infrastructure.Factorys
 {
-    public interface IGooseInputModelIngoFactory
+    public interface IGooseInputModelInfoFactory
     {
         IGooseInputModelInfo CreateGooseInputModelInfo(IDevice parientDevice, IGooseControl gooseControl);
         List<IGooseInputModelInfo> CreateGooseInputModelInfoList(List<Tuple<IDevice, IGooseControl>> gooseControls);

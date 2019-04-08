@@ -7,7 +7,7 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
 {
     public interface IGooseMatrixFtpService
     {
-        void DeleteGooseSubscription(IGooseMatrixFtp gooseMatrixFtp, string goCdReference);
+        void DeleteGooseSubscription(IGooseMatrixFtp gooseMatrixFtp, IGoCbFtpEntity goCd);
         void RegularizeMatrix(IGooseMatrixFtp gooseMatrixFtp);
         void AddMacAddressToMatrix(IGooseMatrixFtp gooseMatrixFtp, string macAddress);
 
@@ -18,7 +18,8 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
         /// <param name="gooseMatrixFtp"></param>
         /// <param name="goCdRef"></param>
         /// <param name="goAppId"></param>
-        void AddGooseCdFtpEntityToMatrix(IGooseMatrixFtp gooseMatrixFtp, string goCdRef, string goAppId);
+        /// <param name="confRev"></param>
+        void AddGooseCdFtpEntityToMatrix(IGooseMatrixFtp gooseMatrixFtp, string goCdRef, string goAppId, uint confRev);
 
         IGooseMatrixFtp GetGooseMatrixFtpForDevice(IDevice device);
 

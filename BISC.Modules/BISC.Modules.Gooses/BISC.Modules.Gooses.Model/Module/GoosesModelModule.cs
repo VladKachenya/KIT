@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Infrastructure.Global.IoC;
+﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
-using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Serializing;
 using BISC.Modules.Device.Infrastructure.Loading;
-using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Factorys;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Infrastructure.Services;
@@ -18,10 +11,11 @@ using BISC.Modules.Gooses.Model.Serializers;
 using BISC.Modules.Gooses.Model.Serializers.FtpMatrix;
 using BISC.Modules.Gooses.Model.Services;
 using BISC.Modules.Gooses.Model.Services.LoadingServices;
+using System;
 
 namespace BISC.Modules.Gooses.Model.Module
 {
-   public class GoosesModelModule:IAppModule
+    public class GoosesModelModule : IAppModule
     {
         private readonly IInjectionContainer _injectionContainer;
 
@@ -37,7 +31,7 @@ namespace BISC.Modules.Gooses.Model.Module
         {
             var modelElementsRegistryService = _injectionContainer.ResolveType<IModelElementsRegistryService>();
             modelElementsRegistryService.RegisterModelElement(new ExternalGooseRefSerializer(), GooseKeys.GooseModelKeys.ExternalGooseRefKey);
-            modelElementsRegistryService.RegisterModelElement(new GooseInputSerializer(),  GooseKeys.GooseModelKeys.GooseInputKey);
+            modelElementsRegistryService.RegisterModelElement(new GooseInputSerializer(), GooseKeys.GooseModelKeys.GooseInputKey);
             modelElementsRegistryService.RegisterModelElement(new GooseControlSerializer(), GooseKeys.GooseModelKeys.GooseControlKey);
             modelElementsRegistryService.RegisterModelElement(new SubscriberDeviceSerializer(), GooseKeys.GooseModelKeys.SubscriberDeviceKey);
             modelElementsRegistryService.RegisterModelElement(new GooseRowSerializer(), GooseKeys.GooseModelKeys.GooseRowKey);
@@ -50,7 +44,7 @@ namespace BISC.Modules.Gooses.Model.Module
             modelElementsRegistryService.RegisterModelElement(new GooseDeviceInputSerializer(), GooseKeys.GooseModelKeys.GooseDeviceInputKey);
 
             _injectionContainer.RegisterType<IDeviceElementLoadingService, GoosesLoadingService>(Guid.NewGuid().ToString());
-	        _injectionContainer.RegisterType<IDeviceElementLoadingService, GooseMatrixLoadingService>(Guid.NewGuid().ToString());
+            _injectionContainer.RegisterType<IDeviceElementLoadingService, GooseMatrixLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IDeviceElementLoadingService, GooseInputModelInfosLoadingService>(Guid.NewGuid().ToString());
 
 
@@ -60,7 +54,9 @@ namespace BISC.Modules.Gooses.Model.Module
             _injectionContainer.RegisterType<IGooseMatrixFtpService, GooseMatrixFtpService>();
             _injectionContainer.RegisterType<object, GooseMatrixFtpToFileParser>();
 
-            _injectionContainer.RegisterType<IGooseInputModelIngoFactory, GooseInputModelIngoFactory>();
+            _injectionContainer.RegisterType<IGooseInputModelInfoFactory, GooseInputModelInfoFactory>();
+            _injectionContainer.RegisterType<IGoCbFtpEntityFactory, GoCbFtpEntityFactory>();
+
 
         }
 

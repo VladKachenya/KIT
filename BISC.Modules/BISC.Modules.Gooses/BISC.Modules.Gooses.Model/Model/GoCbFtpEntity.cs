@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Global.Model;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Gooses.Infrastructure.Keys;
+using BISC.Modules.Gooses.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 
 namespace BISC.Modules.Gooses.Model.Model
@@ -21,7 +23,17 @@ namespace BISC.Modules.Gooses.Model.Model
         public int IndexOfGoose { get; set; }
         public string GoCbReference { get; set; }
         public string AppId { get; set; }
-
+        public uint ConfRev { get; set; }
         #endregion
+        public override bool ModelElementCompareTo(IModelElement obj)
+        {
+            if (!base.ModelElementCompareTo(obj)) return false;
+            if (!(obj is IGoCbFtpEntity)) return false;
+            var element = obj as IGoCbFtpEntity;
+            if (element.GoCbReference != GoCbReference) return false;
+            if (element.AppId != AppId) return false;
+            if (element.ConfRev != ConfRev) return false;
+            return true;
+        }
     }
 }

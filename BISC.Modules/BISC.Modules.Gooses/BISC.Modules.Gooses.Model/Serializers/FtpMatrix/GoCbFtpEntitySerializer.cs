@@ -17,6 +17,8 @@ namespace BISC.Modules.Gooses.Model.Serializers.FtpMatrix
             RegisterProperty(nameof(GoCbFtpEntity.IndexOfGoose), "indexOfGoose");
             RegisterProperty(nameof(GoCbFtpEntity.GoCbReference), "goCbReference");
             RegisterProperty(nameof(GoCbFtpEntity.AppId), "appId");
+            RegisterProperty(nameof(GoCbFtpEntity.ConfRev), "confRev");
+
         }
 
         public override IModelElement GetConcreteObject()

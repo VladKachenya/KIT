@@ -45,8 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Factorys\IGooseDeviceInputFacroty.cs" />
-    <Compile Include="Factorys\IGooseInputModelIngoFactory.cs" />
+    <Compile Include="Factorys\IGoCbFtpEntityFactory.cs" />
+    <Compile Include="Factorys\IGooseInputModelInfoFactory.cs" />
     <Compile Include="Keys\GooseKeys.cs" />
     <Compile Include="Model\FTP\GooseFtpDto.cs" />
     <Compile Include="Model\FTP\IGooseDeviceInput.cs" />

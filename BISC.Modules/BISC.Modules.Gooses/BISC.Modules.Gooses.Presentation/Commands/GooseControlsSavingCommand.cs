@@ -34,7 +34,7 @@ namespace BISC.Modules.Gooses.Presentation.Commands
 		private readonly ILoggingService _loggingService;
 		private readonly IConnectionPoolService _connectionPoolService;
 
-	    private Func<bool> _isConnected;
+	    private Func<bool> _isReconnectNeed;
 
 
 		public GooseControlsSavingCommand(IFtpGooseModelService ftpGooseModelService, IGoosesModelService goosesModelService,
@@ -53,19 +53,19 @@ namespace BISC.Modules.Gooses.Presentation.Commands
 		private ObservableCollection<GooseControlViewModel> _gooseControlViewModelsToSave;
 		private IDevice _device;
 
-		internal void Initialize(ObservableCollection<GooseControlViewModel> gooseControlViewModelsToSave, IDevice device, Func<bool> isConnected)
+		internal void Initialize(ObservableCollection<GooseControlViewModel> gooseControlViewModelsToSave, IDevice device, Func<bool> isReconnectNeed)
 		{
 			_gooseControlViewModelsToSave = gooseControlViewModelsToSave;
 			_device = device;
-		    _isConnected = isConnected;
+		    _isReconnectNeed = isReconnectNeed;
 
 		}
 	
 		public async Task<bool> IsSavingByFtpNeeded()
 		{
-			var isSavingNeeded = _gooseControlViewModelsToSave.Any((model =>
-				model.ChangeTracker.GetIsModifiedRecursive() && model.IsDynamic)) && _isConnected();
-			return isSavingNeeded;
+			//var isSavingNeeded = _gooseControlViewModelsToSave.Any((model =>
+			//	model.ChangeTracker.GetIsModifiedRecursive() && model.IsDynamic)) && _isReconnectNeed();
+			return _isReconnectNeed.Invoke();
 		}
 
 		public async Task<OperationResult> ValidateBeforeSave()

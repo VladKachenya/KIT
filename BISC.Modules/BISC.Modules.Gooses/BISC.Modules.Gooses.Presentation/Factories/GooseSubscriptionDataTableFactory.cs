@@ -19,10 +19,10 @@ namespace BISC.Modules.Gooses.Presentation.Factories
         private readonly IDeviceModelService _deviceModelService;
         private readonly IBiscProject _biscProject;
         private readonly IGoosesModelService _goosesModelService;
-        private readonly IGooseInputModelIngoFactory _gooseInputModelIngoFactory;
+        private readonly IGooseInputModelInfoFactory _gooseInputModelIngoFactory;
 
         public GooseSubscriptionDataTableFactory(IDeviceModelService deviceModelService, IBiscProject biscProject, IGoosesModelService goosesModelService,
-            IGooseInputModelIngoFactory gooseInputModelIngoFactory)
+            IGooseInputModelInfoFactory gooseInputModelIngoFactory)
         {
             _deviceModelService = deviceModelService;
             _biscProject = biscProject;
@@ -115,7 +115,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                     bool isSigned = false;
                     foreach (var gimie in gooseInputModelInfoEntites)
                     {
-                        if (gimie.GocbRef == rowEntity.GooseInputModelInfo.GocbRef)
+                        if (gimie.ModelElementCompareTo(rowEntity.GooseInputModelInfo))
                         {
                             isSigned = true;
                             break;

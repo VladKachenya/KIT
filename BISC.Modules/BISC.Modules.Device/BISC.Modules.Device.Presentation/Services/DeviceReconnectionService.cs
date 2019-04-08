@@ -108,7 +108,6 @@ namespace BISC.Modules.Device.Presentation.Services
             _tabManagementService.CloseTabWithChildren(uiEntityIdToRemove.ItemId.ToString());
 
             var sortedElements = _elementLoadingServices.OrderBy((service => service.Priority));
-
             CancellationTokenSource cts = new CancellationTokenSource();
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
             RestartDeviceContext restartDeviceContext =

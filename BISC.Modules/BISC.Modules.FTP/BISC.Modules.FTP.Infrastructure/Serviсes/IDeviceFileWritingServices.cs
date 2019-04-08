@@ -12,6 +12,8 @@ namespace BISC.Modules.FTP.Infrastructure.Serviсes
         Task<OperationResult> WriteFileStringInDevice(string ip, List<string> filesStrings, List<string> fileNamesWithExt);
 		
         Task<OperationResult<string>> ReadFileStringFromDevice(string ip, string dirPath, string fileNamesWithExt);
+        Task<OperationResult> DeletFileStringFromDevice(string ip, string filePath);
+
 
         Task ResetDevice(string ip);
     }

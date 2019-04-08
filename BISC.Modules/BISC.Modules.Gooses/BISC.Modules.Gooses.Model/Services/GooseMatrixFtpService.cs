@@ -25,9 +25,9 @@ namespace BISC.Modules.Gooses.Model.Services
 
         #region implementation of IGooseMatrixFtpService
 
-        public void DeleteGooseSubscription(IGooseMatrixFtp gooseMatrixFtp, string goCdReference)
+        public void DeleteGooseSubscription(IGooseMatrixFtp gooseMatrixFtp, IGoCbFtpEntity goCd)
         {
-            var forErasure = gooseMatrixFtp.GoCbFtpEntities.FirstOrDefault(el => el.GoCbReference == goCdReference);
+            var forErasure = gooseMatrixFtp.GoCbFtpEntities.FirstOrDefault(el => el.ModelElementCompareTo(goCd));
             if (forErasure == null) { return; }
             gooseMatrixFtp.GoCbFtpEntities.Remove(forErasure);
             ErasureStates(gooseMatrixFtp, forErasure);
@@ -59,12 +59,12 @@ namespace BISC.Modules.Gooses.Model.Services
             }
         }
 
-        public void AddGooseCdFtpEntityToMatrix(IGooseMatrixFtp gooseMatrixFtp, string goCdRef, string goAppId)
+        public void AddGooseCdFtpEntityToMatrix(IGooseMatrixFtp gooseMatrixFtp, string goCdRef, string goAppId, uint confRev)
         {
-            if (gooseMatrixFtp.GoCbFtpEntities.Any(el => el.GoCbReference == goCdRef && el.AppId == goAppId)) { return; }
+            if (gooseMatrixFtp.GoCbFtpEntities.Any(el => el.GoCbReference == goCdRef && el.AppId == goAppId && el.ConfRev == confRev)) { return; }
             var goCdEntity = gooseMatrixFtp.GoCbFtpEntities;
             var i = goCdEntity.Count == 0 ? 1 : goCdEntity[goCdEntity.Count - 1].IndexOfGoose + 1;
-            gooseMatrixFtp.GoCbFtpEntities.Add(new GoCbFtpEntity() { IndexOfGoose = i, GoCbReference = goCdRef, AppId = goAppId });
+            gooseMatrixFtp.GoCbFtpEntities.Add(new GoCbFtpEntity() { IndexOfGoose = i, GoCbReference = goCdRef, AppId = goAppId, ConfRev = confRev });
         }
 
         public IGooseMatrixFtp GetGooseMatrixFtpForDevice(IDevice device)

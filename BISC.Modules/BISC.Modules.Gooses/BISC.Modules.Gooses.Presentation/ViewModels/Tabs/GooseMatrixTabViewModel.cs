@@ -136,7 +136,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             SetEnableCommands(false);
             try
             {
-                await UpdateGooseMatrix(false);
+                await UpdateGooseMatrix();
             }
             catch (Exception e)
             {
@@ -155,7 +155,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
                 SetEnableCommands(false);
                 await SaveGooseMatrix();
-                await UpdateGooseMatrix(true);
+                await UpdateGooseMatrix();
             }
             catch (Exception e)
             {
@@ -174,17 +174,17 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _regionName =
                 navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(
                     UiEntityIdentifier.Key).ItemId.ToString();
-            await UpdateGooseMatrix(false);
+            await UpdateGooseMatrix();
             base.OnNavigatedTo(navigationContext);
 
         }
 
-        private async Task UpdateGooseMatrix(bool isUpdatingFromDevice)
+        private async Task UpdateGooseMatrix()
         {
             BlockViewModelBehavior.SetBlock("Обновление данных...", true);
             try
             {
-                if (isUpdatingFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
+                if (_connectionPoolService.GetConnection(_device.Ip).IsConnected)
                 {
                     await _gooseMatrixLoadingService.Load(_device, null, _biscProject.MainSclModel.Value,
                         new CancellationToken());
@@ -201,7 +201,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                 InitDictionary();
                 _isInitialized = true;
                 Validate();
-                IsActive = true;
                 _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
                 _saveCheckingService.AddSaveCheckingEntity(
                     new SaveCheckingEntity(ChangeTracker, $"Матрица GOOSE устройства {_device.Name}",
@@ -392,12 +391,10 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         public override void OnActivate()
         {
-            IsActive = true;
             _globalEventsService.Subscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить матрицу GOOSE устройства {_device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
             _userInterfaceComposingService.AddGlobalCommand(UpdateCommand, $"Обновить GOOSE-матрицу устройства {_device.Name}", IconsKeys.UpdateIconKey, false, true);
-
             base.OnActivate();
         }
 
@@ -409,20 +406,16 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         public override void OnDeactivate()
         {
-            IsActive = false;
+            _userInterfaceComposingService.ClearCurrentSaveCommand();
+            _userInterfaceComposingService.DeleteGlobalCommand(UpdateCommand);
             _globalEventsService.Unsubscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
             _globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
-
-            _userInterfaceComposingService.DeleteGlobalCommand(UpdateCommand);
-            _userInterfaceComposingService.ClearCurrentSaveCommand();
-
-            _userInterfaceComposingService.ClearCurrentSaveCommand();
             base.OnDeactivate();
         }
 
         protected override void OnDisposing()
         {
-
+            OnDeactivate();
             foreach (GooseControlBlockViewModel gooseControlBlockViewModel in GooseControlBlockViewModels)
             {
                 gooseControlBlockViewModel.Dispose();

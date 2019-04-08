@@ -20,6 +20,8 @@ namespace BISC.Modules.Gooses.Infrastructure.Model.Matrix
         int IndexOfGoose { get; set; }
         string GoCbReference { get; set; } // MR771N125LD0/LLN0$GO$gcbIn
         string AppId { get; set; }
+        uint ConfRev { get; set; }
+
     }
 
     public interface IGooseRowFtpEntity : IModelElement

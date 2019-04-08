@@ -137,23 +137,25 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
         public string GseType { get; set; }
     
 
+        
+
+        public int ConfRev
+        {
+            get => _confRev;
+            set => SetProperty(ref _confRev, value);
+
+        }
+
+        public string LdInst { get; set; }
+
         public bool IsDynamic
         {
             get { return _isDynamic; }
             set
             {
-                SetProperty(ref _isDynamic, value,true);
+                SetProperty(ref _isDynamic, value, true);
             }
         }
-
-        public int ConfRev
-        {
-            get => _confRev;
-            set => SetProperty(ref _confRev, value, true);
-
-        }
-
-        public string LdInst { get; set; }
 
         public bool IsChanged
         {
