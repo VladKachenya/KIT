@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
+using BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -303,6 +304,12 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             }
 
             if (Weight >= MaxSizeFcdaList)
+            {
+                return;
+            }
+
+            // Запрет добавления структуры с CO
+            if (dropInfo.Data is SetFcTreeItemViewModel data && data.Header == "CO")
             {
                 return;
             }

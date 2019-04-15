@@ -73,6 +73,7 @@ namespace BISC.Modules.DataSets.Presentation.Factorys
             result.ParentWeiger = parentWeiger;
             foreach (var fc in fcsOfModelElement)
             {
+                if(fc == "CO") continue;// Запрет добавления fc с CO
                 int weight = _fcdaInfoService.GetModelElementWeight(device, modelElementOfFcda, fc);
                 fcHelperEntities.Add(new FcHelperEntity(fc, weight));
             }
