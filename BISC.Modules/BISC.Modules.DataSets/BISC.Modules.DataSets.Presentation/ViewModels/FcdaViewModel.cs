@@ -72,7 +72,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public void SetFcCollection(List<FcHelperEntity> fcCollection)
         {
             FcCollection = new ObservableCollection<FcHelperEntity>(fcCollection);
-            _sellectedFc = fcCollection.First(el => el.Fc == _model.Fc);
+            _sellectedFc = fcCollection.FirstOrDefault(el => el.Fc == _model.Fc);
         }
 
         public FcHelperEntity SellectedFc

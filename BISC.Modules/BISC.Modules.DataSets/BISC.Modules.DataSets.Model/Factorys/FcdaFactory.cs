@@ -69,7 +69,8 @@ namespace BISC.Modules.DataSets.Model.Factorys
             result.LnInst = ln.Inst;
             result.DoName = GetDoNameRecursive(element, String.Empty);
             result.Prefix = ln.Prefix;
-            result.Fc = _fcdaInfoService.GetFcsOfModelElement(element.GetFirstParentOfType<IDevice>(), element).First();
+            // Запрет добавления CO
+            result.Fc = _fcdaInfoService.GetFcsOfModelElement(element.GetFirstParentOfType<IDevice>(), element).First(el => el != "CO");
             return result;
         }
 
