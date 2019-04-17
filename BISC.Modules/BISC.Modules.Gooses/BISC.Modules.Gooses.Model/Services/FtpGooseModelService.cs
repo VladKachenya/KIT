@@ -140,7 +140,7 @@ namespace BISC.Modules.Gooses.Model.Services
                     goCbFtpEntity.IndexOfGoose = int.Parse(entries[0]);
                     goCbFtpEntity.GoCbReference = entries[1];
                     goCbFtpEntity.AppId = entries[2];
-                    goCbFtpEntity.ConfRev = uint.Parse(entries[3]);
+                    goCbFtpEntity.ConfRev = int.Parse(entries[3]);
 
                     gooseMatrixFtp.GoCbFtpEntities.Add(goCbFtpEntity);
                 }

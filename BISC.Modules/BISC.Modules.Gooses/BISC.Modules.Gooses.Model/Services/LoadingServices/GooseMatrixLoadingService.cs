@@ -3,6 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
+using BISC.Model.Global.Model;
+using BISC.Model.Global.Project;
+using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading;
@@ -58,7 +61,21 @@ namespace BISC.Modules.Gooses.Model.Services.LoadingServices
                 }
                 else
                 {
-                    _gooseMatrixFtpService.SetGooseMatrixFtpForDevice(device, resMatrix.Item);
+                    var biscProject = sclModel.GetFirstParentOfType<IBiscProject>()?? new BiscProject();
+                    if (biscProject.MainSclModel.Value == null)
+                    {
+                        biscProject.MainSclModel.Value = sclModel;
+                    }
+
+                    if (biscProject.CustomElements.Value == null)
+                    {
+                        biscProject.CustomElements.Value = new ModelElement() { ElementName = "CustomElements" };
+                    }
+
+                    _gooseMatrixFtpService.SetGooseMatrixFtpForDevice(device, resMatrix.Item, biscProject);
+
+                    // Тут следует удалить потом
+                    //_gooseMatrixFtpService.SetGooseMatrixFtpForDevice(device, resMatrix.Item);
 
                 }
             }

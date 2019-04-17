@@ -38,13 +38,14 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
             public static string GooseControlsConflictContext => "GooseControlsConflictContext";
 
             public static string GooseMatrixViewKey => "GooseMatrixView";
-
         }
         public static class GooseWarningKeys
         {
 
             public static string GooseSavedFtpKey => "GooseSavedFtp";
             public static string ErrorGettingGooseOutOfDeviceKey => "ErrorGettingGooseOutOfDevice";
+            public static string GooseControlUnsavedWarningTagKey => "GooseControlUnsavedWarningTagKey";
+            public static string GooseSubscriptionUnsavedWarningTagKey => "GooseSubscriptionUnsavedWarningTagKey";
 
         }
 

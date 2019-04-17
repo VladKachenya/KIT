@@ -92,16 +92,28 @@
                 </StackPanel>
             </Grid>
 
-            <ListBox  x:Name="ExpanderItemsControl" behaviors:ListBoxBehavior.ScrollOnNewItem="true"
-                     ItemsSource="{Binding DataSets}"  ScrollViewer.VerticalScrollBarVisibility="Visible" Grid.Column="1" Grid.Row="1"
+            <ListBox  x:Name="ExpanderItemsControl" behaviors:ListBoxBehavior.ScrollOnNewItem="true" 
+                     ItemsSource="{Binding DataSets}" SelectedItem="{Binding SelectedDataSet, Mode=OneWayToSource}"  
+                      Grid.Column="1" Grid.Row="1"
+                      BorderThickness="0"
+                      Style="{StaticResource {x:Type ItemsControl}}"
                       dd:DragDrop.IsDragSource="True" 
                       dd:DragDrop.IsDropTarget="False">
+                <ListBox.Template>
+                    <ControlTemplate TargetType="ItemsControl">
+                        <ScrollViewer VerticalScrollBarVisibility="Visible">
+                            <!-- I'm not sure if the correct name is necessary, or if
+                 it's just for applying visual states -->
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ListBox.Template>
                 <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                    <Style TargetType="ListBoxItem" >
                         <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True" >
-                                <Setter Property="Background" Value="#c0d5ed"  />
-                            </Trigger>
+                            <DataTrigger Binding="{Binding IsSelect}" Value="True" >
+                                <Setter Property="Foreground" Value="#8b00c6"/>
+                            </DataTrigger>
                         </Style.Triggers>
                         <Style.Setters>
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
@@ -112,7 +124,6 @@
                     <DataTemplate DataType="viewModels:DataSetViewModel">
                         <Border 
                             x:Name="Border"
-                            BorderThickness="1 0 0 1"
                             BorderBrush="{DynamicResource MaterialDesignDivider}">
                             <Grid Margin="0">
                                 <Grid>
@@ -121,7 +132,6 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <ContentControl Content="{Binding .}">
-
                                         <ContentControl.Style>
                                             <Style TargetType="ContentControl">
                                                 <Style.Triggers>
@@ -134,7 +144,7 @@
                                                             <Setter.Value>
                                                                 <DataTemplate>
                                                                     <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                                                        <Border Margin="2" Background="{Binding TypeColorBrush}" >
+                                                                        <Border Margin="5" Background="{Binding TypeColorBrush}" >
                                                                             <TextBlock Margin="4"  Text="{Binding ElementName}"/>
                                                                         </Border>
                                                                         <ComboBox VerticalAlignment="Center" Margin="4,0,0,4" SelectedItem="{Binding SelectedParentLd}" ItemsSource="{Binding ParentLdList}" MinWidth="100"></ComboBox>
@@ -155,7 +165,7 @@
                                                             <Setter.Value>
                                                                 <DataTemplate>
                                                                     <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                                                        <Border Margin="2" Background="{Binding TypeColorBrush}" >
+                                                                        <Border Margin="5" Background="{Binding TypeColorBrush}" >
                                                                             <TextBlock Margin="4"  Text="{Binding ElementName}"/>
                                                                         </Border>
                                                                         <TextBlock VerticalAlignment="Center" Text="{Binding SelectedParentLd}"></TextBlock>
@@ -173,7 +183,7 @@
                                                             <Setter.Value>
                                                                 <DataTemplate>
                                                                     <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                                                        <Border Margin="2" Background="{Binding TypeColorBrush}" >
+                                                                        <Border Margin="5" Background="{Binding TypeColorBrush}" >
                                                                             <TextBlock Margin="4"  Text="{Binding ElementName}"/>
                                                                         </Border>
                                                                         <TextBlock VerticalAlignment="Center" Text="{Binding SelectedParentLd}"></TextBlock>
@@ -192,6 +202,11 @@
                                     </ContentControl>
 
                                     <StackPanel  Grid.Column="1" Orientation="Horizontal">
+                                        <Label Visibility="{Binding IsWarning, Converter={StaticResource booleanToVisibilityConverter}}">
+                                            <Label.Content>
+                                                <ContentControl ContentTemplate="{DynamicResource AlertIcon}" Foreground="DarkRed" Width="20" Height="20"/>
+                                            </Label.Content>
+                                        </Label>
                                         <Button Margin="5" Padding="3" Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"
                                                             Command="{Binding DataContext.DeleteDataSetViewModelCommand,Source={x:Reference ExpanderItemsControl}}"
                                                             CommandParameter="{Binding .}"
@@ -240,29 +255,38 @@
                 </GroupBox.HeaderTemplate>
                 <ListBox  ScrollViewer.VerticalScrollBarVisibility="Visible" Name="fcdaListBox" DataContext="{Binding Path=SelectedItem,Source={x:Reference ExpanderItemsControl}}"
                                             MinHeight="50"
+                                            BorderThickness="0"
+                                            Style="{StaticResource {x:Type ItemsControl}}"
                                             ItemsSource="{Binding FcdaViewModels}"  
                                             dd:DragDrop.IsDragSource="True" 
                                             dd:DragDrop.IsDropTarget="{Binding IsEditeble}"
                                             dd:DragDrop.DropHandler="{Binding .}">
+                    <ListBox.Template>
+                        <ControlTemplate TargetType="ItemsControl">
+                            <ScrollViewer VerticalScrollBarVisibility="Visible">
+                                <ItemsPresenter />
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </ListBox.Template>
                     <ListBox.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                        <Style TargetType="{x:Type ListBoxItem}" >
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                         </Style>
                     </ListBox.ItemContainerStyle>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate >
-                            <Grid>
+                            <Grid Margin="0" >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="40, 0">
-                                    <Border Margin="3"  Background="{Binding TypeColorBrush}"  VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="20, 0">
+                                    <Border Margin="3,0"  Background="{Binding TypeColorBrush}"  VerticalAlignment="Center">
                                         <TextBlock Margin="3" Text="{Binding ElementName}" VerticalAlignment="Center"/>
                                     </Border>
-                                    <TextBlock Margin="3" Text="{Binding FullName}" VerticalAlignment="Center"/>
+                                    <TextBlock Margin="3,0" Text="{Binding FullName}" VerticalAlignment="Center"/>
                                 </StackPanel>
-                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" >
                                     <ContentControl Content="{Binding .}">
                                         <ContentControl.Style>
                                             <Style TargetType="ContentControl">
@@ -276,10 +300,10 @@
                                                                 <DataTemplate>
                                                                     <StackPanel Orientation="Horizontal">
                                                                         <ComboBox ItemsSource="{Binding FcCollection}" SelectedItem="{Binding SellectedFc}"
-                                                                              Margin="40,0" VerticalContentAlignment="Center" 
-                                                                              IsEnabled="{Binding ElementName = EditToggleButton, Path= IsChecked}">
+                                                                              Margin="20,0" VerticalContentAlignment="Center" Style="{x:Null}" 
+                                                                              IsEnabled="{Binding ElementName = EditToggleButton, Path= IsChecked}" >
                                                                             <ComboBox.ItemContainerStyle>
-                                                                                <Style TargetType="ComboBoxItem">
+                                                                                <Style TargetType="ComboBoxItem" >
                                                                                     <Setter Property="IsEnabled"  Value="{Binding IsSellecteble}" />
                                                                                 </Style>
                                                                             </ComboBox.ItemContainerStyle>
@@ -312,7 +336,6 @@
                                                         </Setter>
                                                     </MultiDataTrigger>
                                                 </Style.Triggers>
-
                                             </Style>
                                         </ContentControl.Style>
                                     </ContentControl>

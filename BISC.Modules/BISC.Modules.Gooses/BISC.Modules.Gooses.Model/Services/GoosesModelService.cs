@@ -115,31 +115,6 @@ namespace BISC.Modules.Gooses.Model.Services
             }
         }
 
-
-        public List<Tuple<IDevice, IGooseControl>> GetGooseControlsSubscribed(IDevice deviceSubscriber, ISclModel sclModel)
-        {
-            List<Tuple<IDevice, IGooseControl>> result = new List<Tuple<IDevice, IGooseControl>>();
-            //var devices = _deviceModelService.GetDevicesFromModel(sclModel);
-            //foreach (var device in devices)
-            //{
-            //    if (device == deviceSubscriber)
-            //    {
-            //        continue;
-            //    }
-            //    var gooseControls = GetGooseControlsOfDevice(device);
-            //    foreach (var gooseControl in gooseControls)
-            //    {
-            //        if (gooseControl.SubscriberDevice.Any((subscriberDevice =>
-            //            subscriberDevice.DeviceName == deviceSubscriber.Name)))
-            //        {
-            //            result.Add(new Tuple<IDevice, IGooseControl>(device, gooseControl));
-            //        }
-            //    }
-            //}
-            return result;
-
-        }
-
         public IGooseDeviceInput GetGooseDeviceInputOfProject(IBiscProject biscProject, IDevice device)
         {
             var gooseDeviceInputForDevice = biscProject.CustomElements?.Value?.ChildModelElements?.FirstOrDefault(element =>
@@ -152,10 +127,14 @@ namespace BISC.Modules.Gooses.Model.Services
             return gooseDeviceInputForDevice;
         }
 
-        public List<IGooseInputModelInfo> GetGooseInputModelInfos(IDevice device)
+        public List<IGooseInputModelInfo> GetGooseInputModelInfos(IDevice device, IBiscProject biscProject = null)
         {
+            if (biscProject == null)
+            {
+                biscProject = _biscProject;
+            }
             var res = new List<IGooseInputModelInfo>();
-            var input = GetGooseDeviceInputOfProject(_biscProject, device);
+            var input = GetGooseDeviceInputOfProject(biscProject, device);
             foreach (var inputInfo in input.GooseInputModelInfoList)
             {
                 res.Add(inputInfo);

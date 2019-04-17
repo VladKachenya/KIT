@@ -26,6 +26,12 @@ namespace BISC.Infrastructure.Global.Common
             ErrorList.Add(error);
         }
 
+        public OperationResult(List<string> errors)
+        {
+            IsSucceed = false;
+            ErrorList.AddRange(errors);
+        }
+
         public List<string> ErrorList { get; } = new List<string>();
 
         public string GetFirstError()

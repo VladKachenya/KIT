@@ -92,7 +92,11 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
                 IsReportWarning = true;
                 WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.DeviceGuid, ReportsKeys.ReportsPresentationKeys.ReportsLoadErrorWarningTag));
             }
-
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.DeviceGuid, ReportsKeys.ReportsPresentationKeys.ReportsUnsavedWarningTag))
+            {
+                IsReportWarning = true;
+                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.DeviceGuid, ReportsKeys.ReportsPresentationKeys.ReportsUnsavedWarningTag));
+            }
         }
 
         #region Overrides of ViewModelBase

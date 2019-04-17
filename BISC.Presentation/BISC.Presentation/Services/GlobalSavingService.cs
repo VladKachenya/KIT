@@ -24,15 +24,14 @@ namespace BISC.Presentation.Services
                 UnsavedEntitiesOfDevise = new List<SaveCheckingEntity>();
             }
             public IDevice Device { get; }
-            public bool IsRestartNecessry { get; set; }
             public List<SaveCheckingEntity> UnsavedEntitiesOfDevise { get; }
             public async Task AddUnsavedEntity(SaveCheckingEntity entity)
             {
-                if (entity.SavingCommand != null &&
-                  await entity.SavingCommand.IsSavingByFtpNeeded())
-                {
-                    IsRestartNecessry = true;
-                }
+                //if (entity.SavingCommand != null &&
+                //  await entity.SavingCommand.IsSavingByFtpNeeded())
+                //{
+                //    IsRestartNecessry = true;
+                //}
                 UnsavedEntitiesOfDevise.Add(entity);
             }
         }
@@ -86,14 +85,14 @@ namespace BISC.Presentation.Services
                     return savingRes;
                 }
 
-                if (isReconnectIfNeed)
-                {
-                    await RestartAndReconnestDevices(devisesForSaving.Where(el => el.IsRestartNecessry).ToList());
-                }
-                else
-                {
-                    await RestartOnlyDevices(devisesForSaving.Where(el => el.IsRestartNecessry).ToList());
-                }
+                //if (isReconnectIfNeed)
+                //{
+                //    await RestartAndReconnestDevices(devisesForSaving.Where(el => el.IsRestartNecessry).ToList());
+                //}
+                //else
+                //{
+                //    await RestartOnlyDevices(devisesForSaving.Where(el => el.IsRestartNecessry).ToList());
+                //}
             }
             finally
             {
@@ -112,54 +111,23 @@ namespace BISC.Presentation.Services
             {
                 var modifiedEntities = _saveCheckingService.GetSaveCheckingEntities().Where((entity =>
                     entity.RegionName == regionName&&entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
-                // Получение всех связанных изменений
-                var devisesForSaving = await GetDevicesForSaving(modifiedEntities);
-
-                var entitiesForSaving = new List<SaveCheckingEntity>();
-                foreach (var devise in devisesForSaving)
-                {
-                    entitiesForSaving.AddRange(devise.UnsavedEntitiesOfDevise);
-                }
-
-                // Валидация перед сохранением
-                foreach (var entity in entitiesForSaving)
-                {
-                    if ((entity.SavingCommand != null) && !(await entity.SavingCommand.ValidateBeforeSave()).IsSucceed)
-                    {
-                        saveResult.IsValidationFailed = true;
-                        return saveResult;
-                    }
-                }
-
-                bool? res = true;
-                if (modifiedEntities.Any() && modifiedEntities.First().ChangeTracker.GetIsModifiedRecursive())
-                {
-                    res = await GetUserConfirmation(devisesForSaving, isCancelPossible);
-                }
-                if (res == null)
-                {
-                    saveResult.IsCancelled = true;
-                    return saveResult;
-                }
-                if ((bool)res)
-                {
-                    await _saveCheckingService.ExecuteSave(entitiesForSaving);
-
-                    var dev = devisesForSaving.Where(el => el.IsRestartNecessry).ToList();
-                    if (dev.Count > 0)
-                    {
-                        await RestartAndReconnestDevices(dev);
-                    }
-                }
-                else
-                {
-                    saveResult.IsDeclined = true;
-                    return saveResult;
-                }
+                return await SaveChengests(modifiedEntities, isCancelPossible);
             }
-            saveResult.IsSaved = true;
-            return saveResult;
+            return new SaveResult(){IsSaved = true};
         }
+
+        public async Task<SaveResult> SaveСhangesOfDevice(Guid deviceGuid)
+        {
+
+            if (_saveCheckingService.GetSaveCheckingEntities().Any((entity => entity.DeviceGuid == deviceGuid)))
+            {
+                var modifiedEntities = _saveCheckingService.GetSaveCheckingEntities().Where((entity =>
+                    entity.DeviceGuid == deviceGuid && entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
+                return await SaveChengests(modifiedEntities, false);
+            }
+            return new SaveResult() { IsSaved = true };
+        }
+
         #endregion
 
         #region private filds
@@ -201,41 +169,40 @@ namespace BISC.Presentation.Services
                 }
             }
 
-            foreach (var deviceForSaving in res)
-            {
-                if (deviceForSaving.IsRestartNecessry)
-                {
-                    var deviceChengests = await _saveCheckingService.GetIsDeviceEntitiesSaved(deviceForSaving.Device.DeviceGuid);
-                    if (!deviceChengests.IsEntitiesSaved)
-                    {
-                        deviceForSaving.UnsavedEntitiesOfDevise.Clear();
-                        deviceForSaving.UnsavedEntitiesOfDevise.AddRange(deviceChengests.UnsavedCheckingEntities);
-                    }
-                }
-            }
+            //foreach (var deviceForSaving in res)
+            //{
+            //    if (deviceForSaving.IsRestartNecessry)
+            //    {
+            //        var deviceChengests = await _saveCheckingService.GetIsDeviceEntitiesSaved(deviceForSaving.Device.DeviceGuid);
+            //        if (!deviceChengests.IsEntitiesSaved)
+            //        {
+            //            deviceForSaving.UnsavedEntitiesOfDevise.Clear();
+            //            deviceForSaving.UnsavedEntitiesOfDevise.AddRange(deviceChengests.UnsavedCheckingEntities);
+            //        }
+            //    }
+            //}
             return res;
         }
 
         private async Task<bool?> GetUserConfirmation(List<DevicesForSaving> devicesForSaving, bool isCancellationNecessary = false)
         {
             List<string> warnings = new List<string>();
-            var devicesForReconnect = devicesForSaving.Where(el => el.IsRestartNecessry).ToList();
             foreach (var deviceForSaving in devicesForSaving)
             {
-                if (deviceForSaving.IsRestartNecessry)
-                {
-                    warnings.Add("УСТРОЙСТВО " + deviceForSaving.Device?.Name + " БУДЕТ ПЕРЕЗАГРУЖЕНО!");
-                }
+                //if (deviceForSaving.IsRestartNecessry)
+                //{
+                //    warnings.Add("УСТРОЙСТВО " + deviceForSaving.Device?.Name + " БУДЕТ ПЕРЕЗАГРУЖЕНО!");
+                //}
 
-                warnings.AddRange(deviceForSaving.UnsavedEntitiesOfDevise.Select(el => el.EntityFriendlyName + " будет сохранено!"));
+                warnings.AddRange(deviceForSaving.UnsavedEntitiesOfDevise.Select(el => el.EntityFriendlyName ));
             }
 
             var confirmationList = isCancellationNecessary
                 ? new List<string>() { "Да", "Нет", "Отмена" }
                 : new List<string>() { "Да", "Нет" };
 
-            var res = await _userInteractionService.ShowOptionToUser("Сохранение изменений",
-                "Желаете произвести сохранение?", confirmationList, warnings);
+            var res = await _userInteractionService.ShowOptionToUser("В проекте имеются следующие несохранённые изменения:",
+                "Желаете произвести сохранение изменений в проект?", confirmationList, warnings);
 
             switch (res)
             {
@@ -270,12 +237,71 @@ namespace BISC.Presentation.Services
 
         private async Task<DevicesForSaving> GetDevicesForSaving(SaveCheckingEntity unsavedEntity, IDevice device = null)
         {
-            DevicesForSaving emptyDeviseForSaving = new DevicesForSaving(device)
-            {
-                IsRestartNecessry = unsavedEntity.SavingCommand != null && await unsavedEntity.SavingCommand.IsSavingByFtpNeeded()
-            };
+            DevicesForSaving emptyDeviseForSaving = new DevicesForSaving(device);
+            //{
+            //    IsRestartNecessry = unsavedEntity.SavingCommand != null && await unsavedEntity.SavingCommand.IsSavingByFtpNeeded()
+            //};
             emptyDeviseForSaving.UnsavedEntitiesOfDevise.Add(unsavedEntity);
             return emptyDeviseForSaving;
+        }
+
+        private async Task<SaveResult> SaveChengests(List<SaveCheckingEntity> modifiedEntities, bool isCancelPossible)
+        {
+            var saveResult = new SaveResult();
+            // Получение всех связанных изменений
+            var devisesForSaving = await GetDevicesForSaving(modifiedEntities);
+
+            var entitiesForSaving = new List<SaveCheckingEntity>();
+            foreach (var devise in devisesForSaving)
+            {
+                entitiesForSaving.AddRange(devise.UnsavedEntitiesOfDevise);
+            }
+
+            // Валидация перед сохранением
+            var warnings = new List<string>();
+            foreach (var entity in entitiesForSaving)
+            {
+                var validationRes = await entity.SavingCommand.ValidateBeforeSave();
+                if ((entity.SavingCommand != null) && !(validationRes.IsSucceed))
+                {
+                    warnings.AddRange(validationRes.ErrorList);
+                    saveResult.IsValidationFailed = true;
+                }
+            }
+
+            if (saveResult.IsValidationFailed)
+            {
+                 var task = _userInteractionService.ShowOptionToUser("Ошибка валидации данных:",
+                    "Сохранение не может быть произведено!", new List<string>() { "Ок" }, warnings);
+                return saveResult;
+            }
+
+            bool? res = true;
+            if (modifiedEntities.Any() && modifiedEntities.First().ChangeTracker.GetIsModifiedRecursive())
+            {
+                res = await GetUserConfirmation(devisesForSaving, isCancelPossible);
+            }
+            if (res == null)
+            {
+                saveResult.IsCancelled = true;
+                return saveResult;
+            }
+            if ((bool)res)
+            {
+                await _saveCheckingService.ExecuteSave(entitiesForSaving);
+
+                //var dev = devisesForSaving.Where(el => el.IsRestartNecessry).ToList();
+                //if (dev.Count > 0)
+                //{
+                //    await RestartAndReconnestDevices(dev);
+                //}
+            }
+            else
+            {
+                saveResult.IsDeclined = true;
+                return saveResult;
+            }
+            return new SaveResult();
         }
         #endregion
     }

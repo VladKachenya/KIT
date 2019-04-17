@@ -14,16 +14,13 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
     public interface IGoosesModelService
     {
         void AddGseControl(string lnName, string ldName, IModelElement devcice, IGooseControl gooseControl);
-        List<IGooseInput> GetGooseInputsOfDevice(IDevice device);
         List<IGooseControl> GetGooseControlsOfDevice(IDevice device);
         void DeleteAllDeviceReferencesInGooseControlsInModel(IBiscProject biscProject, string iedName);
-
-        //void AddGooseExternalReferenceToDevice(IFcda fcda, IDevice device, string deviceNameOfFcda);
-        List<Tuple<IDevice, IGooseControl>> GetGooseControlsSubscribed(IDevice deviceSubscriber, ISclModel sclModel);
+        
         IGooseDeviceInput GetGooseDeviceInputOfProject(IBiscProject biscProject, IDevice device);
         void SetGooseInputModelInfosToProject(IBiscProject biscProject, IDevice device, List<IGooseInputModelInfo> inputs);
 
-        List<IGooseInputModelInfo> GetGooseInputModelInfos(IDevice device);
+        List<IGooseInputModelInfo> GetGooseInputModelInfos(IDevice device, IBiscProject biscProject = null);
 
         void DeleteGooseCbAndGseByName(string name, IDevice device);
 

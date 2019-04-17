@@ -176,5 +176,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             //}
             return OperationResult.SucceedResult;
         }
+
+        public Action RefreshViewModel { get; set; }
     }
 }

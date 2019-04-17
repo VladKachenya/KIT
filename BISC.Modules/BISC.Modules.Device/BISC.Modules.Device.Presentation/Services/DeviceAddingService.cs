@@ -77,12 +77,12 @@ namespace BISC.Modules.Device.Presentation.Services
             return null;
         }
 
-        public void AddDeviceToTree(IDevice device)
+        public void AddDeviceToTree(IDevice device,int? index=null)
         {
             BiscNavigationParameters navigationParameters = new BiscNavigationParameters();
             navigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, device);
             var resultTreeItem =
-                _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null,device.DeviceGuid.ToString());
+                _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null,device.DeviceGuid.ToString(),index);
             _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(device, resultTreeItem, "IED");
         }
     }

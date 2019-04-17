@@ -11,8 +11,8 @@ namespace BISC.Modules.Gooses.Model.Factorys
         {
             IGoCbFtpEntity res = new GoCbFtpEntity();
             res.GoCbReference = gooseInputModelInfo.GocbRef;
-            res.AppId = gooseInputModelInfo.EmittingGooseControl.Value.AppId;
-            res.ConfRev = (uint)gooseInputModelInfo.EmittingGooseControl.Value.ConfRev;
+            res.AppId = gooseInputModelInfo.EmittingGse.Value.AppId;
+            res.ConfRev = gooseInputModelInfo.EmittingGooseControl.Value.ConfRev;
             return res;
         }
     }

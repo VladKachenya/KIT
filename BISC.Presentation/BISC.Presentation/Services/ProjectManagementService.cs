@@ -66,8 +66,6 @@ namespace BISC.Presentation.Services
             await SaveProjectAs();
         }
 
-
-
         public void ClearCurrentProjectAsync()
         {
             var devices = _deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel.Value);

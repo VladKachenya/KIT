@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
-using BISC.Infrastructure.Global.Services;
+﻿using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Device.Infrastructure.Events;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
@@ -11,6 +8,10 @@ using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
+using System;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
+using BISC.Presentation.Infrastructure.Commands;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
 {
@@ -25,20 +26,26 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
         private UiEntityIdentifier _gooseEditIdentifier;
         private bool _isReportWarning;
 
+        private bool _isNavigateToMatrixCommandEneble = true;
 
-        public GooseGroupTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService, IDeviceWarningsService deviceWarningsService,IGlobalEventsService globalEventsService)
+
+        public GooseGroupTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService, IDeviceWarningsService deviceWarningsService, IGlobalEventsService globalEventsService)
         {
             _tabManagementService = tabManagementService;
             _deviceWarningsService = deviceWarningsService;
             _globalEventsService = globalEventsService;
 
             NavigateToGooseControlsCommand = commandFactory.CreatePresentationCommand(NavigateToGooseControls);
-            NavigateToMatrixCommand = commandFactory.CreatePresentationCommand(OnNavigateToMatrix);
-            WarningsCollection=new ObservableCollection<string>();
+            NavigateToMatrixCommand = commandFactory.CreatePresentationCommand(OnNavigateToMatrix, () => _isNavigateToMatrixCommandEneble);
+            WarningsCollection = new ObservableCollection<string>();
         }
         private void OnDeviceWarningsChanged(DeviceWarningsChanged deviceWarningsChanged)
         {
-            if (deviceWarningsChanged.DeviceGuid != _device.DeviceGuid) return;
+            if (deviceWarningsChanged.DeviceGuid != _device.DeviceGuid)
+            {
+                return;
+            }
+
             WarningsCollection.Clear();
             if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.DeviceGuid, GooseKeys.GooseWarningKeys.GooseSavedFtpKey))
             {
@@ -49,6 +56,16 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
             {
                 IsReportWarning = true;
                 WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.DeviceGuid, GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey));
+            }
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.DeviceGuid, GooseKeys.GooseWarningKeys.GooseControlUnsavedWarningTagKey))
+            {
+                IsReportWarning = true;
+                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.DeviceGuid, GooseKeys.GooseWarningKeys.GooseControlUnsavedWarningTagKey));
+            }
+            if (_deviceWarningsService.GetIsDeviceWarningRegistered(_device.DeviceGuid, GooseKeys.GooseWarningKeys.GooseSubscriptionUnsavedWarningTagKey))
+            {
+                IsReportWarning = true;
+                WarningsCollection.Add(_deviceWarningsService.GetWarningMassage(_device.DeviceGuid, GooseKeys.GooseWarningKeys.GooseSubscriptionUnsavedWarningTagKey));
             }
 
         }
@@ -77,6 +94,13 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
+
+            if (_device.Type == "MR5")
+            {
+                _isNavigateToMatrixCommandEneble = false;
+                (NavigateToMatrixCommand as IPresentationCommand)?.RaiseCanExecute();
+            }
+
             var treeItemIdentifier =
                 navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(
                     UiEntityIdentifier.Key);

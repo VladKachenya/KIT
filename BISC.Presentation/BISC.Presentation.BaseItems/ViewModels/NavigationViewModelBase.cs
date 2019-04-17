@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.ViewModel;
 using Prism.Regions;
 using Prism;
+using BISC.Modules.Device.Infrastructure.Events;
 
 namespace BISC.Presentation.BaseItems.ViewModels
 {
@@ -18,14 +20,21 @@ namespace BISC.Presentation.BaseItems.ViewModels
     {
         private bool _isActive;
         private bool _isNavigatedTo = false;
+        private bool _isReportWarning;
 
         public NavigationViewModelBase()
         {
             BlockViewModelBehavior=new BlockViewModelBehavior();
+            WarningsCollection = new ObservableCollection<string>();
         }
 
+        public bool IsReportWarning
+        {
+            get => _isReportWarning;
+            set => SetProperty(ref _isReportWarning, value);
+        }
+        public ObservableCollection<string> WarningsCollection { get; }
 
-    
 
         public bool IsActive
         {
@@ -109,5 +118,6 @@ namespace BISC.Presentation.BaseItems.ViewModels
         {
 
         }
+
     }
 }

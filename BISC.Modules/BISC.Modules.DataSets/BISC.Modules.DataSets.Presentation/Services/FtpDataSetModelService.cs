@@ -8,8 +8,11 @@ using System.Data.Common;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Common;
 using BISC.Modules.DataSets.Infrastructure.ViewModels;
 using BISC.Modules.DataSets.Presentation.Services.Interfaces;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Modules.InformationModel.Infrastucture.Services;
 
 
 namespace BISC.Modules.DataSets.Presentation.Services
@@ -30,7 +33,7 @@ namespace BISC.Modules.DataSets.Presentation.Services
 
         #region Implementation of IFtpDataSetMpdelService
 
-        public async Task<OperationResult> WriteDatasetsToDevice(string ip, List<IDataSetViewModel> dataSetsToSave)
+       public async Task<OperationResult> WriteDatasetsToDevice(string ip, List<IDataSet> dataSetsToSave)
         {
             try
             {
@@ -54,15 +57,17 @@ namespace BISC.Modules.DataSets.Presentation.Services
 
         #endregion
 
-        private void Write(List<IDataSetViewModel> dataSetsToParse, TextWriter streamTextWriter)
+        private void Write(List<IDataSet> dataSetsToParse, TextWriter streamTextWriter)
         {
-            foreach (var dataSetViewModel in dataSetsToParse)
+            foreach (var dataSet in dataSetsToParse)
             {
+                var lnParent = dataSet.GetFirstParentOfType<ILogicalNode>();
+                var ldParent = dataSet.GetFirstParentOfType<ILDevice>();
+
                 streamTextWriter.WriteLine(
-                    $"DSN({dataSetViewModel.SelectedParentLd} {dataSetViewModel.SelectedParentLn}${dataSetViewModel.EditableNamePart})");
-                foreach (var fcdaViewModel in dataSetViewModel.FcdaViewModels)
+                    $"DSN({ldParent.Inst} {lnParent.Name}${dataSet.Name})");
+                foreach (var fcda in dataSet.FcdaList)
                 {
-                    IFcda fcda = fcdaViewModel.GetFcda();
                     string ld = fcda.LdInst;
                     var ln = fcda.Prefix + fcda.LnClass + fcda.LnInst;
                     var fc = fcda.Fc;

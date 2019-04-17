@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Infrastructure.Global.Services;
+﻿using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
-using BISC.Modules.Connection.Infrastructure.Connection;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model;
@@ -16,6 +9,8 @@ using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Presentation.ViewModels.GooseControls;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BISC.Modules.Gooses.Presentation.Factories
 {
@@ -54,20 +49,32 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 if (gseOfGoose != null)
                 {
                     if (gseOfGoose.AppId != null)
+                    {
                         gooseControlViewModel.AppId = uint.Parse(gseOfGoose.AppIdDec);
+                    }
+
                     gooseControlViewModel.MacAddress = gseOfGoose.MacAddress;
                     if (gseOfGoose.MaxTime.Value != null)
                     {
-                        gooseControlViewModel.MaxTime = (uint) gseOfGoose.MaxTime.Value.Value;
+                        gooseControlViewModel.MaxTime = (uint)gseOfGoose.MaxTime.Value.Value;
                     }
 
                     if (gseOfGoose.MinTime.Value != null)
-                        gooseControlViewModel.MinTime = (uint) gseOfGoose.MinTime.Value.Value;
+                    {
+                        gooseControlViewModel.MinTime = (uint)gseOfGoose.MinTime.Value.Value;
+                    }
 
-                    if (gseOfGoose.VlanId != null) gooseControlViewModel.VlanId = uint.Parse(gseOfGoose.VlanId);
-                    if (gseOfGoose.VlanPriority != null) gooseControlViewModel.VlanPriority = (uint)gseOfGoose.VlanPriority;
+                    if (gseOfGoose.VlanId != null)
+                    {
+                        gooseControlViewModel.VlanId = uint.Parse(gseOfGoose.VlanId);
+                    }
 
-                    gooseControlViewModel.VlanPriority = (uint) gseOfGoose.VlanPriority;
+                    if (gseOfGoose.VlanPriority != null)
+                    {
+                        gooseControlViewModel.VlanPriority = (uint)gseOfGoose.VlanPriority;
+                    }
+
+                    gooseControlViewModel.VlanPriority = (uint)gseOfGoose.VlanPriority;
                     gooseControlViewModel.LdInst = gseOfGoose.LdInst;
 
                 }
@@ -108,7 +115,10 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             var ldevice = ldevices.FirstOrDefault((lDevice => lDevice.Inst == "LD0"));
 
             if (ldevice == null)
+            {
                 ldevice = ldevices.FirstOrDefault();
+            }
+
             gooseControlViewModel.ConfRev = 1;
             gooseControlViewModel.LdInst = ldevice.Inst;
             gooseControlViewModel.GseType = "GOOSE";

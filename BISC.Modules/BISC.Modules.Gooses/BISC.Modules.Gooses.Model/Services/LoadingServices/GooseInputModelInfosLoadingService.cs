@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BISC.Model.Global.Model;
+using BISC.Model.Global.Project;
+using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading;
@@ -55,9 +58,23 @@ namespace BISC.Modules.Gooses.Model.Services.LoadingServices
                 }
                 else
                 {
+                    var biscProject = sclModel.GetFirstParentOfType<IBiscProject>() ?? new BiscProject();
+                    if (biscProject.MainSclModel.Value == null)
+                    {
+                        biscProject.MainSclModel.Value = sclModel;
+                    }
 
-                    _goosesModelService.SetGooseInputModelInfosToProject(_biscProject,
+                    if (biscProject.CustomElements.Value == null)
+                    {
+                        biscProject.CustomElements.Value = new ModelElement() { ElementName = "CustomElements" };
+                    }
+
+                    _goosesModelService.SetGooseInputModelInfosToProject(biscProject,
                         device, resMatrix.Item);
+
+                    // Тут следует удалить потом
+                    //_goosesModelService.SetGooseInputModelInfosToProject(_biscProject,
+                    //    device, resMatrix.Item);
                 }
             }
             deviceLoadingProgress?.Report(new object());

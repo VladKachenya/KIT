@@ -59,7 +59,7 @@ namespace BISC.Modules.Gooses.Model.Services
             }
         }
 
-        public void AddGooseCdFtpEntityToMatrix(IGooseMatrixFtp gooseMatrixFtp, string goCdRef, string goAppId, uint confRev)
+        public void AddGooseCdFtpEntityToMatrix(IGooseMatrixFtp gooseMatrixFtp, string goCdRef, string goAppId, int confRev)
         {
             if (gooseMatrixFtp.GoCbFtpEntities.Any(el => el.GoCbReference == goCdRef && el.AppId == goAppId && el.ConfRev == confRev)) { return; }
             var goCdEntity = gooseMatrixFtp.GoCbFtpEntities;
@@ -67,10 +67,15 @@ namespace BISC.Modules.Gooses.Model.Services
             gooseMatrixFtp.GoCbFtpEntities.Add(new GoCbFtpEntity() { IndexOfGoose = i, GoCbReference = goCdRef, AppId = goAppId, ConfRev = confRev });
         }
 
-        public IGooseMatrixFtp GetGooseMatrixFtpForDevice(IDevice device)
+        public IGooseMatrixFtp GetGooseMatrixFtpForDevice(IDevice device, IBiscProject biscProject = null)
         {
+            if (biscProject == null)
+            {
+                biscProject = _biscProject;
+            }
+
             IGooseMatrixFtp gooseMatrixFtp;
-            var inputEntity = _goosesModelService.GetGooseDeviceInputOfProject(_biscProject, device);
+            var inputEntity = _goosesModelService.GetGooseDeviceInputOfProject(biscProject, device);
             if (inputEntity.GooseMatrix.Value == null)
             {
                 gooseMatrixFtp = new GooseMatrixFtp();
@@ -83,20 +88,26 @@ namespace BISC.Modules.Gooses.Model.Services
             return gooseMatrixFtp;
         }
 
-        public void SetGooseMatrixFtpForDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp)
+        public void SetGooseMatrixFtpForDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp, IBiscProject biscProject = null)
         {
-            var gooseDeviceInput = _goosesModelService.GetGooseDeviceInputOfProject(_biscProject, device);
+            if (biscProject == null)
+            {
+                biscProject = _biscProject;
+            }
+            var gooseDeviceInput = _goosesModelService.GetGooseDeviceInputOfProject(biscProject, device);
             gooseDeviceInput.GooseMatrix.Value = gooseMatrixFtp;
         }
 
+        // Тут необходимо поправить!!!!!
+        // Надо передавать не List<Tuple<string, IGooseRowFtpEntity>> а List<Tuple<IGoCbFtpEntity, IGooseRowFtpEntity>>
         public void SetSubscriptionRowsToMatrix(IGooseMatrixFtp gooseMatrixFtp,
-            List<Tuple<string, IGooseRowFtpEntity>> subscriptionEntity)
+            List<Tuple<IGoCbFtpEntity, IGooseRowFtpEntity>> subscriptionEntity)
         {
             gooseMatrixFtp.GooseRowFtpEntities.Clear();
             gooseMatrixFtp.GooseRowQualityFtpEntities.Clear();
             foreach (var tuple in subscriptionEntity)
             {
-                var goCdFtpEntity = gooseMatrixFtp.GoCbFtpEntities.First(el => el.GoCbReference == tuple.Item1);
+                var goCdFtpEntity = gooseMatrixFtp.GoCbFtpEntities.First(el => el.ModelElementCompareTo(tuple.Item1));
                 tuple.Item2.IndexOfGoose = goCdFtpEntity.IndexOfGoose;
                 if (tuple.Item2 is IGooseRowQualityFtpEntity)
                 {
@@ -105,8 +116,35 @@ namespace BISC.Modules.Gooses.Model.Services
                 }
                 gooseMatrixFtp.GooseRowFtpEntities.Add(tuple.Item2);
             }
-
         }
+
+        public List<IGooseRowFtpEntity> GetAllRowEntitiesOfGoCd(IGooseMatrixFtp gooseMatrixFtp,
+            IGoCbFtpEntity goCbFtpEntity)
+        {
+            var res = new List<IGooseRowFtpEntity>();
+            var goCdFtpEntityInMatrix = gooseMatrixFtp.GoCbFtpEntities.FirstOrDefault( el => el.ModelElementCompareTo(goCbFtpEntity));
+            if (goCdFtpEntityInMatrix == null)
+            {
+                throw new Exception("Объект goCbFtpEntity не найдет в матрице");
+            }
+
+            foreach (var rowFtpEntityS in gooseMatrixFtp.GooseRowFtpEntities)
+            {
+                if (rowFtpEntityS.IndexOfGoose == goCdFtpEntityInMatrix.IndexOfGoose)
+                {
+                    res.Add(rowFtpEntityS);
+                }
+            }
+            foreach (var rowFtpEntityQ in gooseMatrixFtp.GooseRowFtpEntities)
+            {
+                if (rowFtpEntityQ.IndexOfGoose == goCdFtpEntityInMatrix.IndexOfGoose)
+                {
+                    res.Add(rowFtpEntityQ);
+                }
+            }
+            return res;
+        }
+
         #endregion
 
         #region private methods

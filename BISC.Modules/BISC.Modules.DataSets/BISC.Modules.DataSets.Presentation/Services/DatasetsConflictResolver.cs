@@ -1,17 +1,18 @@
-﻿using System;
-using BISC.Model.Infrastructure.Project;
+﻿using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys;
 using BISC.Modules.DataSets.Presentation.Commands;
+using BISC.Modules.DataSets.Presentation.Services;
 using BISC.Modules.DataSets.Presentation.ViewModels.Helpers;
 using BISC.Modules.Device.Infrastructure.HelpClasses;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,11 +27,13 @@ namespace BISC.Modules.DataSets.Model.Services
         private readonly INavigationService _navigationService;
         private readonly IDatasetViewModelFactory _datasetViewModelFactory;
         private readonly IInfoModelService _infoModelService;
-        private readonly DatasetsSavingByFtpCommand _datasetsSavingByFtpCommand;
+        private readonly DatasetsProjectSavingCommand _datasetsProjectSavingCommand;
+        private readonly DataSetSavingService _dataSetSavingService;
 
 
         public DatasetsConflictResolver(IDatasetModelService datasetModelService, IDeviceModelService deviceModelService, IConnectionPoolService connectionPoolService,
-            INavigationService navigationService, IDatasetViewModelFactory datasetViewModelFactory, IInfoModelService infoModelService, DatasetsSavingByFtpCommand datasetsSavingByFtpCommand)
+            INavigationService navigationService, IDatasetViewModelFactory datasetViewModelFactory, IInfoModelService infoModelService,
+            DatasetsProjectSavingCommand datasetsProjectSavingCommand, DataSetSavingService dataSetSavingService)
         {
             _datasetModelService = datasetModelService;
             _deviceModelService = deviceModelService;
@@ -38,10 +41,9 @@ namespace BISC.Modules.DataSets.Model.Services
             _navigationService = navigationService;
             _datasetViewModelFactory = datasetViewModelFactory;
             _infoModelService = infoModelService;
-            _datasetsSavingByFtpCommand = datasetsSavingByFtpCommand;
+            _datasetsProjectSavingCommand = datasetsProjectSavingCommand;
+            _dataSetSavingService = dataSetSavingService;
         }
-
-
 
         #region Implementation of IElementConflictResolver
 
@@ -99,9 +101,6 @@ namespace BISC.Modules.DataSets.Model.Services
                 dataSetViewModel.ChangeTracker.SetTrackingEnabled(true);
             }
 
-            var projectOnlydatasets = GetProjectOnlyList(datasetsInDevice, datasetsInProject);
-            var deviceOnlydatasets = GetDeviceOnlyList(datasetsInDevice, datasetsInProject);
-
             var deviceOnlydatasetsViewModels = _datasetViewModelFactory.GetDataSetsViewModel(datasetsInDevice);
             var projectOnlydatasetsViewModels = _datasetViewModelFactory.GetDataSetsViewModel(datasetsInProject);
 
@@ -115,80 +114,25 @@ namespace BISC.Modules.DataSets.Model.Services
                 datasetsViewModelsInProject?.FirstOrDefault(model => model.EditableNamePart == dataSetViewModel.EditableNamePart)?.ChangeTracker.SetModified();
             }
 
-            bool isSavingByFtpNeeded = false;
-            bool isChengid = (projectOnlydatasets.Count != 0 || deviceOnlydatasets.Count != 0);
-
             if (isFromDevice)//подтянуть различия из устройства
             {
-                var instanseOfDataSets = new List<IDataSet>(datasetsInDevice);
                 _datasetModelService.DeleteAllDatasetsFromDevice(devicesclModelInProject);
                 foreach (var dataSetToAdd in datasetsInDevice)
                 {
                     _datasetModelService.AddDatasetToDevice(dataSetToAdd, devicesclModelInProject, _infoModelService.GetParentLDevice(dataSetToAdd).Inst, _infoModelService.GetFullNameOfLogicalNode(_infoModelService.GetParentLogicalNode(dataSetToAdd)));
                 }
-                //foreach (var projectOnlydataset in projectOnlydatasets)
-                //{
-                //    _datasetModelService.DeleteDatasetFromDevice(projectOnlydataset, devicesclModelInProject, projectOnlydataset.GetFirstParentOfType<ILDevice>().Inst, projectOnlydataset.GetFirstParentOfType<ILogicalNode>().Name);
-                //}
-
-                //foreach (var deviceOnlydataset in deviceOnlydatasets)
-                //{
-                //    _datasetModelService.AddDatasetToDevice(deviceOnlydataset, devicesclModelInProject, deviceOnlydataset.GetFirstParentOfType<ILDevice>().Inst, deviceOnlydataset.GetFirstParentOfType<ILogicalNode>().Name);
-                //}
             }
             else
-            { //записать в устройство различия
-                //if (_connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).IsConnected)
-                //{
-                //    foreach (var projectOnlydataset in projectOnlydatasets)
-                //    {
-                //        await _connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).MmsConnection
-                //            .AddDataSet(projectOnlydataset.GetFirstParentOfType<ILogicalNode>().Name,
-                //                projectOnlydataset.GetFirstParentOfType<ILDevice>().Inst,
-                //                deviceInsclModelInDevice.Name, projectOnlydataset.Name,
-                //                projectOnlydataset.FcdaList.ToDtos(deviceInsclModelInDevice.Name));
-
-                //        _datasetModelService.AddDatasetToDevice(projectOnlydataset, deviceInsclModelInDevice,
-                //            projectOnlydataset.GetFirstParentOfType<ILogicalNode>().Inst,
-                //            projectOnlydataset.GetFirstParentOfType<ILDevice>().Inst);
-
-                //    }
-
-                //    foreach (var deviceOnlydataset in deviceOnlydatasets)
-                //    {
-                //        await _connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).MmsConnection
-                //            .DeleteDataSet(deviceOnlydataset.GetFirstParentOfType<ILogicalNode>().Name,
-                //                deviceOnlydataset.GetFirstParentOfType<ILDevice>().Inst,
-                //                deviceInsclModelInDevice.Name, deviceOnlydataset.Name);
-
-                //        _datasetModelService.DeleteDatasetFromDevice(deviceOnlydataset, deviceInsclModelInDevice,
-                //            deviceOnlydataset.GetFirstParentOfType<ILDevice>().Inst,
-                //            deviceOnlydataset.GetFirstParentOfType<ILogicalNode>().Name);
-                //    }
-                //}
-                //else
-                //{
-                //    return new ResolvingResult("Устройство не на связи");
-                //}
+            {
                 if (_connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).IsConnected)
                 {
-                    _datasetsSavingByFtpCommand.Initialize(ref datasetsViewModelsInProject, deviceInsclModelInDevice, datasetsViewModelsInProject.Select(el => el.ChangeTracker).ToArray());
+                    _datasetsProjectSavingCommand.Initialize(ref datasetsViewModelsInProject, deviceInsclModelInDevice, datasetsViewModelsInProject.Select(el => el.ChangeTracker).ToArray());
+                    await _datasetsProjectSavingCommand.SaveAsync();
+                    await _dataSetSavingService.Save(devicesclModelInProject);
+                    return new ResolvingResult() { IsRestartNeeded = true };
 
-
-                    if (await _datasetsSavingByFtpCommand.IsSavingByFtpNeeded())
-                    {
-                        isSavingByFtpNeeded = true;
-                    }
-                    await _datasetsSavingByFtpCommand.SaveAsync();
-                    if (isSavingByFtpNeeded)
-                    {
-                        return new ResolvingResult() { IsRestartNeeded = true };
-                    }
                 }
-                else
-                {
-                    return new ResolvingResult("Устройтво не отвечает");
-                }
+                return new ResolvingResult("Устройтво не отвечает");
             }
             return ResolvingResult.SucceedResult;
         }

@@ -6,14 +6,17 @@ using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.Factorys;
+using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.ViewModels;
 using BISC.Modules.DataSets.Presentation.Services.Interfaces;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.Reports.Infrastructure.Services;
+using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.ChangeTracker;
 using BISC.Presentation.Infrastructure.Commands;
 using System;
@@ -21,10 +24,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using BISC.Modules.Gooses.Presentation.Interfaces.Services;
+using BISC.Modules.Reports.Infrastructure.Presentation.Services;
 
 namespace BISC.Modules.DataSets.Presentation.Commands
 {
-    public class DatasetsSavingByFtpCommand : ISavingCommand
+    public class DatasetsProjectSavingCommand : ISavingCommand
     {
 
         private readonly IDatasetModelService _datasetModelService;
@@ -35,21 +40,26 @@ namespace BISC.Modules.DataSets.Presentation.Commands
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IBiscProject _biscProject;
-        private readonly IFtpDataSetModelService _ftpDataSetModelService;
+        //private readonly IFtpDataSetModelService _ftpDataSetModelService;
+
+        private readonly IDeviceWarningsService _deviceWarningsService;
+
+        private readonly IGooseViewModelService _gooseViewModelService;
+
+        private readonly IReportVeiwModelService _reportVeiwModelService;
         //private Action<bool> _fineshSaving;
 
         private IDevice _device;
         private ObservableCollection<IDataSetViewModel> _dataSetsToSave;
         private IChangeTracker[] _changeTrackers;
 
+        //private string _errorDeleteMessagePattern = $"Не удалось удалить DataSet {0} в устройстве: {1}";
+        //private string _successDeleteMessagePattern = $"DataSet {0} удален в устройстве: {1}";
 
-
-        private string _errorDeleteMessagePattern = $"Не удалось удалить DataSet {0} в устройстве: {1}";
-        private string _successDeleteMessagePattern = $"DataSet {0} удален в устройстве: {1}";
-
-        public DatasetsSavingByFtpCommand(IDatasetModelService datasetModelService, IInfoModelService infoModelService, IDataSetFactory dataSetFactory,
-            IProjectService projectService, ILoggingService loggingService, IConnectionPoolService connectionPoolService,
-            ISclCommunicationModelService sclCommunicationModelService, IBiscProject biscProject, IReportsModelService reportsModelService, IFtpDataSetModelService ftpDataSetModelService)
+        public DatasetsProjectSavingCommand(IDatasetModelService datasetModelService, IInfoModelService infoModelService,
+            IDataSetFactory dataSetFactory, IProjectService projectService, ILoggingService loggingService, 
+            IConnectionPoolService connectionPoolService, ISclCommunicationModelService sclCommunicationModelService, IBiscProject biscProject, 
+            IDeviceWarningsService deviceWarningsService, IGooseViewModelService gooseViewModelService, IReportVeiwModelService reportVeiwModelService)
         {
             _datasetModelService = datasetModelService;
             _infoModelService = infoModelService;
@@ -59,8 +69,12 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             _connectionPoolService = connectionPoolService;
             _sclCommunicationModelService = sclCommunicationModelService;
             _biscProject = biscProject;
-            _ftpDataSetModelService = ftpDataSetModelService;
+            _deviceWarningsService = deviceWarningsService;
+            _gooseViewModelService = gooseViewModelService;
+            _reportVeiwModelService = reportVeiwModelService;
         }
+
+        #region Implementation of ISavingCommand
 
         public Action RefreshViewModel { get; set; }
 
@@ -72,47 +86,29 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             _changeTrackers = changeTrackers;
         }
 
-        public Task<bool> IsSavingByFtpNeeded()
-        {
-            var isCheged = false;
-            foreach (var changeTracker in _changeTrackers)
-            {
-                if (changeTracker.GetIsModifiedRecursive())
-                {
-                    isCheged = true;
-                    break;
-                }
-            }
-
-            if (_device == null || isCheged == false)
-            {
-                return Task.FromResult(false);
-            }
-            else
-            {
-                return Task.FromResult(_connectionPoolService.GetConnection(_device.Ip).IsConnected);
-            }
-        }
 
         public async Task<OperationResult<SavingCommandResultEnum>> SaveAsync()
         {
+            var dataSetNamesWithChengests = new List<string>();
             try
             {
 
                 var dataSetsExisting = _datasetModelService.GetAllDataSetOfDevice(_device);
 
+                // Проверка удалённых датасетов
                 foreach (var dataSetExiting in dataSetsExisting)
                 {
                     if (_dataSetsToSave.Any((model => model.EditableNamePart == dataSetExiting.Name)))
                     {
                         continue;
                     }
-
+                    dataSetNamesWithChengests.Add(dataSetExiting.Name);
                     var ln = dataSetExiting.ParentModelElement as ILogicalNode;
                     ln?.ChildModelElements.Remove(dataSetsExisting.First((set =>
                         set.Name == dataSetExiting.Name)));
                 }
 
+                // Проверка модифицированных датасетов
                 foreach (var dataSetToSave in _dataSetsToSave)
                 {
                     if (dataSetToSave.IsEditeble)
@@ -121,7 +117,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
                         {
                             continue;
                         }
-
+                        dataSetNamesWithChengests.Add(dataSetToSave.EditableNamePart);
                         var ldevice = _infoModelService.GetLDevicesFromDevices(_device)
                             .FirstOrDefault((lDevice => lDevice.Inst == dataSetToSave.SelectedParentLd));
                         var ln = ldevice.AlLogicalNodes.FirstOrDefault(
@@ -135,18 +131,16 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
                         IDataSet dataSet = _dataSetFactory.CreateDataSet(ln, dataSetToSave.EditableNamePart,
                             dataSetToSave.FcdaViewModels.Select((model => model.GetFcda())).ToList());
-
                     }
                 }
 
+                _gooseViewModelService.IncrementConfRevisionGooseControls(_device, dataSetNamesWithChengests);
+                _reportVeiwModelService.IncrementConfRevisionReportControl(_device, dataSetNamesWithChengests);
+                //_projectService.SaveCurrentProject();
                 if (_connectionPoolService.GetConnection(_device.Ip).IsConnected)
                 {
-                    var dsToSaveByFtp = new List<IDataSetViewModel>(_dataSetsToSave).Where(ds => ds.IsEditeble)
-                        .ToList();
-                    await _ftpDataSetModelService.WriteDatasetsToDevice(_device.Ip, dsToSaveByFtp);
+                    _deviceWarningsService.SetWarningOfDevice(_device.DeviceGuid, DatasetKeys.DataSetWarningKeys.DataSetsUnsavedWarningTagKey, "Datasets не соответствуют устройству");
                 }
-
-                _projectService.SaveCurrentProject();
                 _loggingService.LogMessage($"DataSets устройства {_device.Name} успешно сохранены",
                     SeverityEnum.Info);
             }
@@ -163,23 +157,52 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedOk);
         }
 
-        private async Task DeleteDataSetInDevice(string lnName, string ldName, string datasetName)
-        {
-            var res = await _connectionPoolService
-                .GetConnection(_sclCommunicationModelService.GetIpOfDevice(_device.Name,
-                    _biscProject.MainSclModel.Value)).MmsConnection.DeleteDataSet(lnName, ldName, _device.Name, datasetName);
-            if (!res.IsSucceed)
-            {
-                _loggingService.LogMessage(string.Format(_errorDeleteMessagePattern, datasetName, res.GetFirstError()), SeverityEnum.Warning);
-            }
-            else
-            {
-                _loggingService.LogMessage(string.Format(_successDeleteMessagePattern, datasetName, _device.Name), SeverityEnum.Info);
-            }
-        }
+        //private async Task DeleteDataSetInDevice(string lnName, string ldName, string datasetName)
+        //{
+        //    var res = await _connectionPoolService
+        //        .GetConnection(_sclCommunicationModelService.GetIpOfDevice(_device.Name,
+        //            _biscProject.MainSclModel.Value)).MmsConnection.DeleteDataSet(lnName, ldName, _device.Name, datasetName);
+        //    if (!res.IsSucceed)
+        //    {
+        //        _loggingService.LogMessage(string.Format(_errorDeleteMessagePattern, datasetName, res.GetFirstError()), SeverityEnum.Warning);
+        //    }
+        //    else
+        //    {
+        //        _loggingService.LogMessage(string.Format(_successDeleteMessagePattern, datasetName, _device.Name), SeverityEnum.Info);
+        //    }
+        //}
 
         public async Task<OperationResult> ValidateBeforeSave()
         {
+
+            var warnings = new List<string>();
+
+            // Валидация имён
+            var dataSetsNames = new List<string>();
+            foreach (var name in _dataSetsToSave.Select(el => el.EditableNamePart))
+            {
+                if (!dataSetsNames.Contains(name))
+                {
+                    dataSetsNames.Add(name);
+                }
+            }
+
+            foreach (var name in dataSetsNames)
+            {
+                var dataSets = _dataSetsToSave.Where(el => el.EditableNamePart == name);
+                if (dataSets.Count() > 1)
+                {
+                    foreach (var dataSetViewModel in dataSets)
+                    {
+                        ((ViewModelBase)dataSetViewModel).IsWarning = true;
+                    }
+
+                    var mess = $"Имеется несколько DataSets с именем {name}";
+                    _loggingService.LogMessage(mess, SeverityEnum.Warning);
+                    warnings.Add(mess);
+                }
+            }
+
             //var reportsWithDatasts = _reportsModelService.GetAllReportControlsOfDevice(_device).Where((control => _dataSetsToSave
             //      .Any((model =>
             //          model.ChangeTracker.GetIsModifiedRecursive() && model.EditableNamePart == control.DataSet))));
@@ -192,7 +215,22 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             //    }
             //    return new OperationResult($"Датасеты, которые вы хотите изменить используются в следующих отчетах: {mes}");
             //}
+            if (warnings.Any())
+            {
+                return new OperationResult(warnings);
+            }
             return OperationResult.SucceedResult;
         }
+
+        #endregion
+
+        #region private methods
+
+        private void IncrementConfRevisionOfGoose(List<string> DataSetNamesList)
+        {
+            
+        }
+
+        #endregion
     }
 }

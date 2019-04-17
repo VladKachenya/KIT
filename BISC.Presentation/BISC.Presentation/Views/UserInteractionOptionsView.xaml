@@ -26,7 +26,7 @@
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <ContentControl ContentTemplate="{DynamicResource AlertIcon}" VerticalAlignment="Center"
-                                            Foreground="Red"/>
+                                            Foreground="Blue"/>
                             <TextBlock Text="{Binding .}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </DataTemplate>

@@ -2,6 +2,7 @@
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
+using BISC.Model.Infrastructure.Services;
 using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Events;
@@ -13,6 +14,8 @@ using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
 using BISC.Modules.Device.Presentation.Services.Helpers;
 using BISC.Modules.FTP.Infrastructure.Serviсes;
+using BISC.Presentation.Infrastructure.Events;
+using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 using System;
@@ -20,8 +23,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BISC.Model.Infrastructure.Services;
-using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Modules.Device.Presentation.Services
 {
@@ -103,9 +104,18 @@ namespace BISC.Modules.Device.Presentation.Services
 
         private async Task Reconnect(IDevice existingDevice, UiEntityIdentifier uiEntityIdToRemove, bool isRestarting)
         {
-            _treeManagementService.DeleteTreeItem(uiEntityIdToRemove);
+            _globalEventsService.SendMessage(new ShellBlockEvent() { IsBlocked = true, Message = $"Подготовка к перезапуску{existingDevice.Name}" });
 
-            _tabManagementService.CloseTabWithChildren(uiEntityIdToRemove.ItemId.ToString());
+            var index = _treeManagementService.GetTreeItemIndex(uiEntityIdToRemove);
+            try
+            {
+                _treeManagementService.DeleteTreeItem(uiEntityIdToRemove);
+                _tabManagementService.CloseTabWithChildren(uiEntityIdToRemove.ItemId.ToString());
+            }
+            finally
+            {
+                _globalEventsService.SendMessage(new ShellBlockEvent() { IsBlocked = false });
+            }
 
             var sortedElements = _elementLoadingServices.OrderBy((service => service.Priority));
             CancellationTokenSource cts = new CancellationTokenSource();
@@ -117,7 +127,7 @@ namespace BISC.Modules.Device.Presentation.Services
 
             var treeItemId = _treeManagementService.AddTreeItem(biscNavigationParameters,
                 DeviceKeys.DeviceRestartViewKey,
-                null);
+                null, null, index);
             restartDeviceContext.UiEntityIdentifier = treeItemId;
             if (isRestarting)
             {
@@ -200,8 +210,9 @@ namespace BISC.Modules.Device.Presentation.Services
             _globalEventsService.SendMessage(new DeviceLoadingEvent(device.DeviceGuid) { IsFinished = true });
             if (!hasConflics)
             {
+                var index2 = _treeManagementService.GetTreeItemIndex(treeItemId);
                 _treeManagementService.DeleteTreeItem(treeItemId);
-                _deviceAddingService.AddDeviceToTree(existingDevice);
+                _deviceAddingService.AddDeviceToTree(existingDevice, index2);
                 _deviceWarningsService.ClearDeviceWarningsOfDevice(existingDevice.DeviceGuid);
             }
             else

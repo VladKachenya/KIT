@@ -29,6 +29,8 @@ namespace BISC.Modules.DataSets.Infrastructure.Keys
         public static class DataSetWarningKeys
         {
             public const string DataSetLoadErrorWarningTagKey = "DataSetLoadErrorWarningTag";
+            public const string DataSetsUnsavedWarningTagKey = "DataSetsUnsavedWarningTag";
+
         }
     }
 }

@@ -33,7 +33,7 @@
             <!--<Button Margin="2" ToolTip="Отменить загрузку" Command="{Binding CancelLoadingCommand}" Grid.Column="2" Width="22" Height="22" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}">
                 <ContentControl Width="20" Height="20" Foreground="DarkRed"  Opacity="0.7" ContentTemplate="{DynamicResource CancelIcon}"></ContentControl>
             </Button>-->
-            <ContentControl Margin="2" Visibility="{Binding HaveConflicts,Converter={StaticResource boolToVisConverter}}" Width="20" Height="20" Grid.Column="1" Foreground="DarkRed" Opacity="0.8" ToolTip="Обнаружено несоответствие моделей" ContentTemplate="{DynamicResource MessageAlertIcon}"></ContentControl>
+            <ContentControl Margin="2" Visibility="{Binding HaveConflicts,Converter={StaticResource boolToVisConverter}}" Width="20" Height="20" Grid.Column="1" Opacity="0.8" Foreground="DarkRed" ToolTip="Обнаружено несоответствие моделей" ContentTemplate="{DynamicResource MessageAlertIcon}"></ContentControl>
 
         </Grid>
         <ProgressBar Visibility="{Binding IsRestartingInProgress,Converter={StaticResource boolToVisConverter}}" Grid.Row="1" Value="{Binding CurrentProgress}" Maximum="{Binding TotalProgress}" IsIndeterminate="{Binding IsIntermetiateProgress}"></ProgressBar>

@@ -9,6 +9,7 @@ using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Device.Infrastructure.Commands;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading;
+using BISC.Modules.Device.Infrastructure.Saving;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Commands;
 using BISC.Modules.Device.Presentation.Interfaces;
@@ -88,6 +89,7 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<DeviceLoadingTreeItemViewModel>();
             _injectionContainer.RegisterType<IDeviceLoadingService, DeviceLoadingService>();
             _injectionContainer.RegisterType<IDeviceIpChangingService, DeviceIpIpChangingService>();
+            _injectionContainer.RegisterType<IDeviceSavingService, DeviceSavingService>();
 
             var presentationInitialization = _injectionContainer.ResolveType(typeof(DevicePresentationInitialization)) as DevicePresentationInitialization;
 

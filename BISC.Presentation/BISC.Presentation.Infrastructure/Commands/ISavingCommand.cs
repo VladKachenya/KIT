@@ -1,4 +1,5 @@
-﻿using BISC.Infrastructure.Global.Common;
+﻿using System;
+using BISC.Infrastructure.Global.Common;
 using System.Threading.Tasks;
 
 namespace BISC.Presentation.Infrastructure.Commands
@@ -7,9 +8,10 @@ namespace BISC.Presentation.Infrastructure.Commands
 	{
 	
 		Task<OperationResult<SavingCommandResultEnum>> SaveAsync();
-		Task<bool> IsSavingByFtpNeeded();
 		Task<OperationResult> ValidateBeforeSave();
-	}
+	    Action RefreshViewModel { get; set; }
+
+    }
 
 
 }

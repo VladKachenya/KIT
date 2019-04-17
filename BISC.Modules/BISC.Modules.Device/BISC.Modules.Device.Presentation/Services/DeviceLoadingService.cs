@@ -18,6 +18,7 @@ using BISC.Modules.Device.Infrastructure.Loading.Events;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
+using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Presentation.BaseItems.Commands;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
@@ -35,12 +36,15 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly IUserNotificationService _userNotificationService;
         private readonly ILoggingService _loggingService;
         private readonly IConnectionPoolService _connectionPoolService;
+        private readonly IGooseMatrixFtpService _gooseMatrixFtpService;
+        private readonly IGoosesModelService _goosesModelService;
         private List<IDeviceElementLoadingService> _elementLoadingServices;
 
         public DeviceLoadingService(IInjectionContainer injectionContainer, IDeviceModelService deviceModelService,
             ITreeManagementService treeManagementService, IDeviceAddingService deviceAddingService,
             Func<ISclModel> sclModelCreator, IGlobalEventsService globalEventsService, IBiscProject biscProject,
-            IUserNotificationService userNotificationService,ILoggingService loggingService,IConnectionPoolService connectionPoolService)
+            IUserNotificationService userNotificationService,ILoggingService loggingService,IConnectionPoolService connectionPoolService, 
+            IGooseMatrixFtpService gooseMatrixFtpService, IGoosesModelService goosesModelService)
         {
             _deviceModelService = deviceModelService;
             _treeManagementService = treeManagementService;
@@ -51,6 +55,8 @@ namespace BISC.Modules.Device.Presentation.Services
             _userNotificationService = userNotificationService;
             _loggingService = loggingService;
             _connectionPoolService = connectionPoolService;
+            _gooseMatrixFtpService = gooseMatrixFtpService;
+            _goosesModelService = goosesModelService;
             _elementLoadingServices = injectionContainer.ResolveAll(typeof(IDeviceElementLoadingService))
                 .Cast<IDeviceElementLoadingService>().ToList();
         }
@@ -95,6 +101,13 @@ namespace BISC.Modules.Device.Presentation.Services
                                 itemsCount, ++currentElementsCount));
                         }), sclModel, cts.Token);
                 }
+                // Устанавливаем полученные Goose подписки из sclMode в наш текущий проект
+                _goosesModelService.SetGooseInputModelInfosToProject(_biscProject, device, 
+                    _goosesModelService.GetGooseInputModelInfos(device, sclModel.GetFirstParentOfType<IBiscProject>()));
+                // Устанавливаем полученную Goose матрицн из sclMode в наш текущий проект
+                _gooseMatrixFtpService.SetGooseMatrixFtpForDevice(device, 
+                    _gooseMatrixFtpService.GetGooseMatrixFtpForDevice(device, sclModel.GetFirstParentOfType<IBiscProject>()));
+
             }
             catch (Exception e)
             {

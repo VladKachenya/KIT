@@ -25,6 +25,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Modules.Reports.Infrastructure.Events;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
 {
@@ -36,7 +37,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private List<IReportControl> _reportControlsModel;
 
 
-        private readonly ICommandFactory _commandFactory;
         private readonly IReportsModelService _reportsModelService;
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IReportControlFactoryViewModel _reportControlFactoryViewModel;
@@ -48,6 +48,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private readonly ReportControlLoadingService _reportControlLoadingService;
         private readonly IReportVeiwModelService _reportVeiwModelService;
         private readonly IGlobalSavingService _globalSavingService;
+        private readonly IGlobalEventsService _globalEventsService;
         private bool _isUpdateReports = true;
         private bool _isSaveСhanges = true;
 
@@ -56,9 +57,8 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService,
             IConnectionPoolService connectionPoolService, ILoggingService loggingService, ReportsSavingCommand reportsSavingCommand,
             IBiscProject biscProject, ReportControlLoadingService reportControlLoadingService, IReportVeiwModelService reportVeiwModelService,
-            IGlobalSavingService globalSavingService)
+            IGlobalSavingService globalSavingService, IGlobalEventsService globalEventsService)
         {
-            _commandFactory = commandFactory;
             _reportsModelService = reportsModelService;
             _saveCheckingService = saveCheckingService;
             _reportControlFactoryViewModel = reportControlFactoryViewModel;
@@ -69,12 +69,14 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _reportControlLoadingService = reportControlLoadingService;
             _reportVeiwModelService = reportVeiwModelService;
             _globalSavingService = globalSavingService;
+            _globalEventsService = globalEventsService;
 
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand, () => _isSaveСhanges);
             AddNewReportCommand = commandFactory.CreatePresentationCommand(OnAddNewReportCommand, IsAddNewReport);
             UpdateReportsCommad = commandFactory.CreatePresentationCommand(OnUpdateReports, () => _isUpdateReports);
             DeleteReportCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteReport);
             _loggingService = loggingService;
+            _globalEventsService.Subscribe<ReportConfRevisionChengEvent>(OnConfRevisionChenging);
             ModelRegionKey = Guid.NewGuid().ToString();
         }
 
@@ -101,7 +103,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
                 var savingRes = await _globalSavingService.SaveСhangesToRegion(_regionName);
                 if (savingRes.IsSaved)
                 {
-                    await UpdateReports(true);
+                    await UpdateReports();
                 }
             }
             finally
@@ -139,7 +141,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             (UpdateReportsCommad as IPresentationCommand)?.RaiseCanExecute();
             try
             {
-                await UpdateReports(true);
+                await UpdateReports();
             }
             catch (Exception e)
             {
@@ -156,16 +158,16 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
 
 
-        private async Task UpdateReports(bool updateFromDevice)
+        private async Task UpdateReports()
         {
             try
             {
                 BlockViewModelBehavior.SetBlock("Обновление данных", true);
-                if (updateFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
-                {
-                    await _reportControlLoadingService.EstimateProgress(_device);
-                    await _reportControlLoadingService.Load(_device, null, _biscProject.MainSclModel.Value, new CancellationToken());
-                }
+                //if (updateFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
+                //{
+                //    await _reportControlLoadingService.EstimateProgress(_device);
+                //    await _reportControlLoadingService.Load(_device, null, _biscProject.MainSclModel.Value, new CancellationToken());
+                //}
                 UpdateCurentChengeTracker();
             }
             finally
@@ -201,9 +203,9 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             protected set
             {
                 SetProperty(ref _reportControlViewModels, value);
-                _reportsSavingCommand.Initialize(ref _reportControlViewModels, _device, () => _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+                _reportsSavingCommand.Initialize(ref _reportControlViewModels, _device);
                 _reportsSavingCommand.RefreshViewModel =
-                    async () => { await UpdateReports(false); };
+                    async () => { await UpdateReports(); };
             }
         }
 
@@ -222,16 +224,24 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
-            await UpdateReports(false);
+            await UpdateReports();
             base.OnNavigatedTo(navigationContext);
         }
 
         public override void OnActivate()
         {
-            _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", false);
             _userInterfaceComposingService.AddGlobalCommand(UpdateReportsCommad, $"Обновить Report-ы {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewReportCommand, $"Добавить Report {_device.Name}", IconsKeys.AddIconKey, false, true);
             base.OnActivate();
+        }
+
+        private async void OnConfRevisionChenging(ReportConfRevisionChengEvent chengEvent)
+        {
+            if (_device.DeviceGuid == chengEvent.DeviceGuid)
+            {
+                await UpdateReports();
+            }
         }
 
         public override void OnDeactivate()
@@ -245,6 +255,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         protected override void OnDisposing()
         {
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
+            _globalEventsService.Unsubscribe<ReportConfRevisionChengEvent>(OnConfRevisionChenging);
             ReportControlViewModels.ToList().ForEach(element => (element as IDisposable).Dispose());
             base.OnDisposing();
         }

@@ -27,6 +27,7 @@ namespace BISC.Modules.Reports.Infrastructure.Keys
             public const string ReportsFtpIncostistancyWarningTag = "ReportsFtpIncostistancyWarningTag";
             public const string ReportsIncostistancyWarningTag = "ReportsProjectAndDeviceIncostistancyWarningTag";
             public const string ReportsLoadErrorWarningTag = "ReportsLoadErrorWarningTag";
+            public const string ReportsUnsavedWarningTag = "ReportsUnsavedWarningTag";
 
 
         }

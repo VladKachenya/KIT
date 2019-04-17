@@ -1,16 +1,15 @@
-﻿using System;
-using BISC.Model.Infrastructure.Project;
+﻿using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Gooses.Infrastructure.Factorys;
+using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Presentation.Interfaces.Factories;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities;
 using BISC.Modules.Gooses.Presentation.ViewModels.Subscriptions;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using BISC.Modules.Device.Infrastructure.Model;
-using BISC.Modules.Gooses.Infrastructure.Factorys;
-using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 
 namespace BISC.Modules.Gooses.Presentation.Factories
 {
@@ -112,16 +111,32 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                         continue;
                     }
 
-                    bool isSigned = false;
-                    foreach (var gimie in gooseInputModelInfoEntites)
+                    // Чеки для устройств которых нету в проекте
+                    if (rowEntity.ParientDevice == null)
                     {
-                        if (gimie.ModelElementCompareTo(rowEntity.GooseInputModelInfo))
+                        if (gooseInputModelInfoEntites.Any(
+                            el => el.ModelElementCompareTo(rowEntity.GooseInputModelInfo)))
                         {
-                            isSigned = true;
-                            break;
+                            table.Rows[rowIndex][colIndex] = new SubscriptionValue(true);
                         }
+                        else
+                        {
+                            table.Rows[rowIndex][colIndex] = new SubscriptionValue(null, false);
+                        }
+                        continue;
                     }
-                    table.Rows[rowIndex][colIndex] = new SubscriptionValue(isSigned);
+
+                    // Чеки для устройств которые есть в проекте
+                    if (gooseInputModelInfoEntites.Any(
+                        el => el.ModelElementCompareTo(rowEntity.GooseInputModelInfo)))
+                    {
+                        table.Rows[rowIndex][colIndex] = new SubscriptionValue(true);
+                    }
+                    else
+                    {
+                        table.Rows[rowIndex][colIndex] = new SubscriptionValue(false);
+
+                    }
                 }
             }
 

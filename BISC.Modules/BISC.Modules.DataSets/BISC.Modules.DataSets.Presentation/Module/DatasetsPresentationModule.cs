@@ -16,6 +16,7 @@ using BISC.Modules.DataSets.Presentation.Services;
 using BISC.Modules.DataSets.Presentation.Services.Interfaces;
 using BISC.Modules.DataSets.Presentation.ViewModels;
 using BISC.Modules.DataSets.Presentation.Views;
+using BISC.Modules.Device.Infrastructure.Saving;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.UiFromModel;
 
@@ -53,11 +54,11 @@ namespace BISC.Modules.DataSets.Presentation.Module
             _injectionContainer.RegisterType<IFcdaViewModel, FcdaViewModel>();
             _injectionContainer.RegisterType<IDataSetViewModel, DataSetViewModel>();
             _injectionContainer.RegisterType<IFcdaAdderViewModel, FcdaAdderViewModel>();
-            _injectionContainer.RegisterType<IDataSetSavingService, DataSetSavingService>();
+            _injectionContainer.RegisterType<IDeviceElementSavingService, DataSetSavingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IFtpDataSetModelService, FtpDataSetModelService>();
             _injectionContainer.RegisterType<DataSetsConflictsViewModel>();
             _injectionContainer.RegisterType<DatasetsSavingByMmsCommand>();
-            _injectionContainer.RegisterType<DatasetsSavingByFtpCommand>();
+            _injectionContainer.RegisterType<DatasetsProjectSavingCommand>();
         }
 
         #endregion

@@ -54,6 +54,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private bool _isChanged;
         private bool _isInitialized = true;
         private int _weight = 0;
+        private bool _isSelect = false;
 
         #endregion
 
@@ -272,6 +273,13 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             get => 100;
         }
 
+        public bool IsSelect
+        {
+            get => _isSelect;
+            set => SetProperty(ref _isSelect, value, true);
+        }
+
+
         public void Weigh()
         {
 
@@ -292,7 +300,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         }
 
         #endregion
-
 
         #region override of NavigationViewModelBase
 

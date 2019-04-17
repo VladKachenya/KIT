@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 
@@ -19,14 +20,17 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
         /// <param name="goCdRef"></param>
         /// <param name="goAppId"></param>
         /// <param name="confRev"></param>
-        void AddGooseCdFtpEntityToMatrix(IGooseMatrixFtp gooseMatrixFtp, string goCdRef, string goAppId, uint confRev);
+        void AddGooseCdFtpEntityToMatrix(IGooseMatrixFtp gooseMatrixFtp, string goCdRef, string goAppId, int confRev);
 
-        IGooseMatrixFtp GetGooseMatrixFtpForDevice(IDevice device);
+        IGooseMatrixFtp GetGooseMatrixFtpForDevice(IDevice device, IBiscProject biscProject = null);
 
-        void SetGooseMatrixFtpForDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp);
+        void SetGooseMatrixFtpForDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp, IBiscProject biscProject = null);
 
+        // Тут необходимо поправить!!!!!
         void SetSubscriptionRowsToMatrix(IGooseMatrixFtp gooseMatrixFtp,
-            List<Tuple<string, IGooseRowFtpEntity>> subscriptionEntity);
+            List<Tuple<IGoCbFtpEntity, IGooseRowFtpEntity>> subscriptionEntity);
+
+        List<IGooseRowFtpEntity> GetAllRowEntitiesOfGoCd(IGooseMatrixFtp gooseMatrixFtp, IGoCbFtpEntity goCbFtpEntity);
 
     }
 }

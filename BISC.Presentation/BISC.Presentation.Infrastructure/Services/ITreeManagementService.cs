@@ -7,10 +7,11 @@ namespace BISC.Presentation.Infrastructure.Services
 {
     public interface ITreeManagementService
     {
-        UiEntityIdentifier AddTreeItem(BiscNavigationParameters parameters,string viewName, UiEntityIdentifier parentUiEntityIdentifier,string tag=null);
+        UiEntityIdentifier AddTreeItem(BiscNavigationParameters parameters,string viewName, UiEntityIdentifier parentUiEntityIdentifier,string tag=null,int? index=null);
         void DeleteTreeItem(UiEntityIdentifier uiEntityId);
-	    UiEntityIdentifier GetDeviceTreeItem(Guid deviceGuid);
+        int GetTreeItemIndex(UiEntityIdentifier uiEntityId);
 
+        UiEntityIdentifier GetDeviceTreeItem(Guid deviceGuid);
         void ClearMainTree();
 
     }

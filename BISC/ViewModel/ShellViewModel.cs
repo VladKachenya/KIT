@@ -45,7 +45,15 @@ namespace BISC.ViewModel
             {
                 if (x.IsBlocked)
                 {
-                    BlockViewModelBehavior.SetBlock("Обновление",true);
+                    if (x.Message != null)
+                    {
+                        BlockViewModelBehavior.SetBlock(x.Message, true);
+
+                    }
+                    else
+                    {
+                        BlockViewModelBehavior.SetBlock("Обновление", true);
+                    }
                 }
                 else
                 {

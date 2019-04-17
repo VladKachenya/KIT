@@ -26,9 +26,10 @@ namespace BISC.Modules.Reports.Presentation.Services
         private readonly IReportControlFactoryViewModel _reportControlFactoryViewModel;
         private readonly ReportsSavingCommand _reportsSavingCommand;
         private readonly IConnectionPoolService _connectionPoolService;
+        private readonly ReportsSavingService _reportsSavingService;
         public ConflictType ConflictType => ConflictType.ManualResolveNeeded;
         public ReportsConflictResolver(IReportsModelService reportsModelService, IDeviceModelService deviceModelService, INavigationService navigationService,
-            IReportControlFactoryViewModel reportControlFactoryViewModel, ReportsSavingCommand reportsSavingCommand, IConnectionPoolService connectionPoolService)
+            IReportControlFactoryViewModel reportControlFactoryViewModel, ReportsSavingCommand reportsSavingCommand, IConnectionPoolService connectionPoolService, ReportsSavingService reportsSavingService)
         {
             _reportsModelService = reportsModelService;
             _deviceModelService = deviceModelService;
@@ -36,6 +37,7 @@ namespace BISC.Modules.Reports.Presentation.Services
             _reportControlFactoryViewModel = reportControlFactoryViewModel;
             _reportsSavingCommand = reportsSavingCommand;
             _connectionPoolService = connectionPoolService;
+            _reportsSavingService = reportsSavingService;
         }
 
         #region Implementation of IElementConflictResolver
@@ -95,25 +97,24 @@ namespace BISC.Modules.Reports.Presentation.Services
             deviceOnlyReportViewModels.ForEach((report => reportViewmodelsInDevice.FirstOrDefault((model => model.Name == report.Name))?.ChangeTracker.SetModified()));
             projectOnlyReportViewModels.ForEach((report => reportViewmodelsInProject.FirstOrDefault((model => model.Name == report.Name))?.ChangeTracker.SetModified()));
 
-            bool isSavingByFtpNeeded = false;
+
             if (isFromDevice)
             {
                 deviceOnlyReportViewModels.ForEach((model => model.ChangeTracker.SetModified()));
-                _reportsSavingCommand.Initialize(ref reportViewmodelsInDevice, devicesclModelInProject, () => false);
+                _reportsSavingCommand.Initialize(ref reportViewmodelsInDevice, devicesclModelInProject);
+                await _reportsSavingCommand.SaveAsync();
+
             }
             else
             {
                 projectOnlyReportViewModels.ForEach((model => model.ChangeTracker.SetModified()));
-                _reportsSavingCommand.Initialize(ref reportViewmodelsInProject, deviceInsclModelInDevice,
-                    () => _connectionPoolService.GetConnection(devicesclModelInProject.Ip).IsConnected);
+                _reportsSavingCommand.Initialize(ref reportViewmodelsInProject, deviceInsclModelInDevice);
+                await _reportsSavingCommand.SaveAsync();
+                await _reportsSavingService.Save(devicesclModelInProject);
             }
 
-            if (await _reportsSavingCommand.IsSavingByFtpNeeded())
-            {
-                isSavingByFtpNeeded = true;
-            }
-            await _reportsSavingCommand.SaveAsync();
-            if (isSavingByFtpNeeded)
+
+            if (!isFromDevice)
             {
                 return new ResolvingResult() { IsRestartNeeded = true };
             }

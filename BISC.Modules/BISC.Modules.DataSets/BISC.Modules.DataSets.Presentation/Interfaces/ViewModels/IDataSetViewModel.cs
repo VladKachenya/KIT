@@ -18,6 +18,8 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels
         bool IsEditing { get; set; }
         bool IsChanged { get; set; }
         bool IsInitialized { get; set; }
+        bool IsSelect { get; set; }
+
 
         ObservableCollection<IFcdaViewModel> FcdaViewModels { get;}
         ICommand DeleteFcdaCommand { get; }

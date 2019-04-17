@@ -71,6 +71,7 @@
     <Compile Include="Services\DeviceIpIpChangingService.cs" />
     <Compile Include="Services\DeviceLoadingService.cs" />
     <Compile Include="Services\DeviceReconnectionService.cs" />
+    <Compile Include="Services\DeviceSavingService.cs" />
     <Compile Include="Services\DeviceWarningsService.cs" />
     <Compile Include="Services\Helpers\DeviceConflictContext.cs" />
     <Compile Include="Services\Helpers\ReconnectDeviceContext.cs" />

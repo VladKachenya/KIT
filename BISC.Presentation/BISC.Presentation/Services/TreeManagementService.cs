@@ -15,8 +15,6 @@ namespace BISC.Presentation.Services
 {
     public class TreeManagementService : ITreeManagementService
     {
-
-
         private readonly IMainTreeViewModel _mainTreeViewModel;
         private readonly INavigationService _navigationService;
         private readonly ITabManagementService _tabManagementService;
@@ -33,10 +31,10 @@ namespace BISC.Presentation.Services
             _tabManagementService = tabManagementService;
         }
 
-        public UiEntityIdentifier AddTreeItem(BiscNavigationParameters parameters, string viewName, UiEntityIdentifier parentUiEntityIdentifier,string tag=null)
+        public UiEntityIdentifier AddTreeItem(BiscNavigationParameters parameters, string viewName, UiEntityIdentifier parentUiEntityIdentifier, string tag = null,int? index=null)
         {
             var newTreeItemGuid = Guid.NewGuid();
-            UiEntityIdentifier uiEntityIdentifier = new UiEntityIdentifier(newTreeItemGuid, parentUiEntityIdentifier,tag);
+            UiEntityIdentifier uiEntityIdentifier = new UiEntityIdentifier(newTreeItemGuid, parentUiEntityIdentifier, tag);
             TreeItemViewModel newItemViewModel = new TreeItemViewModel();
             newItemViewModel.DynamicRegionId = newTreeItemGuid;
 
@@ -50,13 +48,19 @@ namespace BISC.Presentation.Services
             }
             else
             {
-                _mainTreeViewModel.ChildItemViewModels.Add(newItemViewModel);
+                if ((index == null)||(_mainTreeViewModel.ChildItemViewModels.Count-1<index))
+                {
+                    _mainTreeViewModel.ChildItemViewModels.Add(newItemViewModel);
+                }
+                else
+                {
+                    _mainTreeViewModel.ChildItemViewModels.Insert(index.Value,newItemViewModel);
+                }
             }
             _mainTreeViewModels.Add(newTreeItemGuid, new Tuple<UiEntityIdentifier, ITreeItemViewModel>(uiEntityIdentifier, newItemViewModel));
             _navigationService.NavigateViewToRegion(viewName, newTreeItemGuid.ToString(), parameters);
             return uiEntityIdentifier;
         }
-
 
         private bool GetIsChildRecursive(UiEntityIdentifier child, UiEntityIdentifier parent)
         {
@@ -75,7 +79,7 @@ namespace BISC.Presentation.Services
             if (uiEntityId.ItemId == null) return;
             if (!_mainTreeViewModels.ContainsKey(uiEntityId.ItemId.Value)) return;
             var parent = _mainTreeViewModels.Values.First((tuple => tuple.Item1.ItemId.Value == uiEntityId.ItemId.Value)).Item1;
-            var treeItemIdsToRemove=new List<UiEntityIdentifier>();
+            var treeItemIdsToRemove = new List<UiEntityIdentifier>();
 
             foreach (var mainTreeViewModel in _mainTreeViewModels)
             {
@@ -106,13 +110,19 @@ namespace BISC.Presentation.Services
 
         }
 
-	    public UiEntityIdentifier GetDeviceTreeItem(Guid deviceGuid)
-	    {
-		    var deviceTreeItem = _mainTreeViewModels.FirstOrDefault((pair => pair.Value.Item1.Tag == deviceGuid.ToString()));
-		    return deviceTreeItem.Value.Item1;
-	    }
+        public int GetTreeItemIndex(UiEntityIdentifier uiEntityId)
+        {
+            if (!_mainTreeViewModels.ContainsKey(uiEntityId.ItemId.Value)) return -1;
+            return _mainTreeViewModel.ChildItemViewModels.IndexOf(_mainTreeViewModels[uiEntityId.ItemId.Value].Item2);
+        }
 
-	    public void ClearMainTree()
+        public UiEntityIdentifier GetDeviceTreeItem(Guid deviceGuid)
+        {
+            var deviceTreeItem = _mainTreeViewModels.FirstOrDefault((pair => pair.Value.Item1.Tag == deviceGuid.ToString()));
+            return deviceTreeItem.Value.Item1;
+        }
+
+        public void ClearMainTree()
         {
             while (_mainTreeViewModel.ChildItemViewModels.Count != 0)
             {

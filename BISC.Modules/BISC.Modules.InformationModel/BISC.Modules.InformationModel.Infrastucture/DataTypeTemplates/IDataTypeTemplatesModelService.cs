@@ -21,7 +21,7 @@ namespace BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates
         string AddEnumType(IEnumType doType, ISclModel sclModel);
         IDa GetDaOfDai(IDai dai, ISclModel sclModel);
         void UpdateTemplatesUnderIdeName(ISclModel sclModel, string oldIdeName, string newIdeName);
-
+        IEnumType GetEnumTypeForDa(IDa da);
 
 
     }

@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\ReportConfRevisionChengEvent.cs" />
     <Compile Include="Factorys\IReportControlsFactory.cs" />
     <Compile Include="Keys\ReportsKeys.cs" />
     <Compile Include="Model\IOptFields.cs" />

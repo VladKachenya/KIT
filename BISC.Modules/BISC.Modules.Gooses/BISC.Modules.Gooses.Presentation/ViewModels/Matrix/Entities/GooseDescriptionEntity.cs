@@ -18,11 +18,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
 
         public override string ToString()
         {
-            if (ParientDevice == null)
-            {
-                return $"{GooseInputModelInfo.GocbRef}";
-            }
-            return $"{ParientDevice?.Name}.{GooseInputModelInfo.EmittingGooseControl.Value.Name}";
+            return $"{GooseInputModelInfo.EmittingDeviceName}.{GooseInputModelInfo.EmittingGooseControl.Value.Name}({GooseInputModelInfo.EmittingGooseControl.Value.ConfRev})";
         }
 
     }

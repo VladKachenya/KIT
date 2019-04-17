@@ -624,5 +624,12 @@ namespace BISC.Modules.InformationModel.Model.Services
             }
         }
 
+        public IEnumType GetEnumTypeForDa(IDa da)
+        {
+            IDataTypeTemplates dataTypeTemplates = da.GetFirstParentOfType<IDataTypeTemplates>();
+           return dataTypeTemplates.EnumTypes.FirstOrDefault((type => type.Id == da.Type));
+        }
     }
+
+   
 }

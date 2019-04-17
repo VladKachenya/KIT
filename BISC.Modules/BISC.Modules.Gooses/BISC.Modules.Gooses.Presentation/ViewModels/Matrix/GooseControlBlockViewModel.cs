@@ -2,6 +2,7 @@
 using BISC.Presentation.BaseItems.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 {
@@ -56,7 +57,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             }
         }
 
-        public string GoCbReference { get; set; }
+        public IGoCbFtpEntity GoCbReference { get; set; }
 
         protected override void OnDisposing()
         {

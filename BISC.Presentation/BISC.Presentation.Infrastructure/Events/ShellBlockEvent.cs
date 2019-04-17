@@ -8,6 +8,7 @@ namespace BISC.Presentation.Infrastructure.Events
 {
     public class ShellBlockEvent
     {
+        public string Message { get; set; }
         public bool IsBlocked { get; set; }
     }
 }

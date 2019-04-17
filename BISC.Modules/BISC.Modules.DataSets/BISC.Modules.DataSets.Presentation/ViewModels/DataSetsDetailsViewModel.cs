@@ -37,7 +37,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private List<IDataSet> _dataSets;
         private readonly IDatasetModelService _datasetModelService;
         private readonly IDatasetViewModelFactory _datasetViewModelFactory;
-        private readonly DatasetsSavingByFtpCommand _datasetsSavingCommand;
+        private readonly DatasetsProjectSavingCommand _datasetsProjectSavingCommand;
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private readonly IConnectionPoolService _connectionPoolService;
@@ -54,6 +54,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private bool _isModelShowed;
         private bool _issUpdateDataSets = true;
         private bool _isSaveСhanges = true;
+        private IDataSetViewModel _selectedDataSet;
 
         #region C-tor
 
@@ -64,7 +65,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             IConnectionPoolService connectionPoolService, IGlobalEventsService globalEventsService,
             INavigationService navigationService, ILoggingService loggingService,
             DatasetsLoadingService datasetsLoadingService,
-            DatasetsSavingByFtpCommand datasetsSavingByFtpCommandCommand, IDeviceWarningsService deviceWarningsService,
+            DatasetsProjectSavingCommand datasetsProjectSavingCommandCommand, IDeviceWarningsService deviceWarningsService,
             IGlobalSavingService globalSavingService)
         {
             _userInterfaceComposingService = userInterfaceComposingService;
@@ -73,7 +74,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _navigationService = navigationService;
             _loggingService = loggingService;
             _datasetsLoadingService = datasetsLoadingService;
-            _datasetsSavingCommand = datasetsSavingByFtpCommandCommand;
+            _datasetsProjectSavingCommand = datasetsProjectSavingCommandCommand;
             _biscProject = biscProject;
             _datasetModelService = datasetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
@@ -95,35 +96,18 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         {
             _issUpdateDataSets = false;
             (UpdateDataSetsCommand as IPresentationCommand)?.RaiseCanExecute();
-            await UpdateDataSets(true);
+            await UpdateDataSets();
             _issUpdateDataSets = true;
             (UpdateDataSetsCommand as IPresentationCommand)?.RaiseCanExecute();
         }
 
 
-        private async Task UpdateDataSets(bool updateFromDevice)
+        private async Task UpdateDataSets()
         {
             BlockViewModelBehavior.SetBlock("Обновление данных", true);
             try
             {
-                if (updateFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
-                {
-                    try
-                    {
-                        await _datasetsLoadingService.EstimateProgress(_device);
-                        await _datasetsLoadingService.Load(_device, null, _biscProject.MainSclModel.Value,
-                            new CancellationToken());
-                        _loggingService.LogMessage($"DataSets устройства {_device.Name} вычитанны успешно",
-                            SeverityEnum.Info);
-                    }
-                    catch (Exception e)
-                    {
-                        _loggingService.LogMessage($"Ошибка вычитывания DataSets устройства {_device.Name}",
-                            SeverityEnum.Warning);
-                    }
-                }
-
-                UpdateCurentChengeTracker();
+                UpdateViewModel();
             }
             finally
             {
@@ -131,7 +115,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             }
         }
 
-        private void UpdateCurentChengeTracker()
+        private void UpdateViewModel()
         {
             _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
             SortDataSetsByIsDynamic();
@@ -161,7 +145,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"DataSets устройства {_device.Name}", _datasetsSavingCommand, _device.DeviceGuid, _regionName));
+                $"DataSets устройства {_device.Name}", _datasetsProjectSavingCommand, _device.DeviceGuid, _regionName));
             AddNewDataSetCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
@@ -230,7 +214,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 var savingRes = await _globalSavingService.SaveСhangesToRegion(_regionName);
                 if (savingRes.IsSaved)
                 {
-                    await UpdateDataSets(true);
+                    await UpdateDataSets();
                 }
             }
             catch (Exception e)
@@ -277,12 +261,27 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             protected set
             {
                 SetProperty(ref _dataSets1, value);
-                _datasetsSavingCommand.Initialize(ref _dataSets1, _device, this.ChangeTracker);
-                _datasetsSavingCommand.RefreshViewModel =
+                _datasetsProjectSavingCommand.Initialize(ref _dataSets1, _device, this.ChangeTracker);
+                _datasetsProjectSavingCommand.RefreshViewModel =
                     async () =>
                     {
-                        await UpdateDataSets(false);
+                        await UpdateDataSets();
                     };
+            }
+        }
+
+        public IDataSetViewModel SelectedDataSet
+        {
+            get => _selectedDataSet;
+            set
+            {
+                if(_selectedDataSet != null) _selectedDataSet.IsSelect = false;
+                SetProperty(ref _selectedDataSet, value, true); 
+                if (_selectedDataSet != null)
+                {
+                    _selectedDataSet.IsSelect = true;
+                    ((ViewModelBase)_selectedDataSet).IsWarning = false;
+                }
             }
         }
 
@@ -318,7 +317,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             //Для чего так сделанно
             _navigationService.NavigateViewToRegion(InfoModelKeys.InfoModelTreeItemDetailsViewKey, ModelRegionKey,
                 new BiscNavigationParameters().AddParameterByName("IED", _device).AddParameterByName("IsHideButtons", true));
-            await UpdateDataSets(false);
+            await UpdateDataSets();
             base.OnNavigatedTo(navigationContext);
         }
 
@@ -326,32 +325,22 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public override void OnActivate()
         {
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand,
-                $"Сохранить DataSets устройства {_device.Name}",
-                _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+                $"Сохранить DataSets устройства {_device.Name}",false);
             _userInterfaceComposingService.AddGlobalCommand(UpdateDataSetsCommand, $"Обновить DataSets {_device.Name}",
                 IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewDataSetCommand, $"Добавить DataSet {_device.Name}",
                 IconsKeys.AddIconKey, false, true);
-            _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
 
             base.OnActivate();
         }
 
-        private void OnConnectionChanged(ConnectionEvent connectionEvent)
-        {
-            if (connectionEvent.Ip == _device.Ip)
-            {
-                _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand,
-                    $"Сохранить DataSets устройства {_device.Name}", connectionEvent.IsConnected);
-            }
-        }
+       
 
         public override void OnDeactivate()
         {
             _userInterfaceComposingService.ClearCurrentSaveCommand();
             _userInterfaceComposingService.DeleteGlobalCommand(AddNewDataSetCommand);
             _userInterfaceComposingService.DeleteGlobalCommand(UpdateDataSetsCommand);
-            _globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
 
             base.OnDeactivate();
         }

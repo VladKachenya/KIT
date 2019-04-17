@@ -1,29 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using BISC.Infrastructure.Global.IoC;
+﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Services;
 using BISC.Modules.Gooses.Presentation.Events;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 {
     /// <summary>
     /// Interaction logic for GooseGrid.xaml
     /// </summary>
-    public partial class GooseGrid : System.Windows.Controls.UserControl,IDisposable
+    public partial class GooseGrid : System.Windows.Controls.UserControl, IDisposable
     {
         private readonly int CellSize = 20;
         private List<TextBlock> _goinNumTextBlocks;
@@ -46,13 +40,13 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
         // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsActiveProperty =
-            DependencyProperty.Register("IsActive", typeof(bool), typeof(GooseGrid), new PropertyMetadata(false,OnActiveChanged));
+            DependencyProperty.Register("IsActive", typeof(bool), typeof(GooseGrid), new PropertyMetadata(false, OnActiveChanged));
 
         private static void OnActiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d.GetValue(IsActiveProperty).Equals(true))
             {
-                (d as GooseGrid).GooseGrid_Loaded(null,null);
+                (d as GooseGrid).GooseGrid_Loaded(null, null);
             }
             else
             {
@@ -63,17 +57,27 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
         private void GooseGrid_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (_isInitialized)_globalEventsService.Unsubscribe<SelectableBoxEventArgs>((OnSelectableBoxFocused));
+            if (_isInitialized)
+            {
+                _globalEventsService.Unsubscribe<SelectableBoxEventArgs>((OnSelectableBoxFocused));
+            }
         }
 
         private void GooseGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!_isInitialized) _globalEventsService.Subscribe<SelectableBoxEventArgs>((OnSelectableBoxFocused));
+            if (!_isInitialized)
+            {
+                _globalEventsService.Subscribe<SelectableBoxEventArgs>((OnSelectableBoxFocused));
+            }
         }
 
         private void OnSelectableBoxFocused(SelectableBoxEventArgs selectableBoxEventArgs)
         {
-            if (!selectableBoxEventArgs.IsFocused) return;
+            if (!selectableBoxEventArgs.IsFocused)
+            {
+                return;
+            }
+
             if (_currentFocusedGoInNumberTextBlock != null)
             {
                 DeHighlightTextBlock(_currentFocusedGoInNumberTextBlock);
@@ -85,9 +89,17 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
             {
                 DeHighlightTextBlock(_currentFocusedGoInSignatureTextBlock);
             }
-            if (_goinSignatureTextBlocks == null) return;
+            if (_goinSignatureTextBlocks == null)
+            {
+                return;
+            }
+
             _currentFocusedGoInSignatureTextBlock = _goinSignatureTextBlocks.FirstOrDefault((block => block.Text == selectableBoxEventArgs?.SelectableValueViewModel?.Parent?.RowName));
-            if(_currentFocusedGoInSignatureTextBlock==null)return;
+            if (_currentFocusedGoInSignatureTextBlock == null)
+            {
+                return;
+            }
+
             HighlightTextBlock(_currentFocusedGoInSignatureTextBlock);
         }
 
@@ -165,7 +177,12 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
         private void GooseControlBlockViewModels_CollectionChanged(object sender,
             System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (GoInCount == 0) return;
+            if (GoInCount == 0)
+            {
+                return;
+            }
+
+            var notMainGrid = new Grid();
 
             mainGrid.Children.Clear();
             mainGrid.ColumnDefinitions.Clear();
@@ -184,12 +201,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
             mainGridRowIndex++;
             _goinSignatureTextBlocks = new List<TextBlock>();
 
-
-
-
-
             ScrollViewer scrollViewer = new ScrollViewer();
-
 
             Grid scrollViewerGrid = new Grid();
             mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto }); //левая шапка для названий
@@ -204,8 +216,6 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
             int scrollViewerGridRowIndex = 0;
             foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
             {
-
-
 
                 // if (!gooseControlBlockViewModel.IsReferenceEnabled) continue;
                 mainGrid.RowDefinitions.Add(new RowDefinition()
@@ -236,21 +246,13 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
                 headerGrid.Children.Add(gooseControlHeaderTextBlock);
                 headerGrid.Children.Add(stateTextBlock);
 
-
-
                 headerGrid.SetValue(Grid.ColumnProperty, 0);
                 headerGrid.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
                 headerGrid.SetValue(Grid.ColumnSpanProperty, GoInCount);
                 scrollViewerGrid.Children.Add(headerGrid);
 
-
-
                 mainGridRowIndex++;
                 scrollViewerGridRowIndex++;
-
-
-
-
 
                 foreach (var gooseRow in gooseControlBlockViewModel.GooseRowViewModels)
                 {
@@ -360,7 +362,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
                         scrollViewerGridRowIndex++;
                     }
                 }
-                
+
             }
             if (scrollViewerGridRowIndex > 0)
             {
@@ -371,11 +373,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
                 scrollViewer.SetValue(Grid.ColumnProperty, 1);
                 scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
                 mainGrid.Children.Add(scrollViewer);
-
             }
-
-
-
         }
 
         #region Implementation of IDisposable
@@ -399,7 +397,12 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
         public void Dispose()
         {
-            GooseGrid_Unloaded(null,null);
+            //Task.Run(() =>
+            //{
+            //    GooseGrid_Unloaded(null, null);
+            //    this.mainGrid.Children.Clear();
+            //});
+            GooseGrid_Unloaded(null, null);
             this.mainGrid.Children.Clear();
         }
 

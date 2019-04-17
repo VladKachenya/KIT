@@ -87,6 +87,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
                 SetProperty(ref _gooseSubscriptionTable, value);
                 _gooseSubscriptionSavingCommand.Initialize(_gooseSubscriptionTable);
+                _gooseSubscriptionSavingCommand.RefreshViewModel = async () => await LoadSubscriptionsTable(false);
                 OnPropertyChanged(nameof(GooseSubscriptionTable));
             }
         }
@@ -143,7 +144,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
                 BlockViewModelBehavior.SetBlock("Загрузка...", true);
                 await _globalSavingService.SaveСhangesToRegion(_regionName);
-                await LoadSubscriptionsTable(true);
             }
             finally
             {
@@ -159,7 +159,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
 
                 BlockViewModelBehavior.SetBlock("Загрузка...", true);
-                await LoadSubscriptionsTable(true);
+                await LoadSubscriptionsTable(false);
             }
             finally
             {

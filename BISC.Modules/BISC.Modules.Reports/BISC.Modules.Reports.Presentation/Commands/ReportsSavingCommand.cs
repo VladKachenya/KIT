@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Reports.Infrastructure.Keys;
 
 namespace BISC.Modules.Reports.Presentation.Commands
 {
@@ -29,7 +31,7 @@ namespace BISC.Modules.Reports.Presentation.Commands
         private readonly IProjectService _projectService;
         private readonly IReportsModelService _reportsModelService;
         private readonly IDatasetModelService _datasetModelService;
-        private readonly IFtpReportModelService _ftpReportModelService;
+        private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly IReportControlsFactory _IReportControlsFactory;
 
         private ObservableCollection<IReportControlViewModel> _reportsToSave;
@@ -43,8 +45,7 @@ namespace BISC.Modules.Reports.Presentation.Commands
         public ReportsSavingCommand(IInfoModelService infoModelService, ILoggingService loggingService,
             IConnectionPoolService connectionPoolService,
             IProjectService projectService, IReportsModelService reportModelService,
-            IDatasetModelService datasetModelService,
-            IFtpReportModelService ftpReportModelService)
+            IDatasetModelService datasetModelService,IDeviceWarningsService deviceWarningsService)
         {
             _infoModelService = infoModelService;
             _loggingService = loggingService;
@@ -52,17 +53,14 @@ namespace BISC.Modules.Reports.Presentation.Commands
             _projectService = projectService;
             _reportsModelService = reportModelService;
             _datasetModelService = datasetModelService;
-            _ftpReportModelService = ftpReportModelService;
+            _deviceWarningsService = deviceWarningsService;
         }
 
-        internal void Initialize(ref ObservableCollection<IReportControlViewModel> reportsToSave, IDevice device,
-            Func<bool> isSavingInDevice)
+        internal void Initialize(ref ObservableCollection<IReportControlViewModel> reportsToSave, IDevice device)
         {
             //_fineshSaving = fineshSaving;
             _reportsToSave = reportsToSave;
             _device = device;
-
-            _isSavingInDevice = isSavingInDevice;
         }
 
         private List<IReportControl> GetReportsToDelete()
@@ -139,9 +137,9 @@ namespace BISC.Modules.Reports.Presentation.Commands
                 }
 
                 var resSavingDynamicReports =
-                    await SaveDynamicReports(_reportsToSave, _device, _isSavingInDevice(), reportControlsInDevice);
-                await Task.Delay(1000);
-                _projectService.SaveCurrentProject();
+                    await SaveDynamicReports(_reportsToSave, _device, reportControlsInDevice);
+                //_projectService.SaveCurrentProject();
+                _deviceWarningsService.SetWarningOfDevice(_device.DeviceGuid, ReportsKeys.ReportsPresentationKeys.ReportsUnsavedWarningTag, "Reports не соответствуют устройству");
                 if (resSavingDynamicReports.IsSucceed)
                 {
                     _loggingService.LogMessage($"Reports устройства {_device.Name} успешно сохранены",
@@ -170,32 +168,32 @@ namespace BISC.Modules.Reports.Presentation.Commands
             }
         }
 
-        public async Task<bool> IsSavingByFtpNeeded()
-        {
-            if (!_isSavingInDevice())
-            {
-                return false;
-            }
+        //public async Task<bool> IsSavingByFtpNeeded()
+        //{
+        //    if (!_isSavingInDevice())
+        //    {
+        //        return false;
+        //    }
 
-            List<IReportControl> reportControlsInDevice = _reportsModelService.GetAllReportControlsOfDevice(_device);
-            List<IReportControlViewModel> reportsToSaveDynamic =
-                _reportsToSave.Where((model => model.IsDynamic)).ToList();
+        //    List<IReportControl> reportControlsInDevice = _reportsModelService.GetAllReportControlsOfDevice(_device);
+        //    List<IReportControlViewModel> reportsToSaveDynamic =
+        //        _reportsToSave.Where((model => model.IsDynamic)).ToList();
 
-            List<IReportControl> reportControlsInDeviceToDelete =
-                reportControlsInDevice.Where((model => model.IsDynamic)).ToList();
-            if (!reportsToSaveDynamic.Any(model => model.ChangeTracker.GetIsModifiedRecursive()) &&
-                !GetReportsToDelete().Any())
-            {
-                return false;
-            }
+        //    List<IReportControl> reportControlsInDeviceToDelete =
+        //        reportControlsInDevice.Where((model => model.IsDynamic)).ToList();
+        //    if (!reportsToSaveDynamic.Any(model => model.ChangeTracker.GetIsModifiedRecursive()) &&
+        //        !GetReportsToDelete().Any())
+        //    {
+        //        return false;
+        //    }
 
-            if (!reportsToSaveDynamic.Any() && !GetReportsToDelete().Any())
-            {
-                return false;
-            }
+        //    if (!reportsToSaveDynamic.Any() && !GetReportsToDelete().Any())
+        //    {
+        //        return false;
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
         public async Task<OperationResult> ValidateBeforeSave()
         {
@@ -203,8 +201,7 @@ namespace BISC.Modules.Reports.Presentation.Commands
         }
 
         private async Task<OperationResult> SaveDynamicReports(
-            ObservableCollection<IReportControlViewModel> reportsToSave, IDevice device,
-            bool isSavingInDevice, List<IReportControl> reportControlsInDevice)
+            ObservableCollection<IReportControlViewModel> reportsToSave, IDevice device, List<IReportControl> reportControlsInDevice)
         {
             List<IReportControlViewModel> reportsToSaveDynamic =
                 reportsToSave.Where((model => model.IsDynamic)).ToList();
@@ -224,32 +221,8 @@ namespace BISC.Modules.Reports.Presentation.Commands
                 return OperationResult.SucceedResult;
             }
 
-            if (isSavingInDevice)
-            {
-                var res = await _ftpReportModelService.WriteReportsToDevice(device.Ip, reportControlsToSave,
-                    _infoModelService.GetZeroLDevicesOfDevice(device));
-                if (res.IsSucceed)
-                {
-                    _loggingService.LogMessage($"Сохранение динамических отчетов по FTP прошло успешно {device.Name}",
-                        SeverityEnum.Info);
-                    _reportsModelService.DeleteReportsFromDevice(device, reportControlsInDeviceToDelete);
-                    _reportsModelService.AddReportsToDevice(device, reportControlsToSave);
-
-                    return new OperationResult<SavingResultEnum>(SavingResultEnum.SavedUsingFtp);
-                }
-                else
-                {
-                    _loggingService.LogMessage(
-                        $"Сохранение динамических отчетов по FTP прошло с ошибкой {device.Name} {res.GetFirstError()}",
-                        SeverityEnum.Critical);
-                    return new OperationResult<SavingResultEnum>(res.GetFirstError());
-                }
-            }
-            else
-            {
-                _reportsModelService.DeleteReportsFromDevice(device, reportControlsInDeviceToDelete);
-                _reportsModelService.AddReportsToDevice(device, reportControlsToSave);
-            }
+            _reportsModelService.DeleteReportsFromDevice(device, reportControlsInDeviceToDelete);
+            _reportsModelService.AddReportsToDevice(device, reportControlsToSave);
 
             return new OperationResult<SavingResultEnum>(SavingResultEnum.SavedInFile);
         }

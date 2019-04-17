@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using BISC.Infrastructure.Global.IoC;
+﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Services.Helpers;
@@ -15,6 +8,12 @@ using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.BaseItems.ViewModels.Behaviors;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
 {
@@ -45,31 +44,42 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
         private async void OnApply()
         {
             BlockViewModelBehavior.SetBlock("Обновление", true);
-            foreach (var deviceConflictViewModel in DeviceConflictViewModels)
+            try
             {
-                bool isConflictResolvedFromDevice = false;
 
-                if (deviceConflictViewModel is DeviceManualConflictViewModel deviceManualConflictViewModel)
+
+                foreach (var deviceConflictViewModel in DeviceConflictViewModels)
                 {
-                    isConflictResolvedFromDevice = deviceManualConflictViewModel.IsConflictResolvedAsFromDevice;
-                }
+                    bool isConflictResolvedFromDevice = false;
 
-                if (deviceConflictViewModel.IsConflictOk) continue;
-                var res = await _elementConflictResolvers.FirstOrDefault((resolver =>
+                    if (deviceConflictViewModel is DeviceManualConflictViewModel deviceManualConflictViewModel)
+                    {
+                        isConflictResolvedFromDevice = deviceManualConflictViewModel.IsConflictResolvedAsFromDevice;
+                    }
+
+                    if (deviceConflictViewModel.IsConflictOk)
+                    {
+                        continue;
+                    }
+
+                    var res = await _elementConflictResolvers.FirstOrDefault((resolver =>
                         resolver.ConflictName == deviceConflictViewModel.ConflictTitle))?
                     .ResolveConflict(isConflictResolvedFromDevice,
                         _conflictContext.DeviceGuid,
                         _conflictContext.SclModelDevice, _conflictContext.SclModelProject);
-                if (res.IsRestartNeeded)
-                {
-                    _conflictContext.IsRestartNeeded = true;
-               }
+                    if (res.IsRestartNeeded)
+                    {
+                        _conflictContext.IsRestartNeeded = true;
+                    }
 
+                }
             }
-
-            await Task.Delay(1000);
-            BlockViewModelBehavior.Unlock();
-            DialogCommands.CloseDialogCommand.Execute(null, null);
+            finally
+            {
+                await Task.Delay(1000);
+                BlockViewModelBehavior.Unlock();
+                DialogCommands.CloseDialogCommand.Execute(null, null);
+            }
         }
 
         public ObservableCollection<DeviceConflictViewModel> DeviceConflictViewModels { get; }
@@ -91,7 +101,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
             {
                 viewModelBase.PropertyChanged += DeviceConflictViewModel_PropertyChanged;
             }
-            DeviceConflictViewModel_PropertyChanged(null,null);
+            DeviceConflictViewModel_PropertyChanged(null, null);
         }
 
 

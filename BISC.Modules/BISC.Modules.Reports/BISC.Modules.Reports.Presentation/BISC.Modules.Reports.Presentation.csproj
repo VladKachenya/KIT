@@ -57,6 +57,7 @@
     <Compile Include="Services\ReportsConflictResolver.cs" />
     <Compile Include="Services\ReportsUiHandlingService.cs" />
     <Compile Include="Services\ReportVeiwModelService.cs" />
+    <Compile Include="Services\ReportsSavingService.cs" />
     <Compile Include="ViewModels\Helpers\ReportsConflictsContext.cs" />
     <Compile Include="ViewModels\ReportElementsViewModels\OprionalFildsViewModel.cs" />
     <Compile Include="ViewModels\ReportElementsViewModels\ReportControlViewModel.cs" />

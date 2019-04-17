@@ -11,7 +11,7 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
     public interface IGooseSavingService
     {
         Task SaveSubscriptionGooces(IDevice subscribingDevice, List<IGooseInputModelInfo> acceptedGooses);
-        Task SaveSubscriptionMatrix(IDevice device, List<Tuple<string, IGooseRowFtpEntity>> subscriptionEntity);
+        Task SaveSubscriptionMatrix(IDevice device, List<Tuple<IGoCbFtpEntity, IGooseRowFtpEntity>> subscriptionEntity);
 
     }
 }

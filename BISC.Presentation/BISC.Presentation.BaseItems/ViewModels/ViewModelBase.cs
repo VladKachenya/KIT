@@ -16,6 +16,7 @@ namespace BISC.Presentation.BaseItems.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable,IObjectWithChangeTracker
     {
+        private bool _isWarning;
 
         #region [Ctor's]
 
@@ -74,7 +75,11 @@ namespace BISC.Presentation.BaseItems.ViewModels
             }
         }
 
-
+        public bool IsWarning 
+        {
+            get => _isWarning;
+            set => SetProperty(ref _isWarning, value, true);
+        }
 
 
         #region [Constants]

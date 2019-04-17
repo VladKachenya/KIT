@@ -1,6 +1,5 @@
 ﻿using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
-using BISC.Modules.Connection.Infrastructure.Events;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Gooses.Model.Services.LoadingServices;
@@ -85,8 +84,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             set
             {
                 SetProperty(ref _gooseControlBlockViewModels, value);
-                _gooseSubscriptionMatrixSavingCommand.Initialize(_device, GooseControlBlockViewModels.ToList(), 
-                    () => _connectionPoolService.GetConnection(_device.Ip).IsConnected && this.ChangeTracker.GetIsModifiedRecursive());
+                _gooseSubscriptionMatrixSavingCommand.Initialize(_device, GooseControlBlockViewModels.ToList());
+                _gooseSubscriptionMatrixSavingCommand.RefreshViewModel = async () => await UpdateGooseMatrix(false);
             }
         }
         public ObservableCollection<string> MessagesList { get; }
@@ -136,7 +135,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             SetEnableCommands(false);
             try
             {
-                await UpdateGooseMatrix();
+                await UpdateGooseMatrix(false);
             }
             catch (Exception e)
             {
@@ -155,7 +154,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
                 SetEnableCommands(false);
                 await SaveGooseMatrix();
-                await UpdateGooseMatrix();
+                await UpdateGooseMatrix(false);
             }
             catch (Exception e)
             {
@@ -174,17 +173,17 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _regionName =
                 navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(
                     UiEntityIdentifier.Key).ItemId.ToString();
-            await UpdateGooseMatrix();
+            await UpdateGooseMatrix(false);
             base.OnNavigatedTo(navigationContext);
 
         }
 
-        private async Task UpdateGooseMatrix()
+        private async Task UpdateGooseMatrix(bool isFromDevice)
         {
-            BlockViewModelBehavior.SetBlock("Обновление данных...", true);
+            BlockViewModelBehavior.SetBlock("Обновление данных...", false);
             try
             {
-                if (_connectionPoolService.GetConnection(_device.Ip).IsConnected)
+                if (isFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
                 {
                     await _gooseMatrixLoadingService.Load(_device, null, _biscProject.MainSclModel.Value,
                         new CancellationToken());
@@ -392,36 +391,39 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         public override void OnActivate()
         {
             _globalEventsService.Subscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
-            _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
-            _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить матрицу GOOSE устройства {_device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+            //_globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
+            _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить матрицу GOOSE устройства {_device.Name}", false);
             _userInterfaceComposingService.AddGlobalCommand(UpdateCommand, $"Обновить GOOSE-матрицу устройства {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             base.OnActivate();
         }
 
-        private void OnConnectionChanged(ConnectionEvent obj)
-        {
-            _userInterfaceComposingService.ClearCurrentSaveCommand();
-            _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить матрицу GOOSE устройства {_device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
-        }
+        //private void OnConnectionChanged(ConnectionEvent obj)
+        //{
+        //    _userInterfaceComposingService.ClearCurrentSaveCommand();
+        //    _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить матрицу GOOSE устройства {_device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
+        //}
 
         public override void OnDeactivate()
         {
             _userInterfaceComposingService.ClearCurrentSaveCommand();
             _userInterfaceComposingService.DeleteGlobalCommand(UpdateCommand);
             _globalEventsService.Unsubscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
-            _globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
+            //_globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnDeactivate();
         }
 
         protected override void OnDisposing()
         {
-            OnDeactivate();
-            foreach (GooseControlBlockViewModel gooseControlBlockViewModel in GooseControlBlockViewModels)
+            Task.Run(() =>
             {
-                gooseControlBlockViewModel.Dispose();
-            }
-            _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
-            base.OnDisposing();
+                OnDeactivate();
+                foreach (GooseControlBlockViewModel gooseControlBlockViewModel in GooseControlBlockViewModels)
+                {
+                    gooseControlBlockViewModel.Dispose();
+                }
+                _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
+                base.OnDisposing();
+            });
         }
 
         #endregion

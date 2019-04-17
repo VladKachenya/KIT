@@ -15,6 +15,7 @@ using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Events;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Device.Infrastructure.Saving;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces;
 using BISC.Modules.Device.Presentation.Services.Helpers;
@@ -27,6 +28,7 @@ using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.FTP.Infrastructure.Serviсes;
 using BISC.Presentation.BaseItems.Common;
 using BISC.Presentation.Infrastructure.Commands;
+using BISC.Presentation.Infrastructure.Events;
 using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Modules.Device.Presentation.ViewModels.Tree
@@ -48,6 +50,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private readonly IDeviceReconnectionService _deviceReconnectionService;
         private readonly IDeviceConnectionService _deviceConnectionService;
         private readonly INavigationService _navigationService;
+        private readonly IDeviceSavingService _deviceSavingService;
+        private readonly IGlobalSavingService _globalSavingService;
         private Dispatcher _dispatcher;
 
         private string _deviceName;
@@ -60,7 +64,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService,
             IGoosesModelService goosesModelService, ISaveCheckingService saveCheckingService, IUserInteractionService userInteractionService, ILoggingService loggingService,
             IDeviceSerializingService deviceSerializingService, IDeviceWarningsService deviceWarningsService, IDeviceReconnectionService deviceReconnectionService,
-            IDeviceConnectionService deviceConnectionService, INavigationService navigationService)
+            IDeviceConnectionService deviceConnectionService, INavigationService navigationService, IDeviceSavingService deviceSavingService, IGlobalSavingService globalSavingService)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
             _deviceModelService = deviceModelService;
@@ -78,6 +82,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _deviceReconnectionService = deviceReconnectionService;
             _deviceConnectionService = deviceConnectionService;
             _navigationService = navigationService;
+            _deviceSavingService = deviceSavingService;
+            _globalSavingService = globalSavingService;
             DeleteDeviceCommand = commandFactory.CreatePresentationCommand(OnDeleteDeviceExecute);
             NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
             ResetDeviceViaFtpCommand = commandFactory.CreatePresentationCommand(OnResetDeviceViaFtp, IsDeviceReadyForFtpOps);
@@ -85,7 +91,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             ExportCidDeviceCommand = commandFactory.CreatePresentationCommand(OnExportCidDevice);
             DisconnectDeviceCommand = commandFactory.CreatePresentationCommand(OnDisconnectDevice, CanDisconnectDevice);
             ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDevice, CanConnectDevice);
-            WarningsCollection = new ObservableCollection<string>();
+            SaveDeviceChangesCommand = commandFactory.CreatePresentationCommand(OnSaveDeviceChanges, IsDeviceReadyForFtpOps);
         }
 
         private void OnNavigateToConfig()
@@ -95,6 +101,30 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _tabManagementService.NavigateToTab(DeviceKeys.DeviceConfigViewKey, biscNavigationParameters, $"IED Config {_device.Name}", _uiEntityIdentifier);
         }
 
+        private async void OnSaveDeviceChanges()
+        {
+            await _globalSavingService.SaveСhangesOfDevice(_device.DeviceGuid);
+            var res = await _userInteractionService.ShowOptionToUser("Запсь данных в устройство",
+            $"Вы уверены что хотите записать данные из проекта в устройство {_device.Name}?" +
+            $"\nПосле записи, модуль связи {_device.Name} будет перезагружен", new List<string> { "OK", "Отмена" });
+            if (res == 1) return;
+
+            _globalEventsService.SendMessage(new ShellBlockEvent() { IsBlocked = true, Message = $"Сохранение конфигурационных данных в устройство {_device.Name}" });
+
+            try
+            {
+
+                await _deviceSavingService.SaveAllDeviceElements(_device);
+            }
+            finally
+            {
+                _globalEventsService.SendMessage(new ShellBlockEvent() { IsBlocked = false });
+                await _deviceReconnectionService.RestartDevice(_device);
+
+            }
+
+
+        }
         private void OnConnectDevice()
         {
             _navigationService.NavigateViewToGlobalRegion(DeviceKeys.ReconnectDeviceViewKey,
@@ -120,7 +150,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private void OnExportCidDevice()
         {
             var filePath = FileHelper.SelectFilePathToSave($"Сохранение устройства {_device.Name} в файл", ".cid", "Cid SCL files (*.cid)|*.cid",
-                 $"BISC_{_device.Name}.cid");
+                 $"{_device.Name}.cid");
             if (filePath.Any())
             {
                 _deviceSerializingService.SerializeCidSingleDevice(_device, filePath.GetFirstValue());
@@ -145,9 +175,9 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 
         private bool IsDeviceReadyForFtpOps()
         {
-			if (!IsDeviceConnected) return false;
-			if (_device.Manufacturer != DeviceKeys.DeviceManufacturer.BemnManufacturer) return false;
-			return true;
+            if (!IsDeviceConnected) return false;
+            if (_device.Manufacturer != DeviceKeys.DeviceManufacturer.BemnManufacturer) return false;
+            return true;
         }
 
         private void OnNavigateToDetailsExecute()
@@ -190,14 +220,14 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             {
                 var res = await _userInteractionService.ShowOptionToUser("Несохраненные изменения",
                     "В устройстве имеются несохраненные изменения." + Environment.NewLine + "Все равно удалить?",
-                    new List<string>() {"Удалить", "Отмена"});
+                    new List<string>() { "Удалить", "Отмена" });
                 if (res == 1)
                 {
                     return;
                 }
             }
             var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, _device.DeviceGuid);
-            
+
             if (result.IsSucceed)
             {
                 // тут необходимо скорее всего через Guid делать
@@ -240,7 +270,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _globalEventsService.Subscribe<ResetByFtpEvent>(OnResetByFtpEvent);
             _globalEventsService.Subscribe<DeviceWarningsChanged>(OnDeviceWarningsChanged);
 
-
+            _globalEventsService.SendMessage(new DeviceWarningsChanged(_device.DeviceGuid));
             base.OnNavigatedTo(navigationContext);
         }
 
@@ -251,6 +281,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
                 IsDeviceConnected = ea.IsConnected;
                 (DisconnectDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
                 (ConnectDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
+                (SaveDeviceChangesCommand as IPresentationCommand)?.RaiseCanExecute();
+
             }
         }
 
@@ -270,8 +302,6 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChangedEvent);
             _globalEventsService.Unsubscribe<ResetByFtpEvent>(OnResetByFtpEvent);
             _globalEventsService.Unsubscribe<DeviceWarningsChanged>(OnDeviceWarningsChanged);
-
-
             base.OnDisposing();
         }
 
@@ -282,15 +312,9 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         public ICommand NavigateToDetailsCommand { get; }
         public ICommand ResetDeviceViaFtpCommand { get; }
         public ICommand NavigateToConfigCommand { get; }
+        public ICommand SaveDeviceChangesCommand { get; }
 
         public ICommand ExportCidDeviceCommand { get; }
-
-        public bool IsReportWarning
-        {
-            get => _isReportWarning;
-            set { SetProperty(ref _isReportWarning, value); }
-        }
-        public ObservableCollection<string> WarningsCollection { get; }
 
     }
 }
