@@ -1,11 +1,4 @@
-﻿using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using BISC.Infrastructure.Global.Common;
+﻿using BISC.Infrastructure.Global.Common;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
@@ -22,6 +15,11 @@ using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Presentation.BaseItems.Commands;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BISC.Modules.Device.Presentation.Services
 {
@@ -38,13 +36,14 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly IGooseMatrixFtpService _gooseMatrixFtpService;
         private readonly IGoosesModelService _goosesModelService;
+        private readonly IUserInteractionService _userInteractionService;
         private List<IDeviceElementLoadingService> _elementLoadingServices;
 
         public DeviceLoadingService(IInjectionContainer injectionContainer, IDeviceModelService deviceModelService,
             ITreeManagementService treeManagementService, IDeviceAddingService deviceAddingService,
             Func<ISclModel> sclModelCreator, IGlobalEventsService globalEventsService, IBiscProject biscProject,
-            IUserNotificationService userNotificationService,ILoggingService loggingService,IConnectionPoolService connectionPoolService, 
-            IGooseMatrixFtpService gooseMatrixFtpService, IGoosesModelService goosesModelService)
+            IUserNotificationService userNotificationService, ILoggingService loggingService, IConnectionPoolService connectionPoolService,
+            IGooseMatrixFtpService gooseMatrixFtpService, IGoosesModelService goosesModelService, IUserInteractionService userInteractionService)
         {
             _deviceModelService = deviceModelService;
             _treeManagementService = treeManagementService;
@@ -57,6 +56,7 @@ namespace BISC.Modules.Device.Presentation.Services
             _connectionPoolService = connectionPoolService;
             _gooseMatrixFtpService = gooseMatrixFtpService;
             _goosesModelService = goosesModelService;
+            _userInteractionService = userInteractionService;
             _elementLoadingServices = injectionContainer.ResolveAll(typeof(IDeviceElementLoadingService))
                 .Cast<IDeviceElementLoadingService>().ToList();
         }
@@ -80,6 +80,7 @@ namespace BISC.Modules.Device.Presentation.Services
                 null);
             var sclModel = _sclModelCreator();
             var itemsCount = 0;
+            var isDeviceExist = false;
             try
             {
                 foreach (var sortedElement in sortedElements)
@@ -91,6 +92,11 @@ namespace BISC.Modules.Device.Presentation.Services
 
                 int currentElementsCount = 0;
 
+                if (_deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel.Value).Any(d => d.Name == device.Name))
+                {
+                    isDeviceExist = true;
+                    throw new Exception();
+                }
 
                 foreach (var sortedElement in sortedElements)
                 {
@@ -101,11 +107,12 @@ namespace BISC.Modules.Device.Presentation.Services
                                 itemsCount, ++currentElementsCount));
                         }), sclModel, cts.Token);
                 }
+
                 // Устанавливаем полученные Goose подписки из sclMode в наш текущий проект
-                _goosesModelService.SetGooseInputModelInfosToProject(_biscProject, device, 
+                _goosesModelService.SetGooseInputModelInfosToProject(_biscProject, device,
                     _goosesModelService.GetGooseInputModelInfos(device, sclModel.GetFirstParentOfType<IBiscProject>()));
                 // Устанавливаем полученную Goose матрицн из sclMode в наш текущий проект
-                _gooseMatrixFtpService.SetGooseMatrixFtpForDevice(device, 
+                _gooseMatrixFtpService.SetGooseMatrixFtpForDevice(device,
                     _gooseMatrixFtpService.GetGooseMatrixFtpForDevice(device, sclModel.GetFirstParentOfType<IBiscProject>()));
 
             }
@@ -118,16 +125,24 @@ namespace BISC.Modules.Device.Presentation.Services
                     _loggingService.LogUserAction($"Загрузка устройства отменена пользователем {device.Name}");
                     return new OperationResult($"Загрузка устройства отменена пользователем {device.Name}");
                 }
-                else
+
+                if (isDeviceExist)
                 {
                     _treeManagementService.DeleteTreeItem(treeItemId);
-                    _loggingService.LogMessage($"Ошибка загрузки устройства {e.Message + Environment.NewLine + e.StackTrace}",SeverityEnum.Critical);
-                    return new OperationResult($"Ошибка загрузки устройства {device.Name}");
+                    _connectionPoolService.GetConnection(device.Ip).StopConnection();
+                    var mes = $"Устройство с именем {device.Name} уже существует в проекте";
+                    await _userInteractionService.ShowOptionToUser("Не соответстие модели устройства", mes,
+                        new List<string>() { "Ок" });
+                    return new OperationResult(mes);
                 }
+
+                _treeManagementService.DeleteTreeItem(treeItemId);
+                _loggingService.LogMessage($"Ошибка загрузки устройства {e.Message + Environment.NewLine + e.StackTrace}", SeverityEnum.Critical);
+                return new OperationResult($"Ошибка загрузки устройства {device.Name}");
             }
 
             _treeManagementService.DeleteTreeItem(treeItemId);
-            _deviceAddingService.AddDevicesInProject(new List<IDevice>() {device}, sclModel);
+            _deviceAddingService.AddDevicesInProject(new List<IDevice>() { device }, sclModel);
             return OperationResult.SucceedResult;
 
         }

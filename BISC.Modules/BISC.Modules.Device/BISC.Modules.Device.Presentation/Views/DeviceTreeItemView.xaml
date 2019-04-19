@@ -65,7 +65,7 @@
                 </Button.ToolTip>
                 <ContentControl  ContentTemplate="{DynamicResource MessageAlertIcon}"/>
             </Button>
-            <Button  Width="20" Height="20" ToolTip="Сохранить все измениения в устройство" Margin="5,0"
+            <Button  Width="20" Height="20" ToolTip="Сохранить все изменения в устройство" Margin="5,0"
                      Style="{DynamicResource MenuTreeItemStyle}" Command="{Binding SaveDeviceChangesCommand}">
                 <ContentControl ContentTemplate="{DynamicResource UploadNetworkIcon}"></ContentControl>
             </Button>

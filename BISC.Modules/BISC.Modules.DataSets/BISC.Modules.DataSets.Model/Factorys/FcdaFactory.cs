@@ -8,6 +8,7 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
@@ -74,8 +75,25 @@ namespace BISC.Modules.DataSets.Model.Factorys
             return result;
         }
 
-
-
+        public List<IFcda> GetFcdasFromModelElement(IModelElement modelElement)
+        {
+            var res = new List<IFcda>();
+            var fcs = _fcdaInfoService.GetFcsOfModelElement(modelElement.GetFirstParentOfType<IDevice>(), modelElement)
+                .Where(el => el != "CO");
+            foreach (var fc in fcs)
+            {
+                var fcda = new Fcda();
+                fcda.LdInst = modelElement.GetFirstParentOfType<ILDevice>().Inst;
+                var ln = modelElement.GetFirstParentOfType<ILogicalNode>();
+                fcda.LnClass = ln.LnClass;
+                fcda.LdInst = ln.Inst;
+                fcda.DoName = GetDoNameRecursive(modelElement, String.Empty);
+                fcda.Prefix = ln.Prefix;
+                fcda.Fc = fc;
+                res.Add(fcda);
+            }
+            return res;
+        }
 
         #region privats methods
 

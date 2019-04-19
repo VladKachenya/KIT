@@ -13,6 +13,7 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.InformationModel.Presentation.ViewModels.Base;
+using BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Services;
@@ -23,7 +24,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
-using BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -321,19 +321,30 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 return;
             }
 
+
+
             switch (dropInfo.Data)
             {
                 case TreeItemViewModelBase sourceItem:
+                    // Только Doi
                     if (!(sourceItem.Model is IDoi) && (sourceItem.Model.GetFirstParentOfType<IDoi>() == default(IDoi)))
                     {
                         return;
                     }
-                    else
+
+                    // fs co нельзя
+                    if (sourceItem.Model is IModelElement mE)
                     {
-                        dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-                        dropInfo.Effects = System.Windows.DragDropEffects.Move;
-                        return;
+                        var fcs = _fcdaInfoService.GetFcsOfModelElement((IDevice)_device, mE);
+                        if (fcs.Count == 1 && fcs[0] == "CO")
+                        {
+                            return;
+                        }
                     }
+
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+                    dropInfo.Effects = System.Windows.DragDropEffects.Move;
+                    return;
                 default: return;
             }
         }
@@ -377,6 +388,11 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _loggingService.LogUserAction($"Добавлен FCDA {newFcdaViewModel.FullName} через DragDrop");
             Weigh();
         }
+
+        #endregion
+
+        #region override of Drop and AddFcdas
+        
 
         #endregion
     }

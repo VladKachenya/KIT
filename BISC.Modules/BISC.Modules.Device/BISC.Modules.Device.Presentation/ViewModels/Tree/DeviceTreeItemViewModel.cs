@@ -104,7 +104,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private async void OnSaveDeviceChanges()
         {
             await _globalSavingService.SaveСhangesOfDevice(_device.DeviceGuid);
-            var res = await _userInteractionService.ShowOptionToUser("Запсь данных в устройство",
+            var res = await _userInteractionService.ShowOptionToUser("Запись данных в устройство",
             $"Вы уверены что хотите записать данные из проекта в устройство {_device.Name}?" +
             $"\nПосле записи, модуль связи {_device.Name} будет перезагружен", new List<string> { "OK", "Отмена" });
             if (res == 1) return;

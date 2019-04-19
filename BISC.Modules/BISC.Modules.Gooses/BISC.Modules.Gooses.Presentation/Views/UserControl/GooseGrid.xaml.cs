@@ -182,7 +182,6 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
                 return;
             }
 
-            var notMainGrid = new Grid();
 
             mainGrid.Children.Clear();
             mainGrid.ColumnDefinitions.Clear();

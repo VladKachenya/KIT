@@ -100,9 +100,11 @@ namespace BISC.Modules.Reports.Presentation.Services
 
             if (isFromDevice)
             {
-                deviceOnlyReportViewModels.ForEach((model => model.ChangeTracker.SetModified()));
-                _reportsSavingCommand.Initialize(ref reportViewmodelsInDevice, devicesclModelInProject);
-                await _reportsSavingCommand.SaveAsync();
+                _reportsModelService.DeleteAllReportsOfDevice(devicesclModelInProject);
+                _reportsModelService.AddReportsToDevice(devicesclModelInProject, reportsInDevice);
+                //deviceOnlyReportViewModels.ForEach((model => model.ChangeTracker.SetModified()));
+                //_reportsSavingCommand.Initialize(ref reportViewmodelsInDevice, devicesclModelInProject);
+                //await _reportsSavingCommand.SaveAsync();
 
             }
             else

@@ -142,7 +142,7 @@ namespace BISC.Modules.Gooses.Presentation.Commands
             gooseControl.ConfRev = gooseControlViewModel.ConfRev;
             gooseControl.AppId = gooseControlViewModel.GoId;
             gooseControl.DataSet = gooseControlViewModel.SelectedDataset;
-            gooseControl.IsDynamic = gooseControlViewModel.IsDynamic;
+            //gooseControl.IsDynamic = gooseControlViewModel.IsDynamic;
             gooseControl.GooseType = gooseControlViewModel.GseType;
             gooseControl.FixedOffs = gooseControlViewModel.FixedOffs;
 

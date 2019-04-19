@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using BISC.Infrastructure.Global.Logging;
+using BISC.Infrastructure.Global.Services;
 
 namespace BISC.Modules.Gooses.Presentation.Factories
 {
@@ -19,14 +21,16 @@ namespace BISC.Modules.Gooses.Presentation.Factories
         private readonly IBiscProject _biscProject;
         private readonly IGoosesModelService _goosesModelService;
         private readonly IGooseInputModelInfoFactory _gooseInputModelIngoFactory;
+        private readonly ILoggingService _loggingService;
 
         public GooseSubscriptionDataTableFactory(IDeviceModelService deviceModelService, IBiscProject biscProject, IGoosesModelService goosesModelService,
-            IGooseInputModelInfoFactory gooseInputModelIngoFactory)
+            IGooseInputModelInfoFactory gooseInputModelIngoFactory, ILoggingService loggingService )
         {
             _deviceModelService = deviceModelService;
             _biscProject = biscProject;
             _goosesModelService = goosesModelService;
             _gooseInputModelIngoFactory = gooseInputModelIngoFactory;
+            _loggingService = loggingService;
         }
 
         public DataTable GetGooseSubscriptionDataTableFactory()
@@ -68,9 +72,19 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 {
 
                     // rowValues.Add(new GooseDescriptionEntity(gooseControl, deviceInProject));
-                    var row = new GooseDescriptionEntity(
-                        _gooseInputModelIngoFactory.CreateGooseInputModelInfo(deviceInProject, gooseControl),
-                        deviceInProject);
+                    GooseDescriptionEntity row;
+                    try
+                    {
+                        row = new GooseDescriptionEntity(
+                            _gooseInputModelIngoFactory.CreateGooseInputModelInfo(deviceInProject, gooseControl),
+                            deviceInProject);
+                    }
+                    catch (Exception e)
+                    {
+                        _loggingService.LogMessage(e.Message, SeverityEnum.Critical);
+                        continue;
+                    }
+                   
                     rowValues.Add(row);
                     table.Rows.Add(row);
                 }

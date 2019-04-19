@@ -244,7 +244,7 @@ namespace BISC.Presentation.Services
             emptyDeviseForSaving.UnsavedEntitiesOfDevise.Add(unsavedEntity);
             return emptyDeviseForSaving;
         }
-
+        
         private async Task<SaveResult> SaveChengests(List<SaveCheckingEntity> modifiedEntities, bool isCancelPossible)
         {
             var saveResult = new SaveResult();
@@ -261,8 +261,9 @@ namespace BISC.Presentation.Services
             var warnings = new List<string>();
             foreach (var entity in entitiesForSaving)
             {
+                if(entity.SavingCommand == null) continue;
                 var validationRes = await entity.SavingCommand.ValidateBeforeSave();
-                if ((entity.SavingCommand != null) && !(validationRes.IsSucceed))
+                if (!(validationRes.IsSucceed))
                 {
                     warnings.AddRange(validationRes.ErrorList);
                     saveResult.IsValidationFailed = true;

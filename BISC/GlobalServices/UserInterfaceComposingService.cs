@@ -55,6 +55,24 @@ namespace BISC.GlobalServices
             }
         }
 
+        public void InsertGlobalCommandToStart(ICommand command, string name, string iconId = null,
+            bool isAddToMenu = false, bool isAddToToolBar = false)
+        {
+            IGlobalCommand globalCommand = _globalCommandFactory();
+            globalCommand.Command = command;
+            globalCommand.CommandName = name;
+            globalCommand.IconId = iconId;
+            if (isAddToToolBar && !_globalToolbarCommands.Any((command1 => command1.Command == globalCommand.Command)))
+            {
+                _globalToolbarCommands.Insert(0, globalCommand);
+            }
+            if (isAddToMenu && !_globalMenuCommands.Any((command1 => command1.Command == globalCommand.Command)))
+            {
+                _globalMenuCommands.Insert(0, globalCommand);
+            }
+        }
+
+
         public void AddGlobalCommandGroup(List<ICommand> commands, List<string> names, string groupName, string iconId = null,
             List<string> iconIds = null, bool isAddToMenu = false, bool isAddToToolBar = false)
         {

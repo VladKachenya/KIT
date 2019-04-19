@@ -21,7 +21,7 @@
                     Name="КИТ"                   
                     Target="[INSTALLLOCATION]KIT.exe"
                     WorkingDirectory="INSTALLLOCATION">
-            <Icon Id="Logo" SourceFile="Logo1.ico" />
+            <Icon Id="Logo" SourceFile="Logo3.ico" />
           </Shortcut>
           <RemoveFolder Id="DesktopFolder" On="uninstall"/>
           <RegistryValue
@@ -49,7 +49,7 @@
                  Description="$(var.ProductName)"
                  Target="[INSTALLLOCATION]KIT.exe"
                  WorkingDirectory="INSTALLLOCATION">
-              <Icon Id="KIT.exe" SourceFile="Logo1.ico"/>
+              <Icon Id="KIT.exe" SourceFile="Logo3.ico"/>
             </Shortcut>
             <Shortcut Id="UninstallLIT"
                  Name="Uninstall КИТ"

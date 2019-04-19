@@ -22,7 +22,7 @@ namespace BISC.Modules.Connection.Presentation.Module
             _injectionContainer = injectionContainer;
             _connectionPresentationViewAddingServise = connectionPresentationViewAddingServise;
             userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(OnPingsPanelAdding, null), "Управление PING", null, true, false);
-            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(OnChangeIpNetworkCardAdding, () => false), "Изменение IP сетевой карты", IconsKeys.EthernetIconKey, true, false);
+            //userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(OnChangeIpNetworkCardAdding, () => false), "Изменение IP сетевой карты", IconsKeys.EthernetIconKey, true, false);
         }
 
         private void OnPingsPanelAdding()

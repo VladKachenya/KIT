@@ -138,6 +138,9 @@
                                     <TextBlock Margin="3" Text="{Binding ElementName}"/>
                                 </Border>
                                 <TextBlock Margin="3" Text="{Binding FullName}"/>
+                                <TextBlock Margin="0,3" Text="["/>
+                                <TextBlock Margin="0,3" Text="{Binding SellectedFc.Fc}"/>
+                                <TextBlock Margin="0,3" Text="]"/>
                             </StackPanel>
                             <Button Margin="2" Padding="3" Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"
                                                             IsEnabled="{Binding DataContext.IsEditing, Source={x:Reference fcdaListBox}}"

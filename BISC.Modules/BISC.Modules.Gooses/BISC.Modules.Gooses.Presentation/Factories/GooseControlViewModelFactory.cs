@@ -84,7 +84,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 gooseControlViewModel.Name = gooseControl.Name;
                 gooseControlViewModel.SelectedDataset = gooseControl.DataSet;
                 gooseControlViewModel.AvailableDatasets = datasets.Select((set => set.Name)).ToList();
-                gooseControlViewModel.IsDynamic = gooseControl.IsDynamic;
+                //gooseControlViewModel.IsDynamic = gooseControl.IsDynamic;
                 gooseControlViewModel.ConfRev = gooseControl.ConfRev;
                 gooseControlViewModel.FixedOffs = gooseControl.FixedOffs;
                 gooseControlViewModel.GseType = gooseControl.GooseType;
@@ -101,7 +101,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
             gooseControlViewModel.Name = _uniqueNameService.GetUniqueName(existingNames, "NewGoose");
             gooseControlViewModel.GoId = gooseControlViewModel.Name;
-            gooseControlViewModel.IsDynamic = true;
+            //gooseControlViewModel.IsDynamic = true;
             gooseControlViewModel.AppId = 0;
             gooseControlViewModel.MacAddress = "01-0C-CD-01-00-00";
             gooseControlViewModel.VlanId = 0;

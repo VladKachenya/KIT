@@ -120,7 +120,7 @@ namespace BISC.Modules.Gooses.Model.Services.LoadingServices
                                 dynamicGooseControls?.FirstOrDefault((dto => dto.Name == gooseControl.Name));
                             if (gooseFtpDto != null)
                             {
-                                gooseControl.IsDynamic = true;
+                                //gooseControl.IsDynamic = true;
                             }
 
                             _goosesModelService.AddGseControl(goParts[0], ldevice.Replace(device.Name, ""), device,

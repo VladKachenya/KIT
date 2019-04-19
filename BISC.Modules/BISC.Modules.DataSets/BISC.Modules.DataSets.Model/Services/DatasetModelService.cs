@@ -1,4 +1,5 @@
-﻿using BISC.Model.Infrastructure.Elements;
+﻿using System;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
@@ -6,6 +7,7 @@ using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using System.Collections.Generic;
 using System.Linq;
+using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.DataSets.Model.Services
 {
@@ -155,7 +157,16 @@ namespace BISC.Modules.DataSets.Model.Services
 
         public IDataSet GetDataSetOfDevice(IModelElement device, string dataSetName)
         {
-            return GetAllDataSetOfDevice(device).First(ds => ds.Name == dataSetName);
+            IDataSet res;
+            try
+            {
+                res = GetAllDataSetOfDevice(device).First(ds => ds.Name == dataSetName);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Неудальсь найти DataSet {dataSetName} в устройстве {((IDevice)device).Name}");
+            }
+            return res;
         }
 
         #endregion

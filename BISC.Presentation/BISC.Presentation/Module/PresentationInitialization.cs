@@ -61,7 +61,7 @@ namespace BISC.Presentation.Module
             fileCommandsName.Add("Очистить текущий проект");
             userInterfaceComposingService.AddGlobalCommandGroup(fileCommands, fileCommandsName, "ПРОЕКТ", IconsKeys.BookMultipleIconKey);
 
-            userInterfaceComposingService.AddGlobalCommand(commandFactory.CreatePresentationCommand(projectManagementService.SaveProjectAsync),
+            userInterfaceComposingService.InsertGlobalCommandToStart(commandFactory.CreatePresentationCommand(projectManagementService.SaveProjectAsync),
                 "Сохранить все изменения", IconsKeys.ContentSaveAllKey, false, true);
             userInterfaceComposingService.AddGlobalCommand(null, null, null, false, true); //Separator
             userInterfaceComposingService.AddGlobalCommand

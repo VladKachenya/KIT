@@ -26,6 +26,8 @@ namespace BISC.Infrastructure.Global.Services
     public interface IUserInterfaceComposingService
     {
         void AddGlobalCommand(ICommand command,string name,string iconId=null, bool isAddToMenu = false, bool isAddToToolBar = false);
+        void InsertGlobalCommandToStart(ICommand command, string name, string iconId = null, bool isAddToMenu = false, bool isAddToToolBar = false);
+
         void AddGlobalCommandGroup( List<ICommand> commands, List<string> names, string groupName, string iconId = null,
             List<string> iconIds = null, bool isAddToMenu = false, bool isAddToToolBar = false);
 

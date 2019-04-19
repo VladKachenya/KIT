@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BISC.Infrastructure.Global.Logging;
+﻿using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
-using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Keys;
@@ -16,6 +10,8 @@ using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.UiFromModel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BISC.Modules.Device.Presentation.Services
 {
@@ -27,6 +23,7 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly IBiscProject _biscProject;
         private readonly ITreeManagementService _treeManagementService;
         private readonly IUiFromModelElementRegistryService _uiFromModelElementRegistryService;
+        private readonly IUserInteractionService _userInteractionService;
 
         public DeviceAddingService(INavigationService navigationService, IDeviceModelService deviceModelService,
             ILoggingService loggingService, IBiscProject biscProject, ITreeManagementService
@@ -49,6 +46,14 @@ namespace BISC.Modules.Device.Presentation.Services
         {
             foreach (var device in devicesToAdd)
             {
+                var deviceNameInProject = _deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel.Value)
+                    .Select(dev => dev.Name);
+                if (deviceNameInProject.Any(devN => devN == device.Name))
+                {
+                    var mes = $"Устройство с именем {device.Name} уже существует в проекте";
+                    _loggingService.LogMessage(mes, SeverityEnum.Info);
+                    continue;
+                }
                 var res = _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel.Value, device, modelFrom);
                 if (!res.IsSucceed)
                 {
@@ -64,7 +69,11 @@ namespace BISC.Modules.Device.Presentation.Services
 
         public UiEntityIdentifier HandleModelElement(IModelElement modelElement, UiEntityIdentifier parentTreeId, string uiKey)
         {
-            if (parentTreeId != null) return null;
+            if (parentTreeId != null)
+            {
+                return null;
+            }
+
             var sclModel = modelElement as ISclModel;
             sclModel?.ChildModelElements.ForEach(element =>
             {
@@ -77,12 +86,12 @@ namespace BISC.Modules.Device.Presentation.Services
             return null;
         }
 
-        public void AddDeviceToTree(IDevice device,int? index=null)
+        public void AddDeviceToTree(IDevice device, int? index = null)
         {
             BiscNavigationParameters navigationParameters = new BiscNavigationParameters();
             navigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, device);
             var resultTreeItem =
-                _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null,device.DeviceGuid.ToString(),index);
+                _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null, device.DeviceGuid.ToString(), index);
             _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(device, resultTreeItem, "IED");
         }
     }

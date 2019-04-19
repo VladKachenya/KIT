@@ -148,14 +148,14 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
 
         public string LdInst { get; set; }
 
-        public bool IsDynamic
-        {
-            get { return _isDynamic; }
-            set
-            {
-                SetProperty(ref _isDynamic, value, true);
-            }
-        }
+        public bool IsDynamic => true;
+        //{
+        //    get { return _isDynamic; }
+        //    set
+        //    {
+        //        SetProperty(ref _isDynamic, value, true);
+        //    }
+        //}
 
         public bool IsChanged
         {
