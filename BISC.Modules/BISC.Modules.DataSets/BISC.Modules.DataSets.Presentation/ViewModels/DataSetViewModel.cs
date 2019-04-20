@@ -1,4 +1,5 @@
-﻿using BISC.Infrastructure.Global.Services;
+﻿using BISC.Infrastructure.Global.Logging;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
@@ -12,7 +13,6 @@ using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
-using BISC.Modules.InformationModel.Presentation.ViewModels.Base;
 using BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
@@ -24,6 +24,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
+using TreeItemViewModelBase = BISC.Modules.InformationModel.Presentation.ViewModels.Base.TreeItemViewModelBase;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -352,47 +353,83 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public void Drop(IDropInfo dropInfo)
         {
             TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;
-            IFcda modelFcda = null;
-            if ((sourceItem.Model is IDoi) && sourceItem.TypeName == "Fc")
+            var fc = GetSellectedFc(sourceItem);
+            //IFcda modelFcda = null;
+            var fcdas = new List<IFcda>();
+            //if ((sourceItem.Model is IDoi) && sourceItem.TypeName == "Fc")
+            //{
+            //    fcdas.Add(_fcdaFactory.GetStructFcda(sourceItem.Model as IDoi, sourceItem.Header));
+            //}
+            if (sourceItem.Model is IDai daiModel)
             {
-                modelFcda = _fcdaFactory.GetStructFcda(sourceItem.Model as IDoi, sourceItem.Header);
+                fcdas.Add(_fcdaFactory.GetFcda(daiModel));
             }
-            else if (sourceItem.Model is IDai)
+            else if (sourceItem.Model is IModelElement modelElement)
             {
-                modelFcda = _fcdaFactory.GetFcda(sourceItem.Model as IDai);
+                if (fc == null)
+                {
+                    fcdas.AddRange(_fcdaFactory.GetFcdasFromModelElement(sourceItem.Model));
+                }
+                else
+                {
+                    fcdas.Add(_fcdaFactory.GetStructFcda(modelElement, fc));
+                }
+                //modelFcda = _fcdaFactory.GetStructFcda(sourceItem.Model);
             }
             else
             {
-                modelFcda = _fcdaFactory.GetStructFcda(sourceItem.Model);
+                _loggingService.LogMessage($"Невозможно добавить {sourceItem.Model.ToString()}", SeverityEnum.Critical);
             }
 
-            AddFcda(modelFcda, dropInfo.InsertIndex, sourceItem.Model);
+            int index = dropInfo.InsertIndex;
+            foreach (var modelFcda in fcdas)
+            {
+                try
+                {
+                    AddFcda(modelFcda, index, sourceItem.Model);
+                }
+                catch (Exception e)
+                {
+                    _loggingService.LogMessage(e.Message, SeverityEnum.Critical);
+                    continue;
+                }
+                index++;
+            }
         }
 
         private void AddFcda(IFcda fcda, int insertIdex, IModelElement modelElement)
         {
             var newFcdaViewModel = _fcdaViewModelFactory.CreateFcdaViewModelElement(_device as IDevice, fcda, this);
+            var fcdaName = $"{newFcdaViewModel.FullName}[{newFcdaViewModel.SellectedFc.Fc}]";
             if (!CanSetWeight(newFcdaViewModel.SellectedFc.FcWeight))
             {
-                _loggingService.LogUserAction($"FCDA {newFcdaViewModel.FullName} не может быть добавлен");
-                return;
+                throw new Exception($"FCDA {fcdaName} не может быть добавлен");
             }
 
-            if (FcdaViewModels.Any(el => el.FullName == newFcdaViewModel.FullName))
+            if (FcdaViewModels.Any(el => el.FullName == newFcdaViewModel.FullName && el.SellectedFc.Fc == newFcdaViewModel.SellectedFc.Fc))
             {
-                _loggingService.LogUserAction($"FCDA {newFcdaViewModel.FullName} уже добавлен");
-                return;
+                throw new Exception($"FCDA {fcdaName} уже добавлен");
             }
 
             FcdaViewModels.Insert(insertIdex, newFcdaViewModel);
-            _loggingService.LogUserAction($"Добавлен FCDA {newFcdaViewModel.FullName} через DragDrop");
+            _loggingService.LogUserAction($"Добавлен FCDA {fcdaName} через DragDrop");
             Weigh();
         }
 
-        #endregion
+        private string GetSellectedFc(TreeItemViewModelBase treeItemViewModelBase)
+        {
+            if (treeItemViewModelBase.TypeName == "FC")
+            {
+                return treeItemViewModelBase.Header;
+            }
 
-        #region override of Drop and AddFcdas
-        
+            if (treeItemViewModelBase.Parent != null && treeItemViewModelBase.Parent is TreeItemViewModelBase parient)
+            {
+                return GetSellectedFc(parient);
+            }
+
+            return null;
+        }
 
         #endregion
     }

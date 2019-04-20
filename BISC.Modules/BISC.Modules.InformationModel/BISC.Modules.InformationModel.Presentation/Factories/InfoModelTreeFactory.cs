@@ -95,8 +95,12 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                         SetFcTreeItemViewModel fcTreeItemViewModel = _fcSetCreator();
                         fcTreeItemViewModel.SetFc(fc,doi);
                         GetChildListByFc(doi.DaiCollection.ToList(), doi.SdiCollection.ToList(), fc).ForEach((treeItem =>
-                            fcTreeItemViewModel.ChildInfoModelItemViewModels.Add(treeItem)));
+                        {
+                            fcTreeItemViewModel.ChildInfoModelItemViewModels.Add(treeItem);
+                            treeItem.Parent = fcTreeItemViewModel;
+                        }));
                         doiInfoModelItemViewModel.ChildInfoModelItemViewModels.Add(fcTreeItemViewModel);
+                        fcTreeItemViewModel.Parent = doiInfoModelItemViewModel;
                     }
 
                 }
@@ -107,6 +111,11 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                     foreach (var daiVm in dais)
                     {
                         doiInfoModelItemViewModel.ChildInfoModelItemViewModels.Add(daiVm);
+                    }
+
+                    foreach (var childInfoModelItemViewModel in doiInfoModelItemViewModel.ChildInfoModelItemViewModels)
+                    {
+                        childInfoModelItemViewModel.Parent = doiInfoModelItemViewModel;
                     }
                 }
 
@@ -145,7 +154,11 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                 {
                     var sdiTreeItem = _sdiCreator();
                     sdiTreeItem.Model = sdi;
-                    fcItemsInSdi.ForEach((treeItem => sdiTreeItem.ChildInfoModelItemViewModels.Add(treeItem))); 
+                    fcItemsInSdi.ForEach((treeItem =>
+                    {
+                        sdiTreeItem.ChildInfoModelItemViewModels.Add(treeItem);
+                        treeItem.Parent = sdiTreeItem;
+                    })); 
                     fcItems.Add(sdiTreeItem);
                 }
 
@@ -174,7 +187,10 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                 {
                     sdiInfoModelItemViewModel.ChildInfoModelItemViewModels.Add(daiVm);
                 }
-
+                foreach (IInfoModelItemViewModel childInfoModelItemViewModel in sdiInfoModelItemViewModel.ChildInfoModelItemViewModels)
+                {
+                    childInfoModelItemViewModel.Parent = sdiInfoModelItemViewModel;
+                }
                 infoModelItemViewModels.Add(sdiInfoModelItemViewModel);
             }
 

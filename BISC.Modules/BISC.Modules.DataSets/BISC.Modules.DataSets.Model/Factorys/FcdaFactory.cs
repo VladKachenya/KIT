@@ -47,34 +47,6 @@ namespace BISC.Modules.DataSets.Model.Factorys
             result.Fc = GetDaFc(dai);
             return result;
         }
-
-        public IFcda GetStructFcda(IDoi doiParent, string fc)
-        {
-            IFcda result = new Fcda();
-            result.LdInst = doiParent.GetFirstParentOfType<ILDevice>().Inst;
-            var ln = doiParent.GetFirstParentOfType<ILogicalNode>();
-            result.LnClass = ln.LnClass;
-            result.LnInst = ln.Inst;
-            result.DoName = doiParent.Name;
-            result.Prefix = ln.Prefix;
-            result.Fc = fc;
-            return result;
-        }
-
-        public IFcda GetStructFcda(IModelElement element)
-        {
-            IFcda result = new Fcda();
-            result.LdInst = element.GetFirstParentOfType<ILDevice>().Inst;
-            var ln = element.GetFirstParentOfType<ILogicalNode>();
-            result.LnClass = ln.LnClass;
-            result.LnInst = ln.Inst;
-            result.DoName = GetDoNameRecursive(element, String.Empty);
-            result.Prefix = ln.Prefix;
-            // Запрет добавления CO
-            result.Fc = _fcdaInfoService.GetFcsOfModelElement(element.GetFirstParentOfType<IDevice>(), element).First(el => el != "CO");
-            return result;
-        }
-
         public List<IFcda> GetFcdasFromModelElement(IModelElement modelElement)
         {
             var res = new List<IFcda>();
@@ -82,18 +54,47 @@ namespace BISC.Modules.DataSets.Model.Factorys
                 .Where(el => el != "CO");
             foreach (var fc in fcs)
             {
-                var fcda = new Fcda();
-                fcda.LdInst = modelElement.GetFirstParentOfType<ILDevice>().Inst;
-                var ln = modelElement.GetFirstParentOfType<ILogicalNode>();
-                fcda.LnClass = ln.LnClass;
-                fcda.LdInst = ln.Inst;
-                fcda.DoName = GetDoNameRecursive(modelElement, String.Empty);
-                fcda.Prefix = ln.Prefix;
-                fcda.Fc = fc;
-                res.Add(fcda);
+                //var fcda = new Fcda();
+                //fcda.LdInst = modelElement.GetFirstParentOfType<ILDevice>().Inst;
+                //var ln = modelElement.GetFirstParentOfType<ILogicalNode>();
+                //fcda.LnClass = ln.LnClass;
+                //fcda.LnInst = ln.Inst;
+                //fcda.DoName = GetDoNameRecursive(modelElement, String.Empty);
+                //fcda.Prefix = ln.Prefix;
+                //fcda.Fc = fc;
+                res.Add(GetStructFcda(modelElement, fc));
             }
             return res;
         }
+
+        public IFcda GetStructFcda(IModelElement modelElement, string fc)
+        {
+            IFcda result = new Fcda();
+            result.LdInst = modelElement.GetFirstParentOfType<ILDevice>().Inst;
+            var ln = modelElement.GetFirstParentOfType<ILogicalNode>();
+            result.LnClass = ln.LnClass;
+            result.LnInst = ln.Inst;
+            result.DoName = GetDoNameRecursive(modelElement, String.Empty);
+            result.Prefix = ln.Prefix;
+            result.Fc = _fcdaInfoService.GetFcsOfModelElement(modelElement.GetFirstParentOfType<IDevice>(), modelElement).First(el => el == fc); ;
+            return result;
+        }
+
+        //public IFcda GetStructFcda(IModelElement element)
+        //{
+        //    IFcda result = new Fcda();
+        //    result.LdInst = element.GetFirstParentOfType<ILDevice>().Inst;
+        //    var ln = element.GetFirstParentOfType<ILogicalNode>();
+        //    result.LnClass = ln.LnClass;
+        //    result.LnInst = ln.Inst;
+        //    result.DoName = GetDoNameRecursive(element, String.Empty);
+        //    result.Prefix = ln.Prefix;
+        //    // Запрет добавления CO
+        //    result.Fc = _fcdaInfoService.GetFcsOfModelElement(element.GetFirstParentOfType<IDevice>(), element).First(el => el != "CO");
+        //    return result;
+        //}
+
+       
 
         #region privats methods
 

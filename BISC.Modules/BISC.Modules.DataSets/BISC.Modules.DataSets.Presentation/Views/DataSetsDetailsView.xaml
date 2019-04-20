@@ -290,8 +290,9 @@
                                     <ContentControl Content="{Binding .}">
                                         <ContentControl.Style>
                                             <Style TargetType="ContentControl">
-                                                <Style.Triggers>
-                                                    <MultiDataTrigger>
+                                                <!--<Style.Triggers>
+                                                    --><!--Тут устанавливается ComboBox с Fc-->
+                                                    <!--<MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding ="{ Binding Path=SelectedItem.IsEditing,Source={x:Reference ExpanderItemsControl}}" Value="True"/>
                                                         </MultiDataTrigger.Conditions>
@@ -322,7 +323,7 @@
                                                                 </DataTemplate>
                                                             </Setter.Value>
                                                         </Setter>
-                                                    </MultiDataTrigger>
+                                                    </MultiDataTrigger>--><!--
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding ="{ Binding Path=SelectedItem.IsEditing,Source={x:Reference ExpanderItemsControl}}" Value="False"/>
@@ -330,12 +331,29 @@
                                                         <Setter Property="ContentTemplate">
                                                             <Setter.Value>
                                                                 <DataTemplate>
-                                                                    <TextBlock Text="{Binding SellectedFc.Fc}" Margin="40,0" VerticalAlignment="Center"/>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <TextBlock Text="{Binding SellectedFc.Fc}" Padding="0"/>
+                                                                        <TextBlock Text="[" Padding="0"/>
+                                                                        <TextBlock Text="{Binding SellectedFc.FcWeight}" Padding="0"/>
+                                                                        <TextBlock Text="]" Padding="0"/>
+                                                                    </StackPanel>
                                                                 </DataTemplate>
                                                             </Setter.Value>
                                                         </Setter>
                                                     </MultiDataTrigger>
-                                                </Style.Triggers>
+                                                </Style.Triggers>-->
+                                                <Setter Property="ContentTemplate">
+                                                    <Setter.Value>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal" Margin="40,0" VerticalAlignment="Center">
+                                                                <TextBlock Text="{Binding SellectedFc.Fc}" Padding="0"/>
+                                                                <TextBlock Text="[" Padding="0"/>
+                                                                <TextBlock Text="{Binding SellectedFc.FcWeight}" Padding="0"/>
+                                                                <TextBlock Text="]" Padding="0"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
                                             </Style>
                                         </ContentControl.Style>
                                     </ContentControl>

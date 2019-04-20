@@ -13,6 +13,21 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <ContentControl Style="{StaticResource BlockedContentStyle}">
+        <ContentControl.Resources>
+            <!--<Style x:Key="GroupHeaderStyle" TargetType="{x:Type GroupItem}">
+                <Setter Property="Template">
+
+                    <Setter.Value>
+                        <ControlTemplate  TargetType="{x:Type GroupItem}">
+                            <Expander x:Name="exp" IsExpanded="True" Header="{Binding Name}">
+                                <ItemsPresenter></ItemsPresenter>
+                            </Expander>
+
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>-->
+        </ContentControl.Resources>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
@@ -40,6 +55,17 @@
                 </Button>
             </StackPanel>-->
             <userControl:GooseGrid IsActive="{Binding IsActive}" Grid.Row="1" x:Name="gooseGrid" GoInCount="64" GooseControlBlockViewModels="{Binding GooseControlBlockViewModels}"></userControl:GooseGrid>
+            <!--<DataGrid ItemsSource="{Binding GroupedGoosesViewModels}">
+                <DataGrid.GroupStyle>
+                    <GroupStyle ContainerStyle="{StaticResource GroupHeaderStyle}">
+                        <GroupStyle.Panel>
+                            <ItemsPanelTemplate>
+                                <DataGridRowsPresenter></DataGridRowsPresenter>
+                            </ItemsPanelTemplate>
+                        </GroupStyle.Panel>
+                    </GroupStyle>
+                </DataGrid.GroupStyle>
+            </DataGrid>-->
         </Grid>
     </ContentControl>
 </UserControl>

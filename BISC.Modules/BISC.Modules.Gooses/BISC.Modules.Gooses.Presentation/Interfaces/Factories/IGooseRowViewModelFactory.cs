@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
@@ -10,7 +11,7 @@ namespace BISC.Modules.Gooses.Presentation.Interfaces.Factories
 {
 	public interface IGooseRowViewModelFactory
 	{
-	    List<IGooseRowViewModel> BuildGooseRowViewModels(GooseControlBlockViewModel parent,
+	    Task<List<IGooseRowViewModel>> BuildGooseRowViewModels(GooseControlBlockViewModel parent,
 	        IGooseInputModelInfo gooseModelInfo, IGooseMatrixFtp gooseMatrix);
     }
 }

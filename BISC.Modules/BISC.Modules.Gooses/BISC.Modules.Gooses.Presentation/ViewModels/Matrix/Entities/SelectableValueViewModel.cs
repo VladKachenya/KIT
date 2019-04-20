@@ -115,6 +115,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
             }
         }
 
+        public void SetValue(bool value)
+        {
+            SetProperty(ref _selectedValue, value);
+        }
+
         #endregion
 
 

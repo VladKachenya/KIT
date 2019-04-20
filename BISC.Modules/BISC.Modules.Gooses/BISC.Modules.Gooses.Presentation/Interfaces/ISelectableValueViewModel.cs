@@ -11,5 +11,6 @@ namespace BISC.Modules.Gooses.Presentation.Interfaces
         ICommand OnMouseEnterCommand { get; }
         bool IsSelectingEnabled { get; set; }
         string ToolTip { get; set; }
+        void SetValue(bool value);
     }
 }

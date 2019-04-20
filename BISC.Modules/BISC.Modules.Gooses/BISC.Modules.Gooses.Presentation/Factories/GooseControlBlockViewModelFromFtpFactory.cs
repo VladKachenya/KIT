@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using BISC.Modules.Gooses.Infrastructure.Factorys;
 
 namespace BISC.Modules.Gooses.Presentation.Factories
@@ -48,19 +49,19 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
 
 
-        public OperationResult<List<GooseControlBlockViewModel>> BuildGooseControlBlockViewModels(ISclModel sclModel,
+        public async Task<OperationResult<List<GooseControlBlockViewModel>>> BuildGooseControlBlockViewModels(ISclModel sclModel,
             IDevice device)
         {
 
             List<GooseControlBlockViewModel> gooseControlBlockViewModels = new List<GooseControlBlockViewModel>();
             List<string> messagesList = new List<string>();
 
-            gooseControlBlockViewModels.AddRange(BuildBlocks(device));
+            gooseControlBlockViewModels.AddRange(await BuildBlocks(device));
             return new OperationResult<List<GooseControlBlockViewModel>>(gooseControlBlockViewModels,
                 messagesList, true);
         }
 
-        private IEnumerable<GooseControlBlockViewModel> BuildBlocks(IDevice device)
+        private async Task<IEnumerable<GooseControlBlockViewModel>> BuildBlocks(IDevice device)
         {
             List<GooseControlBlockViewModel> gooseControlBlockViewModels = new List<GooseControlBlockViewModel>();
             IGooseMatrixFtp gooseMatrix = _gooseMatrixFtpService.GetGooseMatrixFtpForDevice(device);
@@ -69,7 +70,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             //Работать сдесь
             foreach (var gooseModelInfo in listOfGoosesModelInfos)
             {
-                var gooseControlBlockViewModel = BuildProjectBlock(gooseModelInfo, gooseMatrix);
+                var gooseControlBlockViewModel =await BuildProjectBlock(gooseModelInfo, gooseMatrix);
                 gooseControlBlockViewModels.Add(gooseControlBlockViewModel);
 
                 ////Тут создаются строчки
@@ -92,7 +93,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
 
 
-        private GooseControlBlockViewModel BuildProjectBlock(IGooseInputModelInfo gooseInput, IGooseMatrixFtp gooseMatrixFtp)
+        private async Task<GooseControlBlockViewModel> BuildProjectBlock(IGooseInputModelInfo gooseInput, IGooseMatrixFtp gooseMatrixFtp)
         {
             GooseControlBlockViewModel gooseControlBlockViewModel = _gooseControlBlockViewModelFunc();
 
@@ -101,7 +102,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             gooseControlBlockViewModel.GoCbReference = _cbFtpEntityFactory.GetIGoCbFtpEntityFromGooseInputModelInfo(gooseInput);
 
             gooseControlBlockViewModel.GooseRowViewModels =
-                _gooseRowViewModelFactory.BuildGooseRowViewModels(gooseControlBlockViewModel, gooseInput, gooseMatrixFtp);
+              await  _gooseRowViewModelFactory.BuildGooseRowViewModels(gooseControlBlockViewModel, gooseInput, gooseMatrixFtp);
 
 
 

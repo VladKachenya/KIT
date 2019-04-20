@@ -1,4 +1,5 @@
-﻿using BISC.Infrastructure.Global.IoC;
+﻿using System;
+using BISC.Infrastructure.Global.IoC;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
@@ -8,7 +9,9 @@ using BISC.Modules.Gooses.Presentation.Interfaces.Factories;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Rows;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 
 namespace BISC.Modules.Gooses.Presentation.Factories
@@ -25,7 +28,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
         #region Implementation of IGooseRowViewModelFactory
 
-        public List<IGooseRowViewModel> BuildGooseRowViewModels(GooseControlBlockViewModel parent, IGooseInputModelInfo gooseModelInfo, IGooseMatrixFtp gooseMatrix)
+        public async Task<List<IGooseRowViewModel>> BuildGooseRowViewModels(GooseControlBlockViewModel parent, IGooseInputModelInfo gooseModelInfo, IGooseMatrixFtp gooseMatrix)
         {
             var res = CreateRowsViewModel(parent, gooseModelInfo);
             var relatedGoCb = gooseMatrix.GoCbFtpEntities.FirstOrDefault((entity =>
@@ -35,7 +38,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 var rows =
                     gooseMatrix.GooseRowFtpEntities.Where(entity => entity.IndexOfGoose == relatedGoCb.IndexOfGoose).ToList();
                 rows.AddRange(gooseMatrix.GooseRowQualityFtpEntities.Where(entit => entit.IndexOfGoose == relatedGoCb.IndexOfGoose));
-                FillGooseRowViewModel(ref res, rows);
+               await FillGooseRowViewModel(res, rows);
 
 
             }
@@ -43,19 +46,66 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             return res;
         }
 
-        private void FillGooseRowViewModel(ref List<IGooseRowViewModel> parent, List<IGooseRowFtpEntity> gooseRowFtpEntities)
+        private async Task FillGooseRowViewModel(List<IGooseRowViewModel> parent, List<IGooseRowFtpEntity> gooseRowFtpEntities)
         {
-            foreach (var gooseRowFtpEntitie in gooseRowFtpEntities)
+
+        
+
+
+
+
+
+
+
+            Task[] tasks = gooseRowFtpEntities.Select((entity => new Task((() =>
             {
-                parent.First(el => el.NumberOfFcdaInDataSet == gooseRowFtpEntitie.NumberOfFcdaInDataSetOfGoose - 1).
-                    SelectableValueViewModels[gooseRowFtpEntitie.BitIndex - 1].SelectedValue = true;
-                if (gooseRowFtpEntitie is IGooseRowQualityFtpEntity validity && validity.IsValiditySelected)
+                var s = Stopwatch.StartNew();
+               
+                parent.Find(el => el.NumberOfFcdaInDataSet == entity.NumberOfFcdaInDataSetOfGoose - 1).SelectableValueViewModels[entity.BitIndex - 1].SetValue(true);
+                s.Stop();
+                if (s.ElapsedMilliseconds > 500)
+                {
+
+                }
+                if (entity is IGooseRowQualityFtpEntity validity && validity.IsValiditySelected)
                 {
                     parent.First(el => el.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.ValidityKey).
-                        SelectableValueViewModels[gooseRowFtpEntitie.BitIndex - 1].
-                        SelectedValue = true;
+                        SelectableValueViewModels[entity.BitIndex - 1].SetValue(true);
                 }
+
+          
+            })))).ToArray();
+            foreach (var task in tasks)
+            {
+                task.Start();
             }
+           await Task.WhenAll(tasks);
+           
+            //Parallel.ForEach(gooseRowFtpEntities, (gooseRowFtpEntitie) => {
+            //    parent.First(el => el.NumberOfFcdaInDataSet == gooseRowFtpEntitie.NumberOfFcdaInDataSetOfGoose - 1).
+            //        SelectableValueViewModels[gooseRowFtpEntitie.BitIndex - 1].SelectedValue = true;
+            //    if (gooseRowFtpEntitie is IGooseRowQualityFtpEntity validity && validity.IsValiditySelected)
+            //    {
+            //        parent.First(el => el.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.ValidityKey).
+            //            SelectableValueViewModels[gooseRowFtpEntitie.BitIndex - 1].
+            //            SelectedValue = true;
+            //    }
+            //});
+            //foreach (var gooseRowFtpEntitie in gooseRowFtpEntities)
+            //{
+
+
+
+            //    parent.First(el => el.NumberOfFcdaInDataSet == gooseRowFtpEntitie.NumberOfFcdaInDataSetOfGoose - 1).
+            //        SelectableValueViewModels[gooseRowFtpEntitie.BitIndex - 1].SelectedValue = true;
+            //    if (gooseRowFtpEntitie is IGooseRowQualityFtpEntity validity && validity.IsValiditySelected)
+            //    {
+            //        parent.First(el => el.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.ValidityKey).
+            //            SelectableValueViewModels[gooseRowFtpEntitie.BitIndex - 1].
+            //            SelectedValue = true;
+            //    }
+
+            //}
         }
 
        

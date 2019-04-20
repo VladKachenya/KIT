@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
@@ -174,6 +175,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                 navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(
                     UiEntityIdentifier.Key).ItemId.ToString();
             await UpdateGooseMatrix(false);
+
             base.OnNavigatedTo(navigationContext);
 
         }
@@ -193,9 +195,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
                 _isInitialized = false;
                 GooseControlBlockViewModels.Clear();
-                var blocks = await Task.Run(
-                    () => _gooseControlBlockViewModelFactory.BuildGooseControlBlockViewModels(
-                        _biscProject.MainSclModel.Value, _device));
+                var blocks = await _gooseControlBlockViewModelFactory.BuildGooseControlBlockViewModels(_biscProject.MainSclModel.Value, _device);
                 GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>(blocks.Item);
                 InitDictionary();
                 _isInitialized = true;
@@ -215,8 +215,29 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             finally
             {
                 BlockViewModelBehavior.Unlock();
+                //var grouped=new List<GooseRowViewModelGrouped>();
 
+                //foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
+                //{
+                //    foreach (var gooseRowViewModel in gooseControlBlockViewModel.GooseRowViewModels)
+                //    {
+                //        grouped.Add(new GooseRowViewModelGrouped() { GooseRowViewModel = gooseRowViewModel ,GroupName = gooseControlBlockViewModel.AppId});
+                //    }
+
+
+
+                //}
+
+
+                //GroupedGoosesViewModels=new ListCollectionView(grouped);
+                //GroupedGoosesViewModels.GroupDescriptions.Add(new PropertyGroupDescription(nameof(GooseRowViewModelGrouped.GroupName)));
             }
+        }
+
+        public ListCollectionView GroupedGoosesViewModels
+        {
+            get => _groupedGoosesViewModels;
+            set => SetProperty(ref _groupedGoosesViewModels , value);
         }
 
         private async Task SaveGooseMatrix()
@@ -237,6 +258,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         }
 
         private bool _isInitialized = false;
+        private ListCollectionView _groupedGoosesViewModels;
 
         private void SelectableBoxSelected(SelectableBoxEventArgs obj)
         {

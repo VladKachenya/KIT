@@ -6,6 +6,11 @@ using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
 {
+    public class GooseRowViewModelGrouped
+    {
+        public string GroupName { get; set; }
+        public IGooseRowViewModel GooseRowViewModel { get; set; }
+    }
     public class GooseControlBlockViewModel : ViewModelBase
     {
         //private readonly IEventAggregator _eventAggregator;
