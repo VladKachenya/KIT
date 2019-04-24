@@ -322,8 +322,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 return;
             }
 
-
-
             switch (dropInfo.Data)
             {
                 case TreeItemViewModelBase sourceItem:
@@ -342,7 +340,10 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                             return;
                         }
                     }
-
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+                    dropInfo.Effects = System.Windows.DragDropEffects.Move;
+                    return;
+                case IFcdaViewModel fcdaViewModel:
                     dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
                     dropInfo.Effects = System.Windows.DragDropEffects.Move;
                     return;
@@ -352,49 +353,55 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public void Drop(IDropInfo dropInfo)
         {
-            TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;
-            var fc = GetSellectedFc(sourceItem);
-            //IFcda modelFcda = null;
-            var fcdas = new List<IFcda>();
-            //if ((sourceItem.Model is IDoi) && sourceItem.TypeName == "Fc")
-            //{
-            //    fcdas.Add(_fcdaFactory.GetStructFcda(sourceItem.Model as IDoi, sourceItem.Header));
-            //}
-            if (sourceItem.Model is IDai daiModel)
-            {
-                fcdas.Add(_fcdaFactory.GetFcda(daiModel));
-            }
-            else if (sourceItem.Model is IModelElement modelElement)
-            {
-                if (fc == null)
-                {
-                    fcdas.AddRange(_fcdaFactory.GetFcdasFromModelElement(sourceItem.Model));
-                }
-                else
-                {
-                    fcdas.Add(_fcdaFactory.GetStructFcda(modelElement, fc));
-                }
-                //modelFcda = _fcdaFactory.GetStructFcda(sourceItem.Model);
-            }
-            else
-            {
-                _loggingService.LogMessage($"Невозможно добавить {sourceItem.Model.ToString()}", SeverityEnum.Critical);
-            }
-
             int index = dropInfo.InsertIndex;
-            foreach (var modelFcda in fcdas)
+            switch (dropInfo.Data)
             {
-                try
-                {
-                    AddFcda(modelFcda, index, sourceItem.Model);
-                }
-                catch (Exception e)
-                {
-                    _loggingService.LogMessage(e.Message, SeverityEnum.Critical);
-                    continue;
-                }
-                index++;
+                case TreeItemViewModelBase sourceItem:
+                    var fc = GetSellectedFc(sourceItem);
+
+                    var fcdas = new List<IFcda>();
+
+                    if (sourceItem.Model is IDai daiModel)
+                    {
+                        fcdas.Add(_fcdaFactory.GetFcda(daiModel));
+                    }
+                    else if (sourceItem.Model is IModelElement modelElement)
+                    {
+                        if (fc == null)
+                        {
+                            fcdas.AddRange(_fcdaFactory.GetFcdasFromModelElement(sourceItem.Model));
+                        }
+                        else
+                        {
+                            fcdas.Add(_fcdaFactory.GetStructFcda(modelElement, fc));
+                        }
+                    }
+                    else
+                    {
+                        _loggingService.LogMessage($"Невозможно добавить {sourceItem.Model.ToString()}", SeverityEnum.Critical);
+                    }
+
+                    foreach (var modelFcda in fcdas)
+                    {
+                        try
+                        {
+                            AddFcda(modelFcda, index, sourceItem.Model);
+                        }
+                        catch (Exception e)
+                        {
+                            _loggingService.LogMessage(e.Message, SeverityEnum.Critical);
+                            continue;
+                        }
+                        index++;
+                    }
+                    return;
+                case IFcdaViewModel fcdaViewModel:
+                    AddFcdaViewModel(index, fcdaViewModel);
+                    return;
+                default: return;
             }
+            //TreeItemViewModelBase sourceItem = dropInfo.Data as TreeItemViewModelBase;
+
         }
 
         private void AddFcda(IFcda fcda, int insertIdex, IModelElement modelElement)
@@ -413,6 +420,21 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
             FcdaViewModels.Insert(insertIdex, newFcdaViewModel);
             _loggingService.LogUserAction($"Добавлен FCDA {fcdaName} через DragDrop");
+            Weigh();
+        }
+
+        private void AddFcdaViewModel(int insertIdex, IFcdaViewModel fcdaViewModel)
+        {
+            var fcdaName = $"{fcdaViewModel.FullName}[{fcdaViewModel.SellectedFc.Fc}]";
+            if (FcdaViewModels.Any(el => el.Equals(fcdaViewModel)))
+            {
+                var elementIndex = FcdaViewModels.IndexOf(fcdaViewModel);
+                FcdaViewModels.Remove(fcdaViewModel);
+                if (insertIdex > elementIndex) insertIdex--;
+                FcdaViewModels.Insert(insertIdex, fcdaViewModel);
+            }
+            
+            _loggingService.LogUserAction($"FCDA {fcdaName} перенесён через DragDrop");
             Weigh();
         }
 

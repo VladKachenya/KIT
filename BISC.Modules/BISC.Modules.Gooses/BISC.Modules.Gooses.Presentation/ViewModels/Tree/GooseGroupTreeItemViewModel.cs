@@ -4,6 +4,7 @@ using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Presentation.BaseItems.ViewModels;
+using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
@@ -11,7 +12,7 @@ using BISC.Presentation.Infrastructure.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using BISC.Presentation.Infrastructure.Commands;
+using BISC.Modules.Device.Infrastructure.Keys;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
 {
@@ -94,8 +95,10 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
-
-            if (_device.Type == "MR5")
+            if (!(_device.Type == DeviceKeys.DeviceTypes.MR761Type ||
+                  _device.Type == DeviceKeys.DeviceTypes.MR762Type ||
+                  _device.Type == DeviceKeys.DeviceTypes.MR763Type ||
+                  _device.Type == DeviceKeys.DeviceTypes.MR771Type))
             {
                 _isNavigateToMatrixCommandEneble = false;
                 (NavigateToMatrixCommand as IPresentationCommand)?.RaiseCanExecute();

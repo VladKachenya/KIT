@@ -136,11 +136,12 @@ namespace BISC.Modules.Device.Presentation.Services
 
             existingDevice.Ip =
                 _sclCommunicationModelService.GetIpOfDevice(existingDevice.Name, _biscProject.MainSclModel.Value);
-            var deviceConnectResult = await _deviceConnectionService.ConnectDevice(existingDevice.Ip, 4);
+            var deviceConnectResult = await _deviceConnectionService.ConnectDevice(existingDevice.Ip, 1);
             if (!deviceConnectResult.IsSucceed)
             {
                 _loggingService.LogMessage($"IED Устройство по адресу {existingDevice.Ip} не обнаружено",
                     SeverityEnum.Warning);
+                await CancellationLoading(treeItemId, existingDevice);
             }
 
             var device = deviceConnectResult.Item;

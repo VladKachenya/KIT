@@ -49,8 +49,14 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
 
         public List<string> AvailableDatasets
         {
-            get => _availableDatasets;
-            set { SetProperty(ref _availableDatasets, value); }
+            get
+            {
+                return _availableDatasets;
+            }
+            set
+            {
+                SetProperty(ref _availableDatasets, value);
+            }
         }
 
         public bool FixedOffs

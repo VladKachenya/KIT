@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Factorys;
+using BISC.Modules.Gooses.Presentation.Services.SavingServices;
 
 namespace BISC.Modules.Gooses.Presentation.Services
 {
@@ -19,10 +20,11 @@ namespace BISC.Modules.Gooses.Presentation.Services
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly IFtpGooseModelService _ftpGooseModelService;
         private readonly IGoCbFtpEntityFactory _cbFtpEntityFactory;
+        private readonly GooseSubscriptionsSavingService _gooseSubscriptionsSavingService;
 
         public GooseSubscriptionConflictResolver(IGoosesModelService goosesModelService, IGooseMatrixFtpService gooseMatrixFtpService, 
             IDeviceModelService deviceModelService, IConnectionPoolService connectionPoolService, IFtpGooseModelService ftpGooseModelService,
-            IGoCbFtpEntityFactory cbFtpEntityFactory)
+            IGoCbFtpEntityFactory cbFtpEntityFactory, GooseSubscriptionsSavingService gooseSubscriptionsSavingService)
         {
             _goosesModelService = goosesModelService;
             _gooseMatrixFtpService = gooseMatrixFtpService;
@@ -30,6 +32,7 @@ namespace BISC.Modules.Gooses.Presentation.Services
             _connectionPoolService = connectionPoolService;
             _ftpGooseModelService = ftpGooseModelService;
             _cbFtpEntityFactory = cbFtpEntityFactory;
+            _gooseSubscriptionsSavingService = gooseSubscriptionsSavingService;
         }
         #region implementation of IElementConflictResolver
 
@@ -127,9 +130,11 @@ namespace BISC.Modules.Gooses.Presentation.Services
             {
                 if (_connectionPoolService.GetConnection(deviceInDevice.Ip).IsConnected)
                 {
-                    await _ftpGooseModelService.WriteGooseDeviceInputFromDevice(deviceInDevice.Ip,
-                        gooseInputModelInfosInProgect);
-                    await _ftpGooseModelService.WriteGooseMatrixFtpToDevice(deviceInDevice, gooseMatrixInProject);
+
+                    //await _ftpGooseModelService.WriteGooseDeviceInputFromDevice(deviceInDevice.Ip,
+                    //    gooseInputModelInfosInProgect);
+                    //await _ftpGooseModelService.WriteGooseMatrixFtpToDevice(deviceInDevice, gooseMatrixInProject);
+                    await _gooseSubscriptionsSavingService.Save(deviceInDevice);
                     return new ResolvingResult(){IsRestartNeeded = true};
                 }
                 return new ResolvingResult("Устройство не отвечает");

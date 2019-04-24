@@ -28,11 +28,11 @@ namespace BISC.Modules.Device.Presentation.Services
 
         public bool ChengeDeviceIp(IDevice device, string newIp, UiEntityIdentifier uiEntityIdToUpdate)
         {
+            _deviceIdentificationService.ChengeDeviceIp(device, newIp);
+
             _tabManagementService.CloseTabWithChildren(uiEntityIdToUpdate.ItemId.ToString());
             _treeManagementService.DeleteTreeItem(uiEntityIdToUpdate);
 
-
-            _deviceIdentificationService.ChengeDeviceIp(device, newIp);
             _deviceAddingService.AddDeviceToTree(device);
 
             return true;

@@ -38,7 +38,7 @@ namespace BISC.Modules.Reports.Presentation.Services
             var reportControlsToSave=new List<IReportControl>();
             device.GetAllChildrenOfType(ref reportControlsToSave);
 
-            var res = await _ftpReportModelService.WriteReportsToDevice(device.Ip, reportControlsToSave,
+            var res = await _ftpReportModelService.WriteReportsToDevice(device.Ip, reportControlsToSave.Where(r => r.IsDynamic).ToList(),
                 _infoModelService.GetZeroLDevicesOfDevice(device));
             if (res.IsSucceed)
             {

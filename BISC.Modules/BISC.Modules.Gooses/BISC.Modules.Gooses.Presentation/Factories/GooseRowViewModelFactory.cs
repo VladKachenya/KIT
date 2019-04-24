@@ -38,8 +38,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 var rows =
                     gooseMatrix.GooseRowFtpEntities.Where(entity => entity.IndexOfGoose == relatedGoCb.IndexOfGoose).ToList();
                 rows.AddRange(gooseMatrix.GooseRowQualityFtpEntities.Where(entit => entit.IndexOfGoose == relatedGoCb.IndexOfGoose));
-               await FillGooseRowViewModel(res, rows);
-
+                await FillGooseRowViewModel(res, rows);
 
             }
 
@@ -48,14 +47,6 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
         private async Task FillGooseRowViewModel(List<IGooseRowViewModel> parent, List<IGooseRowFtpEntity> gooseRowFtpEntities)
         {
-
-        
-
-
-
-
-
-
 
             Task[] tasks = gooseRowFtpEntities.Select((entity => new Task((() =>
             {

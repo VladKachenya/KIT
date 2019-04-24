@@ -1,30 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using BISC.Infrastructure.Global.Constants;
-using BISC.Infrastructure.Global.Logging;
+﻿using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
-using BISC.Modules.Connection.Infrastructure.Services;
+using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Presentation.Events;
 using BISC.Modules.Connection.Presentation.Interfaces.Factorys;
 using BISC.Modules.Connection.Presentation.Interfaces.ViewModel;
-using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Loading;
-using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Device.Presentation.Interfaces;
-using BISC.Presentation.BaseItems.Commands;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using BISC.Infrastructure.Global.Common;
+using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.Device.Presentation.ViewModels
 {
@@ -37,6 +31,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IBiscProject _biscProject;
         private readonly IDeviceLoadingService _deviceLoadingService;
         private readonly ILoggingService _loggingService;
+        private readonly ISclCommunicationModelService _communicationModelService;
+        private readonly IDeviceModelService _deviceModelService;
         private ILastIpAddressesViewModel _lastConnectedIps;
         private IIpAddressViewModel _selectedIpAddressViewModel;
         private bool _isDeviceConnectionFailed;
@@ -48,7 +44,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             IGlobalEventsService globalEventsService,
             ITreeManagementService treeManagementService,
             IBiscProject biscProject, IDeviceLoadingService deviceLoadingService,
-            ILastIpAddressesViewModelFactory lastConnectedIpsFactoty, ILoggingService loggingService)
+            ILastIpAddressesViewModelFactory lastConnectedIpsFactoty, ILoggingService loggingService,
+            ISclCommunicationModelService communicationModelService, IDeviceModelService deviceModelService)
         {
             _commandFactory = commandFactory;
             _deviceConnectionService = deviceConnectionService;
@@ -57,6 +54,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _biscProject = biscProject;
             _deviceLoadingService = deviceLoadingService;
             _loggingService = loggingService;
+            _communicationModelService = communicationModelService;
+            _deviceModelService = deviceModelService;
             ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDeviceExecute, () => !_isConnectionProcess);
             lastConnectedIpsFactoty.BuildLastConnectedIpAdresses(out _selectedIpAddressViewModel, out _lastConnectedIps);
             _failedSatatusHidingTimer = new Timer(FailStatusHide, null, Timeout.Infinite, Timeout.Infinite);
@@ -72,11 +71,25 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             {
                 (ConnectDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
                 await SelectedIpAddressViewModel.PingGlobalEventAsync();
-                if (SelectedIpAddressViewModel.IsPingSuccess == false) return;
-                var connectResult = await _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
-                if (connectResult.IsSucceed)
+                if (SelectedIpAddressViewModel.IsPingSuccess == false)
                 {
+                    return;
+                }
 
+                if (_deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel.Value).Any(d =>
+                    _communicationModelService.GetIpOfDevice(d.Name, _biscProject.MainSclModel.Value) ==
+                    SelectedIpAddressViewModel.FullIp))
+                {
+                    _loggingService.LogMessage($"Устройство с IP {SelectedIpAddressViewModel.FullIp} уже имеется в проектеп"
+                        , SeverityEnum.Warning);
+                    return;
+                }
+
+                var connectResult = await _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
+
+
+                if ( connectResult.IsSucceed)
+                {
                     var res = await _deviceLoadingService.LoadElements(connectResult.Item);
                     if (!res.IsSucceed)
                     {

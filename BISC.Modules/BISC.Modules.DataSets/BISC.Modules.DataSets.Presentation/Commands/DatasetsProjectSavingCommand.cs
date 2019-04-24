@@ -151,7 +151,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
             }
 
-            RefreshViewModel.Invoke();
+            RefreshViewModel?.Invoke();
             //_fineshSaving?.Invoke(await IsSavingByFtpNeeded());
 
             return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedOk);

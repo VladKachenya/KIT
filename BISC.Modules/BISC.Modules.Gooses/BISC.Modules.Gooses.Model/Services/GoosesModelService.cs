@@ -300,6 +300,13 @@ namespace BISC.Modules.Gooses.Model.Services
             return gooseInputs;
         }
 
+        public void ChengeGooseDeviceInputOwner(IBiscProject biscProject, IDevice device, string newDeviceOwnerName)
+        {
+            var gooseInputInfo = GetGooseDeviceInputOfProject(biscProject, device);
+            gooseInputInfo.DeviceOwnerName = newDeviceOwnerName;
+        }
+
+
 
 
     }

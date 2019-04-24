@@ -2,6 +2,9 @@
 using BISC.Infrastructure.Global.Common;
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
+using BISC.Model.Infrastructure.Common;
+using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Saving;
 using BISC.Modules.Gooses.Infrastructure.Services;
@@ -29,7 +32,10 @@ namespace BISC.Modules.Gooses.Presentation.Services.SavingServices
         public int Priority => 20;
         public async Task<OperationResult> Save(IDevice device)
         {
-            if (device.Type == "MR5")
+            if (!(device.Type == DeviceKeys.DeviceTypes.MR761Type ||
+                  device.Type == DeviceKeys.DeviceTypes.MR762Type ||
+                  device.Type == DeviceKeys.DeviceTypes.MR763Type ||
+                  device.Type == DeviceKeys.DeviceTypes.MR771Type))
             {
                 return OperationResult.SucceedResult;
             }

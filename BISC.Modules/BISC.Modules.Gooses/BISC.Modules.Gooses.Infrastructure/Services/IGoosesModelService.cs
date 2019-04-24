@@ -24,6 +24,8 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
 
         void DeleteGooseCbAndGseByName(string name, IDevice device);
 
+        void ChengeGooseDeviceInputOwner(IBiscProject biscProject, IDevice device, string newDeviceOwnerName);
+
         void DeleteAllGoosesFromDevice(IDevice device);
 
     }

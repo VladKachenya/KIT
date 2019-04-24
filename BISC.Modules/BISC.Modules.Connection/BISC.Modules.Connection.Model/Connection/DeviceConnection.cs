@@ -49,7 +49,10 @@ namespace BISC.Modules.Connection.Model.Connection
             for (int i = 0; i < tryNumber; i++)
             {
                 IsConnected = await MmsConnection.TryOpenConnection(Ip);
+                //IsConnected = await
                 if (IsConnected) break;
+
+
                 await Task.Delay(400);
 
             }
@@ -61,7 +64,7 @@ namespace BISC.Modules.Connection.Model.Connection
         {
             while (IsConnected)
             {
-                await CheckConnection(5);
+                await CheckConnection(3);
                 await Task.Delay(2000);
             }
         }
@@ -87,7 +90,7 @@ namespace BISC.Modules.Connection.Model.Connection
                     _globalEventsService.SendMessage(new LossConnectionEvent(Ip));
                     return;
                 }
-                await Task.Delay(2000);
+                await Task.Delay(500);
             }
         }
 

@@ -1,7 +1,6 @@
 ﻿using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
-using BISC.Modules.Connection.Infrastructure.Events;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
@@ -25,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -275,8 +273,12 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             get => _selectedDataSet;
             set
             {
-                if(_selectedDataSet != null) _selectedDataSet.IsSelect = false;
-                SetProperty(ref _selectedDataSet, value, true); 
+                if (_selectedDataSet != null)
+                {
+                    _selectedDataSet.IsSelect = false;
+                }
+
+                SetProperty(ref _selectedDataSet, value, true);
                 if (_selectedDataSet != null)
                 {
                     _selectedDataSet.IsSelect = true;
@@ -325,7 +327,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public override void OnActivate()
         {
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand,
-                $"Сохранить DataSets устройства {_device.Name}",false);
+                $"Сохранить DataSets устройства {_device.Name}", false);
             _userInterfaceComposingService.AddGlobalCommand(UpdateDataSetsCommand, $"Обновить DataSets {_device.Name}",
                 IconsKeys.UpdateIconKey, false, true);
             _userInterfaceComposingService.AddGlobalCommand(AddNewDataSetCommand, $"Добавить DataSet {_device.Name}",
@@ -334,7 +336,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             base.OnActivate();
         }
 
-       
+
 
         public override void OnDeactivate()
         {

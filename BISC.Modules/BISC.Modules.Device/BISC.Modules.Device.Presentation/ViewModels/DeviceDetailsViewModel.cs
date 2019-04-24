@@ -1,5 +1,4 @@
-﻿using System.Windows.Input;
-using BISC.Infrastructure.Global.Services;
+﻿using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Infrastructure.Events;
@@ -15,6 +14,10 @@ using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
+using System;
+using System.Collections.Generic;
+using System.Windows.Input;
+using BISC.Presentation.Infrastructure.Commands;
 
 namespace BISC.Modules.Device.Presentation.ViewModels
 {
@@ -28,6 +31,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IGlobalEventsService _globalEventsService;
         private readonly IDeviceIdentificationService _deviceIdentificationService;
         private readonly IDeviceIpChangingService _deviceIpChangingService;
+        private readonly IUserInteractionService _userInteractionService;
 
         private string _deviceName;
         private IDevice _device;
@@ -39,7 +43,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             IConnectionPoolService connectionPoolService, IBiscProject biscProject,
             IIpAddressViewModelFactory ipAddressViewModelFactory, IGlobalEventsService globalEventsService,
             ICommandFactory commandFactory, IDeviceIdentificationService deviceIdentificationService,
-            IDeviceIpChangingService deviceIpChangingService)
+            IDeviceIpChangingService deviceIpChangingService, IUserInteractionService userInteractionService)
         {
             _sclCommunicationModel = sclCommunicationModel;
             _connectionPoolService = connectionPoolService;
@@ -48,7 +52,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _globalEventsService = globalEventsService;
             _deviceIdentificationService = deviceIdentificationService;
             _deviceIpChangingService = deviceIpChangingService;
-            ChengeIpCommand = commandFactory.CreatePresentationCommand(OnChengeIpCommand);
+            _userInteractionService = userInteractionService;
+            ChengeIpCommand = commandFactory.CreatePresentationCommand(OnChengeIpCommand, () => !IsIpUnchangeable);
         }
 
         #region public methods
@@ -62,7 +67,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         public bool IsIpUnchangeable
         {
             get => _isIpUnchangeable;
-            set => SetProperty(ref _isIpUnchangeable, value, true);
+            set
+            {
+                SetProperty(ref _isIpUnchangeable, value, true);
+                (ChengeIpCommand as IPresentationCommand).RaiseCanExecute();
+            }
         }
 
         public IIpAddressViewModel IpAddressViewModel { get; protected set; }
@@ -79,18 +88,13 @@ namespace BISC.Modules.Device.Presentation.ViewModels
                 .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key);
             DeviceName = _device.Name;
             IsBemnManufacturer = (_device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer);
-            string ip;
-            if (_device.Ip != null)
-            {
-                ip = _device.Ip;
-            }
-            else
-            {
-                ip = _sclCommunicationModel.GetIpOfDevice(_device.Name, _biscProject.MainSclModel.Value);
-            }
-            IsIpUnchangeable = _connectionPoolService.GetConnection(ip).IsConnected;
-            IpAddressViewModel = _ipAddressViewModelFactory.GetPingItemViewModel(ip,
-               !IsBemnManufacturer || _connectionPoolService.GetConnection(ip).IsConnected);
+            string ip = _sclCommunicationModel.GetIpOfDevice(_device.Name, _biscProject.MainSclModel.Value);
+
+            IsIpUnchangeable = _connectionPoolService.GetConnection(ip).IsConnected || !IsBemnManufacturer;
+            IpAddressViewModel = string.IsNullOrWhiteSpace(ip) ? _ipAddressViewModelFactory.GetPingItemViewModel(isReadonly: IsIpUnchangeable):
+                _ipAddressViewModelFactory.GetPingItemViewModel(ip, IsIpUnchangeable);
+
+
             _globalEventsService.Subscribe<LossConnectionEvent>(OnLostConnectionEvent);
             base.OnNavigatedTo(navigationContext);
         }
@@ -109,13 +113,27 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             if (!IsBemnManufacturer) { return; }
             if (lossConnectionEvent.Ip == _device.Ip)
             {
-                (IpAddressViewModel as ComplexViewModelBase)?.SetIsEditable(!_connectionPoolService.GetConnection(_device.Ip).IsConnected);
+                IsIpUnchangeable = _connectionPoolService.GetConnection(_device.Ip).IsConnected || !IsBemnManufacturer;
+
+                (IpAddressViewModel as ComplexViewModelBase)?.SetIsEditable(!_connectionPoolService.GetConnection(_device.Ip).IsConnected && IsBemnManufacturer);
             }
         }
 
-        private void OnChengeIpCommand()
+        private async void OnChengeIpCommand()
         {
-            _deviceIpChangingService.ChengeDeviceIp(_device, IpAddressViewModel.FullIp, _uiEntityIdentifier.ParenUiEntityIdentifier);
+            try
+            {
+                _deviceIpChangingService.ChengeDeviceIp(_device, IpAddressViewModel.FullIp,
+                    _uiEntityIdentifier.ParenUiEntityIdentifier);
+            }
+            catch (Exception e)
+            {
+                if (e is ArgumentException)
+                {
+                    await _userInteractionService.ShowOptionToUser("Ошибка смены IP устройства", e.Message,
+                        new List<string>() { "Ок" });
+                }
+            }
         }
 
 

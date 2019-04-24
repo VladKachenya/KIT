@@ -13,5 +13,6 @@ namespace BISC.Modules.Device.Infrastructure.Model
         string Manufacturer { get; set; }
         string Type { get; set; }
         string Revision { get; set; } 
+        //bool IsFromSid { get; set; }
     }
 }

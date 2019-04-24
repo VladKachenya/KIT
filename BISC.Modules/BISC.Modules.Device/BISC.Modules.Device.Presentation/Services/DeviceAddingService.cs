@@ -12,6 +12,7 @@ using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.UiFromModel;
 using System.Collections.Generic;
 using System.Linq;
+using BISC.Model.Infrastructure.Services.Communication;
 
 namespace BISC.Modules.Device.Presentation.Services
 {
@@ -23,11 +24,12 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly IBiscProject _biscProject;
         private readonly ITreeManagementService _treeManagementService;
         private readonly IUiFromModelElementRegistryService _uiFromModelElementRegistryService;
+        private readonly ISclCommunicationModelService _communicationModelService;
         private readonly IUserInteractionService _userInteractionService;
 
         public DeviceAddingService(INavigationService navigationService, IDeviceModelService deviceModelService,
-            ILoggingService loggingService, IBiscProject biscProject, ITreeManagementService
-                treeManagementService, IUiFromModelElementRegistryService uiFromModelElementRegistryService)
+            ILoggingService loggingService, IBiscProject biscProject, ITreeManagementService treeManagementService, 
+            IUiFromModelElementRegistryService uiFromModelElementRegistryService, ISclCommunicationModelService communicationModelService)
         {
             _navigationService = navigationService;
             _deviceModelService = deviceModelService;
@@ -35,6 +37,7 @@ namespace BISC.Modules.Device.Presentation.Services
             _biscProject = biscProject;
             _treeManagementService = treeManagementService;
             _uiFromModelElementRegistryService = uiFromModelElementRegistryService;
+            _communicationModelService = communicationModelService;
         }
 
         public async void OpenDeviceAddingView()
@@ -46,14 +49,24 @@ namespace BISC.Modules.Device.Presentation.Services
         {
             foreach (var device in devicesToAdd)
             {
-                var deviceNameInProject = _deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel.Value)
-                    .Select(dev => dev.Name);
-                if (deviceNameInProject.Any(devN => devN == device.Name))
+                var deviceNameInProject = _deviceModelService.GetDevicesFromModel(_biscProject.MainSclModel.Value);
+                if (deviceNameInProject.Select(dev => dev.Name).Any(devN => devN == device.Name))
                 {
                     var mes = $"Устройство с именем {device.Name} уже существует в проекте";
                     _loggingService.LogMessage(mes, SeverityEnum.Info);
                     continue;
                 }
+
+                if (deviceNameInProject.Any(d =>
+                    _communicationModelService.GetIpOfDevice(d.Name, _biscProject.MainSclModel.Value) ==
+                    _communicationModelService.GetIpOfDevice(device.Name, modelFrom)))
+                {
+                    var mes = $"Устройство с IP {_communicationModelService.GetIpOfDevice(device.Name, modelFrom)} уже существует в проекте";
+                    _loggingService.LogMessage(mes, SeverityEnum.Info);
+                    continue;
+                }
+
+
                 var res = _deviceModelService.AddDeviceInModel(_biscProject.MainSclModel.Value, device, modelFrom);
                 if (!res.IsSucceed)
                 {

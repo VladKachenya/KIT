@@ -8,6 +8,7 @@ using BISC.Model.Global.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Infrastructure.Services;
+using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 
@@ -41,9 +42,9 @@ namespace BISC.Modules.Device.Model.Services
             }
             
             IDevice device = new Model.Device();
-            device.Manufacturer = identValues.Item[0];
-            device.Type = identValues.Item[1];
-            device.Revision = identValues.Item[2];
+            device.Manufacturer = identValues.Item.Count >= 1 ? identValues.Item[0] : DeviceKeys.DeviceManufacturer.UnknowManufacturer;
+            device.Type = identValues.Item.Count >= 2 ? identValues.Item[1] : DeviceKeys.DeviceTypes.UnknowType;
+            device.Revision = identValues.Item.Count >= 3 ? identValues.Item[2] : DeviceKeys.DeviceRevisions.UnknowRevision;
 
             device.Name = "New Device";
             device.Ip = ip;

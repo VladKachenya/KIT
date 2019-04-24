@@ -1,4 +1,5 @@
-﻿using BISC.Infrastructure.Global.Services;
+﻿using System;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
@@ -82,8 +83,10 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
                 gooseControlViewModel.GoId = gooseControl.AppId;
                 gooseControlViewModel.Name = gooseControl.Name;
-                gooseControlViewModel.SelectedDataset = gooseControl.DataSet;
                 gooseControlViewModel.AvailableDatasets = datasets.Select((set => set.Name)).ToList();
+                gooseControlViewModel.AvailableDatasets.Insert(0, String.Empty);
+                gooseControlViewModel.SelectedDataset = gooseControlViewModel.AvailableDatasets.Any(e => e == gooseControl.DataSet)?
+                gooseControl.DataSet : gooseControlViewModel.AvailableDatasets.FirstOrDefault();
                 //gooseControlViewModel.IsDynamic = gooseControl.IsDynamic;
                 gooseControlViewModel.ConfRev = gooseControl.ConfRev;
                 gooseControlViewModel.FixedOffs = gooseControl.FixedOffs;
@@ -138,11 +141,10 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             //    lDevice = scl.IED[0].AccessPoint[0].Server.LDevice.First();
             //}
             var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
-            gooseControlViewModel.AvailableDatasets = datasets.Select((set => set.Name)).ToList();
-            gooseControlViewModel.SelectedDataset = gooseControlViewModel.AvailableDatasets.FirstOrDefault();
-
-
-
+            var dsList = datasets.Select((set => set.Name)).ToList();
+            gooseControlViewModel.SelectedDataset = dsList.FirstOrDefault();
+            dsList.Add(String.Empty);
+            gooseControlViewModel.AvailableDatasets = dsList;
             return gooseControlViewModel;
         }
     }
