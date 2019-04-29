@@ -17,7 +17,7 @@ namespace BISC.Modules.DataSets.Model.Serializers
         {
             //RegisterModelElementCollection(typeof(IFcda));
             RegisterProperty(nameof(IDataSet.Name),"name");
-            RegisterProperty(nameof(IDataSet.IsDynamic), "isDynamic",SerializingType.Extended);
+            //RegisterProperty(nameof(IDataSet.IsDynamic), "isDynamic",SerializingType.Extended);
         }
 
         #region Overrides of DefaultModelElementSerializer<IDataSet>

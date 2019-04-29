@@ -20,6 +20,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Reports.Infrastructure.Keys;
+using BISC.Presentation.BaseItems.ViewModels;
 
 namespace BISC.Modules.Reports.Presentation.Commands
 {
@@ -32,6 +33,7 @@ namespace BISC.Modules.Reports.Presentation.Commands
         private readonly IReportsModelService _reportsModelService;
         private readonly IDatasetModelService _datasetModelService;
         private readonly IDeviceWarningsService _deviceWarningsService;
+        private readonly IReportControlNameService _reportControlNameService;
         private readonly IReportControlsFactory _IReportControlsFactory;
 
         private ObservableCollection<IReportControlViewModel> _reportsToSave;
@@ -45,7 +47,8 @@ namespace BISC.Modules.Reports.Presentation.Commands
         public ReportsSavingCommand(IInfoModelService infoModelService, ILoggingService loggingService,
             IConnectionPoolService connectionPoolService,
             IProjectService projectService, IReportsModelService reportModelService,
-            IDatasetModelService datasetModelService,IDeviceWarningsService deviceWarningsService)
+            IDatasetModelService datasetModelService,IDeviceWarningsService deviceWarningsService, 
+            IReportControlNameService reportControlNameService)
         {
             _infoModelService = infoModelService;
             _loggingService = loggingService;
@@ -54,6 +57,7 @@ namespace BISC.Modules.Reports.Presentation.Commands
             _reportsModelService = reportModelService;
             _datasetModelService = datasetModelService;
             _deviceWarningsService = deviceWarningsService;
+            _reportControlNameService = reportControlNameService;
         }
 
         internal void Initialize(ref ObservableCollection<IReportControlViewModel> reportsToSave, IDevice device)
@@ -139,7 +143,13 @@ namespace BISC.Modules.Reports.Presentation.Commands
                 var resSavingDynamicReports =
                     await SaveDynamicReports(_reportsToSave, _device, reportControlsInDevice);
                 //_projectService.SaveCurrentProject();
-                _deviceWarningsService.SetWarningOfDevice(_device.DeviceGuid, ReportsKeys.ReportsPresentationKeys.ReportsUnsavedWarningTag, "Reports не соответствуют устройству");
+                if (_connectionPoolService.GetConnection(_device.Ip).IsConnected)
+                {
+                    _deviceWarningsService.SetWarningOfDevice(_device.DeviceGuid,
+                        ReportsKeys.ReportsPresentationKeys.ReportsUnsavedWarningTag,
+                        "Reports не соответствуют устройству");
+                }
+
                 if (resSavingDynamicReports.IsSucceed)
                 {
                     _loggingService.LogMessage($"Reports устройства {_device.Name} успешно сохранены",
@@ -197,6 +207,45 @@ namespace BISC.Modules.Reports.Presentation.Commands
 
         public async Task<OperationResult> ValidateBeforeSave()
         {
+            var warnings = new List<string>();
+
+            var reportControlNames = new List<string>();
+            foreach (var name in _reportsToSave.Where(rc => rc.IsDynamic).Select(rc => rc.Name))
+            {
+                if (!reportControlNames.Contains(name))
+                {
+                    reportControlNames.Add(name);
+                }
+            }
+
+            foreach (var name in reportControlNames)
+            {
+                var reportControls = _reportsToSave.Where(el => el.IsDynamic && el.Name == name);
+                if (reportControls.Count() > 1)
+                {
+                    foreach (var reportViewModel in reportControls)
+                    {
+                        ((ViewModelBase)reportViewModel).IsWarning = true;
+                    }
+
+                    var mess = $"Имеется несколько ReportControl с именем {name}";
+                    _loggingService.LogMessage(mess, SeverityEnum.Warning);
+                    warnings.Add(mess);
+                }
+
+                if (!_reportControlNameService.GetIsDynamic(name))
+                {
+                    var reportControl = _reportsToSave.First(rc => rc.Name == name && rc.IsDynamic);
+                    ((ViewModelBase)reportControl).IsWarning = true;
+                    var mess = $"Имя {name} зарезервированное.";
+                    _loggingService.LogMessage(mess, SeverityEnum.Warning);
+                    warnings.Add(mess);
+                }
+            }
+            if (warnings.Any())
+            {
+                return new OperationResult(warnings);
+            }
             return OperationResult.SucceedResult;
         }
 

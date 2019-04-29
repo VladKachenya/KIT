@@ -51,6 +51,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private readonly IGlobalEventsService _globalEventsService;
         private bool _isUpdateReports = true;
         private bool _isSaveСhanges = true;
+        private IReportControlViewModel _selectedReport;
 
         #region Ctor
         public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService, ISaveCheckingService saveCheckingService,
@@ -206,6 +207,16 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
                 _reportsSavingCommand.Initialize(ref _reportControlViewModels, _device);
                 _reportsSavingCommand.RefreshViewModel =
                     async () => { await UpdateReports(); };
+            }
+        }
+
+        public IReportControlViewModel SelectedReport
+        {
+            get => _selectedReport;
+            set
+            {
+                SetProperty(ref _selectedReport, value, true);
+                if(SelectedReport != null) ((ViewModelBase) SelectedReport).IsWarning = false;
             }
         }
 

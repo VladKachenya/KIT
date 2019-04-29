@@ -39,7 +39,8 @@ namespace BISC.Modules.Reports.Model.Module
             modelElementsRegistryService.RegisterModelElement(new TrgOpsSerializer(), ReportsKeys.ReportsModelKeys.TrgOpsModelKey);
 
             _injectionContainer.RegisterType<IReportsModelService, ReportsModelService>();
-            _injectionContainer.RegisterType<IReportControlsFactory, ReportControlsFactory>(true);
+            _injectionContainer.RegisterType<IReportControlsFactory, ReportControlsFactory>();
+            _injectionContainer.RegisterType<IReportControlNameService, ReportControlNameService>();
             
             _injectionContainer.RegisterType<IFtpReportModelService, FtpReportModelService>();
             _injectionContainer.RegisterType<IDeviceElementLoadingService, ReportControlLoadingService>(Guid.NewGuid().ToString());

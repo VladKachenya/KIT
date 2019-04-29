@@ -164,7 +164,7 @@ namespace BISC.Modules.DataSets.Model.Services
             }
             catch (Exception e)
             {
-                throw new Exception($"Неудальсь найти DataSet {dataSetName} в устройстве {((IDevice)device).Name}");
+                throw new Exception($"Неудалось найти DataSet {dataSetName} в устройстве {((IDevice)device).Name}");
             }
             return res;
         }

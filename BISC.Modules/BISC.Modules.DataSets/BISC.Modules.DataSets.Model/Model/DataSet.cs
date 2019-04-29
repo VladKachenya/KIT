@@ -7,11 +7,14 @@ using BISC.Model.Global.Model;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
+using BISC.Modules.DataSets.Infrastructure.Services;
+using BISC.Modules.DataSets.Model.Services;
 
 namespace BISC.Modules.DataSets.Model.Model
 {
    public class DataSet:ModelElement,IDataSet
     {
+        private readonly IDataSetNameService _dataSetNameService = new DataSetNameService();
 
         public DataSet()
         {
@@ -21,7 +24,9 @@ namespace BISC.Modules.DataSets.Model.Model
 
         public ChildModelsList<IFcda> FcdaList => new ChildModelsList<IFcda>(this,DatasetKeys.DatasetModelKeys.FcdaModelKey);
         public string Name { get; set; }
-        public bool IsDynamic { get; set; }
+
+        public bool IsDynamic => _dataSetNameService.GetIsDynamic(Name);
+
         #endregion
 
         public override bool ModelElementCompareTo(IModelElement obj)

@@ -61,6 +61,7 @@
     <Compile Include="Presentation\ViewModels\ITriggerOptionsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IFtpReportModelService.cs" />
+    <Compile Include="Services\IReportControlNameService.cs" />
     <Compile Include="Services\IReportsModelService.cs" />
   </ItemGroup>
   <ItemGroup>

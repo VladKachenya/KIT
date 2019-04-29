@@ -10,24 +10,31 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="600">
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
         <converters:BoolToVisConverter x:Key="BoolToVisConv"></converters:BoolToVisConverter>
         <converters:InverseConverter x:Key="inverseConverter"></converters:InverseConverter>
     </UserControl.Resources>
     <GroupBox x:Name="Border" Margin="3, 0, 3, 0" Header="Детали отчёта"
-                    BorderBrush="{DynamicResource MaterialDesignDivider}">
+                    BorderBrush="{DynamicResource MaterialDesignDivider}" IsEnabled="{Binding IsDynamic}" Opacity="1">
         <StackPanel Orientation="Vertical" >
             <Grid >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
                 <Border ToolTip="{x:Static ToolTipConstants:StringConstants.ReportControl_Name}" Grid.Column="0">
                     <TextBox IsReadOnly="{Binding IsEditable,Converter={StaticResource inverseConverter}}" Margin="6" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" FontSize="18" 
                                      FontWeight="Bold" Foreground="Black" IsEnabled="{Binding IsDynamic}" 
-                                     TextAlignment="Center"/>
+                                     TextAlignment="Center" HorizontalAlignment="Stretch"/>
                 </Border>
+                <Label Visibility="{Binding IsWarning, Converter={StaticResource booleanToVisibilityConverter}}" Grid.Column="1" VerticalAlignment="Center">
+                    <Label.Content>
+                        <ContentControl ContentTemplate="{DynamicResource AlertIcon}" Foreground="DarkRed" Width="20" Height="20"/>
+                    </Label.Content>
+                </Label>
                 <Border ToolTip="{x:Static ToolTipConstants:StringConstants.ReportControl_rptId_Description}" VerticalAlignment="Center"
-                                HorizontalAlignment="Stretch" Grid.Column="1" >
+                                HorizontalAlignment="Stretch" Grid.Column="2" >
                     <TextBlock Margin="6" Text="{Binding ReportID}" FontSize="18" FontWeight="Bold" Foreground="Black" 
                                      IsEnabled="False" TextAlignment="Center"/>
                 </Border>

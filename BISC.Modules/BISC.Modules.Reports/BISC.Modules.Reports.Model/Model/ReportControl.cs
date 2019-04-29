@@ -7,11 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Modules.Reports.Infrastructure.Services;
+using BISC.Modules.Reports.Model.Services;
 
 namespace BISC.Modules.Reports.Model.Model
 {
     public class ReportControl : ModelElement, IReportControl
     {
+        private IReportControlNameService _reportControlNameService = new ReportControlNameService();
         public ReportControl()
         {
             ElementName = ReportsKeys.ReportsModelKeys.ReportControlModelKey;
@@ -23,7 +26,8 @@ namespace BISC.Modules.Reports.Model.Model
         public string DataSet { get; set; }
         public int IntgPd { get; set; }
         public int ConfRev { get; set; }
-        public bool IsDynamic { get; set; }
+
+        public bool IsDynamic => _reportControlNameService.GetIsDynamic(Name);
 
 
         public ChildModelProperty<ITrgOps> TrgOps => new ChildModelProperty<ITrgOps>(this, ReportsKeys.ReportsModelKeys.TrgOpsModelKey);
@@ -44,8 +48,8 @@ namespace BISC.Modules.Reports.Model.Model
             if (element.BufTime != BufTime) return false;
             if (element.DataSet != DataSet) return false;
             if (element.IntgPd != IntgPd) return false;
-          //  if (element.ConfRev != ConfRev) return false;
-            if (element.IsDynamic != IsDynamic) return false;
+            if (element.ConfRev != ConfRev) return false;
+            //if (element.IsDynamic != IsDynamic) return false;
             return true;
         }
 

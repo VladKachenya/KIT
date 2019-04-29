@@ -57,6 +57,7 @@
     <Compile Include="Serializers\TrgOpsSerializer.cs" />
     <Compile Include="Services\FtpReportModelService.cs" />
     <Compile Include="Services\ReportControlLoadingService.cs" />
+    <Compile Include="Services\ReportControlNameService.cs" />
     <Compile Include="Services\ReportsModelService.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -40,59 +40,62 @@
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel>
-        <Menu ItemContainerStyle="{StaticResource GroupMenuItem}" ItemsSource="{Binding GlobalCommandGroups}" HorizontalContentAlignment="Center">
-            <Menu.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Rows="1" HorizontalAlignment="Stretch" />
+            <Menu ItemContainerStyle="{StaticResource GroupMenuItem}" ItemsSource="{Binding GlobalCommandGroups}" HorizontalContentAlignment="Center">
+                <Menu.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="1" HorizontalAlignment="Stretch" />
 
-                    <!--<VirtualizingStackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VirtualizationMode ="Recycling"/>-->
-                </ItemsPanelTemplate>
-            </Menu.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type modularity:IGlobalCommandGroup}"  
+                        <!--<VirtualizingStackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VirtualizationMode ="Recycling"/>-->
+                    </ItemsPanelTemplate>
+                </Menu.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type modularity:IGlobalCommandGroup}"  
                                           ItemsSource="{Binding GlobalCommandsGroup}" ItemContainerStyle="{StaticResource MenuItemStyle}">
-                    <Grid >
-                        <Grid.ColumnDefinitions >
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="10, 0" Width="15" VerticalAlignment="Center"
+                        <Grid >
+                            <Grid.ColumnDefinitions >
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="10, 0" Width="15" VerticalAlignment="Center"
                                         Grid.Column="0"/>
-                        <Label Content="{Binding CommandsName}"  VerticalAlignment="Center" Grid.Column="1"/>
-                        <ContentControl  ContentTemplate="{DynamicResource ChevronRightIcon}" Margin="10, 0" Width="20" VerticalAlignment="Center"  Grid.Column="2"/>
-                    </Grid>
-                    <HierarchicalDataTemplate.ItemTemplate >
-                        <HierarchicalDataTemplate DataType="{x:Type modularity:IGlobalCommand}" >
-                            <StackPanel Orientation="Horizontal">
-                                <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>
-                                <TextBlock Text="{Binding CommandName}"/>
-                            </StackPanel>
-                        </HierarchicalDataTemplate>
-                    </HierarchicalDataTemplate.ItemTemplate>
-                </HierarchicalDataTemplate>
-            </ItemsControl.ItemTemplate>
-        </Menu>
+                            <Label Content="{Binding CommandsName}"  VerticalAlignment="Center" Grid.Column="1"/>
+                            <ContentControl  ContentTemplate="{DynamicResource ChevronRightIcon}" Margin="10, 0" Width="20" VerticalAlignment="Center"  Grid.Column="2"/>
+                        </Grid>
+                        <HierarchicalDataTemplate.ItemTemplate >
+                            <HierarchicalDataTemplate DataType="{x:Type modularity:IGlobalCommand}" >
+                                <StackPanel Orientation="Horizontal">
+                                    <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>
+                                    <TextBlock Text="{Binding CommandName}"/>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </HierarchicalDataTemplate.ItemTemplate>
+                    </HierarchicalDataTemplate>
+                </ItemsControl.ItemTemplate>
+            </Menu>
 
-        <ItemsControl >
-            <ItemsControl.ItemsSource>
-                <CompositeCollection>
-                    <CollectionContainer Collection="{Binding Source={StaticResource SingleComands}}" />
-                </CompositeCollection>
-            </ItemsControl.ItemsSource>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <MenuItem  Style="{DynamicResource MenuItemStyle}" Header="{Binding CommandName}">
-                        <MenuItem.Icon>
-                            <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </StackPanel>
-        <Button HorizontalAlignment="Right" ToolTipService.Placement="MousePoint" HorizontalContentAlignment="Center " VerticalContentAlignment="Center" Grid.Row="1" ToolTip="{Binding LastBuildDateTime}" Style="{StaticResource MaterialDesignFlatButton}" Width="55" Height="55">
-            <ContentControl ContentTemplate="{StaticResource InformationVariantIcon}"  Width="30" Height="30"></ContentControl>
-  </Button>  </Grid>
+            <ItemsControl >
+                <ItemsControl.ItemsSource>
+                    <CompositeCollection>
+                        <CollectionContainer Collection="{Binding Source={StaticResource SingleComands}}" />
+                    </CompositeCollection>
+                </ItemsControl.ItemsSource>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <MenuItem  Style="{DynamicResource MenuItemStyle}" Header="{Binding CommandName}">
+                            <MenuItem.Icon>
+                                <ContentControl ContentTemplate="{Binding IconId ,Converter={StaticResource StringToResourceConverter}}" Margin="0"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+        <Button HorizontalAlignment="Right" ToolTipService.Placement="MousePoint" 
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="1" ToolTip="{Binding LastBuildDateTime}" 
+                Style="{StaticResource MaterialDesignFlatButton}" Width="55" Height="55">
+            <ContentControl ContentTemplate="{StaticResource InformationVariantIcon}"  Width="30" Height="30"/>
+        </Button>
+    </Grid>
 </UserControl>
 

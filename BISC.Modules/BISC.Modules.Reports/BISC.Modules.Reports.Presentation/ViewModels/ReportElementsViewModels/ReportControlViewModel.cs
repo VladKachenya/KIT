@@ -91,7 +91,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             get => _configurationRevision;
             set
             {
-                value = value <= 0 ? 1 : value;
                 SetProperty(ref _configurationRevision, value);
             }
         }
@@ -233,7 +232,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
             reportControl.DataSet = SelectidDataSetName;
             reportControl.IntgPd = IntegrutyPeriod;
             reportControl.GiBool = GiBool;
-            reportControl.IsDynamic = IsDynamic;
+            //reportControl.IsDynamic = IsDynamic;
             reportControl.ConfRev = ConfigurationRevision;
             reportControl.OptFields.Value = OprionalFildsViewModel.GetUpdatedModel();
             reportControl.RptEnabled.Value = ReportEnabledViewModel.GetUpdatedModel();

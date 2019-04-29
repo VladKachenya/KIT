@@ -47,6 +47,8 @@ namespace BISC.Modules.DataSets.Presentation.Commands
         private readonly IGooseViewModelService _gooseViewModelService;
 
         private readonly IReportVeiwModelService _reportVeiwModelService;
+
+        private readonly IDataSetNameService _dataSetNameService;
         //private Action<bool> _fineshSaving;
 
         private IDevice _device;
@@ -59,7 +61,8 @@ namespace BISC.Modules.DataSets.Presentation.Commands
         public DatasetsProjectSavingCommand(IDatasetModelService datasetModelService, IInfoModelService infoModelService,
             IDataSetFactory dataSetFactory, IProjectService projectService, ILoggingService loggingService, 
             IConnectionPoolService connectionPoolService, ISclCommunicationModelService sclCommunicationModelService, IBiscProject biscProject, 
-            IDeviceWarningsService deviceWarningsService, IGooseViewModelService gooseViewModelService, IReportVeiwModelService reportVeiwModelService)
+            IDeviceWarningsService deviceWarningsService, IGooseViewModelService gooseViewModelService, IReportVeiwModelService reportVeiwModelService,
+            IDataSetNameService dataSetNameService)
         {
             _datasetModelService = datasetModelService;
             _infoModelService = infoModelService;
@@ -72,6 +75,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             _deviceWarningsService = deviceWarningsService;
             _gooseViewModelService = gooseViewModelService;
             _reportVeiwModelService = reportVeiwModelService;
+            _dataSetNameService = dataSetNameService;
         }
 
         #region Implementation of ISavingCommand
@@ -179,7 +183,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
             // Валидация имён
             var dataSetsNames = new List<string>();
-            foreach (var name in _dataSetsToSave.Select(el => el.EditableNamePart))
+            foreach (var name in _dataSetsToSave.Where(ds => ds.IsEditeble).Select(ds => ds.EditableNamePart))
             {
                 if (!dataSetsNames.Contains(name))
                 {
@@ -189,7 +193,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
             foreach (var name in dataSetsNames)
             {
-                var dataSets = _dataSetsToSave.Where(el => el.EditableNamePart == name);
+                var dataSets = _dataSetsToSave.Where(el => el.EditableNamePart == name && el.IsEditeble);
                 if (dataSets.Count() > 1)
                 {
                     foreach (var dataSetViewModel in dataSets)
@@ -198,6 +202,15 @@ namespace BISC.Modules.DataSets.Presentation.Commands
                     }
 
                     var mess = $"Имеется несколько DataSets с именем {name}";
+                    _loggingService.LogMessage(mess, SeverityEnum.Warning);
+                    warnings.Add(mess);
+                }
+
+                if (!_dataSetNameService.GetIsDynamic(name))
+                {
+                    var dataset = _dataSetsToSave.First(ds => ds.EditableNamePart == name && ds.IsEditeble);
+                    ((ViewModelBase) dataset).IsWarning = true;
+                    var mess = $"Имя {name} зарезервированное.";
                     _loggingService.LogMessage(mess, SeverityEnum.Warning);
                     warnings.Add(mess);
                 }
@@ -226,10 +239,10 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
         #region private methods
 
-        private void IncrementConfRevisionOfGoose(List<string> DataSetNamesList)
-        {
+        //private void IncrementConfRevisionOfGoose(List<string> DataSetNamesList)
+        //{
             
-        }
+        //}
 
         #endregion
     }

@@ -82,7 +82,7 @@ namespace BISC.Modules.DataSets.Model.Services
                         var dsDto = await connection.MmsConnection.GetListDataSetInfoAsync(ldevice, lnName, dsName, true);
                         IDataSet dataSet = new DataSet();
                         dataSet.Name = dsName;
-                        dataSet.IsDynamic = dsDto.Item.IsDynamic;
+                        //dataSet.IsDynamic = dsDto.Item.IsDynamic;
                         var ldevices = _infoModelService.GetLDevicesFromDevices(device);
 
                         foreach (var fcdaString in dsDto.Item.FcdaList)

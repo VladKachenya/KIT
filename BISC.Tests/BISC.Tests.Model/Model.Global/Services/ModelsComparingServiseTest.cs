@@ -134,7 +134,7 @@ namespace BISC.Tests.Model.Model.Global.Services
         {
             IModelElement[] childrens =
                 {
-                    new DataSet() { ElementName = "DataSetElementName", Namespace = "DataSetNamespace", Name ="DataSetName", IsDynamic= true },
+                    new DataSet() { ElementName = "DataSetElementName", Namespace = "DataSetNamespace", Name ="DataSetName"},
                     new Fcda() { ElementName = "FcdaElementName", Namespace = "FcdaElementNamespace", LdInst = "FcdaLdInst", Prefix = "FcdaPrefix", LnClass = "FcdaLnClass", LnInst = "FcdaLnInst", DoName = "FcdaDoName", DaName = "FcdaDaName" }
                 };
             element.ChildModelElements.AddRange(childrens);

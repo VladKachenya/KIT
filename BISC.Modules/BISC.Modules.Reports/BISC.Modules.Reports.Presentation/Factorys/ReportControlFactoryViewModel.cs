@@ -68,7 +68,6 @@ namespace BISC.Modules.Reports.Presentation.Factorys
             model.Name = _uniqueNameService.GetUniqueName(reportsName.ToList(), "NewReport");
             var report = GetNewReportViewModel(_infoModelService.GetZeroLDevicesOfDevice(device), model, device);
             report.SelectidDataSetName = report.AvailableDatasets.FirstOrDefault();
-            report.ConfigurationRevision = 1;
             report.ChangeTracker.SetModified();
             return report;
         }

@@ -17,7 +17,7 @@ namespace BISC.Modules.Reports.Infrastructure.Model
         string DataSet { get; set; }
         int IntgPd { get; set; }
         int ConfRev { get; set; }
-        bool IsDynamic { get; set; }
+        bool IsDynamic { get;}
         ChildModelProperty<ITrgOps> TrgOps { get; }
         ChildModelProperty<IOptFields> OptFields { get; }
         ChildModelProperty<IRptEnabled> RptEnabled { get; }

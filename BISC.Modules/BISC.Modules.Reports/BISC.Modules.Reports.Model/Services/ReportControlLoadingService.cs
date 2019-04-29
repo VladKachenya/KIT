@@ -110,13 +110,13 @@ namespace BISC.Modules.Reports.Model.Services
 
                     var filteredRcs = FilterReportControlsByrptEnaMax(reportControls);
 
-                    filteredRcs.ForEach((control =>
-                    {
-                        if (dynamicReports.Any((reportControl => reportControl.Name == control.Name)))
-                        {
-                            control.IsDynamic = true;
-                        }
-                    }));
+                    //filteredRcs.ForEach((control =>
+                    //{
+                    //    if (dynamicReports.Any((reportControl => reportControl.Name == control.Name)))
+                    //    {
+                    //        control.IsDynamic = true;
+                    //    }
+                    //}));
 
                     _reportsModelService.AddReportsToDevice(device, filteredRcs, ldevice);
                 }

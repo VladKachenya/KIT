@@ -15,7 +15,7 @@ namespace BISC.Modules.Reports.Model.Factorys
         public IReportControl GetReportControl()
         {
             var report = new ReportControl();
-            report.IsDynamic = true;
+            //report.IsDynamic = true;
             report.OptFields.Value = new OptFields();
             report.RptEnabled.Value = new RptEnabled();
             report.TrgOps.Value = new TrgOps();
