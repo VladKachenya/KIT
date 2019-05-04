@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -82,6 +81,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
             {
                 DeHighlightTextBlock(_currentFocusedGoInNumberTextBlock);
             }
+            if(_goinNumTextBlocks.Count <= selectableBoxEventArgs.SelectableValueViewModel.ColumnNumber) return;
             _currentFocusedGoInNumberTextBlock = _goinNumTextBlocks[selectableBoxEventArgs.SelectableValueViewModel.ColumnNumber];
             HighlightTextBlock(_currentFocusedGoInNumberTextBlock);
 
@@ -142,22 +142,32 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
         private static void OnGoInCountPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var gooseGrid = d as GooseGrid;
-            gooseGrid?.OnGoInCountChanged();
+            //gooseGrid?.OnGoInCountChanged();
         }
 
         private void OnGoInCountChanged()
         {
-
+            var nameList = GooseControlBlockViewModels.FirstOrDefault()?.ColumnsName;
             _goinNumTextBlocks = new List<TextBlock>();
-            for (int i = 0; i < GoInCount; i++)
+
+            foreach (var name in nameList)
             {
                 TextBlock goinNumTextBlock = new TextBlock();
-                goinNumTextBlock.Text = (i + 1).ToString();
+                goinNumTextBlock.Text = name;
                 goinNumTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
                 goinNumTextBlock.VerticalAlignment = VerticalAlignment.Top;
                 goinNumTextBlock.Padding = new Thickness(2);
                 _goinNumTextBlocks.Add(goinNumTextBlock);
             }
+            //for (int i = 0; i < GoInCount; i++)
+            //{
+            //    TextBlock goinNumTextBlock = new TextBlock();
+            //    goinNumTextBlock.Text = (i + 1).ToString();
+            //    goinNumTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+            //    goinNumTextBlock.VerticalAlignment = VerticalAlignment.Top;
+            //    goinNumTextBlock.Padding = new Thickness(2);
+            //    _goinNumTextBlocks.Add(goinNumTextBlock);
+            //}
         }
 
 
@@ -170,6 +180,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
         private void OnGooseControlBlockViewModelsChanged()
         {
+            OnGoInCountChanged();
             GooseControlBlockViewModels.CollectionChanged += GooseControlBlockViewModels_CollectionChanged;
             GooseControlBlockViewModels_CollectionChanged(null, null);
         }
@@ -207,8 +218,8 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
             for (int i = 0; i < GoInCount; i++)
             {
-                scrollViewerGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(CellSize) });
-                mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(CellSize) });
+                scrollViewerGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = CellSize}); //new GridLength(CellSize)
+                mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = CellSize}); // new GridLength(CellSize)
 
             }
 

@@ -11,10 +11,11 @@
 
     <UserControl.Resources>
         <converters1:IsEnabledToSelectableBoxBackgroundConverter x:Key="isEnabledToSelectableBoxBackgroundConverter"></converters1:IsEnabledToSelectableBoxBackgroundConverter>
-    <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
-        </UserControl.Resources>
-    <Border Margin="2" BorderBrush="Black"
-            Background="{Binding IsSelectingEnabled,Converter={StaticResource isEnabledToSelectableBoxBackgroundConverter}}" ToolTip="{Binding ToolTip}" >
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
+    </UserControl.Resources>
+
+    <Border Margin="1" BorderBrush="Black"  Background="{Binding IsSelectingEnabled,Converter={StaticResource isEnabledToSelectableBoxBackgroundConverter}}"
+                ToolTip="{Binding ToolTip}" >
         <Border.Style>
             <Style TargetType="Border">
                 <Style.Triggers>
@@ -31,7 +32,8 @@
                 </Style.Triggers>
             </Style>
         </Border.Style>
-        <Border Margin="2" BorderBrush="Black" Background="Black"  Visibility="{Binding SelectedValue,Converter={StaticResource booleanToVisibilityConverter}}">
+        <Border Margin="1" BorderBrush="Black" Background="Black"  Visibility="{Binding SelectedValue,Converter={StaticResource booleanToVisibilityConverter}}"
+                    Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}">
         </Border>
 
         <i:Interaction.Triggers>

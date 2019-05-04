@@ -43,8 +43,8 @@ namespace BISC.Modules.Device.Model.Services
             
             IDevice device = new Model.Device();
             device.Manufacturer = identValues.Item.Count >= 1 ? identValues.Item[0] : DeviceKeys.DeviceManufacturer.UnknowManufacturer;
-            device.Type = identValues.Item.Count >= 2 ? identValues.Item[1] : DeviceKeys.DeviceTypes.UnknowType;
-            device.Revision = identValues.Item.Count >= 3 ? identValues.Item[2] : DeviceKeys.DeviceRevisions.UnknowRevision;
+            device.Type = identValues.Item.Count >= 2 ? identValues.Item[1] : DeviceKeys.DeviceTypes.Unknow;
+            device.Revision = identValues.Item.Count >= 3 ? identValues.Item[2] : DeviceKeys.DeviceRevisions.Unknow;
 
             device.Name = "New Device";
             device.Ip = ip;

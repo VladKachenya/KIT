@@ -22,12 +22,21 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         private string _name;
         private string _appId;
         private List<IGooseRowViewModel> _gooseRowViewModels;
+        private List<string> _columnsName;
 
 
         public GooseControlBlockViewModel()
         {
             GooseRowViewModels = new List<IGooseRowViewModel>();
         }
+
+        public List<string> ColumnsName
+        {
+            get => _columnsName;
+            set => SetProperty(ref _columnsName, value, true);
+        }
+
+        public bool IsConsigerTheQuality { get; set; }
 
         public List<IGooseRowViewModel> GooseRowViewModels
         {

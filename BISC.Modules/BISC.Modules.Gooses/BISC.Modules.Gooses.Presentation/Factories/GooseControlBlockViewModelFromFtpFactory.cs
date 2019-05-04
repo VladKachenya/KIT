@@ -2,8 +2,10 @@
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.DataSets.Infrastructure.Services;
+using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Gooses.Infrastructure.Factorys;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Infrastructure.Services;
@@ -11,10 +13,9 @@ using BISC.Modules.Gooses.Presentation.Interfaces.Factories;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using BISC.Modules.Gooses.Infrastructure.Factorys;
+using BISC.Modules.Gooses.Infrastructure.Keys;
 
 namespace BISC.Modules.Gooses.Presentation.Factories
 {
@@ -70,30 +71,14 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             //Работать сдесь
             foreach (var gooseModelInfo in listOfGoosesModelInfos)
             {
-                var gooseControlBlockViewModel =await BuildProjectBlock(gooseModelInfo, gooseMatrix);
+                var gooseControlBlockViewModel = await BuildProjectBlock(gooseModelInfo, gooseMatrix, device);
                 gooseControlBlockViewModels.Add(gooseControlBlockViewModel);
-
-                ////Тут создаются строчки
-                //if (false && relatedGoCb != null)
-                //{
-                //    var relatedRows = gooseMatrix.GooseRowFtpEntities.Where((entity =>
-                //            entity.IndexOfGoose == relatedGoCb.IndexOfGoose)).ToList();
-
-                //    relatedRows.AddRange(gooseMatrix.GooseRowQualityFtpEntities.Where((row => row.IndexOfGoose == relatedGoCb.IndexOfGoose)).ToList());
-
-                //    gooseControlBlockViewModel.GooseRowViewModels =
-                //        _gooseRowViewModelFactory.CreateGooseFtpRowsViewModel(relatedRows, gooseControlBlockViewModel);
-
-                //    gooseControlBlockViewModels.Add(gooseControlBlockViewModel);
-                //}
             }
             return gooseControlBlockViewModels;
         }
 
 
-
-
-        private async Task<GooseControlBlockViewModel> BuildProjectBlock(IGooseInputModelInfo gooseInput, IGooseMatrixFtp gooseMatrixFtp)
+        private async Task<GooseControlBlockViewModel> BuildProjectBlock(IGooseInputModelInfo gooseInput, IGooseMatrixFtp gooseMatrixFtp, IDevice parientDevice)
         {
             GooseControlBlockViewModel gooseControlBlockViewModel = _gooseControlBlockViewModelFunc();
 
@@ -101,10 +86,30 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             gooseControlBlockViewModel.Name = gooseInput.EmittingGooseControl.Value.Name;
             gooseControlBlockViewModel.GoCbReference = _cbFtpEntityFactory.GetIGoCbFtpEntityFromGooseInputModelInfo(gooseInput);
 
+            switch (parientDevice.Type)
+            {
+                case DeviceKeys.DeviceTypes.MR5:
+                    gooseControlBlockViewModel.IsConsigerTheQuality = false;
+                    gooseControlBlockViewModel.ColumnsName = new List<string>();
+                    gooseControlBlockViewModel.ColumnsName.Add(GooseKeys.GoInNameKeys.IndicationResetKey);
+                    gooseControlBlockViewModel.ColumnsName.Add(GooseKeys.GoInNameKeys.FaultResetKey);
+                    gooseControlBlockViewModel.ColumnsName.Add(GooseKeys.GoInNameKeys.SystemLogResetKey);
+                    gooseControlBlockViewModel.ColumnsName.Add(GooseKeys.GoInNameKeys.AlarmLogResetKey);
+                    gooseControlBlockViewModel.ColumnsName.Add(GooseKeys.GoInNameKeys.TurnOffBreaker);
+                    gooseControlBlockViewModel.ColumnsName.Add(GooseKeys.GoInNameKeys.TurnOnBreaker);
+                    break;
+                default:
+                    gooseControlBlockViewModel.IsConsigerTheQuality = true;
+                    gooseControlBlockViewModel.ColumnsName = new List<string>();
+                    for (int i = 0; i < 64; i++)
+                    {
+                        gooseControlBlockViewModel.ColumnsName.Add(i.ToString());
+                    }
+                    break;
+            }
+
             gooseControlBlockViewModel.GooseRowViewModels =
-              await  _gooseRowViewModelFactory.BuildGooseRowViewModels(gooseControlBlockViewModel, gooseInput, gooseMatrixFtp);
-
-
+              await _gooseRowViewModelFactory.BuildGooseRowViewModels(gooseControlBlockViewModel, gooseInput, gooseMatrixFtp);
 
             return gooseControlBlockViewModel;
         }

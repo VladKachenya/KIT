@@ -12,7 +12,9 @@ namespace BISC.Modules.Device.Infrastructure.Model
         string Description { get; set; }
         string Manufacturer { get; set; }
         string Type { get; set; }
-        string Revision { get; set; } 
+        string Revision { get; set; }
+        IRevision RevisionDetails { get; }
+
         //bool IsFromSid { get; set; }
     }
 }

@@ -206,6 +206,7 @@ namespace BISC.Modules.Gooses.Model.Services
                 } while (!isPing);
 
                 var text = _gooseMatrixFtpToFileParser().GetFileStringFromMatrixModel(gooseMatrixFtp);
+
                 return await _deviceFileWritingServices.WriteFileStringInDevice(device.Ip, new List<string>() { text },
                     new List<string>() { "GOOSERE.CFG" });
             }

@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Model\Config\DeviceFtpConfig.cs" />
     <Compile Include="Model\Device.cs" />
+    <Compile Include="Model\Revision.cs" />
     <Compile Include="Module\DeviceModelModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

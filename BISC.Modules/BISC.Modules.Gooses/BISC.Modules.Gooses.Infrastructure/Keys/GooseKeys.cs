@@ -56,5 +56,16 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
             public static string StateKey = "State";
 
         }
+
+        public static class GoInNameKeys
+        {
+            public static string IndicationResetKey = "Сброс индикации";
+            public static string FaultResetKey = "Сброс неисправности";
+            public static string SystemLogResetKey = "Сброс ЖС";
+            public static string AlarmLogResetKey = "Сброс ЖА";
+            public static string TurnOffBreaker = "Откл. В";
+            public static string TurnOnBreaker = "Вкл. В";
+
+        }
     }
 }

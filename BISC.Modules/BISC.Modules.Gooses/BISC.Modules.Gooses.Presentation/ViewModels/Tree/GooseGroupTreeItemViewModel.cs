@@ -95,10 +95,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
-            if (!(_device.Type == DeviceKeys.DeviceTypes.MR761Type ||
-                  _device.Type == DeviceKeys.DeviceTypes.MR762Type ||
-                  _device.Type == DeviceKeys.DeviceTypes.MR763Type ||
-                  _device.Type == DeviceKeys.DeviceTypes.MR771Type))
+            if (!(_device.Type == DeviceKeys.DeviceTypes.MR761 ||
+                  _device.Type == DeviceKeys.DeviceTypes.MR762 ||
+                  _device.Type == DeviceKeys.DeviceTypes.MR763 ||
+                  _device.Type == DeviceKeys.DeviceTypes.MR771 ||
+                  _device.Type == DeviceKeys.DeviceTypes.MR5))
             {
                 _isNavigateToMatrixCommandEneble = false;
                 (NavigateToMatrixCommand as IPresentationCommand)?.RaiseCanExecute();

@@ -69,7 +69,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             MessagesList = new ObservableCollection<string>();
             SaveCommand = commandFactory.CreatePresentationCommand(OnSave, () => _isCommandEnabled);
             UpdateCommand = commandFactory.CreatePresentationCommand(OnUpdateExecute, () => _isCommandEnabled);
-            GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>();
+            //GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>();
 
         }
         #endregion
@@ -84,11 +84,23 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             get => _gooseControlBlockViewModels;
             set
             {
+                var count = value.FirstOrDefault()?.ColumnsName.Count;
+                if (count != null)
+                {
+                    ColumnCount = (int)count;
+                    OnPropertyChanged(nameof(ColumnCount));
+                }
+
                 SetProperty(ref _gooseControlBlockViewModels, value);
                 _gooseSubscriptionMatrixSavingCommand.Initialize(_device, GooseControlBlockViewModels.ToList());
                 _gooseSubscriptionMatrixSavingCommand.RefreshViewModel = async () => await UpdateGooseMatrix(false);
+
             }
         }
+
+        public int ColumnCount { get; private set; }
+
+
         public ObservableCollection<string> MessagesList { get; }
 
         public void Validate(ISelectableValueViewModel initiatorSelectableValueViewModel = null)
@@ -194,7 +206,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                 }
 
                 _isInitialized = false;
-                GooseControlBlockViewModels.Clear();
+                GooseControlBlockViewModels?.Clear();
                 var blocks = await _gooseControlBlockViewModelFactory.BuildGooseControlBlockViewModels(_biscProject.MainSclModel.Value, _device);
                 GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>(blocks.Item);
                 InitDictionary();
@@ -237,7 +249,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         public ListCollectionView GroupedGoosesViewModels
         {
             get => _groupedGoosesViewModels;
-            set => SetProperty(ref _groupedGoosesViewModels , value);
+            set => SetProperty(ref _groupedGoosesViewModels, value);
         }
 
         private async Task SaveGooseMatrix()
@@ -278,9 +290,9 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         private void InitDictionary()
         {
             _columnSelectableValueViewModelsDictionary = new Dictionary<int, List<ISelectableValueViewModel>>();
-            for (int i = 0; i < 64; i++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                _columnSelectableValueViewModelsDictionary.Add(i, new List<ISelectableValueViewModel>(64));
+                _columnSelectableValueViewModelsDictionary.Add(i, new List<ISelectableValueViewModel>(ColumnCount));
                 foreach (var gooseControlBlock in GooseControlBlockViewModels)
                 {
                     foreach (var gooseRowViewModel in gooseControlBlock.GooseRowViewModels)
@@ -322,7 +334,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                     }
                 }
 
-                for (int i = 0; i < 64; i++)
+                for (int i = 0; i < ColumnCount; i++)
                 {
                     var selectedValueInColumn =
                         _columnSelectableValueViewModelsDictionary[i].FirstOrDefault((model =>
@@ -380,7 +392,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                     }
                 }
 
-                for (int i = 0; i < 64; i++)
+                for (int i = 0; i < ColumnCount; i++)
                 {
                     var selectedValueInColumn =
                         _columnSelectableValueViewModelsDictionary[i].FirstOrDefault((model =>

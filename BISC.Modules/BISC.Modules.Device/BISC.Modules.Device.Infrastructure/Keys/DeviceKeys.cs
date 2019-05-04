@@ -39,20 +39,20 @@ namespace BISC.Modules.Device.Infrastructure.Keys
 
         public static class DeviceTypes
         {
-            public const string MR5Type = "MR5";
-            public const string MR801Type = "MR801";
-            public const string MR851Type = "MR851";
-            public const string MR741Type = "MR741";
-            public const string MR761Type = "MR761";
-            public const string MR762Type = "MR762";
-            public const string MR763Type = "MR763";
-            public const string MR771Type = "MR771";
-            public const string UnknowType = "Unknow";
+            public const string MR5 = nameof(MR5);
+            public const string MR801 = nameof(MR801);
+            public const string MR851 = nameof(MR851);
+            public const string MR741 = nameof(MR741);
+            public const string MR761 = nameof(MR761);
+            public const string MR762 = nameof(MR762);
+            public const string MR763 = nameof(MR763);
+            public const string MR771 = nameof(MR771);
+            public const string Unknow = nameof(Unknow);
         }
 
         public static class DeviceRevisions
         {
-            public const string UnknowRevision = "Unknow";
+            public const string Unknow = nameof(Unknow);
         }
 
         public static class ConfigurationKeys

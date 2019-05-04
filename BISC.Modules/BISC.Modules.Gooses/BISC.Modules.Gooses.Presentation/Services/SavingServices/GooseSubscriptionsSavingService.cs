@@ -32,10 +32,11 @@ namespace BISC.Modules.Gooses.Presentation.Services.SavingServices
         public int Priority => 20;
         public async Task<OperationResult> Save(IDevice device)
         {
-            if (!(device.Type == DeviceKeys.DeviceTypes.MR761Type ||
-                  device.Type == DeviceKeys.DeviceTypes.MR762Type ||
-                  device.Type == DeviceKeys.DeviceTypes.MR763Type ||
-                  device.Type == DeviceKeys.DeviceTypes.MR771Type))
+            if (!(device.Type == DeviceKeys.DeviceTypes.MR761 ||
+                  device.Type == DeviceKeys.DeviceTypes.MR762 ||
+                  device.Type == DeviceKeys.DeviceTypes.MR763 ||
+                  device.Type == DeviceKeys.DeviceTypes.MR771 ||
+                  device.Type == DeviceKeys.DeviceTypes.MR5))
             {
                 return OperationResult.SucceedResult;
             }

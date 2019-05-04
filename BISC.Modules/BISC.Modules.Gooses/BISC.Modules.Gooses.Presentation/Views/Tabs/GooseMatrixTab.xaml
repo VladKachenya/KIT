@@ -54,7 +54,7 @@
                     <ContentControl ContentTemplate="{DynamicResource CheckIcon}"></ContentControl>
                 </Button>
             </StackPanel>-->
-            <userControl:GooseGrid IsActive="{Binding IsActive}" Grid.Row="1" x:Name="gooseGrid" GoInCount="64" GooseControlBlockViewModels="{Binding GooseControlBlockViewModels}"></userControl:GooseGrid>
+            <userControl:GooseGrid IsActive="{Binding IsActive}" Grid.Row="1" x:Name="gooseGrid" GoInCount="{Binding ColumnCount}" GooseControlBlockViewModels="{Binding GooseControlBlockViewModels}"></userControl:GooseGrid>
             <!--<DataGrid ItemsSource="{Binding GroupedGoosesViewModels}">
                 <DataGrid.GroupStyle>
                     <GroupStyle ContainerStyle="{StaticResource GroupHeaderStyle}">

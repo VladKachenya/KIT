@@ -61,7 +61,6 @@ namespace BISC.Modules.DataSets.Presentation.Factorys
         {
             IDataSetViewModel result = _injectionContainer.ResolveType<IDataSetViewModel>();
             result.SetModel(dataSet);
-
             return result;
         }
     }
