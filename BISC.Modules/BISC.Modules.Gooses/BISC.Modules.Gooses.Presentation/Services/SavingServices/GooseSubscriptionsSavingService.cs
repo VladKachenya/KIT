@@ -32,11 +32,7 @@ namespace BISC.Modules.Gooses.Presentation.Services.SavingServices
         public int Priority => 20;
         public async Task<OperationResult> Save(IDevice device)
         {
-            if (!(device.Type == DeviceKeys.DeviceTypes.MR761 ||
-                  device.Type == DeviceKeys.DeviceTypes.MR762 ||
-                  device.Type == DeviceKeys.DeviceTypes.MR763 ||
-                  device.Type == DeviceKeys.DeviceTypes.MR771 ||
-                  device.Type == DeviceKeys.DeviceTypes.MR5))
+            if (device.RevisionDetails == null || device.RevisionDetails.CompareVersionTo(23, 8) <= 0)
             {
                 return OperationResult.SucceedResult;
             }
@@ -52,8 +48,6 @@ namespace BISC.Modules.Gooses.Presentation.Services.SavingServices
                 _loggingService.LogMessage($"Сохранение подписок на Goose-ы устройства {device.Name} с IP: {device.Ip} произошло с ошибкой", SeverityEnum.Critical);
                 return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedWithErrors, false, res.GetFirstError());
             }
-
-            
 
             res = await _ftpGooseModelService.WriteGooseMatrixFtpToDevice(device, gooseSubscriptionMatrix);
             if (res.IsSucceed)

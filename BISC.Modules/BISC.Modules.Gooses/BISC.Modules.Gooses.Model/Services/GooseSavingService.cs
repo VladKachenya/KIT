@@ -107,27 +107,27 @@ namespace BISC.Modules.Gooses.Model.Services
             gooseInputModelInfos.ForEach(gimi => gooseDeviseInput.GooseInputModelInfoList.Add(gimi));
         }
 
-        private async Task WriteGooseInputsModelInfoToDevice(IDevice device,
-            List<IGooseInputModelInfo> gooseInputModelInfos)
-        {
-            var writingResult =
-                await _ftpGooseModelService().WriteGooseDeviceInputFromDevice(device.Ip, gooseInputModelInfos);
-            if (!writingResult.IsSucceed)
-            {
-                throw new Exception($"Ошибка при записи файла из устройства {device.Name}");
-            }
-        }
+        //private async Task WriteGooseInputsModelInfoToDevice(IDevice device,
+        //    List<IGooseInputModelInfo> gooseInputModelInfos)
+        //{
+        //    var writingResult =
+        //        await _ftpGooseModelService().WriteGooseDeviceInputFromDevice(device.Ip, gooseInputModelInfos);
+        //    if (!writingResult.IsSucceed)
+        //    {
+        //        throw new Exception($"Ошибка при записи файла из устройства {device.Name}");
+        //    }
+        //}
 
-        private async Task WriteGooseMatrixToDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp)
-        {
+        //private async Task WriteGooseMatrixToDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp)
+        //{
 
-            var writingResult =
-                await _ftpGooseModelService().WriteGooseMatrixFtpToDevice(device, gooseMatrixFtp);
-            if (!writingResult.IsSucceed)
-            {
-                throw new Exception($"Ошибка при записи файла подписок в устройство {device.Name}");
-            }
-        }
+        //    var writingResult =
+        //        await _ftpGooseModelService().WriteGooseMatrixFtpToDevice(device, gooseMatrixFtp);
+        //    if (!writingResult.IsSucceed)
+        //    {
+        //        throw new Exception($"Ошибка при записи файла подписок в устройство {device.Name}");
+        //    }
+        //}
         #endregion
     }
 }

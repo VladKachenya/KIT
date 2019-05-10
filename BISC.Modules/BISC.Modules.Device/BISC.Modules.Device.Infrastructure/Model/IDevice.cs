@@ -1,5 +1,6 @@
 ﻿using System;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.Device.Infrastructure.Model.Revision;
 
 namespace BISC.Modules.Device.Infrastructure.Model
 {

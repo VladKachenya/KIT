@@ -147,9 +147,9 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
         private void OnGoInCountChanged()
         {
-            var nameList = GooseControlBlockViewModels.FirstOrDefault()?.ColumnsName;
             _goinNumTextBlocks = new List<TextBlock>();
-
+            var nameList = GooseControlBlockViewModels.FirstOrDefault()?.ColumnsName;
+            if(nameList == null) return;
             foreach (var name in nameList)
             {
                 TextBlock goinNumTextBlock = new TextBlock();

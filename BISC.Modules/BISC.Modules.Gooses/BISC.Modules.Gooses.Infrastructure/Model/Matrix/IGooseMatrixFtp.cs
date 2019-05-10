@@ -1,4 +1,5 @@
-﻿using BISC.Model.Infrastructure.Elements;
+﻿using System.Xml.Serialization;
+using BISC.Model.Infrastructure.Elements;
 
 namespace BISC.Modules.Gooses.Infrastructure.Model.Matrix
 {
@@ -20,7 +21,8 @@ namespace BISC.Modules.Gooses.Infrastructure.Model.Matrix
         int IndexOfGoose { get; set; }
         string GoCbReference { get; set; } // MR771N125LD0/LLN0$GO$gcbIn
         string AppId { get; set; }
-        int ConfRev { get; set; }
+        [XmlElement(IsNullable = true)]
+        int? ConfRev { get; set; }
 
     }
 

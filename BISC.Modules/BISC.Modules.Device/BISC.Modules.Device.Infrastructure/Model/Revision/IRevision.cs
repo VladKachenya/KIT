@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace BISC.Modules.Device.Infrastructure.Model
+namespace BISC.Modules.Device.Infrastructure.Model.Revision
 {
-    public interface IRevision
+    public interface IRevision : IVersionComparable
     {
         int RevisionVersion { get; }
         int RevisionSubversion { get; }

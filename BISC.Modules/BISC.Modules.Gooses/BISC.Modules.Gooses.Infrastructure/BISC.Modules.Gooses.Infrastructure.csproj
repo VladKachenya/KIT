@@ -47,6 +47,8 @@
   <ItemGroup>
     <Compile Include="Factorys\IGoCbFtpEntityFactory.cs" />
     <Compile Include="Factorys\IGooseInputModelInfoFactory.cs" />
+    <Compile Include="Factorys\IGooseMatrixParsersFactory.cs" />
+    <Compile Include="Helpers\IGooseMatrixFtpToFileParser.cs" />
     <Compile Include="Keys\GooseKeys.cs" />
     <Compile Include="Model\FTP\GooseFtpDto.cs" />
     <Compile Include="Model\FTP\IGooseDeviceInput.cs" />

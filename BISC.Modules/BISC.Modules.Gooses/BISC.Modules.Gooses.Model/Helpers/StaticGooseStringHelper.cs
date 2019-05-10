@@ -5,7 +5,7 @@ using BISC.Modules.InformationModel.Infrastucture.Elements;
 
 namespace BISC.Modules.Gooses.Model.Helpers
 {
-    public static class StaticGooseStringHelper
+    internal static class StaticGooseStringHelper
     {
         static object _getGooseControlReferenceLocker = new object();
         public static string GetGooseControlReference(IGooseControl gooseControl)

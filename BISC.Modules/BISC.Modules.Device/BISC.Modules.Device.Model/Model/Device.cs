@@ -4,6 +4,7 @@ using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using System;
 using System.Globalization;
+using BISC.Modules.Device.Infrastructure.Model.Revision;
 
 namespace BISC.Modules.Device.Model.Model
 {

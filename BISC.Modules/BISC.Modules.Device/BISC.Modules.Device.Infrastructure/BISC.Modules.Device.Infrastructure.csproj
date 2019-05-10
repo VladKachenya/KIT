@@ -54,7 +54,8 @@
     <Compile Include="Loading\Events\DeviceLoadingEvent.cs" />
     <Compile Include="Model\Config\IDeviceFtpConfig.cs" />
     <Compile Include="Model\IDevice.cs" />
-    <Compile Include="Model\IRevision.cs" />
+    <Compile Include="Model\Revision\IRevision.cs" />
+    <Compile Include="Model\Revision\IVersionComparable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Loading\IDeviceElementLoadingService.cs" />
     <Compile Include="Saving\IDeviceElementSavingService.cs" />

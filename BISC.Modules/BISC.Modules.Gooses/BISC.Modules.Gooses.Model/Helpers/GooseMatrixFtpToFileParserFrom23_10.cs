@@ -1,10 +1,11 @@
 ﻿using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using System.IO;
 using System.Text;
+using BISC.Modules.Gooses.Infrastructure.Helpers;
 
 namespace BISC.Modules.Gooses.Model.Helpers
 {
-    public class GooseMatrixFtpToFileParser
+    internal class GooseMatrixFtpToFileParser23_10 : IGooseMatrixFtpToFileParser
     {
 
         public string GetFileStringFromMatrixModel(IGooseMatrixFtp matrixFtp)
@@ -33,8 +34,8 @@ namespace BISC.Modules.Gooses.Model.Helpers
                 streamWriter.WriteLine("GocbRef{");
                 foreach (var goCbFtpEntity in gooseMatrix.GoCbFtpEntities)
                 {
-
-                    streamWriter.WriteLine($"{goCbFtpEntity.IndexOfGoose}:{goCbFtpEntity.GoCbReference},{goCbFtpEntity.AppId},{goCbFtpEntity.ConfRev}");
+                    var confRev = goCbFtpEntity.ConfRev ?? 0;
+                    streamWriter.WriteLine($"{goCbFtpEntity.IndexOfGoose}:{goCbFtpEntity.GoCbReference},{goCbFtpEntity.AppId},{confRev}");
 
                 }
                 streamWriter.WriteLine("}");

@@ -47,7 +47,9 @@
   <ItemGroup>
     <Compile Include="Factorys\GoCbFtpEntityFactory.cs" />
     <Compile Include="Factorys\GooseInputModelInfoFactory.cs" />
-    <Compile Include="Helpers\GooseMatrixFtpToFileParser.cs" />
+    <Compile Include="Factorys\GooseMatrixParsersFactory.cs" />
+    <Compile Include="Helpers\GooseMatrixFtpToFileParserFrom23_9.cs" />
+    <Compile Include="Helpers\GooseMatrixFtpToFileParserFrom23_10.cs" />
     <Compile Include="Helpers\StaticGooseStringHelper.cs" />
     <Compile Include="Model\ExternalGooseRef.cs" />
     <Compile Include="Model\GoCbFtpEntity.cs" />

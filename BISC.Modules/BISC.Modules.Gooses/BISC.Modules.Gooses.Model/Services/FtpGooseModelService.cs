@@ -2,12 +2,11 @@
 using BISC.Model.Infrastructure.Serializing;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
-using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.FTP.Infrastructure.Serviсes;
+using BISC.Modules.Gooses.Infrastructure.Factorys;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Infrastructure.Services;
-using BISC.Modules.Gooses.Model.Helpers;
 using BISC.Modules.Gooses.Model.Model;
 using BISC.Modules.Gooses.Model.Model.Matrix;
 using System;
@@ -25,16 +24,16 @@ namespace BISC.Modules.Gooses.Model.Services
     {
         private readonly IDeviceFileWritingServices _deviceFileWritingServices;
         private readonly IModelElementsRegistryService _elementsRegistryService;
-        private readonly Func<GooseMatrixFtpToFileParser> _gooseMatrixFtpToFileParser;
         private readonly IPingService _pingService;
+        private readonly IGooseMatrixParsersFactory _gooseMatrixParsersFactory;
 
         public FtpGooseModelService(IDeviceFileWritingServices deviceFileWritingServices, IModelElementsRegistryService elementsRegistryService,
-            Func<GooseMatrixFtpToFileParser> gooseMatrixFtpToFileParser, IPingService pingService)
+            IPingService pingService, IGooseMatrixParsersFactory gooseMatrixParsersFactory)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
             _elementsRegistryService = elementsRegistryService;
-            _gooseMatrixFtpToFileParser = gooseMatrixFtpToFileParser;
             _pingService = pingService;
+            _gooseMatrixParsersFactory = gooseMatrixParsersFactory;
         }
 
 
@@ -140,7 +139,14 @@ namespace BISC.Modules.Gooses.Model.Services
                     goCbFtpEntity.IndexOfGoose = int.Parse(entries[0]);
                     goCbFtpEntity.GoCbReference = entries[1];
                     goCbFtpEntity.AppId = entries[2];
-                    goCbFtpEntity.ConfRev = int.Parse(entries[3]);
+                    if (entries.Length > 3)
+                    {
+                        goCbFtpEntity.ConfRev = int.Parse(entries[3]);
+                    }
+                    else
+                    {
+                        goCbFtpEntity.ConfRev = null;
+                    }
 
                     gooseMatrixFtp.GoCbFtpEntities.Add(goCbFtpEntity);
                 }
@@ -205,10 +211,16 @@ namespace BISC.Modules.Gooses.Model.Services
                     counter++;
                 } while (!isPing);
 
-                var text = _gooseMatrixFtpToFileParser().GetFileStringFromMatrixModel(gooseMatrixFtp);
+                var text = _gooseMatrixParsersFactory.GetGooseMatrixParser(device).GetFileStringFromMatrixModel(gooseMatrixFtp);
 
-                return await _deviceFileWritingServices.WriteFileStringInDevice(device.Ip, new List<string>() { text },
-                    new List<string>() { "GOOSERE.CFG" });
+                if (text != null)
+                {
+                    return await _deviceFileWritingServices.WriteFileStringInDevice(device.Ip, new List<string>() { text },
+                        new List<string>() { "GOOSERE.CFG" });
+                }
+
+                return OperationResult.SucceedResult;
+
             }
             catch (Exception e)
             {

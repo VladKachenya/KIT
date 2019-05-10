@@ -23,7 +23,7 @@ namespace BISC.Modules.Gooses.Model.Model
         public int IndexOfGoose { get; set; }
         public string GoCbReference { get; set; }
         public string AppId { get; set; }
-        public int ConfRev { get; set; }
+        public int? ConfRev { get; set; }
         #endregion
         public override bool ModelElementCompareTo(IModelElement obj)
         {
@@ -32,7 +32,7 @@ namespace BISC.Modules.Gooses.Model.Model
             var element = obj as IGoCbFtpEntity;
             if (element.GoCbReference != GoCbReference) return false;
             if (element.AppId != AppId) return false;
-            if (element.ConfRev != ConfRev) return false;
+            if (ConfRev.HasValue && element.ConfRev.HasValue && (element.ConfRev != ConfRev)) return false;
             return true;
         }
 

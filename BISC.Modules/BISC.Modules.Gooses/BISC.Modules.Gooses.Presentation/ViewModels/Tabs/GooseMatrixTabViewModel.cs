@@ -69,7 +69,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             MessagesList = new ObservableCollection<string>();
             SaveCommand = commandFactory.CreatePresentationCommand(OnSave, () => _isCommandEnabled);
             UpdateCommand = commandFactory.CreatePresentationCommand(OnUpdateExecute, () => _isCommandEnabled);
-            //GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>();
+            GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>();
 
         }
         #endregion

@@ -12,6 +12,7 @@ using BISC.Modules.Gooses.Model.Serializers.FtpMatrix;
 using BISC.Modules.Gooses.Model.Services;
 using BISC.Modules.Gooses.Model.Services.LoadingServices;
 using System;
+using BISC.Modules.Gooses.Infrastructure.Helpers;
 
 namespace BISC.Modules.Gooses.Model.Module
 {
@@ -52,7 +53,7 @@ namespace BISC.Modules.Gooses.Model.Module
             _injectionContainer.RegisterType<IFtpGooseModelService, FtpGooseModelService>();
             _injectionContainer.RegisterType<IGooseSavingService, GooseSavingService>();
             _injectionContainer.RegisterType<IGooseMatrixFtpService, GooseMatrixFtpService>();
-            _injectionContainer.RegisterType<object, GooseMatrixFtpToFileParser>();
+            _injectionContainer.RegisterType<IGooseMatrixParsersFactory, GooseMatrixParsersFactory>();
 
             _injectionContainer.RegisterType<IGooseInputModelInfoFactory, GooseInputModelInfoFactory>();
             _injectionContainer.RegisterType<IGoCbFtpEntityFactory, GoCbFtpEntityFactory>();
