@@ -164,7 +164,7 @@ namespace BISC.Model.Global.Services
             {
                 SetDefaultProjectPath();
                 СreateNewProject();
-                throw new Exception("Ошибка загрузки файла!");
+                throw new Exception($"Ошибка загрузки файла: {e.Message}");
             }
 
             _biscProject.MainSclModel.Value = biscProject.MainSclModel.Value;

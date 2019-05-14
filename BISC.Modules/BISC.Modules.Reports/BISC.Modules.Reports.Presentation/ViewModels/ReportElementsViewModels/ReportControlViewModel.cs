@@ -246,10 +246,10 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         {
             this.Name = _model.Name;
             this.IsBuffered = _model.Buffered;
-            this.BufferTime = _model.BufTime;
+            this.BufferTime = (int)_model.BufTime;
             this.SelectidDataSetName = _model.DataSet;
-            this.IntegrutyPeriod = _model.IntgPd;
-            this.ConfigurationRevision = Model.ConfRev;
+            this.IntegrutyPeriod = (int)_model.IntgPd;
+            this.ConfigurationRevision = (int)Model.ConfRev;
             this.GiBool = _model.GiBool;
             ReportEnabledViewModel.UpdateViewModel();
             TriggerOptionsViewModel.UpdateViewModel();

@@ -1,5 +1,6 @@
 ﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Services;
+using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Presentation.Events;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix;
 using System;
@@ -81,7 +82,11 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
             {
                 DeHighlightTextBlock(_currentFocusedGoInNumberTextBlock);
             }
-            if(_goinNumTextBlocks.Count <= selectableBoxEventArgs.SelectableValueViewModel.ColumnNumber) return;
+            if (_goinNumTextBlocks.Count <= selectableBoxEventArgs.SelectableValueViewModel.ColumnNumber)
+            {
+                return;
+            }
+
             _currentFocusedGoInNumberTextBlock = _goinNumTextBlocks[selectableBoxEventArgs.SelectableValueViewModel.ColumnNumber];
             HighlightTextBlock(_currentFocusedGoInNumberTextBlock);
 
@@ -149,7 +154,11 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
         {
             _goinNumTextBlocks = new List<TextBlock>();
             var nameList = GooseControlBlockViewModels.FirstOrDefault()?.ColumnsName;
-            if(nameList == null) return;
+            if (nameList == null)
+            {
+                return;
+            }
+
             foreach (var name in nameList)
             {
                 TextBlock goinNumTextBlock = new TextBlock();
@@ -218,8 +227,8 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
             for (int i = 0; i < GoInCount; i++)
             {
-                scrollViewerGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = CellSize}); //new GridLength(CellSize)
-                mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = CellSize}); // new GridLength(CellSize)
+                scrollViewerGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = CellSize }); //new GridLength(CellSize)
+                mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = CellSize }); // new GridLength(CellSize)
 
             }
 
@@ -294,25 +303,30 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
                         scrollViewerGridRowIndex++;
                     }
                 }
-                mainGrid.RowDefinitions.Add(new RowDefinition()
+                if (gooseControlBlockViewModel.GooseRowViewModels.Any(g =>
+                    g.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Validity))
                 {
-                    Height = new GridLength(CellSize + 10)
-                }); //вторая шапка
-                scrollViewerGrid.RowDefinitions.Add(new RowDefinition()
-                {
-                    Height = new GridLength(CellSize + 10)
-                }); //вторая шапка
-                TextBlock upper2TextBlock = new TextBlock();
-                upper2TextBlock.Text = "GoIn Validity";
-                upper2TextBlock.HorizontalAlignment = HorizontalAlignment.Center;
-                upper2TextBlock.VerticalAlignment = VerticalAlignment.Bottom;
+                    mainGrid.RowDefinitions.Add(new RowDefinition()
+                    {
+                        Height = new GridLength(CellSize + 10)
+                    }); //вторая шапка
+                    scrollViewerGrid.RowDefinitions.Add(new RowDefinition()
+                    {
+                        Height = new GridLength(CellSize + 10)
+                    }); //вторая шапка
 
-                upper2TextBlock.SetValue(Grid.ColumnProperty, 0);
-                upper2TextBlock.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
-                upper2TextBlock.SetValue(Grid.ColumnSpanProperty, GoInCount);
-                scrollViewerGrid.Children.Add(upper2TextBlock);
-                mainGridRowIndex++;
-                scrollViewerGridRowIndex++;
+                    TextBlock upper2TextBlock = new TextBlock();
+                    upper2TextBlock.Text = "GoIn Validity";
+                    upper2TextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                    upper2TextBlock.VerticalAlignment = VerticalAlignment.Bottom;
+
+                    upper2TextBlock.SetValue(Grid.ColumnProperty, 0);
+                    upper2TextBlock.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
+                    upper2TextBlock.SetValue(Grid.ColumnSpanProperty, GoInCount);
+                    scrollViewerGrid.Children.Add(upper2TextBlock);
+                    mainGridRowIndex++;
+                    scrollViewerGridRowIndex++;
+                }
 
                 foreach (var gooseRow in gooseControlBlockViewModel.GooseRowViewModels)
                 {

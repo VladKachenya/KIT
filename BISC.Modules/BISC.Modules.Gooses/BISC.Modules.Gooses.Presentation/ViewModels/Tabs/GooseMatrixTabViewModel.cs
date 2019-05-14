@@ -22,6 +22,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
+using BISC.Modules.Gooses.Infrastructure.Keys;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 {
@@ -112,12 +113,12 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             }
             else
             {
-                if (initiatorSelectableValueViewModel.Parent.GooseRowType == "State")
+                if (initiatorSelectableValueViewModel.Parent.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.State)
                 {
                     ValidateStates();
                 }
 
-                if (initiatorSelectableValueViewModel.Parent.GooseRowType == "Quality")
+                if (initiatorSelectableValueViewModel.Parent.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Quality)
                 {
                     ValidateQualities();
                 }
@@ -127,7 +128,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
                 foreach (var gooseRowViewModel in gooseControlBlock.GooseRowViewModels)
                 {
-                    if (gooseRowViewModel.GooseRowType == "Validity")
+                    if (gooseRowViewModel.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Validity)
                     {
                         gooseRowViewModel.SelectableValueViewModels.ToList().ForEach((model => model.IsSelectingEnabled = true));
                     }

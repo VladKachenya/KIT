@@ -51,9 +51,9 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
 
         public static class GooseSubscriptionPresentationKeys
         {
-            public static string ValidityKey = "Validity";
-            public static string QualityKey = "Quality";
-            public static string StateKey = "State";
+            public static string Validity = nameof(Validity);
+            public static string Quality = nameof(Quality);
+            public static string State = nameof(State);
 
         }
 

@@ -22,10 +22,10 @@ namespace BISC.Modules.Reports.Model.Model
         public string Name { get; set; }
         public string RptID { get; set; }
         public bool Buffered { get; set; }
-        public int BufTime { get; set; }
+        public long BufTime { get; set; }
         public string DataSet { get; set; }
-        public int IntgPd { get; set; }
-        public int ConfRev { get; set; }
+        public long IntgPd { get; set; }
+        public long ConfRev { get; set; }
 
         public bool IsDynamic => _reportControlNameService.GetIsDynamic(Name);
 

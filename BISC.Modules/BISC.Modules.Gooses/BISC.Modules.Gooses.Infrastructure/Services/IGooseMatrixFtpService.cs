@@ -26,7 +26,6 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
 
         void SetGooseMatrixFtpForDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp, IBiscProject biscProject = null);
 
-        // Тут необходимо поправить!!!!!
         void SetSubscriptionRowsToMatrix(IGooseMatrixFtp gooseMatrixFtp,
             List<Tuple<IGoCbFtpEntity, IGooseRowFtpEntity>> subscriptionEntity);
 

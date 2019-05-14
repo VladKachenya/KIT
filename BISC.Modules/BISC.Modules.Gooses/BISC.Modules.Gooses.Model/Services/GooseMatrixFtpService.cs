@@ -43,7 +43,7 @@ namespace BISC.Modules.Gooses.Model.Services
                 var stateEntitys =
                     gooseMatrixFtp.GooseRowFtpEntities.Where(el => el.IndexOfGoose == goCbFtpEntity.IndexOfGoose).ToList();
                 var qualityEntitys =
-                    gooseMatrixFtp.GooseRowFtpEntities.Where(el => el.IndexOfGoose == goCbFtpEntity.IndexOfGoose).ToList();
+                    gooseMatrixFtp.GooseRowQualityFtpEntities.Where(el => el.IndexOfGoose == goCbFtpEntity.IndexOfGoose).ToList();
 
                 goCbFtpEntity.IndexOfGoose = i;
                 stateEntitys.ForEach(el => el.IndexOfGoose = i);
@@ -98,8 +98,6 @@ namespace BISC.Modules.Gooses.Model.Services
             gooseDeviceInput.GooseMatrix.Value = gooseMatrixFtp;
         }
 
-        // Тут необходимо поправить!!!!!
-        // Надо передавать не List<Tuple<string, IGooseRowFtpEntity>> а List<Tuple<IGoCbFtpEntity, IGooseRowFtpEntity>>
         public void SetSubscriptionRowsToMatrix(IGooseMatrixFtp gooseMatrixFtp,
             List<Tuple<IGoCbFtpEntity, IGooseRowFtpEntity>> subscriptionEntity)
         {

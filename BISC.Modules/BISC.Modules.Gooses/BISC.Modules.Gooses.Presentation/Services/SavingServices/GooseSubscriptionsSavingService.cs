@@ -38,26 +38,33 @@ namespace BISC.Modules.Gooses.Presentation.Services.SavingServices
             }
             var gooseSubscriptions = _goosesModelService.GetGooseInputModelInfos(device);
             var gooseSubscriptionMatrix = _gooseMatrixFtpService.GetGooseMatrixFtpForDevice(device);
-            var res = await _ftpGooseModelService.WriteGooseDeviceInputFromDevice(device.Ip, gooseSubscriptions);
-            if (res.IsSucceed)
+
+            var res = await _ftpGooseModelService.DeletGoosesAndResetDevice(device);
+            if (!res.IsSucceed)
             {
-                _loggingService.LogMessage($"Сохранение подписок на Goose-ы устройства {device.Name} с IP: {device.Ip} произошло успешно", SeverityEnum.Info);
-            }
-            else
-            {
-                _loggingService.LogMessage($"Сохранение подписок на Goose-ы устройства {device.Name} с IP: {device.Ip} произошло с ошибкой", SeverityEnum.Critical);
-                return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedWithErrors, false, res.GetFirstError());
+                return res;
             }
 
             res = await _ftpGooseModelService.WriteGooseMatrixFtpToDevice(device, gooseSubscriptionMatrix);
             if (res.IsSucceed)
             {
                 _loggingService.LogMessage($"Сохранение матрицы подписок на Goose-ы устройства {device.Name} с IP: {device.Ip} произошло успешно", SeverityEnum.Info);
-                return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedOk);
             }
             else
             {
                 _loggingService.LogMessage($"Сохранение матрицы подписок на Goose-ы устройства {device.Name} с IP: {device.Ip} произошло с ошибкой", SeverityEnum.Critical);
+                return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedWithErrors, false, res.GetFirstError());
+            }
+
+            res = await _ftpGooseModelService.WriteGooseDeviceInputFromDevice(device.Ip, gooseSubscriptions);
+            if (res.IsSucceed)
+            {
+                _loggingService.LogMessage($"Сохранение подписок на Goose-ы устройства {device.Name} с IP: {device.Ip} произошло успешно", SeverityEnum.Info);
+                return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedOk);
+            }
+            else
+            {
+                _loggingService.LogMessage($"Сохранение подписок на Goose-ы устройства {device.Name} с IP: {device.Ip} произошло с ошибкой", SeverityEnum.Critical);
                 return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedWithErrors, false, res.GetFirstError());
             }
         }

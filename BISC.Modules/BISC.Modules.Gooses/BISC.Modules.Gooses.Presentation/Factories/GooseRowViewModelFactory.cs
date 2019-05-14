@@ -1,7 +1,5 @@
-﻿using System;
-using BISC.Infrastructure.Global.IoC;
-using BISC.Modules.DataSets.Infrastructure.Model;
-using BISC.Modules.Gooses.Infrastructure.Model;
+﻿using BISC.Infrastructure.Global.IoC;
+using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Presentation.Interfaces;
@@ -12,7 +10,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using BISC.Modules.Gooses.Infrastructure.Keys;
 
 namespace BISC.Modules.Gooses.Presentation.Factories
 {
@@ -51,7 +48,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             Task[] tasks = gooseRowFtpEntities.Select((entity => new Task((() =>
             {
                 var s = Stopwatch.StartNew();
-               
+
                 parent.Find(el => el.NumberOfFcdaInDataSet == entity.NumberOfFcdaInDataSetOfGoose - 1).SelectableValueViewModels[entity.BitIndex - 1].SetValue(true);
                 s.Stop();
                 if (s.ElapsedMilliseconds > 500)
@@ -60,28 +57,23 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 }
                 if (entity is IGooseRowQualityFtpEntity validity && validity.IsValiditySelected)
                 {
-                    parent.First(el => el.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.ValidityKey).
+                    parent.First(el => el.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Validity).
                         SelectableValueViewModels[entity.BitIndex - 1].SetValue(true);
                 }
 
-          
+
             })))).ToArray();
             foreach (var task in tasks)
             {
                 task.Start();
             }
-           await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks);
         }
 
-       
+
         public List<IGooseRowViewModel> CreateRowsViewModel(GooseControlBlockViewModel parent, IGooseInputModelInfo gooseInput)
         {
             List<IGooseRowViewModel> gooseRowViewModels = new List<IGooseRowViewModel>();
-            IGooseRowViewModel validityGooseRowViewModel = new GooseRowViewModel();
-            validityGooseRowViewModel.RowName = $"{gooseInput.EmittingGooseControl.Value.Name} {GooseKeys.GooseSubscriptionPresentationKeys.ValidityKey}";
-
-            InitailizeColumns(validityGooseRowViewModel, parent.ColumnsName.Count);
-            validityGooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.ValidityKey;
 
             foreach (var fcda in gooseInput.EmittingDataSet.Value.FcdaList)
             {
@@ -90,7 +82,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 if (fcda.DaName == "q" && parent.IsConsigerTheQuality)
                 {
                     IGooseRowViewModel qualityGooseRowViewModel = new GooseRowViewModel();
-                    qualityGooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.QualityKey;
+                    qualityGooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.Quality;
                     qualityGooseRowViewModel.NumberOfFcdaInDataSet = indexOfFcda;
                     qualityGooseRowViewModel.RowName =
                     parent.AppId + " [" + fcda.DoName + "." + fcda.DaName + "] (" + qualityGooseRowViewModel.GooseRowType + ")";
@@ -103,7 +95,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 else if (fcda.DaName == "stVal")
                 {
                     IGooseRowViewModel stateGooseRowViewModel = new GooseRowViewModel();
-                    stateGooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.StateKey;
+                    stateGooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.State;
                     stateGooseRowViewModel.NumberOfFcdaInDataSet = indexOfFcda;
                     stateGooseRowViewModel.RelatedDataSet = gooseInput.EmittingDataSet.Value;
 
@@ -114,12 +106,19 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 }
             }
 
-            gooseRowViewModels.Add(validityGooseRowViewModel);
-            gooseRowViewModels.ForEach((model => model.Parent = parent));
+            if (parent.IsConsigerTheQuality)
+            {
+                IGooseRowViewModel validityGooseRowViewModel = new GooseRowViewModel();
+                validityGooseRowViewModel.RowName = $"{gooseInput.EmittingGooseControl.Value.Name} {GooseKeys.GooseSubscriptionPresentationKeys.Validity}";
+                InitailizeColumns(validityGooseRowViewModel, parent.ColumnsName.Count);
+                validityGooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.Validity;
+                gooseRowViewModels.Add(validityGooseRowViewModel);
+                gooseRowViewModels.ForEach((model => model.Parent = parent));
+            }
             return gooseRowViewModels;
         }
 
-       
+
 
         private void InitailizeColumns(IGooseRowViewModel gooseRowViewModel, int columnsCount)
         {

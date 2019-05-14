@@ -239,7 +239,12 @@ namespace BISC.Model.Global.Serializators
         {
             if (propertyInfo != null)
             {
-                if (propertyInfo.PropertyType == typeof(int))
+               
+                if (propertyInfo.PropertyType == typeof(int?))
+                {
+                    propertyInfo?.SetValue(objectToSetProp, Convert.ToInt32(value));
+                }
+                else if (propertyInfo.PropertyType == typeof(int))
                 {
                     propertyInfo?.SetValue(objectToSetProp, Convert.ToInt32(value));
                 }
@@ -250,6 +255,10 @@ namespace BISC.Model.Global.Serializators
                 else if (propertyInfo.PropertyType == typeof(bool))
                 {
                     propertyInfo?.SetValue(objectToSetProp, Convert.ToBoolean(value));
+                }
+                else if (propertyInfo.PropertyType == typeof(long))
+                {
+                    propertyInfo?.SetValue(objectToSetProp, Convert.ToInt64(value));
                 }
                 else
                 {

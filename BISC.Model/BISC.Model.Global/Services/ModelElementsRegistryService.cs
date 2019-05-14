@@ -49,7 +49,7 @@ namespace BISC.Model.Global.Services
                 }
                 else
                 {
-                    throw new ArgumentException($"Serializator with key {xElement.Name.LocalName} is not added");
+                    throw new ArgumentException($"Serializator with key {xElement.Name.LocalName} for {xElement} is not added");
                 }
             }
 

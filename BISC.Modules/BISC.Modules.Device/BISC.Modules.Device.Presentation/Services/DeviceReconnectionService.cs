@@ -162,6 +162,15 @@ namespace BISC.Modules.Device.Presentation.Services
                     return;
                 }
 
+                if (existingDevice.RevisionDetails.CompareVersionTo(device.RevisionDetails) != 0)
+                {
+                    await ShowMissing("Несоответствие версий:\n" +
+                                      $"Версия устройства в проекте: {existingDevice.Revision}\n" +
+                                      $"Версия устройства в сети: {device.Revision}");
+                    await CancellationLoading(treeItemId, existingDevice);
+                    return;
+                }
+
                 _deviceModelService.AddDeviceInModel(sclModel, device);
 
                 int currentElementsCount = 0;

@@ -112,7 +112,7 @@ namespace BISC.Modules.Gooses.Model.Services
                 string gocbrefPattern = "GocbRef{([^.}])*}";
                 string configPattern = "config{([^.}])*}";
                 var macAddressesPatternRegEx = new Regex(macAddressesPattern, RegexOptions.Singleline);
-                var gocbrefPatternRegEx = new Regex(gocbrefPattern, RegexOptions.Singleline);
+                var gocbrefPatternRegEx = new Regex(gocbrefPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
                 var configPatternRegEx = new Regex(configPattern, RegexOptions.Singleline);
 
                 var macMatch = macAddressesPatternRegEx.Match(fileInDevice);
@@ -120,7 +120,14 @@ namespace BISC.Modules.Gooses.Model.Services
                 var configMatch = configPatternRegEx.Match(fileInDevice);
 
                 var macs = macMatch.Value.Replace("MAC{\r\n", String.Empty).Replace("\r\n}", String.Empty).Replace("}", String.Empty).Replace("\r", String.Empty).Split('\n');
-                var gocbs = gocbMatch.Value.Replace("GocbRef{\r\n", String.Empty).Replace("\r\n}", String.Empty).Replace("}", String.Empty).Replace("\r", String.Empty).Split('\n');
+                var gocbs = gocbMatch.Value.
+                    Replace("GocbRef{\r\n", String.Empty). // For 23.10
+                    Replace("gocbRef{\r\n", String.Empty). // For 23.9
+                    Replace("gocbref{\r\n", String.Empty). // For 23.9
+                    Replace("\r\n}", String.Empty).
+                    Replace("}", String.Empty).
+                    Replace("\r", String.Empty).
+                    Split('\n');
                 var configs = configMatch.Value.Replace("config{\r\n", String.Empty).Replace("\r\n}", String.Empty).Replace("}", String.Empty).Replace("\r", String.Empty).Split('\n');
 
                 foreach (var mac in macs)
@@ -139,7 +146,7 @@ namespace BISC.Modules.Gooses.Model.Services
                     goCbFtpEntity.IndexOfGoose = int.Parse(entries[0]);
                     goCbFtpEntity.GoCbReference = entries[1];
                     goCbFtpEntity.AppId = entries[2];
-                    if (entries.Length > 3)
+                    if (entries.Length > 3) // For 23.10
                     {
                         goCbFtpEntity.ConfRev = int.Parse(entries[3]);
                     }
@@ -188,29 +195,35 @@ namespace BISC.Modules.Gooses.Model.Services
             }
         }
 
+        public async Task<OperationResult> DeletGoosesAndResetDevice(IDevice device)
+        {
+            await _deviceFileWritingServices.DeletFileStringFromDevice(device.Ip, "1:/CFG/GOOSERE.CFG");
+            await _deviceFileWritingServices.DeletFileStringFromDevice(device.Ip, "1:/CFG/GOOSEIN.ZIP");
+            await _deviceFileWritingServices.ResetDevice(device.Ip);
+            // Ожидание перезагрузки устройства
+            bool isPing;
+            int counter = 0;
+            do
+            {
+                if (counter >= 5)
+                {
+                    return new OperationResult("Устройство не отвечает!");
+                }
+
+                await Task.Delay(2000);
+                isPing = await _pingService.GetPing(device.Ip);
+                counter++;
+            } while (!isPing);
+
+            return OperationResult.SucceedResult;
+        }
+
         public async Task<OperationResult> WriteGooseMatrixFtpToDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp)
         {
             //RestartProces
 
             try
             {
-                await _deviceFileWritingServices.DeletFileStringFromDevice(device.Ip, "1:/CFG/GOOSERE.CFG");
-                await _deviceFileWritingServices.ResetDevice(device.Ip);
-                // Ожидание перезагрузки устройства
-                bool isPing;
-                int counter = 0;
-                do
-                {
-                    if (counter >= 5)
-                    {
-                        return new OperationResult("Устройство не отвечает!");
-                    }
-
-                    await Task.Delay(2000);
-                    isPing = await _pingService.GetPing(device.Ip);
-                    counter++;
-                } while (!isPing);
-
                 var text = _gooseMatrixParsersFactory.GetGooseMatrixParser(device).GetFileStringFromMatrixModel(gooseMatrixFtp);
 
                 if (text != null)

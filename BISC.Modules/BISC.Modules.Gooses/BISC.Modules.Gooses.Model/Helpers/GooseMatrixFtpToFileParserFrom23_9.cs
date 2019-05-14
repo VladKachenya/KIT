@@ -31,7 +31,7 @@ namespace BISC.Modules.Gooses.Model.Helpers
                 }
                 streamWriter.WriteLine("}");
                 //  streamWriter.WriteLine("# gocbref{[номер]: LD/LN$FC$goID,AppID} {1: MR771N127LD0/LLN0$GO$gcbIn}");
-                streamWriter.WriteLine("GocbRef{");
+                streamWriter.WriteLine("gocbRef{");
                 foreach (var goCbFtpEntity in gooseMatrix.GoCbFtpEntities)
                 {
 

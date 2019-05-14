@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using BISC.Model.Global.Model;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Gooses.Infrastructure.Keys;
@@ -23,6 +24,7 @@ namespace BISC.Modules.Gooses.Model.Model
         public int IndexOfGoose { get; set; }
         public string GoCbReference { get; set; }
         public string AppId { get; set; }
+        [XmlElement(IsNullable = true)]
         public int? ConfRev { get; set; }
         #endregion
         public override bool ModelElementCompareTo(IModelElement obj)

@@ -95,6 +95,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                     gooseControlBlockViewModel.ColumnsName.Add(GooseKeys.GoInNameKeys.FaultResetKey);
                     gooseControlBlockViewModel.ColumnsName.Add(GooseKeys.GoInNameKeys.SystemLogResetKey);
                     gooseControlBlockViewModel.ColumnsName.Add(GooseKeys.GoInNameKeys.AlarmLogResetKey);
+                    
                     gooseControlBlockViewModel.ColumnsName.Add(GooseKeys.GoInNameKeys.TurnOffBreaker);
                     gooseControlBlockViewModel.ColumnsName.Add(GooseKeys.GoInNameKeys.TurnOnBreaker);
                     break;
@@ -103,7 +104,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                     gooseControlBlockViewModel.ColumnsName = new List<string>();
                     for (int i = 0; i < 64; i++)
                     {
-                        gooseControlBlockViewModel.ColumnsName.Add(i.ToString());
+                        gooseControlBlockViewModel.ColumnsName.Add((i+1).ToString());
                     }
                     break;
             }

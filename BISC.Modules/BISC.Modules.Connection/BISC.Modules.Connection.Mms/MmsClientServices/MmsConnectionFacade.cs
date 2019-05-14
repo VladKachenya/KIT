@@ -372,7 +372,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
 
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "ConfRev"));
-                reportDto.ConfRev = (int)dataForReport.Structure.ToArray()[index].Integer;
+                reportDto.ConfRev = dataForReport.Structure.ToArray()[index].Unsigned;
 
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "OptFlds"));
@@ -380,7 +380,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
 
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "BufTm"));
-                reportDto.BufTime = (int)dataForReport.Structure.ToArray()[index].Unsigned;
+                reportDto.BufTime = dataForReport.Structure.ToArray()[index].Unsigned;
 
                 //index = Array.FindIndex(typeDescriptionForReport.Structure.Components.ToArray(), (type =>
                 //    type.ComponentName.Value == "SqNum"));
@@ -393,7 +393,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
 
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "IntgPd"));
-                reportDto.IntgPd = (int)dataForReport.Structure.ToArray()[index].Unsigned;
+                reportDto.IntgPd = dataForReport.Structure.ToArray()[index].Unsigned;
 
 
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>

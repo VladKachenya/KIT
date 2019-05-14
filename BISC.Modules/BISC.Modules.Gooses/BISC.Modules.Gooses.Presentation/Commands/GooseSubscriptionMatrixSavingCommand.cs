@@ -62,7 +62,7 @@ namespace BISC.Modules.Gooses.Presentation.Commands
                         if (value != null)
                         {
                             IGooseRowFtpEntity entityForSaving;
-                            if (row.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.StateKey)
+                            if (row.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.State)
                             {
                                 // Формируем state
                                 entityForSaving = new GooseRowFtpEntity()
@@ -71,7 +71,7 @@ namespace BISC.Modules.Gooses.Presentation.Commands
                                     BitIndex = value.ColumnNumber + 1
                                 };
                             }
-                            else if (row.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.QualityKey)
+                            else if (row.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Quality)
                             {
                                 // Формируем quality
                                 entityForSaving = new GooseRowQualityFtpEntity()
@@ -80,7 +80,7 @@ namespace BISC.Modules.Gooses.Presentation.Commands
                                     BitIndex = value.ColumnNumber + 1,
                                     // Устанавливаем валидити
                                     IsValiditySelected = gooseControlBlockViewModel.GooseRowViewModels.First(el =>
-                                            el.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.ValidityKey)
+                                            el.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Validity)
                                         .SelectableValueViewModels[value.ColumnNumber].SelectedValue
                                 };
                             }

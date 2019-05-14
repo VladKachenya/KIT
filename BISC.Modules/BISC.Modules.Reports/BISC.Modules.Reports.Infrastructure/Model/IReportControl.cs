@@ -13,10 +13,10 @@ namespace BISC.Modules.Reports.Infrastructure.Model
         string Name { get; set; }
         string RptID { get; set; }
         bool Buffered { get; set; }
-        int BufTime { get; set; }
+        long BufTime { get; set; }
         string DataSet { get; set; }
-        int IntgPd { get; set; }
-        int ConfRev { get; set; }
+        long IntgPd { get; set; }
+        long ConfRev { get; set; }
         bool IsDynamic { get;}
         ChildModelProperty<ITrgOps> TrgOps { get; }
         ChildModelProperty<IOptFields> OptFields { get; }
