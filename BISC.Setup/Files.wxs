@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?define SourceDir="C:\Users\Vlad_UPR\Source\Workspaces\Unicon2\BISC\BISC\bin\Release"?>
+<?define SourceDir="C:\Users\vkachenya\Desktop\KIT source\BISC\BISC\bin\Release"?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>

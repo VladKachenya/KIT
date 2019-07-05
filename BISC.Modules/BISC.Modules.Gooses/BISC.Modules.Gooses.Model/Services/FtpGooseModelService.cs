@@ -205,7 +205,7 @@ namespace BISC.Modules.Gooses.Model.Services
             int counter = 0;
             do
             {
-                if (counter >= 5)
+                if (counter >= 30)
                 {
                     return new OperationResult("Устройство не отвечает!");
                 }
