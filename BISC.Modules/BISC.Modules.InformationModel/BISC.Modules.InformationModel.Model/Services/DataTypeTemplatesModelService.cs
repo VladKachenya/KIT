@@ -60,6 +60,9 @@ namespace BISC.Modules.InformationModel.Model.Services
                     dttFrom.GetAllChildrenOfType(ref daList);
                     foreach (var node in daList.Where(node => node.Type == daType.Id))
                     {
+                        if(resId == "MR5PO50N245CTRL.CSWI1.Pos.Oper")
+                        {
+                        }
                         node.Type = resId;
                     }
                     //var t = daList.Where(node => node.Type == daType.Id).ToList();
@@ -321,10 +324,6 @@ namespace BISC.Modules.InformationModel.Model.Services
 
         public string AddDoType(IDoType dotype, ISclModel sclModel)
         {
-            if (dotype.Id == "MR771N139LD0.LLN0.NamPlt")
-            {
-
-            }
             IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
             if (dotype == null)
             {
@@ -450,7 +449,9 @@ namespace BISC.Modules.InformationModel.Model.Services
             foreach (IDaType datypeitem in dataTypeTemplates.DaTypes)
             {
                 if (((datype.Bdas != null) && (datype.Bdas.Count == datypeitem.Bdas.Count)) &&
-                    (datype.Id.Substring(datype.Id.LastIndexOf('.') + 1) == datypeitem.Id.Substring(datypeitem.Id.LastIndexOf('.') + 1)))
+                    (datype.Id.Substring(datype.Id.LastIndexOf('.') + 1) == datypeitem.Id.Substring(datypeitem.Id.LastIndexOf('.') + 1)) &&
+                    datype.Id == datypeitem.Id
+                    )
                 {
                     bool b = true;
                     foreach (IBda bda in datypeitem.Bdas)
