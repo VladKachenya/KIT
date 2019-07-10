@@ -95,8 +95,8 @@ namespace BISC.Modules.Gooses.Model.Services
             }
 
             //Сопоставление мак адресов
-            //gooseMatrix.MacAddressList.Clear();
-            //macAddressesToInputs.ForEach(el => _gooseMatrixFtpService.AddMacAddressToMatrix(gooseMatrix, el));
+            gooseMatrix.MacAddressList.Clear();
+            macAddressesToInputs.ForEach(el => _gooseMatrixFtpService.AddMacAddressToMatrix(gooseMatrix, el));
 
         }
 
