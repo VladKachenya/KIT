@@ -2,6 +2,7 @@
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Model.Model;
+using System.Globalization;
 
 namespace BISC.Modules.Gooses.Model.Factorys
 {
@@ -11,9 +12,21 @@ namespace BISC.Modules.Gooses.Model.Factorys
         {
             IGoCbFtpEntity res = new GoCbFtpEntity();
             res.GoCbReference = gooseInputModelInfo.GocbRef;
-            res.AppId = gooseInputModelInfo.EmittingGse.Value.AppId;
+            res.AppId = uint.Parse(gooseInputModelInfo.EmittingGse.Value.AppId, NumberStyles.HexNumber).ToString("D");
             res.ConfRev = gooseInputModelInfo.EmittingGooseControl.Value.ConfRev;
             return res;
         }
+
+        public IGoCbFtpEntity GetGoCbFtpEntity(int indexOfGoose, string goCdRef, uint appId, int? confRev)
+        {
+            return new GoCbFtpEntity()
+            {
+                IndexOfGoose = indexOfGoose,
+                GoCbReference = goCdRef,
+                AppId = appId.ToString("D"),
+                ConfRev = confRev
+            };
+        }
+
     }
 }

@@ -20,7 +20,7 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
         /// <param name="goCdRef"></param>
         /// <param name="goAppId"></param>
         /// <param name="confRev"></param>
-        void AddGooseCdFtpEntityToMatrix(IGooseMatrixFtp gooseMatrixFtp, string goCdRef, string goAppId, int confRev);
+        void AddGooseCdFtpEntityToMatrix(IGooseMatrixFtp gooseMatrixFtp, string goCdRef, uint goAppId, int confRev);
 
         IGooseMatrixFtp GetGooseMatrixFtpForDevice(IDevice device, IBiscProject biscProject = null);
 

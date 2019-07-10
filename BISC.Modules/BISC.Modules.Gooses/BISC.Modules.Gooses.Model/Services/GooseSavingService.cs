@@ -8,6 +8,7 @@ using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -88,7 +89,7 @@ namespace BISC.Modules.Gooses.Model.Services
             // Добавление отмеченых
             foreach (var element in gooseInputModelInfoList)
             {
-                _gooseMatrixFtpService.AddGooseCdFtpEntityToMatrix(gooseMatrix, element.GocbRef, element.EmittingGse.Value.AppId,
+                _gooseMatrixFtpService.AddGooseCdFtpEntityToMatrix(gooseMatrix, element.GocbRef, uint.Parse(element.EmittingGse.Value.AppId, NumberStyles.HexNumber),
                     element.EmittingGooseControl.Value.ConfRev);
                 _gooseMatrixFtpService.AddMacAddressToMatrix(gooseMatrix, element.EmittingGse.Value.MacAddress);
             }

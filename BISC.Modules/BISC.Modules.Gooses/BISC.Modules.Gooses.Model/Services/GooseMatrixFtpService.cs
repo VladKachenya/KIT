@@ -1,5 +1,6 @@
 ﻿using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Gooses.Infrastructure.Factorys;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Model.Model;
@@ -15,11 +16,13 @@ namespace BISC.Modules.Gooses.Model.Services
     {
         private readonly IGoosesModelService _goosesModelService;
         private readonly IBiscProject _biscProject;
+        private readonly IGoCbFtpEntityFactory _goCbFtpEntityFactory; 
 
-        public GooseMatrixFtpService(IGoosesModelService goosesModelService, IBiscProject biscProject)
+        public GooseMatrixFtpService(IGoosesModelService goosesModelService, IBiscProject biscProject, IGoCbFtpEntityFactory goCbFtpEntityFactory)
         {
             _goosesModelService = goosesModelService;
             _biscProject = biscProject;
+            _goCbFtpEntityFactory = goCbFtpEntityFactory;
         }
 
 
@@ -59,12 +62,12 @@ namespace BISC.Modules.Gooses.Model.Services
             }
         }
 
-        public void AddGooseCdFtpEntityToMatrix(IGooseMatrixFtp gooseMatrixFtp, string goCdRef, string goAppId, int confRev)
+        public void AddGooseCdFtpEntityToMatrix(IGooseMatrixFtp gooseMatrixFtp, string goCdRef, uint goAppId, int confRev)
         {
-            if (gooseMatrixFtp.GoCbFtpEntities.Any(el => el.GoCbReference == goCdRef && el.AppId == goAppId && el.ConfRev == confRev)) { return; }
+            if (gooseMatrixFtp.GoCbFtpEntities.Any(el => el.GoCbReference == goCdRef && el.AppId == goAppId.ToString("D") && el.ConfRev == confRev)) { return; }
             var goCdEntity = gooseMatrixFtp.GoCbFtpEntities;
             var i = goCdEntity.Count == 0 ? 1 : goCdEntity[goCdEntity.Count - 1].IndexOfGoose + 1;
-            gooseMatrixFtp.GoCbFtpEntities.Add(new GoCbFtpEntity() { IndexOfGoose = i, GoCbReference = goCdRef, AppId = goAppId, ConfRev = confRev });
+            gooseMatrixFtp.GoCbFtpEntities.Add(_goCbFtpEntityFactory.GetGoCbFtpEntity(i, goCdRef, goAppId, confRev));
         }
 
         public IGooseMatrixFtp GetGooseMatrixFtpForDevice(IDevice device, IBiscProject biscProject = null)

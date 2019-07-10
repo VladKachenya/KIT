@@ -1,5 +1,6 @@
 ﻿using BISC.Modules.Gooses.Infrastructure.Helpers;
 using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -34,7 +35,8 @@ namespace BISC.Modules.Gooses.Model.Helpers
                 streamWriter.WriteLine("gocbRef{");
                 foreach (var goCbFtpEntity in gooseMatrix.GoCbFtpEntities)
                 {
-
+                    // parse appId from hex to uint
+                    //string decAppId = uint.Parse(goCbFtpEntity.AppId, NumberStyles.HexNumber).ToString("D");
                     streamWriter.WriteLine($"{goCbFtpEntity.IndexOfGoose}:{goCbFtpEntity.GoCbReference},{goCbFtpEntity.AppId}");
 
                 }
