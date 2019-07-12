@@ -119,7 +119,7 @@ namespace BISC.Presentation.Services
         public UiEntityIdentifier GetDeviceTreeItem(Guid deviceGuid)
         {
             var deviceTreeItem = _mainTreeViewModels.FirstOrDefault((pair => pair.Value.Item1.Tag == deviceGuid.ToString()));
-            return deviceTreeItem.Value.Item1;
+            return deviceTreeItem.Value?.Item1;
         }
 
         public void ClearMainTree()

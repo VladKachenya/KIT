@@ -244,7 +244,13 @@ namespace BISC.Modules.Device.Presentation.Services
             await RebootOnly(existingDevice);
             if (uiEntityIdToRemove == null)
             {
-                await Reconnect(existingDevice, _treeManagementService.GetDeviceTreeItem(existingDevice.DeviceGuid), true);
+                var treeItem = _treeManagementService.GetDeviceTreeItem(existingDevice.DeviceGuid);
+                if (treeItem == null)
+                {
+                    _loggingService.LogMessage($"Ошибка при подключении к устройству: {existingDevice.Name}", SeverityEnum.Critical);
+                    return;
+                }
+                await Reconnect(existingDevice, treeItem, true);
 
             }
             else
