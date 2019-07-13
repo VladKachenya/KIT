@@ -88,7 +88,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
         {
             if(loadErrorEvent.Ip != _restartDeviceContext.Device.Ip || loadErrorEvent.DeviceGuid != _restartDeviceContext.Device.DeviceGuid) return;
             _treeManagementService.DeleteTreeItem(_restartDeviceContext.UiEntityIdentifier);
-            _deviceAddingService.AddDeviceToTree(_restartDeviceContext.Device);
+            _deviceAddingService.AddDeviceToTreeIfMissing(_restartDeviceContext.Device);
         }
 
         private void OnCancel()
@@ -184,6 +184,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
             _globalEventsService.Subscribe<DeviceLoadingEvent>(OnDeviceLoadingEvent);
             _globalEventsService.Subscribe<LoadErrorEvent>(OnCancelEvent);
             base.OnActivate();
+        }
+
+        protected override void OnDisposing()
+        {
+            OnDeactivate();
+            base.OnDisposing();
         }
 
     }

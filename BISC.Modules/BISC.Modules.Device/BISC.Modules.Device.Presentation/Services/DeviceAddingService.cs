@@ -28,7 +28,7 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly IUserInteractionService _userInteractionService;
 
         public DeviceAddingService(INavigationService navigationService, IDeviceModelService deviceModelService,
-            ILoggingService loggingService, IBiscProject biscProject, ITreeManagementService treeManagementService, 
+            ILoggingService loggingService, IBiscProject biscProject, ITreeManagementService treeManagementService,
             IUiFromModelElementRegistryService uiFromModelElementRegistryService, ISclCommunicationModelService communicationModelService)
         {
             _navigationService = navigationService;
@@ -106,6 +106,14 @@ namespace BISC.Modules.Device.Presentation.Services
             var resultTreeItem =
                 _treeManagementService.AddTreeItem(navigationParameters, DeviceKeys.DeviceTreeItemViewKey, null, device.DeviceGuid.ToString(), index);
             _uiFromModelElementRegistryService.TryHandleModelElementInUiByKey(device, resultTreeItem, "IED");
+        }
+
+        public void AddDeviceToTreeIfMissing(IDevice device, int? index = null)
+        {
+            if (_treeManagementService.GetDeviceTreeItem(device.DeviceGuid) == null)
+            {
+                AddDeviceToTree(device, index);
+            }
         }
     }
 }

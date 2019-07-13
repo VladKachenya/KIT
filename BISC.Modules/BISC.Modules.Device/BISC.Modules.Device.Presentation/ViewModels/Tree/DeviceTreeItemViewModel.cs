@@ -233,12 +233,15 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
                 // тут необходимо скорее всего через Guid делать
                 _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject,
                     _device.Name);
-
-                _treeManagementService.DeleteTreeItem(_uiEntityIdentifier);
+                //_treeManagementService.DeleteTreeItem(_uiEntityIdentifier);
+                //_tabManagementService.CloseTabWithChildren(_uiEntityIdentifier.ItemId.ToString());
+                //_deviceWarningsService.ClearDeviceWarningsOfDevice(_device.DeviceGuid);
                 _connectionPoolService.GetConnection(_device.Ip).StopConnection();
-                _tabManagementService.CloseTabWithChildren(_uiEntityIdentifier.ItemId.ToString());
-                _deviceWarningsService.ClearDeviceWarningsOfDevice(_device.DeviceGuid);
             }
+            _treeManagementService.DeleteTreeItem(_uiEntityIdentifier);
+            _tabManagementService.CloseTabWithChildren(_uiEntityIdentifier.ItemId.ToString());
+            _deviceWarningsService.ClearDeviceWarningsOfDevice(_device.DeviceGuid);
+
         }
 
         #region Implementation of IMainTreeItem

@@ -7,8 +7,9 @@ namespace BISC.Modules.Device.Presentation.Interfaces.Services
 {
     public interface IDeviceAddingService:IUiFromModelElementService
     {
-        void AddDeviceToTree(IDevice device,int? index=null);
         void OpenDeviceAddingView();
         void AddDevicesInProject(List<IDevice> devicesToAdd,ISclModel modelFrom);
+        void AddDeviceToTree(IDevice device, int? index = null);
+        void AddDeviceToTreeIfMissing(IDevice device, int? index = null);
     }
 }

@@ -144,12 +144,14 @@ namespace BISC.Modules.Device.Presentation.Services
                 await CancellationLoading(treeItemId, existingDevice);
             }
 
-            var device = deviceConnectResult.Item;
-            device.SetGuid(existingDevice.DeviceGuid);
+            IDevice device = null;
             var sclModel = _sclModelCreator();
-            var itemsCount = 0;
+            int itemsCount = 0;
             try
             {
+                device = deviceConnectResult.Item;
+                device.SetGuid(existingDevice.DeviceGuid);
+
                 foreach (var sortedElement in sortedElements)
                 {
                     itemsCount += await sortedElement.EstimateProgress(device);
@@ -188,9 +190,9 @@ namespace BISC.Modules.Device.Presentation.Services
             }
             catch (Exception e)
             {
+                _connectionPoolService.GetConnection(device.Ip).StopConnection();
                 if (cts.IsCancellationRequested)
                 {
-                    _connectionPoolService.GetConnection(device.Ip).StopConnection();
                     _loggingService.LogUserAction($"Загрузка устройства отменена пользователем {device.Name}");
                     //  return new OperationResult($"Загрузка устройства отменена пользователем {device.Name}");
                 }
