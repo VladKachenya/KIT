@@ -12,6 +12,7 @@ using System.Data;
 using System.Linq;
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
+using BISC.Modules.Device.Infrastructure.Keys;
 
 namespace BISC.Modules.Gooses.Presentation.Factories
 {
@@ -44,9 +45,16 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
             foreach (var deviceInProject in devicesInProject)
             {
+                // Если устройство не БЕМН то не добавляем его в таблицн 
+                if (deviceInProject.Manufacturer != DeviceKeys.DeviceManufacturer.BemnManufacturer)
+                {
+                    continue;
+                    //lockColumnIndexes.Add(devicesInProject.IndexOf(deviceInProject) + 1);
+                }
                 var col = new DataColumn(deviceInProject.Name, typeof(SubscriptionValue));
                 col.Caption = deviceInProject.DeviceGuid.ToString();
                 table.Columns.Add(col);
+                
             }
 
             // Полученин всех текущих GooseControlModelInfo
@@ -109,10 +117,13 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 var colDevice = _deviceModelService.GetDeviceByGuid(_biscProject.MainSclModel.Value, colDevGuid);
                 var gooseInputModelInfoEntites = _goosesModelService
                     .GetGooseDeviceInputOfProject(_biscProject, colDevice).GooseInputModelInfoList;
+               
+
                 for (int rowIndex = 0; rowIndex < table.Rows.Count; rowIndex++)
                 {
                     var rowEntity = table.Rows[rowIndex][0] as GooseDescriptionEntity;
 
+                    // Блокирование подписок на самого себя 
                     if (rowEntity.ParientDevice?.DeviceGuid == colDevGuid)
                     {
                         table.Rows[rowIndex][colIndex] = new SubscriptionValue(null, false);

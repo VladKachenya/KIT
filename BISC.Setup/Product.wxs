@@ -62,7 +62,8 @@
         </Directory>
       </Directory>
     </Directory>
-    <WixVariable Id="WixUILicenseRtf" Value="C:\license.rtf" />
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="License.rtf" />
 
 
     <Feature Id="ProductFeature"  Title="SetupProject1" Level="1">

@@ -40,6 +40,7 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="License.rtf" />
     <Content Include="Logo.ico" />
     <Content Include="Logo1.ico" />
     <Content Include="Logo3.ico" />
