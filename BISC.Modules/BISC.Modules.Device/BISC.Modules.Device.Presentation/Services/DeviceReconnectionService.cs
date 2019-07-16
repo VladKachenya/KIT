@@ -190,9 +190,9 @@ namespace BISC.Modules.Device.Presentation.Services
             }
             catch (Exception e)
             {
-                _connectionPoolService.GetConnection(device.Ip).StopConnection();
                 if (cts.IsCancellationRequested)
                 {
+                    _connectionPoolService.GetConnection(device.Ip).StopConnection();
                     _loggingService.LogUserAction($"Загрузка устройства отменена пользователем {device.Name}");
                     //  return new OperationResult($"Загрузка устройства отменена пользователем {device.Name}");
                 }
