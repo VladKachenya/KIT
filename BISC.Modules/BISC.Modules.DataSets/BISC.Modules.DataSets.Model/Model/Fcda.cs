@@ -33,9 +33,10 @@ namespace BISC.Modules.DataSets.Model.Model
             string lnstr = iecAddress.Substring(iecAddress.IndexOf('/') + 1,
                 iecAddress.IndexOf('.') - iecAddress.IndexOf('/') - 1);
             uint i;
+            var lnstrWithoutNumber = lnstr.Trim("0123456789".ToCharArray());
             foreach (string str in Enum.GetNames(typeof(tLNClassEnum)))
             {
-                if (lnstr.Contains(str))
+                if (lnstr == str || (lnstrWithoutNumber.Length >= 4 && lnstrWithoutNumber.Substring(lnstrWithoutNumber.Length - 4) == str))
                 {
                     string[] s = new string[1];
                     s[0] = str;
