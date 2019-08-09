@@ -289,12 +289,7 @@ namespace BISC.Modules.Gooses.Model.Services
         {
             using (streamWriter)
             {
-                Regex reg = new Regex("MR\\d*");
-                var matches = reg.Matches(device.Name);
-                if (matches.Count > 0)
-                {
-                    streamWriter.WriteLine($"Dev({matches[0]})");
-                }
+                streamWriter.WriteLine($"Dev({device.Type})");
                 foreach (var gooseDtoObj in gooseDtosToParse)
                 {
                     string ld = gooseDtoObj.LdInst;

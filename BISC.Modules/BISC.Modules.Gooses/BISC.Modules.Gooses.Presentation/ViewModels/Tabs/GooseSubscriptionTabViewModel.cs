@@ -49,6 +49,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             ICommandFactory commandFactory, IUserInterfaceComposingService userInterfaceComposingService, ISaveCheckingService saveCheckingService,
             GooseSubscriptionSavingCommand gooseSubscriptionSavingCommand, IGlobalSavingService globalSavingService, IGooseSubscriptionDataTableFactory dataTableFactory,
             GooseInputModelInfosLoadingService gooseInputModelInfosLoadingService, ILoggingService loggingService, IConnectionPoolService connectionPoolService)
+            : base(null)
         {
             _deviceModelService = deviceModelService;
             _biscProject = biscProject;

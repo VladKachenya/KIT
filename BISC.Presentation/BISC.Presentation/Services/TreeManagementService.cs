@@ -18,24 +18,27 @@ namespace BISC.Presentation.Services
         private readonly IMainTreeViewModel _mainTreeViewModel;
         private readonly INavigationService _navigationService;
         private readonly ITabManagementService _tabManagementService;
+        private readonly Func<ITreeItemViewModel> _treeItemViewModelFunc;
+
         private Dictionary<Guid, Tuple<UiEntityIdentifier, ITreeItemViewModel>> _mainTreeViewModels
             = new Dictionary<Guid, Tuple<UiEntityIdentifier, ITreeItemViewModel>>();
 
 
 
         public TreeManagementService(IMainTreeViewModel mainTreeViewModel, INavigationService navigationService,
-            ITabManagementService tabManagementService)
+            ITabManagementService tabManagementService, Func<ITreeItemViewModel> treeItemViewModelFunc)
         {
             _mainTreeViewModel = mainTreeViewModel;
             _navigationService = navigationService;
             _tabManagementService = tabManagementService;
+            _treeItemViewModelFunc = treeItemViewModelFunc;
         }
 
-        public UiEntityIdentifier AddTreeItem(BiscNavigationParameters parameters, string viewName, UiEntityIdentifier parentUiEntityIdentifier, string tag = null,int? index=null)
+        public UiEntityIdentifier AddTreeItem(BiscNavigationParameters parameters, string viewName, UiEntityIdentifier parentUiEntityIdentifier, string tag = null, int? index = null)
         {
             var newTreeItemGuid = Guid.NewGuid();
-            UiEntityIdentifier uiEntityIdentifier = new UiEntityIdentifier(newTreeItemGuid, parentUiEntityIdentifier, tag);
-            TreeItemViewModel newItemViewModel = new TreeItemViewModel();
+            UiEntityIdentifier uiEntityIdentifier = new UiEntityIdentifier(newTreeItemGuid, parentUiEntityIdentifier, tag, viewName, true);
+            ITreeItemViewModel newItemViewModel = _treeItemViewModelFunc();
             newItemViewModel.DynamicRegionId = newTreeItemGuid;
 
             parameters.AddParameterByName(UiEntityIdentifier.Key, uiEntityIdentifier);
@@ -48,13 +51,13 @@ namespace BISC.Presentation.Services
             }
             else
             {
-                if ((index == null)||(_mainTreeViewModel.ChildItemViewModels.Count-1<index))
+                if ((index == null) || (_mainTreeViewModel.ChildItemViewModels.Count - 1 < index))
                 {
                     _mainTreeViewModel.ChildItemViewModels.Add(newItemViewModel);
                 }
                 else
                 {
-                    _mainTreeViewModel.ChildItemViewModels.Insert(index.Value,newItemViewModel);
+                    _mainTreeViewModel.ChildItemViewModels.Insert(index.Value, newItemViewModel);
                 }
             }
             _mainTreeViewModels.Add(newTreeItemGuid, new Tuple<UiEntityIdentifier, ITreeItemViewModel>(uiEntityIdentifier, newItemViewModel));

@@ -24,6 +24,7 @@ namespace BISC.Presentation.ViewModels
         private string _title;
 
         public UserInteractionOptionsViewModel(ICommandFactory commandFactory)
+            : base(null)
         {
             _commandFactory = commandFactory;
             OptionCollection = new ObservableCollection<OptionSelectionCommand>();

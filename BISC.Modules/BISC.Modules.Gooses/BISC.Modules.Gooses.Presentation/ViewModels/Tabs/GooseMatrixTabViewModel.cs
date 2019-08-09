@@ -55,6 +55,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             IUserInterfaceComposingService userInterfaceComposingService, GooseMatrixLoadingService gooseMatrixLoadingService,
             IGooseControlBlockViewModelFactory gooseControlBlockViewModelFactory, GooseSubscriptionMatrixSavingCommand gooseSubscriptionMatrixSavingCommand,
             IConnectionPoolService connectionPoolService, GooseInputModelInfosLoadingService gooseInputModelInfosLoadingService, IGlobalSavingService globalSavingService)
+            : base(globalEventsService)
         {
             _biscProject = biscProject;
             _saveCheckingService = saveCheckingService;
@@ -71,7 +72,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             SaveCommand = commandFactory.CreatePresentationCommand(OnSave, () => _isCommandEnabled);
             UpdateCommand = commandFactory.CreatePresentationCommand(OnUpdateExecute, () => _isCommandEnabled);
             GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>();
-
         }
         #endregion
 

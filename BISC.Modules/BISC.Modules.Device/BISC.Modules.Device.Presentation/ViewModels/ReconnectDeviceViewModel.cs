@@ -14,13 +14,14 @@ using BISC.Presentation.Infrastructure.Navigation;
 
 namespace BISC.Modules.Device.Presentation.ViewModels
 {
-   public class ReconnectDeviceViewModel:NavigationViewModelBase
+    public class ReconnectDeviceViewModel : NavigationViewModelBase
     {
         private readonly ICommandFactory _commandFactory;
         private readonly IDeviceReconnectionService _deviceReconnectionService;
         private ReconnectDeviceContext _reconnectDeviceContext;
 
-        public ReconnectDeviceViewModel(ICommandFactory commandFactory,IDeviceReconnectionService deviceReconnectionService)
+        public ReconnectDeviceViewModel(ICommandFactory commandFactory, IDeviceReconnectionService deviceReconnectionService)
+            : base(null)
         {
             _commandFactory = commandFactory;
             _deviceReconnectionService = deviceReconnectionService;
@@ -30,7 +31,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         private void OnSelectShowConflicts()
         {
-            
+
             _deviceReconnectionService.ReconnectDevice(_reconnectDeviceContext.Device,
                 _reconnectDeviceContext.DeviceUiEntityIdentifier);
             DialogCommands.CloseDialogCommand?.Execute(null, null);
@@ -49,7 +50,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         private void OnCancel()
         {
-            DialogCommands.CloseDialogCommand?.Execute(null,null);
+            DialogCommands.CloseDialogCommand?.Execute(null, null);
         }
 
         public ICommand SelectLoadFromDeviceCommand { get; }
@@ -57,6 +58,6 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         public ICommand SelectShowConflictsCommand { get; }
         public ICommand CancelCommand { get; }
 
-        
+
     }
 }

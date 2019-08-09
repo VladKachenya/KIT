@@ -15,6 +15,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
 
         public ReportsConflictsViewModel(IReportVeiwModelService controlViewModelService)
+            : base(null)
         {
             _controlViewModelService = controlViewModelService;
             ReportControlViewModelsInProject = new ObservableCollection<IReportControlViewModel>();

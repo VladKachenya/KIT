@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Services;
 using BISC.Interfaces;
 using BISC.Presentation.BaseItems.Events;
@@ -20,26 +21,33 @@ using Prism.Events;
 
 namespace BISC.ViewModel
 {
-   public class ShellViewModel:NavigationViewModelBase, IShellViewModel
+    public class ShellViewModel : NavigationViewModelBase, IShellViewModel
     {
         private readonly INavigationService _navigationService;
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IGlobalEventsService _globalEventsService;
+        private readonly IInjectionContainer _container;
         private readonly ShellLoadedService _shellLoadedService;
         private bool _isLeftMenuEnabled;
         private string _applicationTitle;
         private GridLength _expanderRowHeight;
         private bool _isNotificationsExpanded;
 
-        public ShellViewModel(INavigationService navigationService,
-             ISaveCheckingService saveCheckingService,IGlobalEventsService globalEventsService, ShellLoadedService shellLoadedService)
+        public ShellViewModel(
+            INavigationService navigationService,
+            ISaveCheckingService saveCheckingService,
+            IGlobalEventsService globalEventsService,
+            IInjectionContainer container,
+            ShellLoadedService shellLoadedService)
+            : base(null)
         {
             _navigationService = navigationService;
             _saveCheckingService = saveCheckingService;
             _globalEventsService = globalEventsService;
+            _container = container;
             _shellLoadedService = shellLoadedService;
             ShellLoadedCommand = new DelegateCommand(OnShellLoaded);
-            ShellClosingCommand=new DelegateCommand<object>(OnShellClosing);
+            ShellClosingCommand = new DelegateCommand<object>(OnShellClosing);
             _globalEventsService.Subscribe<NotificationBarExpandEvent>(OnNotificationBarClosing);
             _globalEventsService.Subscribe<ShellBlockEvent>((x) =>
             {
@@ -83,7 +91,7 @@ namespace BISC.ViewModel
         public bool IsNotificationsExpanded
         {
             get => _isNotificationsExpanded;
-            set { SetProperty(ref _isNotificationsExpanded,value); }
+            set { SetProperty(ref _isNotificationsExpanded, value); }
         }
 
         public GridLength ExpanderRowHeight
@@ -99,22 +107,18 @@ namespace BISC.ViewModel
         private async void OnShellClosing(object obj)
         {
             (obj as CancelEventArgs).Cancel = true;
-            OnClosing();
+            await OnClosing();
         }
 
         private async Task OnClosing()
         {
-            var result =await _saveCheckingService.SaveAllUnsavedEntities(true);
-            if (!result.IsCancelled)
-            {
-               Application.Current.Shutdown();
-            }
+            await _container.ResolveType<IProjectManagementService>().SaveProjectAsync();
+            Application.Current.Shutdown();
         }
 
         private void OnShellLoaded()
         {
             _globalEventsService.SendMessage(new ShellLoadedEvent());
-            //ApplicationTitle = $"Bemn Intellectual Substation Control (Текущий проект: {_projectService.GetCurrentProjectPath(false)})";
             _shellLoadedService.OnShellLoadedAction?.Invoke();
         }
 
@@ -122,14 +126,13 @@ namespace BISC.ViewModel
         public ICommand ShellLoadedCommand { get; }
         public ICommand ShellClosingCommand { get; }
 
-  
+
 
         public string ApplicationTitle
         {
             get => _applicationTitle;
             set
             {
-               
                 SetProperty(ref _applicationTitle, value);
             }
         }

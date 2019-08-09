@@ -26,6 +26,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         #region C-tor
         public DataSetsTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService, IDeviceWarningsService deviceWarningsService,
             IGlobalEventsService globalEventsService)
+            : base(null)
         {
             _tabManagementService = tabManagementService;
             _deviceWarningsService = deviceWarningsService;

@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 using BISC.Presentation.Infrastructure.ViewModel;
 
 namespace BISC.Interfaces
@@ -7,5 +8,6 @@ namespace BISC.Interfaces
     {
         bool IsNotificationsExpanded { get; set; }
         GridLength ExpanderRowHeight { get; set; }
+        ICommand ShellClosingCommand { get; }
     }
 }

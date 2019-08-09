@@ -57,6 +57,7 @@ namespace BISC.Presentation.Module
             _injectionContainer.RegisterType<object, SaveChangesView>(KeysForNavigation.ViewNames.SaveChangesViewName);
             _injectionContainer.RegisterType<object, ApplicationSettingsView>(KeysForNavigation.ViewNames.ApplicationSettingsViewName);
             _injectionContainer.RegisterType<object, UserInteractionOptionsView>(KeysForNavigation.ViewNames.UserInteractionOptionsViewName);
+            _injectionContainer.RegisterType<ITreeItemViewModel, TreeItemViewModel>();
 
 
             _injectionContainer.RegisterType<PresentationInitialization>(true);

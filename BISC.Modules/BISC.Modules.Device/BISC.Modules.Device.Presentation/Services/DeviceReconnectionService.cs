@@ -131,12 +131,12 @@ namespace BISC.Modules.Device.Presentation.Services
             restartDeviceContext.UiEntityIdentifier = treeItemId;
             if (isRestarting)
             {
-                await Task.Delay(3000, cts.Token);
+                await Task.Delay(4000, cts.Token);
             }
 
             existingDevice.Ip =
                 _sclCommunicationModelService.GetIpOfDevice(existingDevice.Name, _biscProject.MainSclModel.Value);
-            var deviceConnectResult = await _deviceConnectionService.ConnectDevice(existingDevice.Ip, 1);
+            var deviceConnectResult = await _deviceConnectionService.ConnectDevice(existingDevice.Ip, 2);
             if (!deviceConnectResult.IsSucceed)
             {
                 _loggingService.LogMessage($"IED Устройство по адресу {existingDevice.Ip} не обнаружено",
@@ -201,7 +201,10 @@ namespace BISC.Modules.Device.Presentation.Services
                     _loggingService.LogMessage(
                         $"Ошибка загрузки устройства {e.Message + Environment.NewLine + e.StackTrace}",
                         SeverityEnum.Critical);
-                    _globalEventsService.SendMessage(new LoadErrorEvent(device.Ip, device.DeviceGuid));
+                    if (device != null)
+                    {
+                        _globalEventsService.SendMessage(new LoadErrorEvent(device.Ip, device.DeviceGuid));
+                    }
 
                     // return new OperationResult($"Ошибка загрузка устройства {device.Name}");
                 }

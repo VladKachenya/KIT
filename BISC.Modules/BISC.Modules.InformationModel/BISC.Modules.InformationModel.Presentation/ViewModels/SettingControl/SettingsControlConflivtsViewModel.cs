@@ -11,21 +11,23 @@ using BISC.Presentation.Infrastructure.Navigation;
 
 namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
 {
-   public class SettingsControlConflivtsViewModel:NavigationViewModelBase
+    public class SettingsControlConflivtsViewModel : NavigationViewModelBase
     {
         private SettingsControlConflictsContext _settingsControlConflictsContext;
 
         public SettingsControlConflivtsViewModel()
+            : base(null)
+
         {
-            SettingControlViewModelsInDevice=new ObservableCollection<SettingControlViewModel>();
-            SettingControlViewModelsInProject=new ObservableCollection<SettingControlViewModel>();
+            SettingControlViewModelsInDevice = new ObservableCollection<SettingControlViewModel>();
+            SettingControlViewModelsInProject = new ObservableCollection<SettingControlViewModel>();
         }
 
         #region Overrides of NavigationViewModelBase
 
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
-            _settingsControlConflictsContext= navigationContext.BiscNavigationParameters.GetParameterByName<SettingsControlConflictsContext>(InfoModelKeys
+            _settingsControlConflictsContext = navigationContext.BiscNavigationParameters.GetParameterByName<SettingsControlConflictsContext>(InfoModelKeys
                 .SettingsControlConflictsContextKey);
             SettingControlViewModelsInDevice.Clear();
             _settingsControlConflictsContext.SettingControlViewModelsInDevice.ForEach((model =>

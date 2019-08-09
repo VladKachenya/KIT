@@ -27,6 +27,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         #region C-tor
         public ReportsTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService,
             IGlobalEventsService globalEventsService, IDeviceWarningsService deviceWarningsService)
+            : base(null)
         {
             _tabManagementService = tabManagementService;
             _globalEventsService = globalEventsService;

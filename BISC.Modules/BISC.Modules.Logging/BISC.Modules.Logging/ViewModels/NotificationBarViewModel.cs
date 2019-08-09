@@ -27,6 +27,7 @@ namespace BISC.Modules.Logging
 
 
         public NotificationBarViewModel(IGlobalEventsService globalEventsService,ICommandFactory commandFactory)
+            : base(null)
         {
             _globalEventsService = globalEventsService;
             ExpandedChangeCommand = commandFactory.CreatePresentationCommand(OnExpandedChange);

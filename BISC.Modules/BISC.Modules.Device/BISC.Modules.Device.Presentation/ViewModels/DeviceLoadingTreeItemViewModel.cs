@@ -38,6 +38,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         public DeviceLoadingTreeItemViewModel(IDeviceModelService deviceModelService, IBiscProject biscProject,
             IGlobalEventsService globalEventsService,ICommandFactory commandFactory,ITreeManagementService treeManagementService)
+            : base(null)
         {
             _deviceModelService = deviceModelService;
             _biscProject = biscProject;
@@ -49,9 +50,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private void OnCancelLoading()
         {
             _cts.Cancel();
-            _treeManagementService.DeleteTreeItem(
-                _navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier
-                    .Key));
+            _globalEventsService.SendMessage(new LoadErrorEvent(_device.Ip, _device.DeviceGuid));
         }
 
         private void OnCancelEvent(LoadErrorEvent loadErrorEvent)

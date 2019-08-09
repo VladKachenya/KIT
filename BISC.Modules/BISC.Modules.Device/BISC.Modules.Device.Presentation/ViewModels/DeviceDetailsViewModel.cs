@@ -44,6 +44,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             IIpAddressViewModelFactory ipAddressViewModelFactory, IGlobalEventsService globalEventsService,
             ICommandFactory commandFactory, IDeviceIdentificationService deviceIdentificationService,
             IDeviceIpChangingService deviceIpChangingService, IUserInteractionService userInteractionService)
+            : base(globalEventsService)
         {
             _sclCommunicationModel = sclCommunicationModel;
             _connectionPoolService = connectionPoolService;
@@ -91,7 +92,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             string ip = _sclCommunicationModel.GetIpOfDevice(_device.Name, _biscProject.MainSclModel.Value);
 
             IsIpUnchangeable = _connectionPoolService.GetConnection(ip).IsConnected || !IsBemnManufacturer;
-            IpAddressViewModel = string.IsNullOrWhiteSpace(ip) ? _ipAddressViewModelFactory.GetPingItemViewModel(isReadonly: IsIpUnchangeable):
+            IpAddressViewModel = string.IsNullOrWhiteSpace(ip) ? _ipAddressViewModelFactory.GetPingItemViewModel(isReadonly: IsIpUnchangeable) :
                 _ipAddressViewModelFactory.GetPingItemViewModel(ip, IsIpUnchangeable);
 
 

@@ -51,6 +51,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             IConnectionPoolService connectionPoolService, IGlobalEventsService globalEventsService,
             IUserInterfaceComposingService userInterfaceComposingService, GoosesLoadingService goosesLoadingService,
             IBiscProject biscProject, GooseControlsProjectSavingCommand gooseControlsSavingCommand, IGlobalSavingService globalSavingService)
+        :base(globalEventsService)
         {
             _gooseControlViewModelFactory = gooseControlViewModelFactory;
             _goosesModelService = goosesModelService;

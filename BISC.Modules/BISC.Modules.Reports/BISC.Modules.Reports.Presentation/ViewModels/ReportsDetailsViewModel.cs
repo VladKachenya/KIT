@@ -59,6 +59,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             IConnectionPoolService connectionPoolService, ILoggingService loggingService, ReportsSavingCommand reportsSavingCommand,
             IBiscProject biscProject, ReportControlLoadingService reportControlLoadingService, IReportVeiwModelService reportVeiwModelService,
             IGlobalSavingService globalSavingService, IGlobalEventsService globalEventsService)
+            : base(globalEventsService)
         {
             _reportsModelService = reportsModelService;
             _saveCheckingService = saveCheckingService;

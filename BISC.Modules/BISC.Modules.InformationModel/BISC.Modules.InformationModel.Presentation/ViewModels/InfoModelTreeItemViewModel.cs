@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
@@ -17,12 +18,13 @@ using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.InformationModel.Presentation.ViewModels
 {
-   public class InfoModelTreeItemViewModel:NavigationViewModelBase, IInfoModelTreeItemViewModel
+    public class InfoModelTreeItemViewModel : NavigationViewModelBase, IInfoModelTreeItemViewModel
     {
         private readonly ITabManagementService _tabManagementService;
         private BiscNavigationContext _navigationContext;
-        
-        public InfoModelTreeItemViewModel(ICommandFactory commandFactory,ITabManagementService tabManagementService)
+
+        public InfoModelTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService)
+            : base(null)
         {
             _tabManagementService = tabManagementService;
             NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);

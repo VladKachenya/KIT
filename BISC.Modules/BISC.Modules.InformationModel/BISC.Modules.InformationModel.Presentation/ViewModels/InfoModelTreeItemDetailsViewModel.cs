@@ -39,8 +39,11 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         private bool _isLoadingValuesInProgress;
         private bool _isHideButtons;
 
-        public InfoModelTreeItemDetailsViewModel(IInfoModelTreeFactory infoModelTreeFactory, ILoggingService loggingService, IUserInterfaceComposingService userInterfaceComposingService,
-            ICommandFactory commandFactory, IGlobalEventsService globalEventsService, IConnectionPoolService connectionPoolService, ModelValuesLoadingHelper modelValuesLoadingHelper)
+        public InfoModelTreeItemDetailsViewModel(IInfoModelTreeFactory infoModelTreeFactory, ILoggingService loggingService, 
+            IUserInterfaceComposingService userInterfaceComposingService,
+            ICommandFactory commandFactory, IGlobalEventsService globalEventsService, 
+            IConnectionPoolService connectionPoolService, ModelValuesLoadingHelper modelValuesLoadingHelper)
+        :base(globalEventsService)
         {
             _infoModelTreeFactory = infoModelTreeFactory;
             _loggingService = loggingService;

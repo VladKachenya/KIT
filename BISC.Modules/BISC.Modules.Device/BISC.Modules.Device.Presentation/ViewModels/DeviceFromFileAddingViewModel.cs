@@ -21,7 +21,7 @@ using BISC.Presentation.Infrastructure.Navigation;
 
 namespace BISC.Modules.Device.Presentation.ViewModels
 {
-   public class DeviceFromFileAddingViewModel:NavigationViewModelBase, IDeviceFromFileAddingViewModel
+    public class DeviceFromFileAddingViewModel : NavigationViewModelBase, IDeviceFromFileAddingViewModel
     {
         private readonly ICommandFactory _commandFactory;
         private readonly IConfigurationService _configurationService;
@@ -37,6 +37,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         public DeviceFromFileAddingViewModel(ICommandFactory commandFactory, IConfigurationService configurationService,
             IFileViewModelFactory fileViewModelFactory, IModelComposingService modelComposingService, IDeviceModelService deviceModelService,
             IDeviceViewModelFactory deviceViewModelFactory, IDeviceAddingService deviceAddingService)
+            : base(null)
         {
             _commandFactory = commandFactory;
             _commandFactory = commandFactory;
@@ -60,7 +61,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         private void OnAddSelectedDevicesExecute()
         {
-            _deviceAddingService.AddDevicesInProject(CurrentDevicesToAdd.Where((model => model.IsSelected)).Select((model => model.Device)).ToList(),_currentAddingSclModel);
+            _deviceAddingService.AddDevicesInProject(CurrentDevicesToAdd.Where((model => model.IsSelected)).Select((model => model.Device)).ToList(), _currentAddingSclModel);
         }
 
         private void OnLoadDevicesFromFileExecute(IFileViewModel fileViewModel)

@@ -83,6 +83,7 @@
     <Compile Include="Converters\InverseConverter.cs" />
     <Compile Include="Converters\IsNullToVisibilityConverter.cs" />
     <Compile Include="Events\GlobalEvent.cs" />
+    <Compile Include="Events\NavigationViewModelActiveEvent.cs" />
     <Compile Include="Events\ShellLoadedEvent.cs" />
     <Compile Include="Helpers\VisualTreeHelper.cs" />
     <Compile Include="Module\PresentationBaseItemsModule.cs" />

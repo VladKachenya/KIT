@@ -39,7 +39,9 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
 
         public SettingControlDetailsViewModel(SettingControlViewModelFactory settingControlViewModelFactory, IInfoModelService infoModelService,
             ISaveCheckingService saveCheckingService, ICommandFactory commandFactory, IConnectionPoolService connectionPoolService,
-            IUserInterfaceComposingService userInterfaceComposingService, IGlobalEventsService globalEventsService, SettingsControlSavingService settingsControlSavingService)
+            IUserInterfaceComposingService userInterfaceComposingService, IGlobalEventsService globalEventsService,
+            SettingsControlSavingService settingsControlSavingService)
+            : base(globalEventsService)
         {
             _settingControlViewModelFactory = settingControlViewModelFactory;
             _infoModelService = infoModelService;
@@ -49,7 +51,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
             _globalEventsService = globalEventsService;
             _settingsControlSavingService = settingsControlSavingService;
             SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveChanges);
-            
+
         }
 
         public ICommand SaveСhangesCommand { get; }
@@ -75,18 +77,18 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
 
         protected async override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
-           
+
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             UpdateVm();
             await UpdateSettingsControls();
-            
+
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
-      
+
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"Setting Groups устройства {_device.Name}",null, _device.DeviceGuid, _regionName));
-          
+                $"Setting Groups устройства {_device.Name}", null, _device.DeviceGuid, _regionName));
+
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnNavigatedTo(navigationContext);
         }
@@ -114,7 +116,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
                 var ld = settingControlViewModel.Model.GetFirstParentOfType<ILDevice>();
                 var ln = settingControlViewModel.Model.GetFirstParentOfType<ILogicalNode>();
 
-                var doiTypeDesc =(await connection.MmsConnection.GetMmsTypeDescription(_device.Name+ld.Inst, "LLN0", false)).Item;
+                var doiTypeDesc = (await connection.MmsConnection.GetMmsTypeDescription(_device.Name + ld.Inst, "LLN0", false)).Item;
                 var settingsControlDto = await connection.MmsConnection.GetSettingsControl(doiTypeDesc, "SP", _device.Name, "LLN0", ld.Inst);
                 if (settingsControlDto != null)
                 {
@@ -122,7 +124,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
                 }
             }
             UpdateVm();
-          
+
         }
 
         private void OnConnectionChanged(ConnectionEvent connectionEvent)

@@ -26,6 +26,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
         private DeviceConflictContext _conflictContext;
 
         public DeviceConflictsViewModel(ICommandFactory commandFactory, IInjectionContainer injectionContainer, DeviceConflictFactory deviceConflictFactory)
+            : base(null)
         {
             _commandFactory = commandFactory;
             _deviceConflictFactory = deviceConflictFactory;

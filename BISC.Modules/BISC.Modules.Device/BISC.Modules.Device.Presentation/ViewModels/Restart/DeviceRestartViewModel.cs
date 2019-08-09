@@ -39,9 +39,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
         private RestartDeviceContext _restartDeviceContext;
         private List<IElementConflictResolver> _elementConflictResolvers;
 
-        public DeviceRestartViewModel(IGlobalEventsService globalEventsService, ICommandFactory commandFactory, INavigationService navigationService
-            ,IDeviceAddingService deviceAddingService,IDeviceWarningsService deviceWarningsService,IInjectionContainer injectionContainer,
-            ITreeManagementService treeManagementService,IDeviceReconnectionService deviceReconnectionService)
+        public DeviceRestartViewModel(IGlobalEventsService globalEventsService, ICommandFactory commandFactory, INavigationService navigationService,
+            IDeviceAddingService deviceAddingService, IDeviceWarningsService deviceWarningsService, IInjectionContainer injectionContainer,
+            ITreeManagementService treeManagementService, IDeviceReconnectionService deviceReconnectionService)
+            : base(null)
         {
             _globalEventsService = globalEventsService;
             _navigationService = navigationService;
@@ -63,8 +64,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
             var hasConflics = false;
             if (_restartDeviceContext.DeviceConflictContext.IsRestartNeeded)
             {
-               await _deviceReconnectionService.RestartDevice(_restartDeviceContext.Device,
-                    _restartDeviceContext.UiEntityIdentifier);
+                await _deviceReconnectionService.RestartDevice(_restartDeviceContext.Device,
+                     _restartDeviceContext.UiEntityIdentifier);
                 return;
             }
             _elementConflictResolvers.ForEach((resolver =>
@@ -86,7 +87,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
 
         private void OnCancelEvent(LoadErrorEvent loadErrorEvent)
         {
-            if(loadErrorEvent.Ip != _restartDeviceContext.Device.Ip || loadErrorEvent.DeviceGuid != _restartDeviceContext.Device.DeviceGuid) return;
+            if (loadErrorEvent.Ip != _restartDeviceContext.Device.Ip || loadErrorEvent.DeviceGuid != _restartDeviceContext.Device.DeviceGuid) return;
             _treeManagementService.DeleteTreeItem(_restartDeviceContext.UiEntityIdentifier);
             _deviceAddingService.AddDeviceToTreeIfMissing(_restartDeviceContext.Device);
         }

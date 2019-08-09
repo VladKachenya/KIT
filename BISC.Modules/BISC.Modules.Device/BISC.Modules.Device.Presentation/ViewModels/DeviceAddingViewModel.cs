@@ -32,6 +32,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private bool _isOpeningFromFile;
 
         public DeviceAddingViewModel(ICommandFactory commandFactory,INavigationService navigationService)
+            : base(null)
         {
             _commandFactory = commandFactory;
             _navigationService = navigationService;

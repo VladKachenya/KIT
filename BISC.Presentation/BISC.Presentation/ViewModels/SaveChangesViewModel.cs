@@ -17,6 +17,7 @@ namespace BISC.Presentation.ViewModels
         private object _inputParameter;
         private SaveResult _saveResult;
         public SaveChangesViewModel(ICommandFactory commandFactory)
+            : base(null)
         {
             CancelCommand = commandFactory.CreatePresentationCommand(OnCancelExecute);
             SaveCommand = commandFactory.CreatePresentationCommand(OnSaveExecute);

@@ -30,7 +30,9 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
         private bool _isNavigateToMatrixCommandEneble = true;
 
 
-        public GooseGroupTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService, IDeviceWarningsService deviceWarningsService, IGlobalEventsService globalEventsService)
+        public GooseGroupTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService, 
+            IDeviceWarningsService deviceWarningsService, IGlobalEventsService globalEventsService)
+            : base(null)
         {
             _tabManagementService = tabManagementService;
             _deviceWarningsService = deviceWarningsService;

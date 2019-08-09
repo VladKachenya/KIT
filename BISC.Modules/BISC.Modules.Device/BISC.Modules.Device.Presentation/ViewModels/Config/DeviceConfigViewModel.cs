@@ -34,8 +34,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Config
 		private IDeviceFtpConfig _deviceConfig;
 
 		public DeviceConfigViewModel([CanBeNull] ISclCommunicationModelService sclCommunicationModelService, Func<MacFiltersViewModel> macFiltersViewModelFunc,
-			IDeviceFtpConfigService deviceFtpConfigService, ILoggingService loggingService,ICommandFactory commandFactory, IUserInterfaceComposingService userInterfaceComposingService)
-		{
+			IDeviceFtpConfigService deviceFtpConfigService, ILoggingService loggingService,ICommandFactory commandFactory, 
+            IUserInterfaceComposingService userInterfaceComposingService, IGlobalEventsService globalEventsService)
+            : base(globalEventsService)
+        {
 			_sclCommunicationModelService = sclCommunicationModelService;
 			_deviceFtpConfigService = deviceFtpConfigService;
 			_loggingService = loggingService;

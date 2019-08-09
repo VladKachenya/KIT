@@ -7,12 +7,13 @@ using BISC.Presentation.BaseItems.ViewModels;
 
 namespace BISC.Modules.InformationModel.Presentation.ViewModels
 {
-   public class InfoModelLoadingTreeItemViewModel:NavigationViewModelBase
+    public class InfoModelLoadingTreeItemViewModel : NavigationViewModelBase
     {
 
         public InfoModelLoadingTreeItemViewModel()
+            : base(null)
         {
-            
+
         }
 
 

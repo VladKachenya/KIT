@@ -15,6 +15,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
         private GooseControlsConflictContext _gooseControlsConflictContext;
 
         public GooseControlsConflictsViewModel()
+        :base(null)
         {
             GooseControlsCollectionInProject=new ObservableCollection<GooseControlViewModel>();
             GooseControlsollectionInDevice=new ObservableCollection<GooseControlViewModel>();

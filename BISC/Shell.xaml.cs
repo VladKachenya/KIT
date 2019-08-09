@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,22 +23,14 @@ namespace BISC
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class Shell :Window
+    public partial class Shell : Window
     {
-     //   private readonly IGlobalEventsService _globalEventsService;
 
         public Shell(IShellViewModel shellViewModel)
         {
-          //  _globalEventsService = globalEventsService;
             InitializeComponent();
             DataContext = shellViewModel;
-           // Binding.AddSourceUpdatedHandler(this,OnSourceUpdated);
+            Closing += (s, e) => shellViewModel.ShellClosingCommand.Execute(e);
         }
-      //  private void OnSourceUpdated(object o,DataTransferEventArgs dataTransferEventArgs)
-      //  { 
-      //      _globalEventsService.SendMessage(new SaveCheckEvent());
-      //  }
-
-
     }
 }

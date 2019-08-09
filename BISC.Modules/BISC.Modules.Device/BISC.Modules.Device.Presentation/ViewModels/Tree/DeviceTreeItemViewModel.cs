@@ -65,6 +65,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             IGoosesModelService goosesModelService, ISaveCheckingService saveCheckingService, IUserInteractionService userInteractionService, ILoggingService loggingService,
             IDeviceSerializingService deviceSerializingService, IDeviceWarningsService deviceWarningsService, IDeviceReconnectionService deviceReconnectionService,
             IDeviceConnectionService deviceConnectionService, INavigationService navigationService, IDeviceSavingService deviceSavingService, IGlobalSavingService globalSavingService)
+            : base(null)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
             _deviceModelService = deviceModelService;

@@ -46,6 +46,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             IBiscProject biscProject, IDeviceLoadingService deviceLoadingService,
             ILastIpAddressesViewModelFactory lastConnectedIpsFactoty, ILoggingService loggingService,
             ISclCommunicationModelService communicationModelService, IDeviceModelService deviceModelService)
+            : base(null)
         {
             _commandFactory = commandFactory;
             _deviceConnectionService = deviceConnectionService;
@@ -88,7 +89,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
                 var connectResult = await _deviceConnectionService.ConnectDevice(SelectedIpAddressViewModel.FullIp);
 
 
-                if ( connectResult.IsSucceed)
+                if (connectResult.IsSucceed)
                 {
                     var res = await _deviceLoadingService.LoadElements(connectResult.Item);
                     if (!res.IsSucceed)

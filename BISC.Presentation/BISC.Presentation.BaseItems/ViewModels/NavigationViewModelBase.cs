@@ -1,30 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using BISC.Infrastructure.Global.Services;
 using BISC.Presentation.BaseItems.ViewModels.Behaviors;
 using BISC.Presentation.Infrastructure.Navigation;
-using BISC.Presentation.Infrastructure.ViewModel;
 using Prism.Regions;
 using Prism;
-using BISC.Modules.Device.Infrastructure.Events;
+using BISC.Presentation.BaseItems.Events;
+using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Presentation.BaseItems.ViewModels
 {
-    public abstract class NavigationViewModelBase : ComplexViewModelBase, INavigationAware,IActiveAware
+    public abstract class NavigationViewModelBase : ComplexViewModelBase, INavigationAware, IActiveAware
     {
+        /// <summary>
+        /// Global event service. Can be null.
+        /// </summary>
+        private readonly IGlobalEventsService _globalEventsService;
         private bool _isActive;
         private bool _isNavigatedTo = false;
         private bool _isReportWarning;
+        private Guid? _parientTreeItemId;
 
-        public NavigationViewModelBase()
+        protected NavigationViewModelBase(IGlobalEventsService globalEventsService)
         {
-            BlockViewModelBehavior=new BlockViewModelBehavior();
+            _globalEventsService = globalEventsService;
+            BlockViewModelBehavior = new BlockViewModelBehavior();
             WarningsCollection = new ObservableCollection<string>();
         }
 
@@ -41,8 +43,8 @@ namespace BISC.Presentation.BaseItems.ViewModels
             get => _isActive;
             set
             {
-                if(!_isNavigatedTo)return;
-                if(_isActive==value)return;
+                if (!_isNavigatedTo) return;
+                if (_isActive == value) return;
                 _isActive = value;
                 OnPropertyChanged();
                 if (value)
@@ -82,7 +84,10 @@ namespace BISC.Presentation.BaseItems.ViewModels
 
         public virtual void OnActivate()
         {
-            
+            if (_parientTreeItemId.HasValue)
+            {
+                _globalEventsService?.SendMessage(new NavigationViewModelActiveEvent(_parientTreeItemId.Value));
+            }
         }
         public virtual void OnDeactivate()
         {
@@ -109,14 +114,25 @@ namespace BISC.Presentation.BaseItems.ViewModels
         {
 
         }
-         void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
-         {
-             _isNavigatedTo = true;
+        void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
+        {
+            _isNavigatedTo = true;
             OnNavigatedTo(BiscNavigationContext.FromNavigationContext(navigationContext));
         }
         protected virtual void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
+            var treeItemIdentifier = navigationContext.BiscNavigationParameters
+                .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key);
+            while (treeItemIdentifier != null)
+            {
+                if (treeItemIdentifier.IsTreeItem)
+                {
+                    _parientTreeItemId = treeItemIdentifier.ItemId;
+                    break;
+                }
 
+                treeItemIdentifier = treeItemIdentifier.ParenUiEntityIdentifier;
+            }
         }
 
     }

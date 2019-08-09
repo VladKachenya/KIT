@@ -12,13 +12,14 @@ using BISC.Presentation.Infrastructure.Navigation;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
-   public class DataSetsConflictsViewModel:NavigationViewModelBase
+    public class DataSetsConflictsViewModel : NavigationViewModelBase
     {
         private DatasetsConflictContext _datasetsConflictContext;
 
         public DataSetsConflictsViewModel()
+            : base(null)
         {
-            DataSetsCollectionInProject=new ObservableCollection<IDataSetViewModel>();
+            DataSetsCollectionInProject = new ObservableCollection<IDataSetViewModel>();
             DataSetsCollectionInDevice = new ObservableCollection<IDataSetViewModel>();
         }
         public ObservableCollection<IDataSetViewModel> DataSetsCollectionInDevice { get; }

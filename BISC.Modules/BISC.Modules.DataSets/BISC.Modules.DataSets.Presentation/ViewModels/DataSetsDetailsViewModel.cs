@@ -65,6 +65,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             DatasetsLoadingService datasetsLoadingService,
             DatasetsProjectSavingCommand datasetsProjectSavingCommandCommand, IDeviceWarningsService deviceWarningsService,
             IGlobalSavingService globalSavingService)
+            : base(globalEventsService)
         {
             _userInterfaceComposingService = userInterfaceComposingService;
             _connectionPoolService = connectionPoolService;

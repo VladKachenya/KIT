@@ -56,9 +56,9 @@ namespace BISC.Presentation.Services
         #endregion
 
         #region Implementation of IProjectManagementService
-        public async void SaveProjectAsync()
+        public async void SaveProject()
         {
-            await SaveProject();
+            await SaveProjectAsync();
         }
 
         public async void SaveProjectAsAsync()
@@ -99,7 +99,7 @@ namespace BISC.Presentation.Services
             if (res == 0)
             {
                 //await _globalSavingService.SaveAllDevices();
-                await SaveProject(false);
+                await SaveProjectAsync(false);
             }
 
             FileInfo projectToOpen = fileMaybe.GetFirstValue();
@@ -132,7 +132,7 @@ namespace BISC.Presentation.Services
             if (res == 0)
             {
                 //await _globalSavingService.SaveAllDevices();
-                await SaveProject(false);
+                await SaveProjectAsync(false);
             }
             ClearCurrentProjectAsync();
             _projectService.СreateNewProject();
@@ -153,7 +153,7 @@ namespace BISC.Presentation.Services
 
         #region private methods
 
-        private async Task SaveProject(bool isReconnectIfNeed = true)
+        public async Task SaveProjectAsync(bool isReconnectIfNeed = true)
         {
             FileInfo curentProjectPath = new FileInfo(_projectService.GetCurrentProjectPath(true));
             FileInfo defaultProjectPath = new FileInfo(ModelConstants.DefaultProjectPath);

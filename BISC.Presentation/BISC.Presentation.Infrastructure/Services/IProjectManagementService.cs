@@ -1,8 +1,11 @@
-﻿namespace BISC.Presentation.Infrastructure.Services
+﻿using System.Threading.Tasks;
+
+namespace BISC.Presentation.Infrastructure.Services
 {
     public interface IProjectManagementService
     {
-        void SaveProjectAsync();
+        void SaveProject();
+        Task SaveProjectAsync(bool isReconnectIfNeed = true);
 
         void SaveProjectAsAsync();
         void OpenProjectAsAsync();

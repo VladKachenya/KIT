@@ -51,7 +51,7 @@ namespace BISC.Presentation.Module
             var fileCommandsName = new List<string>();
             fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.СreateNewProjectAsync));
             fileCommandsName.Add("Новый проект");
-            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.SaveProjectAsync));
+            fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.SaveProject));
             fileCommandsName.Add("Сохранить все изменения");
             fileCommands.Add(commandFactory.CreatePresentationCommand(projectManagementService.SaveProjectAsAsync));
             fileCommandsName.Add("Сохранить проект как...");
@@ -61,7 +61,7 @@ namespace BISC.Presentation.Module
             fileCommandsName.Add("Очистить текущий проект");
             userInterfaceComposingService.AddGlobalCommandGroup(fileCommands, fileCommandsName, "ПРОЕКТ", IconsKeys.BookMultipleIconKey);
 
-            userInterfaceComposingService.InsertGlobalCommandToStart(commandFactory.CreatePresentationCommand(projectManagementService.SaveProjectAsync),
+            userInterfaceComposingService.InsertGlobalCommandToStart(commandFactory.CreatePresentationCommand(projectManagementService.SaveProject),
                 "Сохранить все изменения", IconsKeys.ContentSaveAllKey, false, true);
             userInterfaceComposingService.AddGlobalCommand(null, null, null, false, true); //Separator
             userInterfaceComposingService.AddGlobalCommand

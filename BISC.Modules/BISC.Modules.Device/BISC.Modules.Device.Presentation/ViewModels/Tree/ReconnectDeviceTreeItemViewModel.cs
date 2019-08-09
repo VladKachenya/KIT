@@ -11,6 +11,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
     public class ReconnectDeviceTreeItemViewModel:NavigationViewModelBase
     {
         public ReconnectDeviceTreeItemViewModel()
+            : base(null)
         {
             
         }
