@@ -75,9 +75,11 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
 
         #region Overrides of NavigationViewModelBase
 
-        protected async override void OnNavigatedTo(BiscNavigationContext navigationContext)
+        protected override async void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
-
+            // Так как метод асинхронный то поток синхронно выполняется до первого await. После чего управление переходит к следующему оператору.
+            //Необходимо вызвать OnNavigatedTo до первого await.
+            base.OnNavigatedTo(navigationContext);
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             UpdateVm();
             await UpdateSettingsControls();
@@ -90,7 +92,6 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl
                 $"Setting Groups устройства {_device.Name}", null, _device.DeviceGuid, _regionName));
 
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
-            base.OnNavigatedTo(navigationContext);
         }
 
         private void UpdateVm()

@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Project;
+using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Presentation.Infrastructure.Services
 {
@@ -6,7 +9,7 @@ namespace BISC.Presentation.Infrastructure.Services
     {
         void SaveProject();
         Task SaveProjectAsync(bool isReconnectIfNeed = true);
-
+        void DeleteDeviceFromProject(Guid deviceGuid);
         void SaveProjectAsAsync();
         void OpenProjectAsAsync();
         void OpenDefaultProjectAsync();

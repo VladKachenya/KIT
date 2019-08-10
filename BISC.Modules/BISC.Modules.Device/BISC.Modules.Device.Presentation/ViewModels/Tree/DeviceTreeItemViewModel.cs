@@ -52,19 +52,38 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private readonly INavigationService _navigationService;
         private readonly IDeviceSavingService _deviceSavingService;
         private readonly IGlobalSavingService _globalSavingService;
+        private readonly IProjectManagementService _projectManagementService;
         private Dispatcher _dispatcher;
 
         private string _deviceName;
         private IDevice _device;
+        private UiEntityIdentifier _configEntityIdentifier;
+        private UiEntityIdentifier _detailsEntityIdentifier;
         private UiEntityIdentifier _uiEntityIdentifier;
+
         private bool _isDeviceConnected;
         private bool _isReportWarning;
 
-        public DeviceTreeItemViewModel(ICommandFactory commandFactory, IDeviceModelService deviceModelService, IGlobalEventsService globalEventsService, IConnectionPoolService connectionPoolService,
-            IBiscProject biscProject, ITreeManagementService treeManagementService, ITabManagementService tabManagementService,
-            IGoosesModelService goosesModelService, ISaveCheckingService saveCheckingService, IUserInteractionService userInteractionService, ILoggingService loggingService,
-            IDeviceSerializingService deviceSerializingService, IDeviceWarningsService deviceWarningsService, IDeviceReconnectionService deviceReconnectionService,
-            IDeviceConnectionService deviceConnectionService, INavigationService navigationService, IDeviceSavingService deviceSavingService, IGlobalSavingService globalSavingService)
+        public DeviceTreeItemViewModel(
+            ICommandFactory commandFactory, 
+            IDeviceModelService deviceModelService, 
+            IGlobalEventsService globalEventsService, 
+            IConnectionPoolService connectionPoolService,
+            IBiscProject biscProject, 
+            ITreeManagementService treeManagementService, 
+            ITabManagementService tabManagementService,
+            IGoosesModelService goosesModelService, 
+            ISaveCheckingService saveCheckingService, 
+            IUserInteractionService userInteractionService, 
+            ILoggingService loggingService,
+            IDeviceSerializingService deviceSerializingService, 
+            IDeviceWarningsService deviceWarningsService, 
+            IDeviceReconnectionService deviceReconnectionService,
+            IDeviceConnectionService deviceConnectionService, 
+            INavigationService navigationService,
+            IDeviceSavingService deviceSavingService, 
+            IGlobalSavingService globalSavingService,
+            IProjectManagementService projectManagementService)
             : base(null)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
@@ -85,6 +104,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _navigationService = navigationService;
             _deviceSavingService = deviceSavingService;
             _globalSavingService = globalSavingService;
+            _projectManagementService = projectManagementService;
             DeleteDeviceCommand = commandFactory.CreatePresentationCommand(OnDeleteDeviceExecute);
             NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
             ResetDeviceViaFtpCommand = commandFactory.CreatePresentationCommand(OnResetDeviceViaFtp, IsDeviceReadyForFtpOps);
@@ -99,7 +119,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         {
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
             biscNavigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, _device);
-            _tabManagementService.NavigateToTab(DeviceKeys.DeviceConfigViewKey, biscNavigationParameters, $"IED Config {_device.Name}", _uiEntityIdentifier);
+            _tabManagementService.NavigateToTab(DeviceKeys.DeviceConfigViewKey, biscNavigationParameters, $"IED Config {_device.Name}", _configEntityIdentifier);
         }
 
         private async void OnSaveDeviceChanges()
@@ -185,7 +205,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         {
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
             biscNavigationParameters.AddParameterByName(DeviceKeys.DeviceModelKey, _device);
-            _tabManagementService.NavigateToTab(DeviceKeys.DeviceDetailsViewKey, biscNavigationParameters, $"IED {_device.Name}", _uiEntityIdentifier);
+            _tabManagementService.NavigateToTab(DeviceKeys.DeviceDetailsViewKey, biscNavigationParameters, $"IED {_device.Name}", _detailsEntityIdentifier);
         }
 
         public bool IsDeviceConnected
@@ -215,7 +235,6 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private async void OnDeleteDeviceExecute()
         {
             Dispose();
-            _loggingService.LogUserAction("Пользователь удаляет устройство " + _device.Name);
             var isSaved = (await _saveCheckingService.GetIsDeviceEntitiesSaved(_device.DeviceGuid)).IsEntitiesSaved;
             if (!isSaved)
             {
@@ -227,22 +246,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
                     return;
                 }
             }
-            var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, _device.DeviceGuid);
-
-            if (result.IsSucceed)
-            {
-                // тут необходимо скорее всего через Guid делать
-                _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject,
-                    _device.Name);
-                //_treeManagementService.DeleteTreeItem(_uiEntityIdentifier);
-                //_tabManagementService.CloseTabWithChildren(_uiEntityIdentifier.ItemId.ToString());
-                //_deviceWarningsService.ClearDeviceWarningsOfDevice(_device.DeviceGuid);
-                _connectionPoolService.GetConnection(_device.Ip).StopConnection();
-            }
-            _treeManagementService.DeleteTreeItem(_uiEntityIdentifier);
-            _tabManagementService.CloseTabWithChildren(_uiEntityIdentifier.ItemId.ToString());
-            _deviceWarningsService.ClearDeviceWarningsOfDevice(_device.DeviceGuid);
-
+            _loggingService.LogUserAction("Пользователь удаляет устройство " + _device.Name);
+            _projectManagementService.DeleteDeviceFromProject(_device.DeviceGuid);
         }
 
         #region Implementation of IMainTreeItem
@@ -266,6 +271,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             IDevice device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             _uiEntityIdentifier =
                 navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key);
+            _configEntityIdentifier = new UiEntityIdentifier(Guid.NewGuid(), _uiEntityIdentifier);
+            _detailsEntityIdentifier = new UiEntityIdentifier(Guid.NewGuid(), _uiEntityIdentifier);
             _deviceWarningsService.ClearDeviceWarningsOfDevice(device.DeviceGuid);
             DeviceName = device.Name;
             _device = device;

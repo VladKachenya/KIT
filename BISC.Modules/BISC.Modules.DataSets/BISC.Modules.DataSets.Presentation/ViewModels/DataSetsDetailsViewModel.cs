@@ -148,7 +148,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             AddNewDataSetCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
-            //_datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker);
         }
 
         private void OnCollapseModel()
@@ -172,7 +171,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 $"Пользователь удаляет DataSet {element.SelectedParentLd + "." + element.SelectedParentLn + "." + element.EditableNamePart}");
             DataSets.Remove(element);
             AddNewDataSetCommand.RaiseCanExecute();
-            //_datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker);
         }
 
         private void OnAddNewDataSet()
@@ -182,7 +180,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 _datasetViewModelFactory.CreateDataSetViewModel(
                     DataSets.Select((model => model.EditableNamePart)).ToList(), _device));
             AddNewDataSetCommand.RaiseCanExecute();
-            //_datasetsSavingCommand.Initialize(DataSets, _device, this.ChangeTracker);
         }
 
         private bool IsAddNewDataSet()

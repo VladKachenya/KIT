@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using BISC.Presentation.Infrastructure.HelperEntities;
 
 namespace BISC.Presentation.Services
 {
@@ -59,6 +60,32 @@ namespace BISC.Presentation.Services
         public async void SaveProject()
         {
             await SaveProjectAsync();
+        }
+
+        public void DeleteDeviceFromProject(Guid deviceGuid)
+        {
+            var device = _deviceModelService.GetDeviceByGuid(_biscProject.MainSclModel.Value, deviceGuid);
+            var deviceTreeItemIdentifier = _treeManagementService.GetDeviceTreeItem(deviceGuid);
+            if (device == null)
+            {
+                throw new ArgumentException("Device by guid not found");
+            }
+            if (deviceTreeItemIdentifier == null)
+            {
+                throw new ArgumentException("Device tree item by device guid not found");
+            }
+
+            var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, device.DeviceGuid);
+
+            if (result.IsSucceed)
+            {
+                _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject,
+                    device.Name);
+                _connectionPoolService.GetConnection(device.Ip).StopConnection();
+            }
+            _treeManagementService.DeleteTreeItem(deviceTreeItemIdentifier);
+            _tabManagementService.CloseTabWithChildren(deviceTreeItemIdentifier.ItemId.ToString());
+            _deviceWarningsService.ClearDeviceWarningsOfDevice(device.DeviceGuid);
         }
 
         public async void SaveProjectAsAsync()
@@ -139,8 +166,6 @@ namespace BISC.Presentation.Services
             _projectService.SetDefaultProjectPath();
             _loggingService.LogMessage($"Проект {_projectService.GetCurrentProjectPath(true)} очищен", SeverityEnum.Info);
         }
-
-
 
 
 

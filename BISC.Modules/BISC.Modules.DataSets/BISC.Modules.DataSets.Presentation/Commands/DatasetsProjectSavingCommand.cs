@@ -154,31 +154,13 @@ namespace BISC.Modules.DataSets.Presentation.Commands
                     SeverityEnum.Warning);
 
             }
-
             RefreshViewModel?.Invoke();
-            //_fineshSaving?.Invoke(await IsSavingByFtpNeeded());
 
             return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedOk);
         }
 
-        //private async Task DeleteDataSetInDevice(string lnName, string ldName, string datasetName)
-        //{
-        //    var res = await _connectionPoolService
-        //        .GetConnection(_sclCommunicationModelService.GetIpOfDevice(_device.Name,
-        //            _biscProject.MainSclModel.Value)).MmsConnection.DeleteDataSet(lnName, ldName, _device.Name, datasetName);
-        //    if (!res.IsSucceed)
-        //    {
-        //        _loggingService.LogMessage(string.Format(_errorDeleteMessagePattern, datasetName, res.GetFirstError()), SeverityEnum.Warning);
-        //    }
-        //    else
-        //    {
-        //        _loggingService.LogMessage(string.Format(_successDeleteMessagePattern, datasetName, _device.Name), SeverityEnum.Info);
-        //    }
-        //}
-
         public async Task<OperationResult> ValidateBeforeSave()
         {
-
             var warnings = new List<string>();
 
             // Валидация имён
@@ -216,33 +198,12 @@ namespace BISC.Modules.DataSets.Presentation.Commands
                 }
             }
 
-            //var reportsWithDatasts = _reportsModelService.GetAllReportControlsOfDevice(_device).Where((control => _dataSetsToSave
-            //      .Any((model =>
-            //          model.ChangeTracker.GetIsModifiedRecursive() && model.EditableNamePart == control.DataSet))));
-            //if (reportsWithDatasts.Any())
-            //{
-            //    string mes = Environment.NewLine;
-            //    foreach (var reportControl in reportsWithDatasts)
-            //    {
-            //        mes += reportControl.Name + Environment.NewLine;
-            //    }
-            //    return new OperationResult($"Датасеты, которые вы хотите изменить используются в следующих отчетах: {mes}");
-            //}
             if (warnings.Any())
             {
                 return new OperationResult(warnings);
             }
             return OperationResult.SucceedResult;
         }
-
-        #endregion
-
-        #region private methods
-
-        //private void IncrementConfRevisionOfGoose(List<string> DataSetNamesList)
-        //{
-            
-        //}
 
         #endregion
     }

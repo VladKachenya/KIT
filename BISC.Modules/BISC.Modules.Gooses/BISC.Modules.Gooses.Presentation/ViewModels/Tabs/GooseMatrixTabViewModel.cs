@@ -183,14 +183,14 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         protected override async void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
+            // Так как метод асинхронный то поток синхронно выполняется до первого await. После чего управление переходит к следующему оператору.
+            //Необходимо вызвать OnNavigatedTo до первого await.
+            base.OnNavigatedTo(navigationContext);
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
             _regionName =
                 navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(
                     UiEntityIdentifier.Key).ItemId.ToString();
             await UpdateGooseMatrix(false);
-
-            base.OnNavigatedTo(navigationContext);
-
         }
 
         private async Task UpdateGooseMatrix(bool isFromDevice)
@@ -228,22 +228,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             finally
             {
                 BlockViewModelBehavior.Unlock();
-                //var grouped=new List<GooseRowViewModelGrouped>();
-
-                //foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
-                //{
-                //    foreach (var gooseRowViewModel in gooseControlBlockViewModel.GooseRowViewModels)
-                //    {
-                //        grouped.Add(new GooseRowViewModelGrouped() { GooseRowViewModel = gooseRowViewModel ,GroupName = gooseControlBlockViewModel.AppId});
-                //    }
-
-
-
-                //}
-
-
-                //GroupedGoosesViewModels=new ListCollectionView(grouped);
-                //GroupedGoosesViewModels.GroupDescriptions.Add(new PropertyGroupDescription(nameof(GooseRowViewModelGrouped.GroupName)));
             }
         }
 
@@ -426,24 +410,16 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         public override void OnActivate()
         {
             _globalEventsService.Subscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
-            //_globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить матрицу GOOSE устройства {_device.Name}", false);
             _userInterfaceComposingService.AddGlobalCommand(UpdateCommand, $"Обновить GOOSE-матрицу устройства {_device.Name}", IconsKeys.UpdateIconKey, false, true);
             base.OnActivate();
         }
-
-        //private void OnConnectionChanged(ConnectionEvent obj)
-        //{
-        //    _userInterfaceComposingService.ClearCurrentSaveCommand();
-        //    _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить матрицу GOOSE устройства {_device.Name}", _connectionPoolService.GetConnection(_device.Ip).IsConnected);
-        //}
 
         public override void OnDeactivate()
         {
             _userInterfaceComposingService.ClearCurrentSaveCommand();
             _userInterfaceComposingService.DeleteGlobalCommand(UpdateCommand);
             _globalEventsService.Unsubscribe<SelectableBoxEventArgs>(SelectableBoxSelected);
-            //_globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnDeactivate();
         }
 
