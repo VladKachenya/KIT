@@ -39,6 +39,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly GooseInputModelInfosLoadingService _gooseInputModelInfosLoadingService;
         private readonly IGlobalSavingService _globalSavingService;
+        private readonly IConfigurationService _configurationService;
 
         private Dictionary<int, List<ISelectableValueViewModel>> _columnSelectableValueViewModelsDictionary =
             new Dictionary<int, List<ISelectableValueViewModel>>();
@@ -50,11 +51,20 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         #region ctor
 
-        public GooseMatrixTabViewModel(IBiscProject biscProject, ISaveCheckingService saveCheckingService,
-            IGlobalEventsService globalEventsService, ILoggingService loggingService, ICommandFactory commandFactory,
-            IUserInterfaceComposingService userInterfaceComposingService, GooseMatrixLoadingService gooseMatrixLoadingService,
-            IGooseControlBlockViewModelFactory gooseControlBlockViewModelFactory, GooseSubscriptionMatrixSavingCommand gooseSubscriptionMatrixSavingCommand,
-            IConnectionPoolService connectionPoolService, GooseInputModelInfosLoadingService gooseInputModelInfosLoadingService, IGlobalSavingService globalSavingService)
+        public GooseMatrixTabViewModel(
+            IBiscProject biscProject,
+            ISaveCheckingService saveCheckingService,
+            IGlobalEventsService globalEventsService,
+            ILoggingService loggingService,
+            ICommandFactory commandFactory,
+            IUserInterfaceComposingService userInterfaceComposingService,
+            GooseMatrixLoadingService gooseMatrixLoadingService,
+            IGooseControlBlockViewModelFactory gooseControlBlockViewModelFactory,
+            GooseSubscriptionMatrixSavingCommand gooseSubscriptionMatrixSavingCommand,
+            IConnectionPoolService connectionPoolService,
+            GooseInputModelInfosLoadingService gooseInputModelInfosLoadingService,
+            IGlobalSavingService globalSavingService,
+            IConfigurationService configurationService)
             : base(globalEventsService)
         {
             _biscProject = biscProject;
@@ -68,6 +78,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _connectionPoolService = connectionPoolService;
             _gooseInputModelInfosLoadingService = gooseInputModelInfosLoadingService;
             _globalSavingService = globalSavingService;
+            _configurationService = configurationService;
             MessagesList = new ObservableCollection<string>();
             SaveCommand = commandFactory.CreatePresentationCommand(OnSave, () => _isCommandEnabled);
             UpdateCommand = commandFactory.CreatePresentationCommand(OnUpdateExecute, () => _isCommandEnabled);
@@ -116,6 +127,15 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                 if (initiatorSelectableValueViewModel.Parent.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.State)
                 {
                     ValidateStates();
+                    if (_configurationService.IsAutoEnabledQualityInGooseReceiving)
+                    {
+                        SetQuality(
+                            initiatorSelectableValueViewModel.Parent.Parent?.GoCbReference.GoCbReference,
+                            initiatorSelectableValueViewModel.Parent.DoiDataRef,
+                            initiatorSelectableValueViewModel.ColumnNumber,
+                            _configurationService.IsAutoEnabledValidityInGooseReceiving,
+                            initiatorSelectableValueViewModel.SelectedValue);
+                    }
                 }
 
                 if (initiatorSelectableValueViewModel.Parent.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Quality)
@@ -177,6 +197,25 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             finally
             {
                 SetEnableCommands(true);
+            }
+        }
+
+        private void SetQuality(string goRef, string doiDataRef, int columnNumber, bool isValidityNeed, bool value)
+        {
+            if(goRef == null) return;
+            var goseViewModel =
+                this.GooseControlBlockViewModels.FirstOrDefault(g => g.GoCbReference.GoCbReference == goRef);
+            var goseQualityRow = goseViewModel?.GooseRowViewModels
+                .FirstOrDefault(qr => qr.DoiDataRef == doiDataRef && qr.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Quality);
+            if (goseQualityRow != null)
+            {
+                goseQualityRow.SelectableValueViewModels[columnNumber].SetValue(value);
+                if (isValidityNeed)
+                {
+                    var goseValidityRow = goseViewModel.GooseRowViewModels
+                        .FirstOrDefault(gr => gr.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Validity);
+                    goseValidityRow?.SelectableValueViewModels[columnNumber].SetValue(value);
+                }
             }
         }
         #region Overrides of NavigationViewModelBase

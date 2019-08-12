@@ -147,7 +147,7 @@ namespace BISC.Modules.Reports.Presentation.Services
             deviceOnlyReportViewModels.ForEach((report => reportViewmodelsInDevice.FirstOrDefault((model => model.Name == report.Name))?.ChangeTracker.SetModified()));
             projectOnlyReportViewModels.ForEach((report => reportViewmodelsInProject.FirstOrDefault((model => model.Name == report.Name))?.ChangeTracker.SetModified()));
 
-            _navigationService.OpenInWindow(ReportsKeys.ReportsPresentationKeys.ReportsConflictsWindow, $"Конфликты в блоках управления отчетами в устройстве {deviceGuid}",
+            _navigationService.OpenInWindow(ReportsKeys.ReportsPresentationKeys.ReportsConflictsWindow, $"Конфликты в блоках управления отчетами в устройстве {devicesclModelInProject.Name}",
                 new BiscNavigationParameters().AddParameterByName(ReportsKeys.ReportsPresentationKeys.ReportsConflictsContext,
                     new ReportsConflictsContext(reportViewmodelsInDevice, reportViewmodelsInProject)));
 

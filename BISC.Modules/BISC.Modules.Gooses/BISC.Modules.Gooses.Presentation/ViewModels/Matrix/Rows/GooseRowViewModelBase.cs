@@ -14,7 +14,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Rows
 {
     public class GooseRowViewModel : ViewModelBase, IGooseRowViewModel
     {
-   
+
         private IGooseRow _model;
         private List<ISelectableValueViewModel> _selectableValueViewModels;
 
@@ -23,36 +23,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Rows
             SelectableValueViewModels = new List<ISelectableValueViewModel>();
         }
         #region Implementation of IGooseRowViewModel
-
-        //public IGooseRow Model
-        //{
-        //    get
-        //    {
-        //        _model.ValueList.Clear();
-        //        foreach (var selectableValueViewModel in SelectableValueViewModels)
-        //        {
-        //            _model.ValueList.Add(selectableValueViewModel.SelectedValue);
-        //        }
-        //        return _model;
-        //    }
-        //    set
-        //    {
-        //        _model = value;
-        //        RowName = _model.Signature;
-        //        SelectableValueViewModels.Clear();
-
-        //        for (int i = 0; i < _model.ValueList.Count; i++)
-        //        {
-        //            ISelectableValueViewModel selectableValueViewModel = StaticContainer.CurrentContainer.ResolveType<ISelectableValueViewModel>();
-        //            selectableValueViewModel.SelectedValue = _model.ValueList[i];
-        //            selectableValueViewModel.ColumnNumber = i;
-        //            selectableValueViewModel.Parent = this;
-        //            selectableValueViewModel.ToolTip = RowName + "     " + (i + 1);
-        //            SelectableValueViewModels.Add(selectableValueViewModel);
-
-        //        }
-        //    }
-        //}
 
         public List<ISelectableValueViewModel> SelectableValueViewModels
         {
@@ -65,7 +35,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Rows
         public string GooseRowType { get; set; }
         public int NumberOfFcdaInDataSet { get; set; }
         public IDataSet RelatedDataSet { get; set; }
-
+        public string DoiDataRef { get; set; }
         #endregion
 
 

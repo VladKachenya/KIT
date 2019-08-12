@@ -78,31 +78,29 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             foreach (var fcda in gooseInput.EmittingDataSet.Value.FcdaList)
             {
                 var indexOfFcda = gooseInput.EmittingDataSet.Value.FcdaList.IndexOf(fcda);
-
+                IGooseRowViewModel gooseRowViewModel = new GooseRowViewModel();
+                gooseRowViewModel.DoiDataRef = $"{parent.GoCbReference.GoCbReference}/{fcda.LdInst}.{fcda.Prefix + fcda.LnClass + fcda.LnInst}.{fcda.DoName}";
                 if (fcda.DaName == "q" && parent.IsConsigerTheQuality)
                 {
-                    IGooseRowViewModel qualityGooseRowViewModel = new GooseRowViewModel();
-                    qualityGooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.Quality;
-                    qualityGooseRowViewModel.NumberOfFcdaInDataSet = indexOfFcda;
-                    qualityGooseRowViewModel.RowName =
-                    parent.AppId + " [" + fcda.DoName + "." + fcda.DaName + "] (" + qualityGooseRowViewModel.GooseRowType + ")";
-                    InitailizeColumns(qualityGooseRowViewModel, parent.ColumnsName.Count);
-                    qualityGooseRowViewModel.RelatedDataSet = gooseInput.EmittingDataSet.Value;
+                    gooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.Quality;
+                    gooseRowViewModel.NumberOfFcdaInDataSet = indexOfFcda;
+                    gooseRowViewModel.RowName =
+                    parent.AppId + " [" + fcda.DoName + "." + fcda.DaName + "] (" + gooseRowViewModel.GooseRowType + ")";
+                    InitailizeColumns(gooseRowViewModel, parent.ColumnsName.Count);
+                    gooseRowViewModel.RelatedDataSet = gooseInput.EmittingDataSet.Value;
 
-                    gooseRowViewModels.Add(qualityGooseRowViewModel);
+                    gooseRowViewModels.Add(gooseRowViewModel);
 
                 }
                 else if (fcda.DaName == "stVal")
                 {
-                    IGooseRowViewModel stateGooseRowViewModel = new GooseRowViewModel();
-                    stateGooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.State;
-                    stateGooseRowViewModel.NumberOfFcdaInDataSet = indexOfFcda;
-                    stateGooseRowViewModel.RelatedDataSet = gooseInput.EmittingDataSet.Value;
-
-                    stateGooseRowViewModel.RowName =
-                        parent.AppId + " [" + fcda.DoName + "." + fcda.DaName + "] (" + stateGooseRowViewModel.GooseRowType + ")";
-                    InitailizeColumns(stateGooseRowViewModel, parent.ColumnsName.Count);
-                    gooseRowViewModels.Add(stateGooseRowViewModel);
+                    gooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.State;
+                    gooseRowViewModel.NumberOfFcdaInDataSet = indexOfFcda;
+                    gooseRowViewModel.RelatedDataSet = gooseInput.EmittingDataSet.Value;
+                    gooseRowViewModel.RowName =
+                        parent.AppId + " [" + fcda.DoName + "." + fcda.DaName + "] (" + gooseRowViewModel.GooseRowType + ")";
+                    InitailizeColumns(gooseRowViewModel, parent.ColumnsName.Count);
+                    gooseRowViewModels.Add(gooseRowViewModel);
                 }
             }
 

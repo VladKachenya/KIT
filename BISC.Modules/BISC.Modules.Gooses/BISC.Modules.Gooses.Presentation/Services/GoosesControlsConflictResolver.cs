@@ -24,7 +24,7 @@ using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Gooses.Model.Services
 {
-   public class GoosesControlsConflictResolver: IElementConflictResolver
+    public class GoosesControlsConflictResolver : IElementConflictResolver
     {
         private readonly IDeviceModelService _deviceModelService;
         private readonly IGoosesModelService _goosesModelService;
@@ -33,8 +33,8 @@ namespace BISC.Modules.Gooses.Model.Services
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly INavigationService _navigationService;
         public ConflictType ConflictType => ConflictType.ManualResolveNeeded;
-        public GoosesControlsConflictResolver(IDeviceModelService deviceModelService,IGoosesModelService goosesModelService, GooseControlViewModelFactory gooseControlViewModelFactory,
-            IFtpGooseModelService ftpGooseModelService,ISclCommunicationModelService sclCommunicationModelService,INavigationService navigationService)
+        public GoosesControlsConflictResolver(IDeviceModelService deviceModelService, IGoosesModelService goosesModelService, GooseControlViewModelFactory gooseControlViewModelFactory,
+            IFtpGooseModelService ftpGooseModelService, ISclCommunicationModelService sclCommunicationModelService, INavigationService navigationService)
         {
             _deviceModelService = deviceModelService;
             _goosesModelService = goosesModelService;
@@ -58,7 +58,7 @@ namespace BISC.Modules.Gooses.Model.Services
             var gooseControlsInDevice = _goosesModelService.GetGooseControlsOfDevice(deviceInsclModelInDevice);
             var gooseControlsInProject = _goosesModelService.GetGooseControlsOfDevice(devicesclModelInProject);
 
-            
+
             if (gooseControlsInDevice.Count != gooseControlsInProject.Count)
             {
                 return true;
@@ -163,7 +163,7 @@ namespace BISC.Modules.Gooses.Model.Services
                 gooseControlsInDeviceVms.FirstOrDefault((model => model.Name == goose.Name))?.ChangeTracker
                     .SetModified()));
             _navigationService.OpenInWindow(GooseKeys.GoosePresentationKeys.GooseControlsConflictsView,
-                $"Конфликты в блоках управления Goose устройства {deviceGuid}",
+                $"Конфликты в блоках управления Goose устройства {devicesclModelInProject.Name}",
                 new BiscNavigationParameters().AddParameterByName(
                     GooseKeys.GoosePresentationKeys.GooseControlsConflictContext,
                     new GooseControlsConflictContext(
@@ -175,7 +175,7 @@ namespace BISC.Modules.Gooses.Model.Services
         private List<IGooseControl> GetDeviceOnlyGooseControls(List<IGooseControl> projectGooseControls,
             List<IGooseControl> deviceGooseControls)
         {
-            List<IGooseControl> deviceOnlyGooseControls=new List<IGooseControl>();
+            List<IGooseControl> deviceOnlyGooseControls = new List<IGooseControl>();
 
 
             foreach (var deviceGooseControl in deviceGooseControls)
@@ -201,7 +201,7 @@ namespace BISC.Modules.Gooses.Model.Services
             return projectOnlyOnlyGooseControls;
         }
         #endregion
-        private GooseFtpDto GetGooseFtpDto(IGooseControl gooseControl,IGse gse)
+        private GooseFtpDto GetGooseFtpDto(IGooseControl gooseControl, IGse gse)
         {
             var gooseFtpDto = new GooseFtpDto();
             gooseFtpDto.Name = gooseControl.Name;

@@ -24,7 +24,7 @@
           Header="Gooses settings" Margin="5">
             <StackPanel Orientation="Vertical" Margin="5">
                 <StackPanel Orientation="Horizontal">
-                    <ToggleButton Margin="5"  IsEnabled="False"
+                    <ToggleButton Margin="5"
                       Style="{StaticResource MaterialDesignActionLightToggleButton}"
                       IsChecked="{Binding IsAutoEnabledQualityInGooseReceiving}">
                         <ToggleButton.Content>
@@ -34,7 +34,7 @@
                     <TextBlock FontSize="17" VerticalAlignment="Center" Text="Автоматически выставлять значения Goose.Quality"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <ToggleButton Margin="5"  IsEnabled="False"
+                    <ToggleButton Margin="5"
                       Style="{StaticResource MaterialDesignActionLightToggleButton}"
                       IsChecked="{Binding IsAutoEnabledValidityInGooseReceiving}">
                         <ToggleButton.Content>

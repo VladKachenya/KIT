@@ -8,6 +8,5 @@ namespace BISC.Modules.Device.Infrastructure.Services
     {
         Task<OperationResult<IDeviceFtpConfig>> ReadDeviceFtpConfig(string ip,string customPath=null);
 	    Task<OperationResult> SaveDeviceFtpConfig(string ip, IDeviceFtpConfig deviceFtpConfigToSave);
-
     }
 }

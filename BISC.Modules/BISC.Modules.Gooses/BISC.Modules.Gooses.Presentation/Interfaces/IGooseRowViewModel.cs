@@ -11,6 +11,7 @@ namespace BISC.Modules.Gooses.Presentation.Interfaces
     {
         List<ISelectableValueViewModel> SelectableValueViewModels { get; }
         string RowName { get; set; }
+        string DoiDataRef { get; set; }
         GooseControlBlockViewModel Parent { get; set; }
         string GooseRowType { get; set; }
         int NumberOfFcdaInDataSet { get; set; }

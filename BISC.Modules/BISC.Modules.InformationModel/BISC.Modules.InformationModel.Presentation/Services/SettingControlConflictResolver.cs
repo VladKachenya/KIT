@@ -140,7 +140,7 @@ namespace BISC.Modules.InformationModel.Presentation.Services
                 settingsGroupsInProjectVms.Add(vm);
             }
 
-            _navigationService.OpenInWindow(InfoModelKeys.SettingsControlConflictsViewKey, $"Конфликты Settings Group в устройстве {deviceGuid}",
+            _navigationService.OpenInWindow(InfoModelKeys.SettingsControlConflictsViewKey, $"Конфликты Settings Group в устройстве {devicesclModelInProject.Name}",
                 new BiscNavigationParameters().AddParameterByName(InfoModelKeys.SettingsControlConflictsContextKey,
                     new SettingsControlConflictsContext(settingsGroupsInDeviceVms, settingsGroupsInProjectVms)));
 

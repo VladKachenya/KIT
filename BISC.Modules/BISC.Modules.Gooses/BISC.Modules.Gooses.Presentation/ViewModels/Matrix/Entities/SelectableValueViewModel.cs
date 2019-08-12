@@ -21,7 +21,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
         private string _toolTip;
 
         public SelectableValueViewModel(IGlobalEventsService globalEventsService,
-            IConfigurationService configurationService,ICommandFactory commandFactory)
+            IConfigurationService configurationService, ICommandFactory commandFactory)
         {
             _globalEventsService = globalEventsService;
             _configurationService = configurationService;
@@ -29,7 +29,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
             OnMouseEnterCommand = commandFactory.CreatePresentationCommand(OnOnMouseEnterExecute);
             OnMouseDownCommand = commandFactory.CreatePresentationCommand(OnMouseDownExecute);
 
-            _globalEventsService.Subscribe<SelectableBoxEventArgs>(OnSelectableBoxSelected);
+            //_globalEventsService.Subscribe<SelectableBoxEventArgs>(OnSelectableBoxSelected);
         }
 
         private void OnMouseDownExecute()
@@ -40,39 +40,40 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
             }
         }
 
-        private void OnSelectableBoxSelected(SelectableBoxEventArgs selectableBoxEventArgs)
-        {
-            if(selectableBoxEventArgs.IsFocused)return;
-            if (_configurationService.IsAutoEnabledValidityInGooseReceiving)
-            {
-                if ((this.Parent.GooseRowType=="State") &&
-                    (selectableBoxEventArgs.SelectableValueViewModel.Parent.GooseRowType== "State") &&
-                    this.ColumnNumber == selectableBoxEventArgs.SelectableValueViewModel.ColumnNumber &&
-                    this.Parent.Parent == selectableBoxEventArgs.SelectableValueViewModel.Parent.Parent)
-                {
+        //private void OnSelectableBoxSelected(SelectableBoxEventArgs selectableBoxEventArgs)
+        //{
+        //    if (selectableBoxEventArgs.IsFocused) return;
+        //    if (_configurationService.IsAutoEnabledValidityInGooseReceiving)
+        //    {
+        //        if ((this.Parent.GooseRowType == "State") &&
+        //            (selectableBoxEventArgs.SelectableValueViewModel.Parent.GooseRowType == "State") &&
+        //            this.ColumnNumber == selectableBoxEventArgs.SelectableValueViewModel.ColumnNumber &&
+        //            this.Parent.Parent == selectableBoxEventArgs.SelectableValueViewModel.Parent.Parent &&
+        //            this != selectableBoxEventArgs.SelectableValueViewModel)
+        //        {
 
-                    SelectedValue = selectableBoxEventArgs.SelectableValueViewModel.SelectedValue;
-                }
-            }
-            if (_configurationService.IsAutoEnabledQualityInGooseReceiving)
-            {
-                if ((this.Parent.GooseRowType == "Quality") &&
-                    (selectableBoxEventArgs.SelectableValueViewModel.Parent.GooseRowType == "Quality") &&
-                    this.ColumnNumber == selectableBoxEventArgs.SelectableValueViewModel.ColumnNumber)
-                {
-                    if (this.Parent.RowName.Remove(this.Parent.RowName.Length - 6) ==
-                        selectableBoxEventArgs.SelectableValueViewModel.Parent.RowName.Remove(
-                            selectableBoxEventArgs.SelectableValueViewModel.Parent.RowName.Length - 10)
-                    ) //потому что stval - 5 букв, а q - 1 буква
-                        SelectedValue = selectableBoxEventArgs.SelectableValueViewModel.SelectedValue;
-                }
-            }
-        }
+        //            SelectedValue = selectableBoxEventArgs.SelectableValueViewModel.SelectedValue;
+        //        }
+        //    }
+        //    if (_configurationService.IsAutoEnabledQualityInGooseReceiving)
+        //    {
+        //        if ((this.Parent.GooseRowType == "Quality") &&
+        //            (selectableBoxEventArgs.SelectableValueViewModel.Parent.GooseRowType == "Quality") &&
+        //            this.ColumnNumber == selectableBoxEventArgs.SelectableValueViewModel.ColumnNumber)
+        //        {
+        //            if (this.Parent.RowName.Remove(this.Parent.RowName.Length - 6) ==
+        //                selectableBoxEventArgs.SelectableValueViewModel.Parent.RowName.Remove(
+        //                    selectableBoxEventArgs.SelectableValueViewModel.Parent.RowName.Length - 10)
+        //            ) //потому что stval - 5 букв, а q - 1 буква
+        //                SelectedValue = selectableBoxEventArgs.SelectableValueViewModel.SelectedValue;
+        //        }
+        //    }
+        //}
 
 
         private void OnOnMouseEnterExecute()
         {
-            _globalEventsService.SendMessage((new SelectableBoxEventArgs(this,true)));
+            _globalEventsService.SendMessage((new SelectableBoxEventArgs(this, true)));
 
         }
 
@@ -86,8 +87,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
             get { return _selectedValue; }
             set
             {
-                 SetProperty(ref _selectedValue , value);
-                _globalEventsService.SendMessage(new SelectableBoxEventArgs(this,false));
+                SetProperty(ref _selectedValue, value);
+                _globalEventsService.SendMessage(new SelectableBoxEventArgs(this, false));
             }
         }
 
@@ -101,8 +102,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
             get { return _isSelectingEnabled; }
             set
             {
-               SetProperty(ref _isSelectingEnabled , value);
-                
+                SetProperty(ref _isSelectingEnabled, value);
+
             }
         }
 
@@ -117,7 +118,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
 
         public void SetValue(bool value)
         {
-            SetProperty(ref _selectedValue, value);
+            SetProperty(ref _selectedValue, value, propertyName: nameof(SelectedValue));
         }
 
         #endregion
@@ -127,7 +128,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
 
         protected override void OnDisposing()
         {
-            _globalEventsService.Unsubscribe<SelectableBoxEventArgs>(OnSelectableBoxSelected);
+            //_globalEventsService.Unsubscribe<SelectableBoxEventArgs>(OnSelectableBoxSelected);
             base.OnDisposing();
         }
 

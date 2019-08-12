@@ -163,7 +163,7 @@ namespace BISC.Modules.DataSets.Model.Services
             projectOnlydatasets.ForEach((set => datasetsInProjectVms.FirstOrDefault((model => model.EditableNamePart == set.Name))?.ChangeTracker.SetModified()));
             deviceOnlydatasets.ForEach((set => datasetsInDeviceVms.FirstOrDefault((model => model.EditableNamePart == set.Name))?.ChangeTracker.SetModified()));
 
-            _navigationService.OpenInWindow(DatasetKeys.DatasetViewModelKeys.DatasetConflictsWindow, $"Dataset конфликты в устройстве {deviceGuid}",
+            _navigationService.OpenInWindow(DatasetKeys.DatasetViewModelKeys.DatasetConflictsWindow, $"Dataset конфликты в устройстве {devicesclModelInProject.Name}",
                 new BiscNavigationParameters().AddParameterByName(DatasetKeys.DatasetViewModelKeys.DatasetsConflictContextKey,
                     new DatasetsConflictContext(datasetsInDeviceVms, datasetsInProjectVms)));
 
