@@ -43,7 +43,7 @@ namespace BISC.Model.Global.Module
             _injectionContainer.RegisterType<IBiscProject, BiscProject>(true);
             _injectionContainer.RegisterType<ISclModel, SclModel>();
             _injectionContainer.RegisterType<IMismatchFactory, MismatchFactory>(true);
-            _injectionContainer.RegisterType<IModelsComparingServise, ModelsComparingServise>(true);
+            _injectionContainer.RegisterType<IModelsComparingService, ModelsComparingService>(true);
            
             _injectionContainer.RegisterType<IProjectService, ProjectService>(true);
             RegisterSerializers(_injectionContainer.ResolveType<IModelElementsRegistryService>());

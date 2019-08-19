@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace BISC.Model.Global.Services
 {
-    public class ModelsComparingServise : IModelsComparingServise
+    public class ModelsComparingService : IModelsComparingService
     {
         IMismatchFactory _mismatchFactory;
         List<IMismatch> result = new List<IMismatch>();
-        public ModelsComparingServise(IMismatchFactory mismatchFactory)
+        public ModelsComparingService(IMismatchFactory mismatchFactory)
         {
             _mismatchFactory = mismatchFactory; 
         }

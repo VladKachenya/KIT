@@ -167,18 +167,18 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private void OnDeleteDataSetViewModel(object dataSetViewModel)
         {
             var element = dataSetViewModel as IDataSetViewModel;
-            _loggingService.LogUserAction(
-                $"Пользователь удаляет DataSet {element.SelectedParentLd + "." + element.SelectedParentLn + "." + element.EditableNamePart}");
             DataSets.Remove(element);
+            _loggingService.LogUserAction(
+                $"DataSet {element.SelectedParentLd + "." + element.SelectedParentLn + "." + element.EditableNamePart} удалён");
             AddNewDataSetCommand.RaiseCanExecute();
         }
 
         private void OnAddNewDataSet()
         {
-            _loggingService.LogUserAction($"Пользователь добавляет новый датасет в устройстве {_device.Name}");
             DataSets.Add(
                 _datasetViewModelFactory.CreateDataSetViewModel(
                     DataSets.Select((model => model.EditableNamePart)).ToList(), _device));
+            _loggingService.LogUserAction($"Для устройства {_device.Name} добавлен новый DataSet");
             AddNewDataSetCommand.RaiseCanExecute();
         }
 
@@ -205,7 +205,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
             try
             {
-                _loggingService.LogUserAction($"Пользователь сохраняет изменения DataSets устройства {_device.Name}");
+                _loggingService.LogUserAction($"Изменения DataSets устройства {_device.Name}");
                 BlockViewModelBehavior.SetBlock("Сохранение DataSet-ов", true);
                 var savingRes = await _globalSavingService.SaveСhangesToRegion(_regionName);
                 if (savingRes.IsSaved)
@@ -215,7 +215,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             }
             catch (Exception e)
             {
-                _loggingService.LogUserAction($"Ошибка записи DataSet в устройство {e.Message}");
+                _loggingService.LogMessage($"Ошибка записи DataSet в устройство {e.Message}", SeverityEnum.Critical);
             }
             finally
             {

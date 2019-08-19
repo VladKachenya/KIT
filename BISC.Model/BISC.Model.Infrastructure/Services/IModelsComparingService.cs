@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BISC.Model.Infrastructure.Services
 {
-    public interface IModelsComparingServise
+    public interface IModelsComparingService
     {
         List<IMismatch> CompareBranches(IModelElement branch1, IModelElement branch2);
     }

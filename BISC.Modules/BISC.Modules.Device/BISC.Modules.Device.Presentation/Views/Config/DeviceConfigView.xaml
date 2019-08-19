@@ -9,7 +9,7 @@
              d:DesignHeight="300" d:DesignWidth="500">
     <ContentControl HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{DynamicResource BlockedContentStyle}">
         <StackPanel CanHorizontallyScroll="True" Margin="10" Orientation="Vertical">
-            <Grid VerticalAlignment="Top">
+            <Grid VerticalAlignment="Top" Visibility="Collapsed">
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
@@ -26,7 +26,7 @@
                 <TextBox Margin="2" HorizontalAlignment="Left" Grid.Row="1" Width="400" Text="{Binding TechKey}"></TextBox>
             </Grid>
 
-            <Grid VerticalAlignment="Top">
+            <Grid VerticalAlignment="Top" Visibility="Collapsed">
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
@@ -34,7 +34,7 @@
                 <TextBlock Margin="2" Text="Версия прошивки головного процессора:"></TextBlock>
                 <TextBox Margin="2" HorizontalAlignment="Left" Grid.Row="1" Width="400" Text="{Binding Version}"></TextBox>
             </Grid>
-            <Grid VerticalAlignment="Top">
+            <Grid VerticalAlignment="Top" Visibility="Collapsed">
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
@@ -43,12 +43,12 @@
                 <ComboBox Margin="2" HorizontalAlignment="Left" Grid.Row="1" Width="100" SelectedItem="{Binding SwitchMode}" ItemsSource="{Binding SwitchModeList}"></ComboBox>
             </Grid>
 
-            <Grid VerticalAlignment="Top">
+            <Grid VerticalAlignment="Top" Visibility="Collapsed">
                 <local:MacFilterView DataContext="{Binding MacFilterAViewModel}"></local:MacFilterView>
             </Grid>
 
 
-            <Grid VerticalAlignment="Top">
+            <Grid VerticalAlignment="Top" Visibility="Collapsed">
                 <local:MacFilterView DataContext="{Binding MacFilterBViewModel}"></local:MacFilterView>
             </Grid>
         </StackPanel>

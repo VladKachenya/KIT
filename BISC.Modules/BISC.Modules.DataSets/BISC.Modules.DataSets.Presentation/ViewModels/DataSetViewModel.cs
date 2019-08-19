@@ -90,13 +90,12 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         private void OnDeleteFcda(object obj)
         {
+            var fcdaObj = obj as IFcdaViewModel;
+            if (fcdaObj == null) return;
             FcdaViewModels.Remove(obj as IFcdaViewModel);
-            if (obj != null)
-            {
-                _loggingService.LogUserAction(
-                    $"Пользователь удалил FCDA {(obj as IFcdaViewModel).FullName} (устройство {(_device as IDevice)?.Name})");
-                Weigh();
-            }
+            _loggingService.LogUserAction(
+                $"Удаление FCDA {(obj as IFcdaViewModel).FullName} из датасета {Name}, устройствa {(_device as IDevice)?.Name}");
+            Weigh();
         }
 
         private void OnAddFcdaTpDataset()
@@ -433,7 +432,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 if (insertIdex > elementIndex) insertIdex--;
                 FcdaViewModels.Insert(insertIdex, fcdaViewModel);
             }
-            
+
             _loggingService.LogUserAction($"FCDA {fcdaName} перенесён через DragDrop");
             Weigh();
         }

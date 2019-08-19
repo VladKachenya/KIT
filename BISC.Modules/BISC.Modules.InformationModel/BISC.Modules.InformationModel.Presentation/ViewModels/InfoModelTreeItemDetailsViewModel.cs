@@ -39,11 +39,15 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         private bool _isLoadingValuesInProgress;
         private bool _isHideButtons;
 
-        public InfoModelTreeItemDetailsViewModel(IInfoModelTreeFactory infoModelTreeFactory, ILoggingService loggingService, 
+        public InfoModelTreeItemDetailsViewModel(
+            IInfoModelTreeFactory infoModelTreeFactory,
+            ILoggingService loggingService,
             IUserInterfaceComposingService userInterfaceComposingService,
-            ICommandFactory commandFactory, IGlobalEventsService globalEventsService, 
-            IConnectionPoolService connectionPoolService, ModelValuesLoadingHelper modelValuesLoadingHelper)
-        :base(globalEventsService)
+            ICommandFactory commandFactory,
+            IGlobalEventsService globalEventsService,
+            IConnectionPoolService connectionPoolService,
+            ModelValuesLoadingHelper modelValuesLoadingHelper)
+        : base(globalEventsService)
         {
             _infoModelTreeFactory = infoModelTreeFactory;
             _loggingService = loggingService;
@@ -52,7 +56,6 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
             _connectionPoolService = connectionPoolService;
             _modelValuesLoadingHelper = modelValuesLoadingHelper;
             LoadValuesCommand = commandFactory.CreatePresentationCommand(OnLoadValues, CanExecuteLoadValues);
-
         }
 
         private async void OnLoadValues()
@@ -117,7 +120,14 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
                 if (_isFcSortChecked != value)
                 {
                     SetProperty(ref _isFcSortChecked, value);
-                    _loggingService.LogUserAction($"Пользователь выставил сортировку по FC в состояние {value}");
+                    if (value)
+                    {
+                        _loggingService.LogUserAction($"Включена сортировка по FC");
+                    }
+                    else
+                    {
+                        _loggingService.LogUserAction($"Отключена сортировка по FC");
+                    }
                     UpdateInfoModelTree();
                 }
 

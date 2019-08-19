@@ -40,7 +40,7 @@ namespace BISC.Presentation.ViewModels.Tab
             {
                 var regionName = (e.OldItems[0] as ITabViewModel)?.TabRegionName;
                 _globalEventsService.SendMessage(new RegionDisposingEvent(regionName));
-                _loggingService.LogUserAction($"Пользователь закрыл вкладку: {(e.OldItems[0] as ITabViewModel)?.TabHeader}");
+                _loggingService.LogUserAction($"Закрыта вкладка: {(e.OldItems[0] as ITabViewModel)?.TabHeader}");
 
             }
         }
@@ -57,7 +57,7 @@ namespace BISC.Presentation.ViewModels.Tab
                 _navigationService.DeactivateRegion(_activeTabViewModel.TabRegionName);
                 _activeTabViewModel = value;
                 _navigationService.ActivateRegion(value.TabRegionName);
-                _loggingService.LogUserAction($"Пользователь переместился на вкладку: {value.TabHeader}");
+                _loggingService.LogUserAction($"Вкладка {value.TabHeader} активна!");
                 OnPropertyChanged();
             }
         }

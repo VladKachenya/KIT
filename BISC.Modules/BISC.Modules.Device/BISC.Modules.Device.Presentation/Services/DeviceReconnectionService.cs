@@ -48,19 +48,28 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly IPingService _pingService;
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInteractionService _userInteractionService;
-        private readonly IModelsComparingServise _comparingServise;
+        private readonly IModelsComparingService _comparingService;
 
-        public DeviceReconnectionService(IDeviceFileWritingServices deviceFileWritingServices,
-            IDeviceConnectionService deviceConnectionService, IDeviceModelService deviceModelService,
-            ITreeManagementService treeManagementService, IConnectionPoolService connectionPoolService,
-            ITabManagementService tabManagementService, ILoggingService loggingService,
+        public DeviceReconnectionService(
+            IDeviceFileWritingServices deviceFileWritingServices,
+            IDeviceConnectionService deviceConnectionService,
+            IDeviceModelService deviceModelService,
+            ITreeManagementService treeManagementService,
+            IConnectionPoolService connectionPoolService,
+            ITabManagementService tabManagementService,
+            ILoggingService loggingService,
             IGlobalEventsService globalEventsService,
-            INavigationService navigationService, IInjectionContainer injectionContainer,
+            INavigationService navigationService,
+            IInjectionContainer injectionContainer,
             Func<ISclModel> sclModelCreator,
-            IBiscProject biscProject, IDeviceAddingService deviceAddingService,
+            IBiscProject biscProject,
+            IDeviceAddingService deviceAddingService,
             IDeviceWarningsService deviceWarningsService,
-            ISclCommunicationModelService sclCommunicationModelService, IPingService pingService,
-            ISaveCheckingService saveCheckingService, IUserInteractionService userInteractionService, IModelsComparingServise comparingServise)
+            ISclCommunicationModelService sclCommunicationModelService,
+            IPingService pingService,
+            ISaveCheckingService saveCheckingService,
+            IUserInteractionService userInteractionService,
+            IModelsComparingService comparingService)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
             _deviceConnectionService = deviceConnectionService;
@@ -79,16 +88,14 @@ namespace BISC.Modules.Device.Presentation.Services
             _pingService = pingService;
             _saveCheckingService = saveCheckingService;
             _userInteractionService = userInteractionService;
-            _comparingServise = comparingServise;
+            _comparingService = comparingService;
             _elementLoadingServices = injectionContainer.ResolveAll(typeof(IDeviceElementLoadingService))
                 .Cast<IDeviceElementLoadingService>().ToList();
             _elementConflictResolvers = injectionContainer.ResolveAll(typeof(IElementConflictResolver))
                 .Cast<IElementConflictResolver>().ToList();
         }
 
-
         #region Implementation of IDeviceRestartService
-
         public async Task<bool> ReconnectDevice(IDevice existingDevice, UiEntityIdentifier uiEntityIdToRemove)
         {
             if (!await _pingService.GetPing(
@@ -134,21 +141,20 @@ namespace BISC.Modules.Device.Presentation.Services
                 await Task.Delay(4000, cts.Token);
             }
 
-            existingDevice.Ip =
-                _sclCommunicationModelService.GetIpOfDevice(existingDevice.Name, _biscProject.MainSclModel.Value);
-            var deviceConnectResult = await _deviceConnectionService.ConnectDevice(existingDevice.Ip, 2);
-            if (!deviceConnectResult.IsSucceed)
-            {
-                _loggingService.LogMessage($"IED Устройство по адресу {existingDevice.Ip} не обнаружено",
-                    SeverityEnum.Warning);
-                await CancellationLoading(treeItemId, existingDevice);
-            }
-
             IDevice device = null;
             var sclModel = _sclModelCreator();
             int itemsCount = 0;
             try
             {
+                existingDevice.Ip =
+                    _sclCommunicationModelService.GetIpOfDevice(existingDevice.Name, _biscProject.MainSclModel.Value);
+                var deviceConnectResult = await _deviceConnectionService.ConnectDevice(existingDevice.Ip, 2);
+                if (!deviceConnectResult.IsSucceed)
+                {
+                    _loggingService.LogMessage($"IED Устройство по адресу {existingDevice.Ip} не обнаружено",
+                        SeverityEnum.Warning);
+                    await CancellationLoading(treeItemId, existingDevice);
+                }
                 device = deviceConnectResult.Item;
                 device.SetGuid(existingDevice.DeviceGuid);
 
@@ -201,12 +207,7 @@ namespace BISC.Modules.Device.Presentation.Services
                     _loggingService.LogMessage(
                         $"Ошибка загрузки устройства {e.Message + Environment.NewLine + e.StackTrace}",
                         SeverityEnum.Critical);
-                    if (device != null)
-                    {
-                        _globalEventsService.SendMessage(new LoadErrorEvent(device.Ip, device.DeviceGuid));
-                    }
-
-                    // return new OperationResult($"Ошибка загрузка устройства {device.Name}");
+                    _globalEventsService.SendMessage(new LoadErrorEvent(existingDevice.Ip, existingDevice.DeviceGuid));
                 }
                 return;
             }

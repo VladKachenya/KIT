@@ -65,23 +65,23 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private bool _isReportWarning;
 
         public DeviceTreeItemViewModel(
-            ICommandFactory commandFactory, 
-            IDeviceModelService deviceModelService, 
-            IGlobalEventsService globalEventsService, 
+            ICommandFactory commandFactory,
+            IDeviceModelService deviceModelService,
+            IGlobalEventsService globalEventsService,
             IConnectionPoolService connectionPoolService,
-            IBiscProject biscProject, 
-            ITreeManagementService treeManagementService, 
+            IBiscProject biscProject,
+            ITreeManagementService treeManagementService,
             ITabManagementService tabManagementService,
-            IGoosesModelService goosesModelService, 
-            ISaveCheckingService saveCheckingService, 
-            IUserInteractionService userInteractionService, 
+            IGoosesModelService goosesModelService,
+            ISaveCheckingService saveCheckingService,
+            IUserInteractionService userInteractionService,
             ILoggingService loggingService,
-            IDeviceSerializingService deviceSerializingService, 
-            IDeviceWarningsService deviceWarningsService, 
+            IDeviceSerializingService deviceSerializingService,
+            IDeviceWarningsService deviceWarningsService,
             IDeviceReconnectionService deviceReconnectionService,
-            IDeviceConnectionService deviceConnectionService, 
+            IDeviceConnectionService deviceConnectionService,
             INavigationService navigationService,
-            IDeviceSavingService deviceSavingService, 
+            IDeviceSavingService deviceSavingService,
             IGlobalSavingService globalSavingService,
             IProjectManagementService projectManagementService)
             : base(null)
@@ -246,7 +246,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
                     return;
                 }
             }
-            _loggingService.LogUserAction("Пользователь удаляет устройство " + _device.Name);
+
+            _loggingService.LogUserAction($"Удаление устройства {_device.Name}");
             _projectManagementService.DeleteDeviceFromProject(_device.DeviceGuid);
         }
 

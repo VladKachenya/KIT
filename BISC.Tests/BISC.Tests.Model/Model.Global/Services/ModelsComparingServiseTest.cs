@@ -28,11 +28,11 @@ namespace BISC.Tests.Model.Model.Global.Services
     [TestClass]
     public class ModelsComparingServiseTest
     {
-        ModelsComparingServise modelsComparingServise;
+        ModelsComparingService _modelsComparingService;
         [TestInitialize]
         public void TestInitialize()
         {
-            modelsComparingServise = new ModelsComparingServise(new TestMismuchFactory()); 
+            _modelsComparingService = new ModelsComparingService(new TestMismuchFactory()); 
         }
 
         #region Tests
@@ -42,7 +42,7 @@ namespace BISC.Tests.Model.Model.Global.Services
         {
             IModelElement testBransh1 = TestBransh1();
             IModelElement testBransh2 = TestBransh1();
-            var result = modelsComparingServise.CompareBranches(testBransh1, testBransh2);
+            var result = _modelsComparingService.CompareBranches(testBransh1, testBransh2);
             Assert.AreEqual(result.Count, 0);
         }
 
@@ -51,7 +51,7 @@ namespace BISC.Tests.Model.Model.Global.Services
         {
             IModelElement testBransh1 = TestBransh2();
             IModelElement testBransh2 = TestBransh3();
-            var result = modelsComparingServise.CompareBranches(testBransh1, testBransh2);
+            var result = _modelsComparingService.CompareBranches(testBransh1, testBransh2);
             Assert.AreEqual(result.Count, 9);
             foreach (var element in result)
                 Assert.AreEqual(element.MismatchType, "MissingMismatch", "Mismatch type does not match MissingMismatch");
@@ -74,7 +74,7 @@ namespace BISC.Tests.Model.Model.Global.Services
             testBransh2.ChildModelElements.Add(new ModelElement() { ElementName = "T1", Namespace = "T2" });
             testBransh2.ChildModelElements.Add(new ModelElement() { ElementName = "T2", Namespace = "T2" });
             testBransh2.ChildModelElements.Add(new ModelElement() { ElementName = "T1", Namespace = "T2" });
-            var result = modelsComparingServise.CompareBranches(testBransh1, testBransh2);
+            var result = _modelsComparingService.CompareBranches(testBransh1, testBransh2);
             Assert.AreEqual(result.Count, 3);
             foreach (var element in result)
                 Assert.AreEqual(element.MismatchType, "InequalityMismatch", "Mismatch type does not match InequalityMismatch");

@@ -100,7 +100,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             try
             {
                 await UpdateGooses(false);
-                _loggingService.LogUserAction($"Пользователь обновил состояние Goose CB (устройство {_device.Name})");
+                _loggingService.LogUserAction($"Вкладка Goose CB устройства {_device.Name} обновлена");
             }
             catch (Exception e)
             {
@@ -136,7 +136,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         private void OnAddGooseCommand()
         {
-            _loggingService.LogUserAction($"Пользователь добавляет Goose CB (устройство {_device.Name})");
+            _loggingService.LogUserAction($"Добавлен goose control устройства {_device.Name}");
 
             GooseControlViewModels.Add(_gooseControlViewModelFactory.CreateGooseControlViewModel(_device, GooseControlViewModels.Where(goose => goose.IsDynamic).Select(goose => goose.Name).ToList()));
             AddGooseCommand.RaiseCanExecute();
@@ -157,7 +157,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                 return;
             }
 
-            _loggingService.LogUserAction($"Пользователь удаляет Goose CB {gooseCbVm.Name} (устройство {_device.Name})");
+            _loggingService.LogUserAction($"Goose control {gooseCbVm.Name} устройства {_device.Name} удалён.");
             GooseControlViewModels.Remove(gooseCbVm);
             AddGooseCommand.RaiseCanExecute();
         }
@@ -169,8 +169,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             try
             {
                 _loggingService.LogUserAction(
-                    $"Пользователь сохряняет изменения в Goose CB устройства {_device.Name})");
-                //_gooseControlsSavingCommand.Initialize(GooseControlViewModels, _device);
+                    $"Изменения goose control устройства {_device.Name} сохранены в проект.");
                 BlockViewModelBehavior.SetBlock("Сохранение блоков управления Goose", true);
                 var savingResult = await _globalSavingService.SaveСhangesToRegion(_regionName);
                 if (savingResult.IsSaved)

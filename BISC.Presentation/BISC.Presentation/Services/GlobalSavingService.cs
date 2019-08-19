@@ -27,11 +27,6 @@ namespace BISC.Presentation.Services
             public List<SaveCheckingEntity> UnsavedEntitiesOfDevise { get; }
             public async Task AddUnsavedEntity(SaveCheckingEntity entity)
             {
-                //if (entity.SavingCommand != null &&
-                //  await entity.SavingCommand.IsSavingByFtpNeeded())
-                //{
-                //    IsRestartNecessry = true;
-                //}
                 UnsavedEntitiesOfDevise.Add(entity);
             }
         }
@@ -44,10 +39,13 @@ namespace BISC.Presentation.Services
         private readonly IGlobalEventsService _globalEventsService;
         private ISclModel _sclModel;
 
-        public GlobalSavingService(ISaveCheckingService saveCheckingService,
+        public GlobalSavingService(
+            ISaveCheckingService saveCheckingService,
             Func<IDeviceReconnectionService> deviceReconnectionService,
-            IDeviceModelService deviceModelService, IUserInteractionService userInteractionService, 
-            IInjectionContainer injectionContainer, IGlobalEventsService globalEventsService)
+            IDeviceModelService deviceModelService,
+            IUserInteractionService userInteractionService,
+            IInjectionContainer injectionContainer,
+            IGlobalEventsService globalEventsService)
         {
             _saveCheckingService = saveCheckingService;
             _deviceReconnectionService = deviceReconnectionService;
@@ -84,15 +82,6 @@ namespace BISC.Presentation.Services
                 {
                     return savingRes;
                 }
-
-                //if (isReconnectIfNeed)
-                //{
-                //    await RestartAndReconnestDevices(devisesForSaving.Where(el => el.IsRestartNecessry).ToList());
-                //}
-                //else
-                //{
-                //    await RestartOnlyDevices(devisesForSaving.Where(el => el.IsRestartNecessry).ToList());
-                //}
             }
             finally
             {
@@ -103,17 +92,17 @@ namespace BISC.Presentation.Services
             return res;
         }
 
-        public async Task<SaveResult> SaveСhangesToRegion(string regionName, bool isCancelPossible = false )
+        public async Task<SaveResult> SaveСhangesToRegion(string regionName, bool isCancelPossible = false)
         {
             var saveResult = new SaveResult();
 
             if (_saveCheckingService.GetSaveCheckingEntities().Any((entity => entity.RegionName == regionName)))
             {
                 var modifiedEntities = _saveCheckingService.GetSaveCheckingEntities().Where((entity =>
-                    entity.RegionName == regionName&&entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
+                    entity.RegionName == regionName && entity.ChangeTracker.GetIsModifiedRecursive())).ToList();
                 return await SaveChengests(modifiedEntities, isCancelPossible);
             }
-            return new SaveResult(){IsSaved = true};
+            return new SaveResult() { IsSaved = true };
         }
 
         public async Task<SaveResult> SaveСhangesOfDevice(Guid deviceGuid)
@@ -168,19 +157,6 @@ namespace BISC.Presentation.Services
                     }
                 }
             }
-
-            //foreach (var deviceForSaving in res)
-            //{
-            //    if (deviceForSaving.IsRestartNecessry)
-            //    {
-            //        var deviceChengests = await _saveCheckingService.GetIsDeviceEntitiesSaved(deviceForSaving.Device.DeviceGuid);
-            //        if (!deviceChengests.IsEntitiesSaved)
-            //        {
-            //            deviceForSaving.UnsavedEntitiesOfDevise.Clear();
-            //            deviceForSaving.UnsavedEntitiesOfDevise.AddRange(deviceChengests.UnsavedCheckingEntities);
-            //        }
-            //    }
-            //}
             return res;
         }
 
@@ -189,12 +165,7 @@ namespace BISC.Presentation.Services
             List<string> warnings = new List<string>();
             foreach (var deviceForSaving in devicesForSaving)
             {
-                //if (deviceForSaving.IsRestartNecessry)
-                //{
-                //    warnings.Add("УСТРОЙСТВО " + deviceForSaving.Device?.Name + " БУДЕТ ПЕРЕЗАГРУЖЕНО!");
-                //}
-
-                warnings.AddRange(deviceForSaving.UnsavedEntitiesOfDevise.Select(el => el.EntityFriendlyName ));
+                warnings.AddRange(deviceForSaving.UnsavedEntitiesOfDevise.Select(el => el.EntityFriendlyName));
             }
 
             var confirmationList = isCancellationNecessary
@@ -202,7 +173,7 @@ namespace BISC.Presentation.Services
                 : new List<string>() { "Да", "Нет" };
 
             var res = await _userInteractionService.ShowOptionToUser("В проекте имеются следующие несохранённые изменения:",
-                "Желаете произвести сохранение изменений в проект?", confirmationList, warnings);
+                "Желаете сохранить текущий проект?", confirmationList, warnings);
 
             switch (res)
             {
@@ -238,13 +209,10 @@ namespace BISC.Presentation.Services
         private async Task<DevicesForSaving> GetDevicesForSaving(SaveCheckingEntity unsavedEntity, IDevice device = null)
         {
             DevicesForSaving emptyDeviseForSaving = new DevicesForSaving(device);
-            //{
-            //    IsRestartNecessry = unsavedEntity.SavingCommand != null && await unsavedEntity.SavingCommand.IsSavingByFtpNeeded()
-            //};
             emptyDeviseForSaving.UnsavedEntitiesOfDevise.Add(unsavedEntity);
             return emptyDeviseForSaving;
         }
-        
+
         private async Task<SaveResult> SaveChengests(List<SaveCheckingEntity> modifiedEntities, bool isCancelPossible)
         {
             var saveResult = new SaveResult();
@@ -261,7 +229,7 @@ namespace BISC.Presentation.Services
             var warnings = new List<string>();
             foreach (var entity in entitiesForSaving)
             {
-                if(entity.SavingCommand == null) continue;
+                if (entity.SavingCommand == null) continue;
                 var validationRes = await entity.SavingCommand.ValidateBeforeSave();
                 if (!(validationRes.IsSucceed))
                 {
@@ -272,8 +240,8 @@ namespace BISC.Presentation.Services
 
             if (saveResult.IsValidationFailed)
             {
-                 var task = _userInteractionService.ShowOptionToUser("Ошибка валидации данных:",
-                    "Сохранение не может быть произведено!", new List<string>() { "Ок" }, warnings);
+                var task = _userInteractionService.ShowOptionToUser("Ошибка валидации данных:",
+                   "Сохранение не может быть произведено!", new List<string>() { "Ок" }, warnings);
                 return saveResult;
             }
 
@@ -290,12 +258,6 @@ namespace BISC.Presentation.Services
             if ((bool)res)
             {
                 await _saveCheckingService.ExecuteSave(entitiesForSaving);
-
-                //var dev = devisesForSaving.Where(el => el.IsRestartNecessry).ToList();
-                //if (dev.Count > 0)
-                //{
-                //    await RestartAndReconnestDevices(dev);
-                //}
             }
             else
             {

@@ -54,11 +54,20 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private IReportControlViewModel _selectedReport;
 
         #region Ctor
-        public ReportsDetailsViewModel(ICommandFactory commandFactory, IReportsModelService reportsModelService, ISaveCheckingService saveCheckingService,
-            IReportControlFactoryViewModel reportControlFactoryViewModel, IUserInterfaceComposingService userInterfaceComposingService,
-            IConnectionPoolService connectionPoolService, ILoggingService loggingService, ReportsSavingCommand reportsSavingCommand,
-            IBiscProject biscProject, ReportControlLoadingService reportControlLoadingService, IReportVeiwModelService reportVeiwModelService,
-            IGlobalSavingService globalSavingService, IGlobalEventsService globalEventsService)
+        public ReportsDetailsViewModel(
+            ICommandFactory commandFactory,
+            IReportsModelService reportsModelService,
+            ISaveCheckingService saveCheckingService,
+            IReportControlFactoryViewModel reportControlFactoryViewModel,
+            IUserInterfaceComposingService userInterfaceComposingService,
+            IConnectionPoolService connectionPoolService,
+            ILoggingService loggingService,
+            ReportsSavingCommand reportsSavingCommand,
+            IBiscProject biscProject,
+            ReportControlLoadingService reportControlLoadingService,
+            IReportVeiwModelService reportVeiwModelService,
+            IGlobalSavingService globalSavingService,
+            IGlobalEventsService globalEventsService)
             : base(globalEventsService)
         {
             _reportsModelService = reportsModelService;
@@ -101,7 +110,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
                 _isSaveСhanges = false;
                 BlockViewModelBehavior.SetBlock("Сохранение отчетов", true);
                 (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
-                _loggingService.LogUserAction($"Пользователь сохраняет изменения Report устройства {_device.Name}");
+                _loggingService.LogUserAction($"Сохранение изменений Report устройства {_device.Name}");
                 var savingRes = await _globalSavingService.SaveСhangesToRegion(_regionName);
                 if (savingRes.IsSaved)
                 {
@@ -120,7 +129,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 
         private void OnAddNewReportCommand()
         {
-            _loggingService.LogUserAction($"Пользователь добавил Report устройства {_device.Name}");
+            _loggingService.LogUserAction($"Добавление Report в устройство {_device.Name}");
             ReportControlViewModels.Add(
                 _reportControlFactoryViewModel.CreateReportViewModel(
                     ReportControlViewModels.Select((model => model.ReportID)).ToList(), _device));
@@ -165,11 +174,6 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             try
             {
                 BlockViewModelBehavior.SetBlock("Обновление данных", true);
-                //if (updateFromDevice && _connectionPoolService.GetConnection(_device.Ip).IsConnected)
-                //{
-                //    await _reportControlLoadingService.EstimateProgress(_device);
-                //    await _reportControlLoadingService.Load(_device, null, _biscProject.MainSclModel.Value, new CancellationToken());
-                //}
                 UpdateCurentChengeTracker();
             }
             finally
@@ -217,7 +221,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             set
             {
                 SetProperty(ref _selectedReport, value, true);
-                if(SelectedReport != null) ((ViewModelBase) SelectedReport).IsWarning = false;
+                if (SelectedReport != null) ((ViewModelBase)SelectedReport).IsWarning = false;
             }
         }
 
