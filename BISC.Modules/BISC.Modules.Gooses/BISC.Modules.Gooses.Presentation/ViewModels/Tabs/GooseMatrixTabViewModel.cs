@@ -17,6 +17,7 @@ using BISC.Presentation.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,6 +49,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         private IDevice _device;
         private string _regionName;
         private bool _isCommandEnabled = true;
+        private DataTable _gooseMatrix;
 
         #region ctor
 
@@ -90,6 +92,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         public ICommand SaveCommand { get; }
         public ICommand UpdateCommand { get; }
 
+        public DataView GooseMatrixDataView => _gooseMatrix?.DefaultView; 
 
         public ObservableCollection<GooseControlBlockViewModel> GooseControlBlockViewModels
         {
@@ -248,6 +251,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                 _isInitialized = false;
                 GooseControlBlockViewModels?.Clear();
                 var blocks = await _gooseControlBlockViewModelFactory.BuildGooseControlBlockViewModels(_biscProject.MainSclModel.Value, _device);
+                var table = _gooseControlBlockViewModelFactory.BuildGooseMatrixDataTable(_biscProject.MainSclModel.Value, _device);
+                OnPropertyChanged(nameof(GooseMatrixDataView));
                 GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>(blocks.Item);
                 InitDictionary();
                 _isInitialized = true;

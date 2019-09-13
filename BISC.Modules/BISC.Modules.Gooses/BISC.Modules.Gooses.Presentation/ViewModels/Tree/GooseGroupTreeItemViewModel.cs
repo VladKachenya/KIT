@@ -30,7 +30,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
         private bool _isNavigateToMatrixCommandEneble = true;
 
 
-        public GooseGroupTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService, 
+        public GooseGroupTreeItemViewModel(ICommandFactory commandFactory, ITabManagementService tabManagementService,
             IDeviceWarningsService deviceWarningsService, IGlobalEventsService globalEventsService)
             : base(null)
         {
@@ -101,7 +101,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
                   _device.Type == DeviceKeys.DeviceTypes.MR762 ||
                   _device.Type == DeviceKeys.DeviceTypes.MR763 ||
                   _device.Type == DeviceKeys.DeviceTypes.MR771 ||
-                  _device.Type == DeviceKeys.DeviceTypes.MR801 &&  _device.RevisionDetails.CompareVersionTo(23, 10) >= 0 ||
+                  _device.Type == DeviceKeys.DeviceTypes.MR801 && _device.RevisionDetails.CompareVersionTo(23, 10) >= 0 ||
+                  _device.Type == DeviceKeys.DeviceTypes.MR761OBR && _device.RevisionDetails.CompareVersionTo(24, 0) >= 0 ||
                   _device.Type == DeviceKeys.DeviceTypes.MR5))
             {
                 _isNavigateToMatrixCommandEneble = false;

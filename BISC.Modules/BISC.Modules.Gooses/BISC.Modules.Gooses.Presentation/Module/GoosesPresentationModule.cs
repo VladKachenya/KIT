@@ -21,6 +21,7 @@ using System;
 using BISC.Modules.Device.Infrastructure.Saving;
 using BISC.Modules.Gooses.Presentation.Interfaces.Services;
 using BISC.Modules.Gooses.Presentation.Services.SavingServices;
+using BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Table;
 
 namespace BISC.Modules.Gooses.Presentation.Module
 {
@@ -74,6 +75,11 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<IGooseViewModelService, GooseViewModelService>();
 
             _injectionContainer.RegisterType<GoosePresentationInitialization>(true);
+
+            _injectionContainer.RegisterType<IGooseMatrixSelectableCellViewModel, GooseMatrixSelectableCellViewModel>();
+            _injectionContainer.RegisterType<IGooseMatrixRowDescription, GooseMatrixRowDescription>();
+
+
             GoosePresentationInitialization presentationInitialization = _injectionContainer.ResolveType(typeof(GoosePresentationInitialization)) as GoosePresentationInitialization;
         }
 

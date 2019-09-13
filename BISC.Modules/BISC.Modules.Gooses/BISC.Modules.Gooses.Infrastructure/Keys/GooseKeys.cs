@@ -54,7 +54,7 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
             public static string Validity = nameof(Validity);
             public static string Quality = nameof(Quality);
             public static string State = nameof(State);
-
+            public static string Goose = nameof(Goose);
         }
 
         public static class GoInNameKeys
@@ -65,7 +65,15 @@ namespace BISC.Modules.Gooses.Infrastructure.Keys
             public static string AlarmLogResetKey = "Сброс ЖА";
             public static string TurnOffBreaker = "Откл. В";
             public static string TurnOnBreaker = "Вкл. В";
+        }
 
+        public enum GooseSubscriptionRowType
+        {
+            State,
+            Quality,
+            Validity,
+            Goose,
+            Separator
         }
     }
 }

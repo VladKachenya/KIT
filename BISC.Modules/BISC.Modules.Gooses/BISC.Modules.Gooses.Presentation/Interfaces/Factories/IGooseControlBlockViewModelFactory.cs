@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
 using BISC.Model.Infrastructure.Project;
@@ -11,5 +12,8 @@ namespace BISC.Modules.Gooses.Presentation.Interfaces.Factories
     public interface IGooseControlBlockViewModelFactory
     {
        Task<OperationResult<List<GooseControlBlockViewModel>>> BuildGooseControlBlockViewModels(ISclModel sclModel, IDevice device);
+
+       DataTable BuildGooseMatrixDataTable(ISclModel sclModel, IDevice device);
+
     }
 }

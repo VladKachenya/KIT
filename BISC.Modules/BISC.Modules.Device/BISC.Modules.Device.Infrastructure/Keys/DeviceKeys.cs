@@ -47,6 +47,7 @@ namespace BISC.Modules.Device.Infrastructure.Keys
             public const string MR762 = nameof(MR762);
             public const string MR763 = nameof(MR763);
             public const string MR771 = nameof(MR771);
+            public const string MR761OBR = nameof(MR761OBR);
             public const string Unknow = nameof(Unknow);
         }
 
