@@ -7,10 +7,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using BISC.Presentation.Windows;
 
 namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 {
@@ -202,11 +204,31 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
                 return;
             }
 
+            var maxRow = 1;
+            int mainGridRowIndex = 0;
+
+
+            foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
+            {
+                maxRow = maxRow + 1 + gooseControlBlockViewModel.GooseRowViewModels.Count;
+            }
+
+            var progressBarThread = new Thread(() =>
+            {
+                var progressWindow = new ProgressWindow(maxRow, () => mainGridRowIndex);
+                progressWindow.Show();
+                System.Windows.Threading.Dispatcher.Run();
+            });
+
+            Thread.Sleep(100);
+
+            progressBarThread.SetApartmentState(ApartmentState.STA);
+            progressBarThread.IsBackground = true;
+            progressBarThread.Start();
 
             mainGrid.Children.Clear();
             mainGrid.ColumnDefinitions.Clear();
             mainGrid.RowDefinitions.Clear();
-            int mainGridRowIndex = 0;
             mainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) }); // номера GoIn
 
             for (int i = 0; i < GoInCount; i++)
@@ -218,6 +240,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
                 mainGrid.Children.Add(goinNumTextBlock);
             }
             mainGridRowIndex++;
+
             _goinSignatureTextBlocks = new List<TextBlock>();
 
             ScrollViewer scrollViewer = new ScrollViewer();
@@ -372,8 +395,6 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
                         _goinSignatureTextBlocks.Add(validityRowNameTextBlock);
 
                         mainGridRowIndex++;
-
-
 
                         for (int i = 0; i < GoInCount; i++)
                         {

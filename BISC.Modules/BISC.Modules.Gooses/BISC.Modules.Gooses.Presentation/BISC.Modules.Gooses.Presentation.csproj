@@ -188,6 +188,10 @@
       <Project>{D4FEAC3B-C8F9-4DE7-8953-988C75F0F9AA}</Project>
       <Name>BISC.Presentation.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\BISC.Presentation\BISC.Presentation\BISC.Presentation.csproj">
+      <Project>{11E0533C-FBCF-411F-85C4-771840C700B5}</Project>
+      <Name>BISC.Presentation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules.Connection\BISC.Modules.Connection.Infrastructure\BISC.Modules.Connection.Infrastructure.csproj">
       <Project>{84925CA6-959A-4094-9688-622DC28B7452}</Project>
       <Name>BISC.Modules.Connection.Infrastructure</Name>
