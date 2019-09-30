@@ -208,222 +208,234 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
             var maxRow = 1;
             int mainGridRowIndex = 0;
             bool closeProgressBar = false;
-
-
-            foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
-            {
-                maxRow = maxRow + 1 + gooseControlBlockViewModel.GooseRowViewModels.Count;
-            }
-
-            var progressBarThread = new Thread(() =>
-            {
-                var progressWindow = new ProgressWindow(maxRow, () => mainGridRowIndex, () => closeProgressBar);
-                progressWindow.Show();
-                System.Windows.Threading.Dispatcher.Run();
-            });
-
-
-            progressBarThread.SetApartmentState(ApartmentState.STA);
-            progressBarThread.IsBackground = true;
-            progressBarThread.Start();
-
-            mainGrid.Children.Clear();
-            mainGrid.ColumnDefinitions.Clear();
-            mainGrid.RowDefinitions.Clear();
-            mainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) }); // номера GoIn
-
-            for (int i = 0; i < GoInCount; i++)
-            {
-                TextBlock goinNumTextBlock = _goinNumTextBlocks[i];
-
-                goinNumTextBlock.SetValue(Grid.ColumnProperty, i + 1);
-                goinNumTextBlock.SetValue(Grid.RowProperty, mainGridRowIndex);
-                mainGrid.Children.Add(goinNumTextBlock);
-            }
-            mainGridRowIndex++;
-
-            _goinSignatureTextBlocks = new List<TextBlock>();
-
-            ScrollViewer scrollViewer = new ScrollViewer();
-            scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-            scrollViewer.PanningMode = PanningMode.None;
-
-            Grid scrollViewerGrid = new Grid();
-            mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto }); //левая шапка для названий
-
-            for (int i = 0; i < GoInCount; i++)
-            {
-                scrollViewerGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = CellSize }); //new GridLength(CellSize)
-                mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = CellSize }); // new GridLength(CellSize)
-
-            }
-
-            int scrollViewerGridRowIndex = 0;
-            foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
+            try
             {
 
-                // if (!gooseControlBlockViewModel.IsReferenceEnabled) continue;
-                mainGrid.RowDefinitions.Add(new RowDefinition()
+                foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
                 {
-                    Height = new GridLength(CellSize + 35)
-                }); //первая шапка
+                    maxRow = maxRow + 1 + gooseControlBlockViewModel.GooseRowViewModels.Count;
+                }
 
-                scrollViewerGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize + 35) });
+                var progressBarThread = new Thread(() =>
+                {
+                    var progressWindow = new ProgressWindow(maxRow, () => mainGridRowIndex, () => closeProgressBar);
+                    progressWindow.Show();
+                    System.Windows.Threading.Dispatcher.Run();
+                });
 
 
-                Grid headerGrid = new Grid();
-                headerGrid.RowDefinitions.Add(new RowDefinition());
-                headerGrid.RowDefinitions.Add(new RowDefinition());
+                progressBarThread.SetApartmentState(ApartmentState.STA);
+                progressBarThread.IsBackground = true;
+                progressBarThread.Start();
 
-                TextBlock gooseControlHeaderTextBlock = new TextBlock();
-                gooseControlHeaderTextBlock.Text = gooseControlBlockViewModel.AppId;
-                gooseControlHeaderTextBlock.FontSize += 5;
+                mainGrid.Children.Clear();
+                mainGrid.ColumnDefinitions.Clear();
+                mainGrid.RowDefinitions.Clear();
+                mainGrid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(CellSize)}); // номера GoIn
 
-                TextBlock stateTextBlock = new TextBlock();
-                stateTextBlock.Text = "GoIn State";
+                for (int i = 0; i < GoInCount; i++)
+                {
+                    TextBlock goinNumTextBlock = _goinNumTextBlocks[i];
 
-                gooseControlHeaderTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
-                gooseControlHeaderTextBlock.VerticalAlignment = VerticalAlignment.Stretch;
-                stateTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
-                stateTextBlock.VerticalAlignment = VerticalAlignment.Stretch;
-                gooseControlHeaderTextBlock.SetValue(Grid.RowProperty, 0);
-                stateTextBlock.SetValue(Grid.RowProperty, 1);
-                headerGrid.Children.Add(gooseControlHeaderTextBlock);
-                headerGrid.Children.Add(stateTextBlock);
-
-                headerGrid.SetValue(Grid.ColumnProperty, 0);
-                headerGrid.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
-                headerGrid.SetValue(Grid.ColumnSpanProperty, GoInCount);
-                scrollViewerGrid.Children.Add(headerGrid);
+                    goinNumTextBlock.SetValue(Grid.ColumnProperty, i + 1);
+                    goinNumTextBlock.SetValue(Grid.RowProperty, mainGridRowIndex);
+                    mainGrid.Children.Add(goinNumTextBlock);
+                }
 
                 mainGridRowIndex++;
-                scrollViewerGridRowIndex++;
 
-                foreach (var gooseRow in gooseControlBlockViewModel.GooseRowViewModels)
+                _goinSignatureTextBlocks = new List<TextBlock>();
+
+                Grid scrollViewerGrid = new Grid();
+                mainGrid.ColumnDefinitions.Add(new ColumnDefinition()
+                    {Width = GridLength.Auto}); //левая шапка для названий
+
+                for (int i = 0; i < GoInCount; i++)
                 {
-                    if (gooseRow.GooseRowType == "State")
+                    scrollViewerGrid.ColumnDefinitions.Add(new ColumnDefinition()
+                        {Width = new GridLength(1, GridUnitType.Star), MinWidth = CellSize}); //new GridLength(CellSize)
+                    mainGrid.ColumnDefinitions.Add(new ColumnDefinition()
                     {
-                        mainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) });
-                        scrollViewerGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) });
+                        Width = new GridLength(1, GridUnitType.Star), MinWidth = CellSize
+                    }); // new GridLength(CellSize)
 
-                        TextBlock stateRowNameTextBlock = new TextBlock();
-                        stateRowNameTextBlock.Text = gooseRow.RowName;
-                        stateRowNameTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
-                        stateRowNameTextBlock.SetValue(Grid.ColumnProperty, 0);
-                        stateRowNameTextBlock.SetValue(Grid.RowProperty,
-                            mainGridRowIndex); //добавить в главную гриду (фиксированную)
-                        mainGrid.Children.Add(stateRowNameTextBlock);
-                        _goinSignatureTextBlocks.Add(stateRowNameTextBlock);
-                        mainGridRowIndex++;
-
-
-                        for (int i = 0; i < GoInCount; i++)
-                        {
-                            SelectableBox stateSelectableBox = new SelectableBox(); //добавить в гриду скроллвьюера
-                            stateSelectableBox.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
-                            stateSelectableBox.SetValue(Grid.ColumnProperty, i);
-                            stateSelectableBox.DataContext = gooseRow.SelectableValueViewModels[i];
-                            scrollViewerGrid.Children.Add(stateSelectableBox);
-                        }
-
-                        scrollViewerGridRowIndex++;
-                    }
                 }
-                if (gooseControlBlockViewModel.GooseRowViewModels.Any(g =>
-                    g.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Validity))
+
+                int scrollViewerGridRowIndex = 0;
+                foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
                 {
+
+                    // if (!gooseControlBlockViewModel.IsReferenceEnabled) continue;
                     mainGrid.RowDefinitions.Add(new RowDefinition()
                     {
-                        Height = new GridLength(CellSize + 10)
-                    }); //вторая шапка
-                    scrollViewerGrid.RowDefinitions.Add(new RowDefinition()
-                    {
-                        Height = new GridLength(CellSize + 10)
-                    }); //вторая шапка
+                        Height = new GridLength(CellSize + 35)
+                    }); //первая шапка
 
-                    TextBlock upper2TextBlock = new TextBlock();
-                    upper2TextBlock.Text = "GoIn Validity";
-                    upper2TextBlock.HorizontalAlignment = HorizontalAlignment.Center;
-                    upper2TextBlock.VerticalAlignment = VerticalAlignment.Bottom;
+                    scrollViewerGrid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(CellSize + 35)});
 
-                    upper2TextBlock.SetValue(Grid.ColumnProperty, 0);
-                    upper2TextBlock.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
-                    upper2TextBlock.SetValue(Grid.ColumnSpanProperty, GoInCount);
-                    scrollViewerGrid.Children.Add(upper2TextBlock);
+
+                    Grid headerGrid = new Grid();
+                    headerGrid.RowDefinitions.Add(new RowDefinition());
+                    headerGrid.RowDefinitions.Add(new RowDefinition());
+
+                    TextBlock gooseControlHeaderTextBlock = new TextBlock();
+                    gooseControlHeaderTextBlock.Text = gooseControlBlockViewModel.AppId;
+                    gooseControlHeaderTextBlock.FontSize += 5;
+
+                    TextBlock stateTextBlock = new TextBlock();
+                    stateTextBlock.Text = "GoIn State";
+
+                    gooseControlHeaderTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                    gooseControlHeaderTextBlock.VerticalAlignment = VerticalAlignment.Stretch;
+                    stateTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                    stateTextBlock.VerticalAlignment = VerticalAlignment.Stretch;
+                    gooseControlHeaderTextBlock.SetValue(Grid.RowProperty, 0);
+                    stateTextBlock.SetValue(Grid.RowProperty, 1);
+                    headerGrid.Children.Add(gooseControlHeaderTextBlock);
+                    headerGrid.Children.Add(stateTextBlock);
+
+                    headerGrid.SetValue(Grid.ColumnProperty, 0);
+                    headerGrid.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
+                    headerGrid.SetValue(Grid.ColumnSpanProperty, GoInCount);
+                    scrollViewerGrid.Children.Add(headerGrid);
+
                     mainGridRowIndex++;
                     scrollViewerGridRowIndex++;
-                }
 
-                foreach (var gooseRow in gooseControlBlockViewModel.GooseRowViewModels)
-                {
-                    if ((gooseRow.GooseRowType == "Quality"))
+                    foreach (var gooseRow in gooseControlBlockViewModel.GooseRowViewModels)
                     {
-                        mainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) });
-                        scrollViewerGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) });
-                        TextBlock qualityRowNameTextBlock = new TextBlock();
-                        qualityRowNameTextBlock.Text = gooseRow.RowName;
-                        qualityRowNameTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
-                        qualityRowNameTextBlock.SetValue(Grid.ColumnProperty, 0);
-                        qualityRowNameTextBlock.SetValue(Grid.RowProperty,
-                            mainGridRowIndex); //добавить в главную гриду (фиксированную)
-                        mainGrid.Children.Add(qualityRowNameTextBlock);
-                        _goinSignatureTextBlocks.Add(qualityRowNameTextBlock);
-
-                        mainGridRowIndex++;
-                        for (int i = 0; i < GoInCount; i++)
+                        if (gooseRow.GooseRowType == "State")
                         {
-                            SelectableBox stateSelectableBox = new SelectableBox(); //добавить в гриду скроллвьюера
-                            stateSelectableBox.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
-                            stateSelectableBox.SetValue(Grid.ColumnProperty, i);
-                            stateSelectableBox.DataContext = gooseRow.SelectableValueViewModels[i];
-                            scrollViewerGrid.Children.Add(stateSelectableBox);
+                            mainGrid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(CellSize)});
+                            scrollViewerGrid.RowDefinitions.Add(new RowDefinition()
+                                {Height = new GridLength(CellSize)});
+
+                            TextBlock stateRowNameTextBlock = new TextBlock();
+                            stateRowNameTextBlock.Text = gooseRow.RowName;
+                            stateRowNameTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                            stateRowNameTextBlock.SetValue(Grid.ColumnProperty, 0);
+                            stateRowNameTextBlock.SetValue(Grid.RowProperty,
+                                mainGridRowIndex); //добавить в главную гриду (фиксированную)
+                            mainGrid.Children.Add(stateRowNameTextBlock);
+                            _goinSignatureTextBlocks.Add(stateRowNameTextBlock);
+                            mainGridRowIndex++;
+
+
+                            for (int i = 0; i < GoInCount; i++)
+                            {
+                                SelectableBox stateSelectableBox = new SelectableBox(); //добавить в гриду скроллвьюера
+                                stateSelectableBox.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
+                                stateSelectableBox.SetValue(Grid.ColumnProperty, i);
+                                stateSelectableBox.DataContext = gooseRow.SelectableValueViewModels[i];
+                                scrollViewerGrid.Children.Add(stateSelectableBox);
+                            }
+
+                            scrollViewerGridRowIndex++;
                         }
+                    }
+
+                    if (gooseControlBlockViewModel.GooseRowViewModels.Any(g =>
+                        g.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Validity))
+                    {
+                        mainGrid.RowDefinitions.Add(new RowDefinition()
+                        {
+                            Height = new GridLength(CellSize + 10)
+                        }); //вторая шапка
+                        scrollViewerGrid.RowDefinitions.Add(new RowDefinition()
+                        {
+                            Height = new GridLength(CellSize + 10)
+                        }); //вторая шапка
+
+                        TextBlock upper2TextBlock = new TextBlock();
+                        upper2TextBlock.Text = "GoIn Validity";
+                        upper2TextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                        upper2TextBlock.VerticalAlignment = VerticalAlignment.Bottom;
+
+                        upper2TextBlock.SetValue(Grid.ColumnProperty, 0);
+                        upper2TextBlock.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
+                        upper2TextBlock.SetValue(Grid.ColumnSpanProperty, GoInCount);
+                        scrollViewerGrid.Children.Add(upper2TextBlock);
+                        mainGridRowIndex++;
                         scrollViewerGridRowIndex++;
                     }
-                }
 
-                foreach (var gooseRow in gooseControlBlockViewModel.GooseRowViewModels)
-                {
-                    if ((gooseRow.GooseRowType == "Validity"))
+                    foreach (var gooseRow in gooseControlBlockViewModel.GooseRowViewModels)
                     {
-                        mainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) });
-                        scrollViewerGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) });
-                        TextBlock validityRowNameTextBlock = new TextBlock();
-                        validityRowNameTextBlock.Text = gooseRow.RowName;
-                        validityRowNameTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
-                        validityRowNameTextBlock.SetValue(Grid.ColumnProperty, 0);
-                        validityRowNameTextBlock.SetValue(Grid.RowProperty,
-                            mainGridRowIndex); //добавить в главную гриду (фиксированную)
-                        mainGrid.Children.Add(validityRowNameTextBlock);
-                        _goinSignatureTextBlocks.Add(validityRowNameTextBlock);
-
-                        mainGridRowIndex++;
-
-                        for (int i = 0; i < GoInCount; i++)
+                        if ((gooseRow.GooseRowType == "Quality"))
                         {
-                            SelectableBox stateSelectableBox = new SelectableBox(); //добавить в гриду скроллвьюера
-                            stateSelectableBox.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
-                            stateSelectableBox.SetValue(Grid.ColumnProperty, i);
-                            stateSelectableBox.DataContext = gooseRow.SelectableValueViewModels[i];
-                            scrollViewerGrid.Children.Add(stateSelectableBox);
+                            mainGrid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(CellSize)});
+                            scrollViewerGrid.RowDefinitions.Add(new RowDefinition()
+                                {Height = new GridLength(CellSize)});
+                            TextBlock qualityRowNameTextBlock = new TextBlock();
+                            qualityRowNameTextBlock.Text = gooseRow.RowName;
+                            qualityRowNameTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                            qualityRowNameTextBlock.SetValue(Grid.ColumnProperty, 0);
+                            qualityRowNameTextBlock.SetValue(Grid.RowProperty,
+                                mainGridRowIndex); //добавить в главную гриду (фиксированную)
+                            mainGrid.Children.Add(qualityRowNameTextBlock);
+                            _goinSignatureTextBlocks.Add(qualityRowNameTextBlock);
+
+                            mainGridRowIndex++;
+                            for (int i = 0; i < GoInCount; i++)
+                            {
+                                SelectableBox stateSelectableBox = new SelectableBox(); //добавить в гриду скроллвьюера
+                                stateSelectableBox.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
+                                stateSelectableBox.SetValue(Grid.ColumnProperty, i);
+                                stateSelectableBox.DataContext = gooseRow.SelectableValueViewModels[i];
+                                scrollViewerGrid.Children.Add(stateSelectableBox);
+                            }
+
+                            scrollViewerGridRowIndex++;
                         }
-                        scrollViewerGridRowIndex++;
                     }
+
+                    foreach (var gooseRow in gooseControlBlockViewModel.GooseRowViewModels)
+                    {
+                        if ((gooseRow.GooseRowType == "Validity"))
+                        {
+                            mainGrid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(CellSize)});
+                            scrollViewerGrid.RowDefinitions.Add(new RowDefinition()
+                                {Height = new GridLength(CellSize)});
+                            TextBlock validityRowNameTextBlock = new TextBlock();
+                            validityRowNameTextBlock.Text = gooseRow.RowName;
+                            validityRowNameTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                            validityRowNameTextBlock.SetValue(Grid.ColumnProperty, 0);
+                            validityRowNameTextBlock.SetValue(Grid.RowProperty,
+                                mainGridRowIndex); //добавить в главную гриду (фиксированную)
+                            mainGrid.Children.Add(validityRowNameTextBlock);
+                            _goinSignatureTextBlocks.Add(validityRowNameTextBlock);
+
+                            mainGridRowIndex++;
+
+                            for (int i = 0; i < GoInCount; i++)
+                            {
+                                SelectableBox stateSelectableBox = new SelectableBox(); //добавить в гриду скроллвьюера
+                                stateSelectableBox.SetValue(Grid.RowProperty, scrollViewerGridRowIndex);
+                                stateSelectableBox.SetValue(Grid.ColumnProperty, i);
+                                stateSelectableBox.DataContext = gooseRow.SelectableValueViewModels[i];
+                                scrollViewerGrid.Children.Add(stateSelectableBox);
+                            }
+
+                            scrollViewerGridRowIndex++;
+                        }
+                    }
+
                 }
 
+                if (scrollViewerGridRowIndex > 0)
+                {
+                    scrollViewerGrid.SetValue(Grid.RowProperty, 1);
+                    scrollViewerGrid.SetValue(Grid.RowSpanProperty, scrollViewerGridRowIndex);
+                    scrollViewerGrid.SetValue(Grid.ColumnSpanProperty, GoInCount + 1);
+                    scrollViewerGrid.SetValue(Grid.ColumnProperty, 1);
+                    mainGrid.Children.Add(scrollViewerGrid);
+                }
             }
-            if (scrollViewerGridRowIndex > 0)
+            finally
             {
-                scrollViewer.Content = scrollViewerGrid;
-                scrollViewer.SetValue(Grid.RowProperty, 1);
-                scrollViewer.SetValue(Grid.RowSpanProperty, scrollViewerGridRowIndex);
-                scrollViewer.SetValue(Grid.ColumnSpanProperty, GoInCount + 1);
-                scrollViewer.SetValue(Grid.ColumnProperty, 1);
-                scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-                mainGrid.Children.Add(scrollViewer);
+                closeProgressBar = true;
             }
 
-            closeProgressBar = true;
         }
 
         #region Implementation of IDisposable
