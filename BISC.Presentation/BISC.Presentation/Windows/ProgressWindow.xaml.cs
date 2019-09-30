@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,16 +21,31 @@ namespace BISC.Presentation.Windows
     /// </summary>
     public partial class ProgressWindow : Window
     {
-        private object _lockObject = new object();
-        public ProgressWindow(int maxValue, Func<int> getCurrentProgress) : base()
+        private Timer _timer;
+        private readonly int _maxValue;
+        public ProgressWindow(int maxValue, Func<int> getCurrentProgress, Func<bool> isClose) : base()
         {
+            _maxValue = maxValue;
             GetCurrentProgress = getCurrentProgress;
+            _isClose = isClose;
             InitializeComponent();
             ProgressBar.Maximum = maxValue;
+            var tm = new TimerCallback(UpdateProgressBar);
+            _timer = new Timer(tm, null, 0, 100);
+        }
 
+        private void UpdateProgressBar(object state)
+        {
+            if (_isClose())
+            {
+                Thread.Sleep(1000);
+                Dispatcher?.Invoke(this.Close);
+            }
+
+            Dispatcher?.Invoke(() => ProgressBar.Value = GetCurrentProgress());
         }
 
         public Func<int> GetCurrentProgress;
-
+        private readonly Func<bool> _isClose;
     }
 }

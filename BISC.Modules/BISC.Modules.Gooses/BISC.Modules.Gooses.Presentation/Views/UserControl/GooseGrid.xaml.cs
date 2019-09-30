@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using BISC.Presentation.Windows;
 
 namespace BISC.Modules.Gooses.Presentation.Views.UserControl
@@ -206,6 +207,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
             var maxRow = 1;
             int mainGridRowIndex = 0;
+            bool closeProgressBar = false;
 
 
             foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
@@ -215,12 +217,11 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
             var progressBarThread = new Thread(() =>
             {
-                var progressWindow = new ProgressWindow(maxRow, () => mainGridRowIndex);
+                var progressWindow = new ProgressWindow(maxRow, () => mainGridRowIndex, () => closeProgressBar);
                 progressWindow.Show();
                 System.Windows.Threading.Dispatcher.Run();
             });
 
-            Thread.Sleep(100);
 
             progressBarThread.SetApartmentState(ApartmentState.STA);
             progressBarThread.IsBackground = true;
@@ -244,6 +245,8 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
             _goinSignatureTextBlocks = new List<TextBlock>();
 
             ScrollViewer scrollViewer = new ScrollViewer();
+            scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            scrollViewer.PanningMode = PanningMode.None;
 
             Grid scrollViewerGrid = new Grid();
             mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto }); //левая шапка для названий
@@ -416,9 +419,11 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
                 scrollViewer.SetValue(Grid.RowSpanProperty, scrollViewerGridRowIndex);
                 scrollViewer.SetValue(Grid.ColumnSpanProperty, GoInCount + 1);
                 scrollViewer.SetValue(Grid.ColumnProperty, 1);
-                scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+                scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
                 mainGrid.Children.Add(scrollViewer);
             }
+
+            closeProgressBar = true;
         }
 
         #region Implementation of IDisposable
