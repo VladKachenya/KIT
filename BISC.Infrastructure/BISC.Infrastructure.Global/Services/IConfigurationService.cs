@@ -18,6 +18,6 @@ namespace BISC.Infrastructure.Global.Services
         bool IsAutoEnabledQualityInGooseReceiving { get; set; }
         int MmsQueryDelay { get; set; }
 
-
+        int FtpTimeOutDelay { get; set; }
     }
 }

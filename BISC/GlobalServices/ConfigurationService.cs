@@ -12,12 +12,6 @@ namespace BISC.GlobalServices
 {
     public class ConfigurationService : IConfigurationService
     {
-        public ConfigurationService()
-        {
-
-        }
-
-
         #region Implementation of IConfigurationService
 
         public List<string> LastOpenedFiles
@@ -26,7 +20,7 @@ namespace BISC.GlobalServices
             {
                 if (Settings.Default.LastOpenedFiles == null)
                 {
-                    Settings.Default.LastOpenedFiles=new StringCollection();
+                    Settings.Default.LastOpenedFiles = new StringCollection();
                     Settings.Default.Save();
                 }
                 return Settings.Default.LastOpenedFiles.Cast<string>().ToList();
@@ -129,7 +123,17 @@ namespace BISC.GlobalServices
             }
         }
 
-    public List<string> GetIpsCollection(string key)
+        public int FtpTimeOutDelay
+        {
+            get => Settings.Default.FtpTimeOutDelay;
+            set
+            {
+                Settings.Default.FtpTimeOutDelay = value;
+                Settings.Default.Save();
+            }
+        }
+
+        public List<string> GetIpsCollection(string key)
         {
             if (key == Constants.ConfigurationServiceConstants.LastConnectedIpAddresses)
                 return LastConnectedIpAddresses;

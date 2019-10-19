@@ -20,6 +20,7 @@ namespace BISC.Presentation.ViewModels
         bool _isAutoEnabledValidityInGooseReceiving;
         bool _isAutoEnabledQualityInGooseReceiving;
         int _mmsQueryDelay;
+        int _ftpTimeOutDelay;
         bool _isVisibleValidadionError;
         private bool _isUserLoggingEnabled;
 
@@ -42,6 +43,7 @@ namespace BISC.Presentation.ViewModels
             IsAutoEnabledValidityInGooseReceiving = _configurationService.IsAutoEnabledValidityInGooseReceiving;
             IsAutoEnabledQualityInGooseReceiving = _configurationService.IsAutoEnabledQualityInGooseReceiving;
             _mmsQueryDelay = _configurationService.MmsQueryDelay;
+            _ftpTimeOutDelay = _configurationService.FtpTimeOutDelay;
             IsVisibleValidadionError = false;
             IsUserLoggingEnabled = _configurationService.IsUserLoggingEnabled;
         }
@@ -53,6 +55,7 @@ namespace BISC.Presentation.ViewModels
             _configurationService.IsAutoEnabledValidityInGooseReceiving = IsAutoEnabledValidityInGooseReceiving;
             _configurationService.IsAutoEnabledQualityInGooseReceiving = IsAutoEnabledQualityInGooseReceiving;
             _configurationService.MmsQueryDelay = _mmsQueryDelay;
+            _configurationService.FtpTimeOutDelay = _ftpTimeOutDelay;
             _configurationService.IsUserLoggingEnabled = _isUserLoggingEnabled;
 
         }
@@ -95,6 +98,31 @@ namespace BISC.Presentation.ViewModels
             }
         }
 
+        public string FtpTimeOutDelay
+        {
+            get => _ftpTimeOutDelay.ToString();
+            set
+            {
+                int buf = 0;
+                bool res = true;
+                if (value != string.Empty)
+                    res = Int32.TryParse(value, out buf);
+                if (!res || buf < 0 || buf > 100000)
+                {
+                    IsVisibleValidadionError = true;
+                    return;
+                }
+                else
+                {
+                    IsVisibleValidadionError = false;
+                    _ftpTimeOutDelay = buf;
+                    OnPropertyChanged();
+                }
+
+            }
+        }
+
+
         public bool IsVisibleValidadionError
         {
             get => _isVisibleValidadionError;
@@ -108,9 +136,8 @@ namespace BISC.Presentation.ViewModels
         public bool IsUserLoggingEnabled
         {
             get => _isUserLoggingEnabled;
-            set { SetProperty(ref _isUserLoggingEnabled, value); }
+            set => SetProperty(ref _isUserLoggingEnabled, value);
         }
-
         #endregion
 
 

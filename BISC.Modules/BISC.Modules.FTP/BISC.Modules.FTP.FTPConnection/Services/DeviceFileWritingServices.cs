@@ -8,16 +8,19 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
+using BISC.Infrastructure.Global.Services;
 
 namespace BISC.Modules.FTP.FTPConnection.Services
 {
     public class DeviceFileWritingServices : IDeviceFileWritingServices
     {
         private readonly IFTPClientWrapper _ftpClientWrapper;
+        private readonly IConfigurationService _configurationService;
 
-        public DeviceFileWritingServices(IFTPClientWrapper ftpClientWrapper)
+        public DeviceFileWritingServices(IFTPClientWrapper ftpClientWrapper, IConfigurationService configurationService)
         {
             _ftpClientWrapper = ftpClientWrapper;
+            _configurationService = configurationService;
             //_modelLoadingController = modelLoadingController;
         }
 
@@ -49,10 +52,16 @@ namespace BISC.Modules.FTP.FTPConnection.Services
             string file;
             try
             {
-                await _ftpClientWrapper.Connect(ip);
-                var fileTask = _ftpClientWrapper.DownloadFileString(dirPath, fileNamesWithExt);
-                var timer = Task.Factory.StartNew(() => Thread.Sleep(2000));
-                if (Task.WaitAny(timer, fileTask) == 0)
+                var fileTask = ReadFileStringFromDeviceAsync(ip, dirPath, fileNamesWithExt);
+                var timer = Task.Delay(_configurationService.FtpTimeOutDelay);
+                await Task.WhenAny(fileTask, timer);
+                if (fileTask.IsFaulted)
+                {
+                    if (fileTask.Exception != null)
+                        if (fileTask.Exception.InnerException != null)
+                            throw fileTask.Exception.InnerException;
+                }
+                if (!fileTask.IsCompleted)
                 {
                     return new OperationResult<string>("Ftp server is not responding!!!");
                 }
@@ -62,11 +71,11 @@ namespace BISC.Modules.FTP.FTPConnection.Services
             {
                 return new OperationResult<string>(e.Message);
             }
-            finally
-            {
-                await _ftpClientWrapper.Disconnect();
+            //finally
+            //{
+            //    await _ftpClientWrapper.Disconnect();
 
-            }
+            //}
             return new OperationResult<string>(file, true);
         }
 
@@ -124,7 +133,20 @@ namespace BISC.Modules.FTP.FTPConnection.Services
             finally
             {
             }
+        }
 
+        private async Task<string> ReadFileStringFromDeviceAsync(string ip, string dirPath, string fileNamesWithExt)
+        {
+            try
+            {
+                await _ftpClientWrapper.Connect(ip);
+                var file = await _ftpClientWrapper.DownloadFileString(dirPath, fileNamesWithExt);
+                return file;
+            }
+            finally
+            {
+                await _ftpClientWrapper.Disconnect();
+            }
         }
 
         #endregion

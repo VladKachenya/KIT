@@ -38,7 +38,6 @@ namespace BISC.Presentation.Windows
         {
             if (_isClose())
             {
-                Thread.Sleep(1000);
                 Dispatcher?.Invoke(this.Close);
             }
 

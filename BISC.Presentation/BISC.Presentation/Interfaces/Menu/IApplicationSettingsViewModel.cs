@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace BISC.Presentation.Interfaces.Menu
 {
-    public interface IApplicationSettingsViewModel 
+    public interface IApplicationSettingsViewModel
     {
 
         ICommand CloseCommand { get; }
@@ -17,6 +17,7 @@ namespace BISC.Presentation.Interfaces.Menu
         bool IsAutoEnabledValidityInGooseReceiving { get; set; }
         bool IsAutoEnabledQualityInGooseReceiving { get; set; }
         string MmsQueryDelay { get; set; }
+        string FtpTimeOutDelay { get; set; }
         bool IsVisibleValidadionError { get; set; }
 
     }
