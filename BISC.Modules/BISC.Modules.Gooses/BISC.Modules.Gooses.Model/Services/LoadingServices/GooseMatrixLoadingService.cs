@@ -56,8 +56,9 @@ namespace BISC.Modules.Gooses.Model.Services.LoadingServices
                 {
                     _deviceWarningsService.SetWarningOfDevice(device.DeviceGuid,
                         GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey,
-                        "Ошибка вычитывания Goose матрицы из устройства");
-                    _loggingService.LogMessage(resMatrix.GetFirstError(), SeverityEnum.Critical);
+                        $"Ошибка вычитывания Goose матрицы из устройства");
+                    //_loggingService.LogMessage(resMatrix.GetFirstError(), SeverityEnum.Critical);
+                    throw new Exception(resMatrix.GetFirstError());
                 }
                 else
                 {

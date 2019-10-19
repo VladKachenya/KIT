@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
 
@@ -14,7 +15,7 @@ namespace BISC.Modules.FTP.FTPConnection.Services
     {
         private readonly IFTPClientWrapper _ftpClientWrapper;
 
-        public DeviceFileWritingServices( IFTPClientWrapper ftpClientWrapper)
+        public DeviceFileWritingServices(IFTPClientWrapper ftpClientWrapper)
         {
             _ftpClientWrapper = ftpClientWrapper;
             //_modelLoadingController = modelLoadingController;
@@ -23,7 +24,7 @@ namespace BISC.Modules.FTP.FTPConnection.Services
         #region Implementation of IDeviceFileWritingController
 
         public async Task<OperationResult> WriteFileStringInDevice(string ip, List<string> filesStrings, List<string> fileNamesWithExt)
-        { 
+        {
             try
             {
                 await _ftpClientWrapper.Connect(ip);
@@ -49,7 +50,13 @@ namespace BISC.Modules.FTP.FTPConnection.Services
             try
             {
                 await _ftpClientWrapper.Connect(ip);
-                file = await _ftpClientWrapper.DownloadFileString(dirPath, fileNamesWithExt);
+                var fileTask = _ftpClientWrapper.DownloadFileString(dirPath, fileNamesWithExt);
+                var timer = Task.Factory.StartNew(() => Thread.Sleep(2000));
+                if (Task.WaitAny(timer, fileTask) == 0)
+                {
+                    return new OperationResult<string>("Ftp server is not responding!!!");
+                }
+                file = fileTask.Result;
             }
             catch (Exception e)
             {
@@ -60,7 +67,7 @@ namespace BISC.Modules.FTP.FTPConnection.Services
                 await _ftpClientWrapper.Disconnect();
 
             }
-            return new OperationResult<string>(file,true);
+            return new OperationResult<string>(file, true);
         }
 
         public async Task<OperationResult> DeletFileStringFromDevice(string ip, string filePath)
@@ -92,7 +99,7 @@ namespace BISC.Modules.FTP.FTPConnection.Services
             }
             catch (Exception e)
             {
-                return ;
+                return;
             }
             finally
             {

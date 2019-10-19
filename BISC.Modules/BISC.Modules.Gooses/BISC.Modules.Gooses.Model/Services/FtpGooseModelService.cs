@@ -98,6 +98,10 @@ namespace BISC.Modules.Gooses.Model.Services
             var fileInDeviceRes =
                 await _deviceFileWritingServices.ReadFileStringFromDevice(ip, "1:/CFG", "GOOSERE.CFG");
             IGooseMatrixFtp gooseMatrixFtp = new GooseMatrixFtp();
+            if (!fileInDeviceRes.IsSucceed)
+            {
+                return new OperationResult<IGooseMatrixFtp>(null, false, fileInDeviceRes.GetFirstError());
+            }
 
             if (fileInDeviceRes.Item == null || string.IsNullOrWhiteSpace(fileInDeviceRes.Item))
             {

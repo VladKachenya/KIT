@@ -108,7 +108,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
                 SetProperty(ref _gooseControlBlockViewModels, value);
                 _gooseSubscriptionMatrixSavingCommand.Initialize(_device, GooseControlBlockViewModels.ToList());
-                _gooseSubscriptionMatrixSavingCommand.RefreshViewModel = async () => await UpdateGooseMatrix(false);
+                _gooseSubscriptionMatrixSavingCommand.RefreshViewModel = ResetChangeTracker;
 
             }
         }
@@ -191,7 +191,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
                 SetEnableCommands(false);
                 await SaveGooseMatrix();
-                await UpdateGooseMatrix(false);
+                ResetChangeTracker();
             }
             catch (Exception e)
             {
@@ -257,12 +257,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                 InitDictionary();
                 _isInitialized = true;
                 Validate();
-                _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
-                _saveCheckingService.AddSaveCheckingEntity(
-                    new SaveCheckingEntity(ChangeTracker, $"Матрица GOOSE устройства {_device.Name}",
-                        _gooseSubscriptionMatrixSavingCommand, _device.DeviceGuid, _regionName));
-                ChangeTracker.AcceptChanges();
-                ChangeTracker.SetTrackingEnabled(true);
+                ResetChangeTracker();
             }
             catch (Exception e)
             {
@@ -296,6 +291,16 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
                 BlockViewModelBehavior.Unlock();
             }
+        }
+
+        private void ResetChangeTracker()
+        {
+            _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
+            _saveCheckingService.AddSaveCheckingEntity(
+                new SaveCheckingEntity(ChangeTracker, $"Матрица GOOSE устройства {_device.Name}",
+                    _gooseSubscriptionMatrixSavingCommand, _device.DeviceGuid, _regionName));
+            ChangeTracker.AcceptChanges();
+            ChangeTracker.SetTrackingEnabled(true);
         }
 
         private bool _isInitialized = false;
