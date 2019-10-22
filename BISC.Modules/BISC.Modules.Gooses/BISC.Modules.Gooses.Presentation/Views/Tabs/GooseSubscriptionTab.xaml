@@ -44,8 +44,20 @@
             </Button>
         </Grid>-->
         <Grid Grid.Row="1">
-            <DataGrid CanUserSortColumns="False" AutoGenerateColumns="True" Name="DataGrid" PreviewMouseUp="Control_OnMouseDoubleClick" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn" 
-                       CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding GooseSubscriptionTable}" Grid.Row="0">
+            <DataGrid CanUserSortColumns="False" 
+                      AutoGenerateColumns="True" 
+                      Name="DataGrid" 
+                      PreviewMouseUp="Control_OnMouseDoubleClick" 
+                      AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn" 
+                      CanUserAddRows="False" 
+                      CanUserDeleteRows="False"
+                      CanUserReorderColumns="False"
+                      EnableRowVirtualization="False" 
+                      EnableColumnVirtualization="False"
+                      VirtualizingStackPanel.VirtualizationMode="Standard"
+                      VirtualizingStackPanel.IsVirtualizing="False"
+                      ItemsSource="{Binding GooseSubscriptionTable}" 
+                      Grid.Row="0">
             </DataGrid>
         </Grid>
 
