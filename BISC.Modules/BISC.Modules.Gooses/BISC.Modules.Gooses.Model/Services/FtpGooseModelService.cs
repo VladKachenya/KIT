@@ -17,6 +17,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using BISC.Infrastructure.Global.Logging;
+using BISC.Infrastructure.Global.Services;
 
 namespace BISC.Modules.Gooses.Model.Services
 {
@@ -26,14 +28,16 @@ namespace BISC.Modules.Gooses.Model.Services
         private readonly IModelElementsRegistryService _elementsRegistryService;
         private readonly IPingService _pingService;
         private readonly IGooseMatrixParsersFactory _gooseMatrixParsersFactory;
+        private readonly ILoggingService _loggingService;
 
         public FtpGooseModelService(IDeviceFileWritingServices deviceFileWritingServices, IModelElementsRegistryService elementsRegistryService,
-            IPingService pingService, IGooseMatrixParsersFactory gooseMatrixParsersFactory)
+            IPingService pingService, IGooseMatrixParsersFactory gooseMatrixParsersFactory, ILoggingService loggingService)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
             _elementsRegistryService = elementsRegistryService;
             _pingService = pingService;
             _gooseMatrixParsersFactory = gooseMatrixParsersFactory;
+            _loggingService = loggingService;
         }
 
 
@@ -100,7 +104,8 @@ namespace BISC.Modules.Gooses.Model.Services
             IGooseMatrixFtp gooseMatrixFtp = new GooseMatrixFtp();
             if (!fileInDeviceRes.IsSucceed)
             {
-                return new OperationResult<IGooseMatrixFtp>(null, false, fileInDeviceRes.GetFirstError());
+                _loggingService.LogMessage(fileInDeviceRes.GetFirstError(), SeverityEnum.Warning);
+                //return new OperationResult<IGooseMatrixFtp>(null, false, fileInDeviceRes.GetFirstError());
             }
 
             if (fileInDeviceRes.Item == null || string.IsNullOrWhiteSpace(fileInDeviceRes.Item))
