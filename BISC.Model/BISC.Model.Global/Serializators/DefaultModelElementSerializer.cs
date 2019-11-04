@@ -70,42 +70,34 @@ namespace BISC.Model.Global.Serializators
                 throw new Exception("Элемент должен быть зарегистрирован");
             }
             XElement xElement;
-
+            XNamespace iecNameSpace = "http://www.iec.ch/61850/2003/SCL";
             if (modelElement.ElementName == ModelKeys.SclModelKey)
             {
-                //XNamespace iecNameSpace = "http://www.iec.ch/61850/2003/SCL";
-                //XName xsi = XName.Get("schemaLocation", "http://www.3w.org/2001/XMLSchema-instance");
-                ////XNamespace xsiNameSpace = $"http://{ModelKeys.SclModelKey}.com/xsi";
-                //xElement = new XElement(iecNameSpace + modelElement.ElementName,
-                //    new XAttribute(XNamespace.Xmlns + "xsi", "http://www.w3.org/2001/XMLSchema-instance"),
-                //    new XAttribute(xsi, "http://www.iec.ch/61850/2003/SCL SCL.xsd"));
-
                 StringBuilder stringSclXElement = new StringBuilder();
 
-                System.Xml.XmlWriterSettings xSettings = new System.Xml.XmlWriterSettings();
-                xSettings.ConformanceLevel = System.Xml.ConformanceLevel.Fragment;
+                XmlWriterSettings xSettings = new XmlWriterSettings
+                {
+                    ConformanceLevel = System.Xml.ConformanceLevel.Fragment
+                };
 
                 XmlWriter xw = System.Xml.XmlWriter.Create(stringSclXElement, xSettings);
 
                 xw.WriteStartElement(ModelKeys.SclModelKey, "http://www.iec.ch/61850/2003/SCL");
-                xw.WriteAttributeString("xsi", "schemaLocation", 
-                    "http://www.3w.org/2001/XMLSchema-instance", "http://www.iec.ch/61850/2003/SCL/SCL.xsd");
+                xw.WriteAttributeString("xsi", "schemaLocation",
+                    "http://www.3w.org/2001/XMLSchema-instance", "http://www.iec.ch/61850/2003/SCL SCL.xsd");
 
                 xw.WriteEndElement();
                 xw.Flush();
 
                 xElement = XElement.Parse(stringSclXElement.ToString());
             }
-            else if (!string.IsNullOrEmpty((modelElement as ModelElement).Namespace))
-            {
-                xElement = new XElement("{" + (modelElement as ModelElement).Namespace + "}" + modelElement.ElementName);
-            }
             else
             {
-                xElement = new XElement(modelElement.ElementName);
+                xElement = new XElement(iecNameSpace + modelElement.ElementName);
             }
 
             FillXElementCustomProperties(xElement, modelElement, serializingType);
+
             foreach (var modelElementChildElement in modelElement.ChildModelElements)
             {
                 var childElement = _modelElementsRegistryService.SerializeModelElement(modelElementChildElement, serializingType);

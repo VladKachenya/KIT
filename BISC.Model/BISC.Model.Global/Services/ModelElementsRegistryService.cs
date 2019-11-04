@@ -25,7 +25,7 @@ namespace BISC.Model.Global.Services
             _modelElementSerializatorDictionary.Add(elementName, modelElementSerializer);
         }
 
-        public void RegisterModelElement<T>(IModelSerializer< T> modelElementSerializer, string elementName)  where T:IModelElement
+        public void RegisterModelElement<T>(IModelSerializer<T> modelElementSerializer, string elementName) where T : IModelElement
         {
             if (_modelElementSerializatorDictionary.ContainsKey(elementName))
             {
@@ -53,16 +53,16 @@ namespace BISC.Model.Global.Services
                 }
             }
 
-          return  (T)(_modelElementSerializatorDictionary[xElement.Name.LocalName] as IModelElementDeSerializer<T>).DeserializeModelElement(xElement);
+            return (T)(_modelElementSerializatorDictionary[xElement.Name.LocalName] as IModelElementDeSerializer<T>).DeserializeModelElement(xElement);
         }
 
-        public XElement SerializeModelElement<T>(T modelElement,SerializingType serializingType, bool isDefaultSerializatorAllowed = true) where T : IModelElement
+        public XElement SerializeModelElement<T>(T modelElement, SerializingType serializingType, bool isDefaultSerializatorAllowed = true) where T : IModelElement
         {
             if (!_modelElementSerializatorDictionary.ContainsKey(modelElement.ElementName))
             {
                 if (isDefaultSerializatorAllowed)
                 {
-                    return (new DefaultModelElementSerializer<IModelElement>(this)).SerializeModelElement(modelElement,serializingType);
+                    return (new DefaultModelElementSerializer<IModelElement>(this)).SerializeModelElement(modelElement, serializingType);
                 }
                 else
                 {
@@ -70,12 +70,12 @@ namespace BISC.Model.Global.Services
                 }
             }
 
-            return (_modelElementSerializatorDictionary[modelElement.ElementName] as IModelElementSerializer).SerializeSimpleModelElement(modelElement,serializingType);
+            return (_modelElementSerializatorDictionary[modelElement.ElementName] as IModelElementSerializer).SerializeSimpleModelElement(modelElement, serializingType);
         }
 
 
-     
 
-     
+
+
     }
 }

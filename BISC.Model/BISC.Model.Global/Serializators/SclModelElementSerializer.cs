@@ -18,8 +18,8 @@ namespace BISC.Model.Global.Serializators
 
         public SclModelElementSerializer()
         {
-            RegisterProperty(nameof(ISclModel.Version), "version");
-            RegisterProperty(nameof(ISclModel.Revision), "revision");
+            //RegisterProperty(nameof(ISclModel.Version), "version");
+            //RegisterProperty(nameof(ISclModel.Revision), "revision");
         }
 
         public override IModelElement GetConcreteObject()

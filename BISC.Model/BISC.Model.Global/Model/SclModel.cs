@@ -8,11 +8,11 @@ namespace BISC.Model.Global.Model
         public SclModel()
         {
             ElementName = ModelKeys.SclModelKey;
-            Version = "2007";
-            Revision = "B";
+            //Version = "2007";
+            //Revision = "B";
         }
 
-        public string Version { get; set; }
-        public string Revision { get; set; }
+        //public string Version { get; set; }
+        //public string Revision { get; set; }
     }
 }

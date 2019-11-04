@@ -11,7 +11,6 @@ namespace BISC.Model.Infrastructure.Serializing
         T DeserializeModelElement<T>(XElement xElement, bool isDefaultSerializatorAllowed = true) where T : IModelElement;
         XElement SerializeModelElement<T>(T modelElement, SerializingType serializingType, bool isDefaultSerializatorAllowed = true) where T : IModelElement;
 
-
     }
 
 
