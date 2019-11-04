@@ -16,6 +16,12 @@ namespace BISC.Model.Global.Serializators
     {
         #region Overrides of DefaultModelElementSerializer<ISclModel>
 
+        public SclModelElementSerializer()
+        {
+            RegisterProperty(nameof(ISclModel.Version), "version");
+            RegisterProperty(nameof(ISclModel.Revision), "revision");
+        }
+
         public override IModelElement GetConcreteObject()
         {
             return new SclModel();
