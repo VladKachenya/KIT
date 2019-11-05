@@ -85,20 +85,17 @@ namespace BISC.Modules.Reports.Model.Services
 
         public void AddReportsToDevice(IDevice device, List<IReportControl> reportControls, string lDevice)
         {
-            var ldevices = _infoModelService.GetLDevicesFromDevices(device);
+            var logicDevices = _infoModelService.GetLDevicesFromDevices(device);
 
             foreach (var reportControl in reportControls)
             {
-                var ldevice = ldevices.FirstOrDefault((device1 => device1.Inst == lDevice.Replace(device.Name, string.Empty)));
-                if (ldevice != null)
+                var logicDevice = logicDevices.FirstOrDefault((device1 => device1.Inst == lDevice.Replace(device.Name, string.Empty)));
+                if (logicDevice != null)
                 {
-                    var logicalNodeToAdd = ldevice.AlLogicalNodes.FirstOrDefault((node =>
-                        node.Name == reportControl.RptID.Split('$').First()));
-                    if (logicalNodeToAdd != null)
-                    {
-                        logicalNodeToAdd.ChildModelElements.Add(reportControl);
-                        reportControl.ParentModelElement = logicalNodeToAdd;
-                    }
+                    var logicalNodeToAdd = logicDevice.AlLogicalNodes.FirstOrDefault((node =>
+                                               node.Name == reportControl.RptID.Split('$').First())) ?? logicDevice.LogicalNodeZero.Value;
+                    logicalNodeToAdd.ChildModelElements.Add(reportControl);
+                    reportControl.ParentModelElement = logicalNodeToAdd;
                 }
             }
         }

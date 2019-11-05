@@ -86,9 +86,9 @@ namespace BISC.Modules.Reports.Model.Services
             var connection = _connectionPoolService.GetConnection(device.Ip);
             _reportsModelService.DeleteAllReportsOfDevice(device);
             if (!_ldReportsDictionary.Values.Any()) return;
-            var dynamicReports = await _ftpReportModelService.GetReportsFromDevice(device.Ip);
+            //var dynamicReports = await _ftpReportModelService.GetReportsFromDevice(device.Ip);
 
-            List<IReportControl> reportControlsToAddInModel = new List<IReportControl>();
+            //List<IReportControl> reportControlsToAddInModel = new List<IReportControl>();
 
             try
             {
