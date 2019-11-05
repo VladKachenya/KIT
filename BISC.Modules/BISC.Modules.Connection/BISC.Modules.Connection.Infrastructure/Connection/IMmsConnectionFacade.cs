@@ -9,7 +9,6 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
 {
     public interface IMmsConnectionFacade
     {
-
         Task<bool> TryOpenConnection(string ip);
         bool CheckConnection();
         void StopConnection();
@@ -17,6 +16,7 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
         Task<OperationResult<List<string>>> GetLdListAsync();
         Task<OperationResult<List<string>>> GetListValiablesAsync(string ldInst, bool acceptCache);
         Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescription(string ldName, string lnName, bool acceptCache);
+        Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescriptionByFcs(string ldName, string lnName, bool acceptCache, string[] lnFcs);
         Task<OperationResult<List<string>>> GetListDataSetsAsync(string ldInst, bool acceptCache);
 
         Task<OperationResult<DataSetDto>> GetListDataSetInfoAsync(string ldInst, string lnName, string datasetName,

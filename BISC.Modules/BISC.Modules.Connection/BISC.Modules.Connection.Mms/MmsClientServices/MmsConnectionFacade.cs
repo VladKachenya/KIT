@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
+using BISC.Infrastructure.Global.Exceptions;
 using BISC.Modules.Connection.Infrastructure.Connection;
 using BISC.Modules.Connection.Infrastructure.Connection.Dto;
 using BISC.Modules.Connection.MMS.MMS_ASN1_Model;
@@ -127,27 +128,69 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             return new OperationResult<List<string>>(ldIdentifiersList);
         }
 
-        public async Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescription(string ldPathName, string lnName,
-            bool acceoptCache)
+        public async Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescription(string ldName, string lnName,
+            bool acceptCache)
         {
-            if (acceoptCache && _cachedTypeDescription.ContainsKey(ldPathName + lnName))
+            if (acceptCache && _cachedTypeDescription.ContainsKey(ldName + lnName))
             {
-                return new OperationResult<MmsTypeDescription>(_cachedTypeDescription[ldPathName + lnName]);
+                return new OperationResult<MmsTypeDescription>(_cachedTypeDescription[ldName + lnName]);
             }
             else
             {
                 var typeDescription =
-                    await new InfoModelClientService(_state).SendGetVariableAccessAttributesAsync(ldPathName, lnName);
+                    await new InfoModelClientService(_state).SendGetVariableAccessAttributesAsync(ldName, lnName);
+
+                if (typeDescription.Confirmed_ResponsePDU == null)
+                {
+                    throw new BadResponseByMmsException($"Response error for {ldName + lnName} node");
+                }
 
                 var response = typeDescription.Confirmed_ResponsePDU.Service.GetVariableAccessAttributes;
                 MmsTypeDescription mmsTypeDescription = GetMmsTypeDescription(response.TypeDescription, "");
-                if (_cachedTypeDescription.ContainsKey(ldPathName + lnName))
+                if (_cachedTypeDescription.ContainsKey(ldName + lnName))
                 {
-                    _cachedTypeDescription[ldPathName + lnName] = mmsTypeDescription;
+                    _cachedTypeDescription[ldName + lnName] = mmsTypeDescription;
                 }
                 else
                 {
-                    _cachedTypeDescription.Add(ldPathName + lnName, mmsTypeDescription);
+                    _cachedTypeDescription.Add(ldName + lnName, mmsTypeDescription);
+                }
+
+                return new OperationResult<MmsTypeDescription>(mmsTypeDescription);
+            }
+        }
+
+        public async Task<OperationResult<MmsTypeDescription>> GetMmsTypeDescriptionByFcs(string ldName, string lnName, bool acceptCache, string[] lnFcs)
+        {
+            if (acceptCache && _cachedTypeDescription.ContainsKey(ldName + lnName))
+            {
+                return new OperationResult<MmsTypeDescription>(_cachedTypeDescription[ldName + lnName]);
+            }
+            else
+            {
+                MmsTypeDescription mmsTypeDescription = new MmsTypeDescription() { IsStructure = true };
+                foreach (var lnFc in lnFcs)
+                {
+                    var typeDescription =
+                        await new InfoModelClientService(_state).SendGetVariableAccessAttributesAsync(ldName, lnName + '$' + lnFc);
+
+                    if (typeDescription.Confirmed_ResponsePDU == null)
+                    {
+                        throw new BadResponseByMmsException($"Response error for {ldName + lnName} node");
+                    }
+
+                    var response = typeDescription.Confirmed_ResponsePDU.Service.GetVariableAccessAttributes;
+                    mmsTypeDescription.Components.Add(GetMmsTypeDescription(response.TypeDescription, lnFc));
+
+                }
+
+                if (_cachedTypeDescription.ContainsKey(ldName + lnName))
+                {
+                    _cachedTypeDescription[ldName + lnName] = mmsTypeDescription;
+                }
+                else
+                {
+                    _cachedTypeDescription.Add(ldName + lnName, mmsTypeDescription);
                 }
 
                 return new OperationResult<MmsTypeDescription>(mmsTypeDescription);
@@ -235,10 +278,10 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
                 (type =>
                     type.Name == "ConfRev"));
-            gooseDto.ConfRev = (int) dataForGse.Structure.ToArray()[index].Unsigned;
-            index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
-                                        (type =>
-                                            type.Name == "FixedOffs"));
+                gooseDto.ConfRev = (int)dataForGse.Structure.ToArray()[index].Unsigned;
+                index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
+                                            (type =>
+                                                type.Name == "FixedOffs"));
                 if (index > 0)
                 {
                     gooseDto.FixedOffs = dataForGse.Structure.ToArray()[index].Boolean;
@@ -247,28 +290,28 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
                                          (type =>
                                              type.Name == "DstAddress"));
-            var dstAddressTypeDescription = typeDescriptionForGse.Components.First((type =>
-                      type.Name == "DstAddress"));
-            var dstAddressData = dataForGse.Structure.ToArray()[index];
+                var dstAddressTypeDescription = typeDescriptionForGse.Components.First((type =>
+                          type.Name == "DstAddress"));
+                var dstAddressData = dataForGse.Structure.ToArray()[index];
 
 
 
-            index = Array.FindIndex(dstAddressTypeDescription.Components.ToArray(),
-                (type =>
-                    type.Name == "Addr"));
+                index = Array.FindIndex(dstAddressTypeDescription.Components.ToArray(),
+                    (type =>
+                        type.Name == "Addr"));
 
-            var macAddressString = string.Empty;
-            dstAddressData.Structure.ToArray()[index].Octet_string.ForEach((b =>
-            {
-                if (macAddressString == String.Empty)
+                var macAddressString = string.Empty;
+                dstAddressData.Structure.ToArray()[index].Octet_string.ForEach((b =>
                 {
-                    macAddressString += b.ToString("X2");
-                }
-                else
-                {
-                    macAddressString += "-" + b.ToString("X2");
-                }
-            }));
+                    if (macAddressString == String.Empty)
+                    {
+                        macAddressString += b.ToString("X2");
+                    }
+                    else
+                    {
+                        macAddressString += "-" + b.ToString("X2");
+                    }
+                }));
 
                 index = Array.FindIndex(dstAddressTypeDescription.Components.ToArray(),
                     (type =>
@@ -294,7 +337,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 gooseDto.CbName = gooseDto.Name;
                 gooseDto.MAC_Address = macAddressString;
                 gooseDto.APPID = appId;
-                gooseDto.VLAN_ID =vlanId;
+                gooseDto.VLAN_ID = vlanId;
                 gooseDto.VLAN_PRIORITY = prioroty;
 
                 index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
@@ -307,26 +350,20 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                     index = Array.FindIndex(typeDescriptionForGse.Components.ToArray(),
                     (type =>
                         type.Name == "MaxTime"));
-                var maxTime = dataForGse.Structure.ToArray()[index].Unsigned;
+                    var maxTime = dataForGse.Structure.ToArray()[index].Unsigned;
 
-                gooseDto.MaxTime = maxTime ;
-                gooseDto.MinTime = minTime ;
+                    gooseDto.MaxTime = maxTime;
+                    gooseDto.MinTime = minTime;
 
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
 
                 }
-              
+
                 gooseDtos.Add(gooseDto);
 
             }
-
-
-
-
-
-
 
             return new OperationResult<List<GooseDto>>(gooseDtos);
         }
@@ -376,7 +413,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
 
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "OptFlds"));
-                reportDto.OptFields.Value =dataForReport.Structure.ToArray()[index].Bit_string.Value.ReportOptionsFromBytes(new OptFields());
+                reportDto.OptFields.Value = dataForReport.Structure.ToArray()[index].Bit_string.Value.ReportOptionsFromBytes(new OptFields());
 
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "BufTm"));
@@ -389,7 +426,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "TrgOps"));
 
-                reportDto.TrgOps.Value =dataForReport.Structure.ToArray()[index].Bit_string.Value.TriggerOptionsFromBytes(new TrgOps());
+                reportDto.TrgOps.Value = dataForReport.Structure.ToArray()[index].Bit_string.Value.TriggerOptionsFromBytes(new TrgOps());
 
                 index = Array.FindIndex(typeDescriptionForReport.Components.ToArray(), (type =>
                     type.Name == "IntgPd"));
@@ -407,7 +444,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 {
                     reportDto.Buffered = true;
                 }
-                reportDto.RptEnabled.Value=new RptEnabled();
+                reportDto.RptEnabled.Value = new RptEnabled();
                 reportDto.RptEnabled.Value.Max = 1;
                 reportDtos.Add(reportDto);
             }
@@ -419,52 +456,52 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
         {
             try
             {
-                MMSpdu res=null;
+                MMSpdu res = null;
                 if (itemValueName == "TrgOps")
                 {
-                     res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.bit_string, ldFullPath,
-                        rptId, itemValueName,
-                        new BitString((byte[]) valueToSave, 2));
+                    res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.bit_string, ldFullPath,
+                       rptId, itemValueName,
+                       new BitString((byte[])valueToSave, 2));
                 }
                 else if (itemValueName == "OptFlds")
                 {
-                     res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.bit_string, ldFullPath,
-                        rptId, itemValueName,
-                        new BitString((byte[]) valueToSave, 6));
+                    res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.bit_string, ldFullPath,
+                       rptId, itemValueName,
+                       new BitString((byte[])valueToSave, 6));
                 }
                 else if (itemValueName == "DatSet")
                 {
-                     res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.VisString255,
-                        ldFullPath, rptId, itemValueName,
-                        valueToSave);
+                    res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.VisString255,
+                       ldFullPath, rptId, itemValueName,
+                       valueToSave);
                 }
                 else if (itemValueName == "GI")
                 {
-                     res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.BOOLEAN, ldFullPath,
-                        rptId, itemValueName,
-                        valueToSave);
+                    res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.BOOLEAN, ldFullPath,
+                       rptId, itemValueName,
+                       valueToSave);
                 }
                 else if (itemValueName == "RptID")
                 {
-                    res= await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.VisString255,
+                    res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.VisString255,
                         ldFullPath, rptId, itemValueName,
                         valueToSave);
-                    
+
                 }
-                else if ((itemValueName == "BufTm")|| (itemValueName == "IntgPd"))
+                else if ((itemValueName == "BufTm") || (itemValueName == "IntgPd"))
                 {
-                     res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.INT32U,
-                        ldFullPath, rptId, itemValueName,
-                        valueToSave);
+                    res = await (new ReportClientService(_state)).WriteReportValueAsync(tBasicTypeEnum.INT32U,
+                       ldFullPath, rptId, itemValueName,
+                       valueToSave);
                 }
                 else
                 {
                     return new OperationResult("Неизвестные данные для сохранения в отчет");
 
                 }
-                if (res != null&&res.Confirmed_ResponsePDU.Service.Write.Value.First().Success!=null)
+                if (res != null && res.Confirmed_ResponsePDU.Service.Write.Value.First().Success != null)
                 {
-                   return OperationResult.SucceedResult;
+                    return OperationResult.SucceedResult;
                 }
                 else
                 {
@@ -484,7 +521,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
         {
             try
             {
-               var res=await new DataSetClientService(_state).SendDeleteNVLAsync(new Dto.DataSetDto()
+                var res = await new DataSetClientService(_state).SendDeleteNVLAsync(new Dto.DataSetDto()
                 {
                     Ied = ied,
                     Ld = ld,
@@ -500,7 +537,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             }
             catch (Exception e)
             {
-               return new OperationResult(e.Message);
+                return new OperationResult(e.Message);
             }
         }
 
@@ -508,13 +545,13 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
         {
             try
             {
-               var res= await new DataSetClientService(_state).SendDefineNVLAsync(new Dto.DataSetDto()
+                var res = await new DataSetClientService(_state).SendDefineNVLAsync(new Dto.DataSetDto()
                 {
                     Ied = ied,
                     Ld = ld,
                     Ln = ln,
                     Name = nameDataSet
-                },fcdaDtos);
+                }, fcdaDtos);
                 if (res?.Confirmed_ResponsePDU?.Service?.DefineNamedVariableList == null)
                 {
                     return new OperationResult("Датасет не был добавлен");
@@ -530,17 +567,17 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
         public Task<SettingsControlDto> GetSettingsControl(MmsTypeDescription lnMmsTypeDescription, string fc, string iedName, string lnName,
             string ldName)
         {
-            return new InfoModelClientService(_state).ReadSettingsControls(lnMmsTypeDescription,fc,iedName,lnName,ldName);
+            return new InfoModelClientService(_state).ReadSettingsControls(lnMmsTypeDescription, fc, iedName, lnName, ldName);
         }
 
         public async Task<bool> SetSettingsControl(string fc, string iedName, string lnName,
-            string ldName,string newVal)
+            string ldName, string newVal)
         {
-            var customParts=new List<string>();
+            var customParts = new List<string>();
             customParts.Add("SGCB");
             customParts.Add("ActSG");
 
-            var res =await new InfoModelClientService(_state).SendWriteAsync(tBasicTypeEnum.INT32U,iedName+ldName, lnName, fc, newVal,customParts);
+            var res = await new InfoModelClientService(_state).SendWriteAsync(tBasicTypeEnum.INT32U, iedName + ldName, lnName, fc, newVal, customParts);
             return true;
         }
 
@@ -551,7 +588,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             if (res.Confirmed_ResponsePDU?.Service?.Read?.ListOfAccessResult?.All(
                     (result => result.isSuccessSelected())) != true)
             {
-                return new OperationResult<ValueDescription>($"Не удалось прочитать значения {iedName}.{ldName}.{lnName}.[{fc}] {string.Join(".",customItemPathParts)}");
+                return new OperationResult<ValueDescription>($"Не удалось прочитать значения {iedName}.{ldName}.{lnName}.[{fc}] {string.Join(".", customItemPathParts)}");
             }
             else
             {
@@ -584,7 +621,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
         }
 
 
-        private string GetStringValue( Data asn1Data)
+        private string GetStringValue(Data asn1Data)
         {
             if (asn1Data == null) return String.Empty;
             if (asn1Data.isIntegerSelected())
@@ -597,7 +634,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             }
             else if (asn1Data.isBooleanSelected())
             {
-               return asn1Data.Boolean.ToString();
+                return asn1Data.Boolean.ToString();
             }
             else if (asn1Data.isFloating_pointSelected())
             {
@@ -634,7 +671,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             }
             else if (asn1Data.isMMSStringSelected())
             {
-               return asn1Data.MMSString.Value.ToString();
+                return asn1Data.MMSString.Value.ToString();
             }
             else if (asn1Data.isObjIdSelected())
             {
@@ -731,7 +768,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                 }
                 return bitString;
             }
-         return String.Empty;
+            return String.Empty;
         }
 
 
@@ -742,13 +779,13 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
 
             foreach (var data in datas)
             {
-               ValueDescription valueDescription=new ValueDescription();
+                ValueDescription valueDescription = new ValueDescription();
                 valueDescription.IsStructure = data.isStructureSelected();
                 if (data.Structure != null)
                 {
                     if (valueDescription.Components == null)
                     {
-                        valueDescription.Components=new List<ValueDescription>();
+                        valueDescription.Components = new List<ValueDescription>();
                     }
                     valueDescription.Components.AddRange(MapData(data.Structure));
                 }
@@ -821,7 +858,7 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
                     //            break;
                     //    }
                     //}
-                    
+
                 }
                 valueDescriptions.Add(valueDescription);
             }

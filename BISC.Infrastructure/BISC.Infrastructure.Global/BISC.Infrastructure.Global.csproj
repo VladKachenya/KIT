@@ -48,6 +48,7 @@
     <Compile Include="Common\Maybe.cs" />
     <Compile Include="Common\OperationResult.cs" />
     <Compile Include="Constants\Constants.cs" />
+    <Compile Include="Exceptions\BadResponseByMmsExeption.cs" />
     <Compile Include="IoC\IInjectionContainer.cs" />
     <Compile Include="IoC\StaticContainer.cs" />
     <Compile Include="Logging\ILoggableMessage.cs" />

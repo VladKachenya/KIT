@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.Exceptions;
 using BISC.Model.Iec61850Ed2;
 using BISC.Model.Iec61850Ed2.DataTypeTemplates;
 using BISC.Model.Iec61850Ed2.DataTypeTemplates.Base;
@@ -199,17 +200,28 @@ namespace BISC.Modules.InformationModel.Model.Services
 
 
 
-        private async Task<ILogicalNode> CreateLogicalNode(LogicalNodeDTO logicalNodeDto,string ldName)
+        private async Task<ILogicalNode> CreateLogicalNode(LogicalNodeDTO logicalNodeDto, string ldName)
         {
 
             ILogicalNode resAnyLn = null;
             CommonLogicalNode commonLogicalNode = null;
-            logicalNodeDto.DoiTypeDescription =
-                (await _connection.MmsConnection.GetMmsTypeDescription(logicalNodeDto.LDName, logicalNodeDto.ShortName, false))
-                .Item;
+            try
+            {
+                logicalNodeDto.DoiTypeDescription =
+                    (await _connection.MmsConnection.GetMmsTypeDescription(logicalNodeDto.LDName,
+                        logicalNodeDto.ShortName, false))
+                    .Item;
+            }
+            catch (BadResponseByMmsException e)
+            {
+                // Необходимо прикрутить логер для таких исключений
+                var lnFcs = logicalNodeDto.LnDefinitions.Select(lnD => lnD.Split('$')[1]).Distinct().ToArray();
+                logicalNodeDto.DoiTypeDescription = (await _connection.MmsConnection.GetMmsTypeDescriptionByFcs(logicalNodeDto.LDName,
+                        logicalNodeDto.ShortName, false, lnFcs)).Item;
+            }
             if (logicalNodeDto.ShortName == "LLN0")
             {
-                
+
                 var settingsControlDto = await _connectionPoolService.GetConnection(_ip).MmsConnection
                     .GetSettingsControl(logicalNodeDto.DoiTypeDescription, "SP", _deviceName, "LLN0", ldName);
                 resAnyLn = new LogicalNodeZero();
@@ -274,11 +286,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 return null;
             }
 
-
-
-
-
-            List<DoiDto> doiDtos =await CreateDoiDtos(logicalNodeDto.LnDefinitions, logicalNodeDto.DoiTypeDescription);
+            List<DoiDto> doiDtos = await CreateDoiDtos(logicalNodeDto.LnDefinitions, logicalNodeDto.DoiTypeDescription);
 
 
             foreach (var doiDto in doiDtos)
@@ -335,7 +343,6 @@ namespace BISC.Modules.InformationModel.Model.Services
             resAnyLn.LnType = _dataTypeTemplatesModelService.AddLnodeType(commonLogicalNode.MapLNodeType(), _sclModel);
 
 
-
             return resAnyLn;
         }
 
@@ -344,7 +351,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 
 
         public async Task<List<DoiDto>> CreateDoiDtos(List<string> allDoiDefinitions, MmsTypeDescription typeDescription)
-            
+
         {
             List<DoiDto> doiDtos = new List<DoiDto>();
             foreach (var doiDefinition in allDoiDefinitions)
@@ -354,8 +361,16 @@ namespace BISC.Modules.InformationModel.Model.Services
                 if (doiDefinitionParts.Length == 2)
                 {
                     string fc = doiDefinitionParts[1];
-                    var typeDescriptionForFc = typeDescription.Components
-                        .First((type => type.Name == fc));
+                    MmsTypeDescription typeDescriptionForFc = null;
+                    try
+                    {
+                        typeDescriptionForFc = typeDescription.Components
+                            .First((type => type.Name == fc));
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
 
                     if (fc == "RP" || fc == "BR")
                     {
@@ -390,6 +405,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                         AddDoiDtoToList(doiDtos, doiDto);
                     }
                 }
+
             }
 
             return doiDtos;
