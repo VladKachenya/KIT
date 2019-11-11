@@ -32,6 +32,8 @@ namespace BISC.Presentation.Services
         private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly IUserInteractionService _userInteractionService;
         private readonly IGlobalSavingService _globalSavingService;
+        private readonly ISaveCheckingService _checkingService;
+
         #endregion
 
         #region ctor
@@ -39,7 +41,7 @@ namespace BISC.Presentation.Services
             IUiFromModelElementRegistryService uiFromModelElementRegistryService, IBiscProject biscProject, IDeviceModelService deviceModelService,
             ITreeManagementService treeManagementService, IGoosesModelService goosesModelService, IConnectionPoolService connectionPoolService,
             ITabManagementService tabManagementService, IDeviceWarningsService deviceWarningsService, IUserInteractionService userInteractionService,
-            IGlobalSavingService globalSavingService)
+            IGlobalSavingService globalSavingService, ISaveCheckingService checkingService)
         {
             _projectService = projectService;
             _loggingService = loggingService;
@@ -53,6 +55,7 @@ namespace BISC.Presentation.Services
             _deviceWarningsService = deviceWarningsService;
             _userInteractionService = userInteractionService;
             _globalSavingService = globalSavingService;
+            _checkingService = checkingService;
         }
         #endregion
 
@@ -178,13 +181,13 @@ namespace BISC.Presentation.Services
 
         #region private methods
 
-        public async Task SaveProjectAsync(bool isReconnectIfNeed = true)
+        public async Task SaveProjectAsync(bool isReconnectIfNeed = true, bool isAppClosingProcess = false)
         {
             FileInfo curentProjectPath = new FileInfo(_projectService.GetCurrentProjectPath(true));
             FileInfo defaultProjectPath = new FileInfo(ModelConstants.DefaultProjectPath);
             if (curentProjectPath.FullName == defaultProjectPath.FullName)
             {
-                await SaveProjectAs(isReconnectIfNeed);
+                await SaveProjectAs(isReconnectIfNeed, isAppClosingProcess);
             }
             else
             {
@@ -202,7 +205,7 @@ namespace BISC.Presentation.Services
             }
         }
 
-        private async Task SaveProjectAs(bool isReconnectIfNeed = true)
+        private async Task SaveProjectAs(bool isReconnectIfNeed = true, bool isAppClosingProcess = false)
         {
             Maybe<string> listOfPaths = FileHelper.SelectFilePathToSave("Сохранение файла", ".bisc", "BISC Files (*.bisc)|*.bisc|" +
                                                                                                      "All Files (*.*)|*.*", "New project");
@@ -234,7 +237,15 @@ namespace BISC.Presentation.Services
                 _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
                 return;
             }
-            await _globalSavingService.SaveAllDevices(isReconnectIfNeed);
+
+            if (!isAppClosingProcess)
+            {
+                await _globalSavingService.SaveAllDevices(isReconnectIfNeed);
+            }
+            else
+            {
+                await _checkingService.SaveAllUnsavedEntities(false);
+            }
             _projectService.SaveProjectAs(listOfPaths.GetFirstValue());
             _loggingService.LogMessage($"Проект сохранен {_projectService.GetCurrentProjectPath(true)}", SeverityEnum.Info);
         }

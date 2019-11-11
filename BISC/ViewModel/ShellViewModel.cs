@@ -106,13 +106,13 @@ namespace BISC.ViewModel
 
         private async void OnShellClosing(object obj)
         {
-            (obj as CancelEventArgs).Cancel = true;
             await OnClosing();
+            (obj as CancelEventArgs).Cancel = false;
         }
 
         private async Task OnClosing()
         {
-            await _container.ResolveType<IProjectManagementService>().SaveProjectAsync();
+            await _container.ResolveType<IProjectManagementService>().SaveProjectAsync(isAppClosingProcess: true);
             Application.Current.Shutdown();
         }
 

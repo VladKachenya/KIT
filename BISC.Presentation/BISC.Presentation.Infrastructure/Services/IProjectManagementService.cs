@@ -8,7 +8,7 @@ namespace BISC.Presentation.Infrastructure.Services
     public interface IProjectManagementService
     {
         void SaveProject();
-        Task SaveProjectAsync(bool isReconnectIfNeed = true);
+        Task SaveProjectAsync(bool isReconnectIfNeed = true, bool isAppClosingProcess = false);
         void DeleteDeviceFromProject(Guid deviceGuid);
         void SaveProjectAsAsync();
         void OpenProjectAsAsync();

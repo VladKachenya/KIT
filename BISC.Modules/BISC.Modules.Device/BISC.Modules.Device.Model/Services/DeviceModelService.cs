@@ -48,18 +48,27 @@ namespace BISC.Modules.Device.Model.Services
             return devices.FirstOrDefault((device => device.DeviceGuid == deviceGuid));
         }
 
-        public OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device, ISclModel modelFrom)
+        public OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device, ISclModel modelFrom, bool isSubstationScl)
         {
             if (GetIsDeviceExists(sclModel, device.DeviceGuid))
             {
                 return new OperationResult($"Устройство с именем {device.Name} уже существует в модели");
             }
 
-	        if (string.IsNullOrEmpty(device.Ip))
-	        {
-		        device.Ip=_sclCommunicationModelService.GetIpOfDevice(device.Name, modelFrom);
-	        }
-            _dataTypeTemplatesModelService.MergeDataTypeTemplates(sclModel, modelFrom);
+            if (string.IsNullOrEmpty(device.Ip))
+            {
+                device.Ip = _sclCommunicationModelService.GetIpOfDevice(device.Name, modelFrom);
+            }
+
+            if (!isSubstationScl)
+            {
+                _dataTypeTemplatesModelService.MergeDataTypeTemplates(sclModel, modelFrom);
+            }
+            else
+            {
+                _dataTypeTemplatesModelService.MergeDataTypeTemplatesOfDevice(sclModel, modelFrom, device);
+            }
+
             _sclCommunicationModelService.AddConnectedAccessPoint(sclModel, FindConnectedAccessPointOfTheDevice(modelFrom, device.Name));
             sclModel.ChildModelElements.Add(device);
             return OperationResult.SucceedResult;
@@ -142,7 +151,7 @@ namespace BISC.Modules.Device.Model.Services
             return OperationResult.SucceedResult;
         }
 
-     
+
 
         public IDevice GetParentDevice(IModelElement childElement)
         {

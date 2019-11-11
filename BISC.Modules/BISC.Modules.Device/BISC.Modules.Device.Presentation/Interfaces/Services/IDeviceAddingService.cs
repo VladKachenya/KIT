@@ -5,10 +5,10 @@ using BISC.Presentation.Infrastructure.UiFromModel;
 
 namespace BISC.Modules.Device.Presentation.Interfaces.Services
 {
-    public interface IDeviceAddingService:IUiFromModelElementService
+    public interface IDeviceAddingService : IUiFromModelElementService
     {
         void OpenDeviceAddingView();
-        void AddDevicesInProject(List<IDevice> devicesToAdd,ISclModel modelFrom);
+        void AddDevicesInProject(List<IDevice> devicesToAdd, ISclModel modelFrom, bool isSubstationScl = false);
         void AddDeviceToTree(IDevice device, int? index = null);
         void AddDeviceToTreeIfMissing(IDevice device, int? index = null);
     }

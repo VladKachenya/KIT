@@ -11,7 +11,7 @@ namespace BISC.Modules.Device.Infrastructure.Services
     {
         List<IDevice> GetDevicesFromModel(ISclModel sclModel);
         IDevice GetDeviceByGuid(ISclModel sclModel, Guid deviceGuid);
-        OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device,ISclModel modelFrom);
+        OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device, ISclModel modelFrom, bool isSubstationScl);
         OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device);
         OperationResult DeleteDeviceFromModel(ISclModel sclModel, Guid deviceGuid);
         IDevice GetParentDevice(IModelElement childElement);

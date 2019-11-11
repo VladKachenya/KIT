@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Linq;
+using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services;
@@ -30,13 +32,14 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IDeviceModelService _deviceModelService;
         private readonly IDeviceViewModelFactory _deviceViewModelFactory;
         private readonly IDeviceAddingService _deviceAddingService;
+        private readonly ILoggingService _loggingService;
         private ISclModel _currentAddingSclModel;
         private bool _selectFileIsOpen;
         private IFileViewModel _activeFileViewModel;
 
         public DeviceFromFileAddingViewModel(ICommandFactory commandFactory, IConfigurationService configurationService,
             IFileViewModelFactory fileViewModelFactory, IModelComposingService modelComposingService, IDeviceModelService deviceModelService,
-            IDeviceViewModelFactory deviceViewModelFactory, IDeviceAddingService deviceAddingService)
+            IDeviceViewModelFactory deviceViewModelFactory, IDeviceAddingService deviceAddingService, ILoggingService loggingService)
             : base(null)
         {
             _commandFactory = commandFactory;
@@ -47,6 +50,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _deviceModelService = deviceModelService;
             _deviceViewModelFactory = deviceViewModelFactory;
             _deviceAddingService = deviceAddingService;
+            _loggingService = loggingService;
             LastOpenedFiles = new ObservableCollection<IFileViewModel>();
             OpenFileWithDevices = _commandFactory.CreatePresentationCommand(OnOpenFileWithDevicesExecute, () => _selectFileIsOpen);
             DeleteFileFromView = _commandFactory.CreatePresentationCommand<IFileViewModel>(OnDeleteFileFromViewExecute);
@@ -61,12 +65,20 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         private void OnAddSelectedDevicesExecute()
         {
-            _deviceAddingService.AddDevicesInProject(CurrentDevicesToAdd.Where((model => model.IsSelected)).Select((model => model.Device)).ToList(), _currentAddingSclModel);
+            _deviceAddingService.AddDevicesInProject(CurrentDevicesToAdd.Where((model => model.IsSelected)).Select((model => model.Device)).ToList(),
+                _currentAddingSclModel,
+                _activeFileViewModel.ShortPath.Substring(_activeFileViewModel.ShortPath.Length - 3).ToLower() == "scd");
         }
 
         private void OnLoadDevicesFromFileExecute(IFileViewModel fileViewModel)
         {
             _activeFileViewModel = fileViewModel;
+            if (!File.Exists(_activeFileViewModel.FullPath))
+            {
+                _loggingService.LogMessage($"File {_activeFileViewModel.FullPath} not found!", SeverityEnum.Warning);
+                OnDeleteFileFromViewExecute(_activeFileViewModel);
+                return;
+            }
             var model = _modelComposingService.DeserializeModelFromFile(XElement.Load(fileViewModel.FullPath));
             _currentAddingSclModel = model;
             var devices = _deviceModelService.GetDevicesFromModel(model);
@@ -117,11 +129,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         {
             _selectFileIsOpen = false;
             (OpenFileWithDevices as IPresentationCommand)?.RaiseCanExecute();
-            var fileMaybe = FileHelper.SelectFileToOpen("Открыть файл с устройствами", "SCL Files (*.cid,*.icd,*.iid)|*.cid;*.icd;*iid|" +
+            var fileMaybe = FileHelper.SelectFileToOpen("Открыть файл с устройствами", "SCL Files (*.cid,*.icd,*.iid,*.SCD)|*.cid;*.icd;*.iid;*.SCD|" +
                                                                         "Configured IED Description Files (*.cid)|*.cid|" +
                                                                         "IED Capability Description Files (*.icd)|*.icd|" +
                                                                         "Instantiated IED description Files (*.iid)|*.iid|" +
-                                                                        "All Files (*.*)|*.*");
+                                                                        "Substation Configuration Description Files (*.SCD*)|*.SCD");
             _selectFileIsOpen = true;
             (OpenFileWithDevices as IPresentationCommand)?.RaiseCanExecute();
             if (!fileMaybe.Any()) return;

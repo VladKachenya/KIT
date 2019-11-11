@@ -1,6 +1,7 @@
 ﻿using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DaType;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
@@ -13,83 +14,40 @@ using BISC.Modules.InformationModel.Model.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BISC.Infrastructure.Global.Logging;
+using BISC.Infrastructure.Global.Services;
+using BISC.Modules.InformationModel.Infrastucture.Services;
+using BISC.Modules.InformationModel.Model.Elements;
 
 namespace BISC.Modules.InformationModel.Model.Services
 {
     public class DataTypeTemplatesModelService : IDataTypeTemplatesModelService
     {
-        private IDataTypeTemplates GetDataTypeTemplates(ISclModel sclModel)
+        private readonly ILoggingService _loggingService;
+
+        #region Ctor
+        public DataTypeTemplatesModelService(
+            ILoggingService loggingService)
         {
-            if (sclModel.TryGetFirstChildOfType(out IDataTypeTemplates dataTypeTemplates))
-            {
-                return dataTypeTemplates;
-            }
-            else
-            {
-                IDataTypeTemplates newdataTypeTemplates = new DataTypeTemplates.DataTypeTemplates();
-                sclModel.ChildModelElements.Add(newdataTypeTemplates);
-                return newdataTypeTemplates;
-            }
+            _loggingService = loggingService;
         }
 
+        #endregion
+
+
+
+        #region Implementation of IDataTypeTemplatesModelService
+
+        public void MergeDataTypeTemplatesOfDevice(ISclModel sclModelTo, ISclModel sclModelFrom, IDevice device)
+        {
+            var dttFrom = GetDataTypeTemplatesOfDevice(sclModelFrom, device);
+            MergeDtt(sclModelTo, sclModelFrom, dttFrom);
+        }
 
         public void MergeDataTypeTemplates(ISclModel sclModelTo, ISclModel sclModelFrom)
         {
             var dttFrom = GetDataTypeTemplates(sclModelFrom);
-            foreach (var doType in dttFrom.DoTypes)
-            {
-                var resid = AddDoType(doType, sclModelTo);
-                if (resid != doType.Id)
-                {
-                    List<IDo> doList = new List<IDo>();
-                    dttFrom.GetAllChildrenOfType(ref doList);
-                    foreach (var node in doList.Where(node => node.Type == doType.Id))
-                    {
-                        node.Type = resid;
-                    }
-                    //var t = doList.Where(node => node.Type == doType.Id).ToList();
-                }
-
-            }
-            foreach (var daType in dttFrom.DaTypes)
-            {
-                var resId = AddDaType(daType, sclModelTo);
-                if (daType.Id != resId)
-                {
-                    List<IDa> daList = new List<IDa>();
-                    dttFrom.GetAllChildrenOfType(ref daList);
-                    foreach (var node in daList.Where(node => node.Type == daType.Id))
-                    {
-                        if(resId == "MR5PO50N245CTRL.CSWI1.Pos.Oper")
-                        {
-                        }
-                        node.Type = resId;
-                    }
-                    //var t = daList.Where(node => node.Type == daType.Id).ToList();
-                }
-            }
-            foreach (var lNodeType in dttFrom.LNodeTypes)
-            {
-                var resId = AddLnodeType(lNodeType, sclModelTo);
-                if (lNodeType.Id != resId)
-                {
-                    List<ILogicalNode> lnList = new List<ILogicalNode>();
-                    sclModelFrom.GetAllChildrenOfType(ref lnList);
-                    foreach (var node in lnList.Where(node => node.LnType == lNodeType.Id))
-                    {
-                        node.LnType = resId;
-                    }
-                    //var t = lnList.Where(node => node.LnClass == lNodeType.Id).ToList();
-                }
-            }
-            foreach (var enumType in dttFrom.EnumTypes)
-            {
-                var resId = AddEnumType(enumType, sclModelTo);
-                if (enumType.Id != resId)
-                {
-
-                }
-            }
+            MergeDtt(sclModelTo, sclModelFrom, dttFrom);
         }
 
         public void FilterDataTypeTemplates(IDataTypeTemplates dataTypeTemplates, List<ILDevice> lDevicesToExclude,
@@ -123,6 +81,380 @@ namespace BISC.Modules.InformationModel.Model.Services
 
         }
 
+        public string AddLnodeType(ILNodeType lNodeType, ISclModel sclModel)
+        {
+            IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
+            if (lNodeType == null)
+            {
+                return null;
+            }
+            return AddLnTypeToDataTypeTemplates(lNodeType, dataTypeTemplates);
+        }
+
+        public string AddDoType(IDoType dotype, ISclModel sclModel)
+        {
+            IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
+            if (dotype == null)
+            {
+                return null;
+            }
+
+            var existing = CheckExisting(dotype, dataTypeTemplates);
+            if (existing == null)
+            {
+                var toadd = new DoType();
+                toadd.Id = dotype.Id;
+                toadd.Cdc = dotype.Cdc;
+
+                toadd.DaList.AddRange(dotype.DaList);
+                toadd.SdoList.AddRange(dotype.SdoList);
+                dataTypeTemplates.DoTypes.Add(toadd);
+                return dotype.Id;
+            }
+            else
+            {
+                foreach (IDa da in dotype.DaList)
+                {
+
+                    if (CheckIfExist(dotype, da))
+                    {
+                        continue;
+                    }
+
+                    if (da.Name == "stVal")
+                    // костыль для того, чтобы stVal был первым в списке,чтобы контроллер читал файл 
+                    //(он глупый и думает, что stVal по порядку первый)
+
+                    {
+                        existing.DaList.Insert(0, da);
+                        continue;
+                    }
+                    existing.DaList.Add(da);
+                }
+                return existing.Id;
+            }
+        }
+
+
+
+        public bool CheckIfExist(IDoType do1, IDa newDa)
+        {
+            if (do1.DaList.Contains(newDa))
+            {
+                return true;
+            }
+
+            foreach (var daitem in do1.DaList)
+            {
+                if ((newDa.Type == daitem.Type) &&
+                    (newDa.BType == daitem.BType) &&
+                      (newDa.Name == daitem.Name) &&
+                    //(newDa.count == daitem.count) &&
+                    //(newDa.dchg == daitem.dchg) &&
+                    //(newDa.qchg == daitem.qchg) &&
+                    //(newDa.dupd == daitem.dupd) &&
+                    (newDa.Fc == daitem.Fc))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public bool CheckIfExist(IDoType do1, ISdo sdo)
+        {
+            return do1.SdoList.Any(sdoitem => (sdoitem.Type == sdo.Type) && (sdoitem.Name == sdo.Name));
+        }
+
+
+        public string AddDaType(IDaType datype, ISclModel sclModel)
+        {
+            if (datype == null)
+            {
+                return null;
+            }
+
+            IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
+            IDaType existing = CheckExistingUsual(datype, dataTypeTemplates);
+            if (existing == null)
+            {
+                dataTypeTemplates.DaTypes.Add(datype);
+                return datype.Id;
+            }
+            return existing.Id;
+        }
+
+        public string AddEnumType(IEnumType enumtype, ISclModel sclModel)
+        {
+            IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
+
+            if (enumtype == null)
+            {
+                return null;
+            }
+
+            IEnumType existing = CheckIfExist(enumtype, dataTypeTemplates);
+            if (existing == null)
+            {
+                dataTypeTemplates.EnumTypes.Add(enumtype);
+                return enumtype.Id;
+            }
+            return existing.Id;
+        }
+
+        public IDa GetDaOfDai(IDai dai, ISclModel sclModel)
+        {
+            ILDevice parentLDevice = null;
+            ILogicalNode parentLogicalNode = null;
+            IDoi parentDoi = null;
+            List<object> recursiveParents = new List<object>();
+            IModelElement currentElement = dai;
+            recursiveParents.Add(currentElement);
+
+            do
+            {
+                currentElement = currentElement.ParentModelElement;
+
+                if (currentElement is ILDevice)
+                {
+                    parentLDevice = currentElement as ILDevice;
+                    continue;
+                }
+
+                if (currentElement is ILogicalNode)
+                {
+                    parentLogicalNode = currentElement as ILogicalNode;
+                    continue;
+                }
+
+                if (currentElement is IDoi)
+                {
+                    parentDoi = currentElement as IDoi;
+                    continue;
+                }
+
+                recursiveParents.Insert(0, currentElement);
+            } while (parentLDevice == null);
+
+            IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
+            ILNodeType lNodeType =
+                dataTypeTemplates.LNodeTypes.FirstOrDefault((type => type.Id == parentLogicalNode.LnType));
+            IDo parentDo = lNodeType.DoList.FirstOrDefault(parentDoToFind => parentDoToFind.Name == parentDoi.Name);
+
+            IDoType parentDoType = dataTypeTemplates.DoTypes.FirstOrDefault((type => type.Id == parentDo.Type));
+            foreach (var recursiveParent in recursiveParents)
+            {
+                if (recursiveParent is IDai daiParent)
+                {
+                    return parentDoType.DaList.FirstOrDefault((da => da.Name == daiParent.Name));
+                }
+
+                if (recursiveParent is ISdi sdiParent)
+                {
+                    var parentSdo = parentDoType.SdoList.FirstOrDefault((sdo => sdo.Name == sdiParent.Name));
+                    if (parentSdo != null)
+                    {
+                        parentDoType = dataTypeTemplates.DoTypes.First((type => type.Id == parentSdo.Type));
+                    }
+                    else
+                    {
+                        return parentDoType.DaList.First((da => da.Name == sdiParent.Name));
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public void UpdateTemplatesUnderIdeName(ISclModel sclModel, string oldIdeName, string newIdeName)
+        {
+            var templatesWithId = GetDataTypeTemplates(sclModel).GetAllIds();
+            var replaser = new IdeNameInStringReplacer();
+            foreach (var id in templatesWithId)
+            {
+                id.Id = replaser.ReplaseIdeNameInStringWithoutExeption(id.Id, oldIdeName, newIdeName);
+                id.GetAllITypes().ForEach(el => el.Type = replaser.ReplaseIdeNameInStringWithoutExeption(el.Type, oldIdeName, newIdeName));
+            }
+        }
+
+        public IEnumType GetEnumTypeForDa(IDa da)
+        {
+            IDataTypeTemplates dataTypeTemplates = da.GetFirstParentOfType<IDataTypeTemplates>();
+            return dataTypeTemplates.EnumTypes.FirstOrDefault((type => type.Id == da.Type));
+        }
+
+        #endregion
+
+        #region Private members
+
+        private string AddLnTypeToDataTypeTemplates(ILNodeType lNodeType, IDataTypeTemplates dataTypeTemplates)
+        {
+            var existing = GetExisting(lNodeType, dataTypeTemplates);
+            if (existing == null)
+            {
+                var toadd = new LNodeType();
+                toadd.Id = lNodeType.Id;
+                toadd.LnClass = lNodeType.LnClass;
+
+                toadd.DoList.AddRange(lNodeType.DoList);
+                dataTypeTemplates.LNodeTypes.Add(toadd);
+                return toadd.Id;
+            }
+            return existing.Id;
+        }
+
+        private IDataTypeTemplates GetDataTypeTemplates(ISclModel sclModel)
+        {
+            if (sclModel.TryGetFirstChildOfType(out IDataTypeTemplates dataTypeTemplates))
+            {
+                return dataTypeTemplates;
+            }
+            else
+            {
+                IDataTypeTemplates newDataTypeTemplates = new DataTypeTemplates.DataTypeTemplates();
+                sclModel.ChildModelElements.Add(newDataTypeTemplates);
+                return newDataTypeTemplates;
+            }
+        }
+
+        private IDataTypeTemplates GetDataTypeTemplatesOfDevice(ISclModel sclModel, IDevice device)
+        {
+            IDataTypeTemplates newDataTypeTemplates = new DataTypeTemplates.DataTypeTemplates();
+            var logicalDevices = (device.ChildModelElements
+                .First((element => element is DeviceAccessPoint)) as DeviceAccessPoint)?
+                .DeviceServer?
+                .Value?
+                .LDevicesCollection;
+            if (sclModel.TryGetFirstChildOfType(out IDataTypeTemplates dataTypeTemplates))
+            {
+                foreach (var logicalDevice in logicalDevices)
+                {
+                    foreach (var logicalNode in logicalDevice.AlLogicalNodes)
+                    {
+                        var lnType = dataTypeTemplates.LNodeTypes.FirstOrDefault(lnt => lnt.Id == logicalNode.LnType);
+                        if (lnType == null)
+                        {
+                            _loggingService.LogMessage($"LN data template of {logicalNode.LnType} not found",
+                                SeverityEnum.Warning);
+                            continue;
+                        }
+
+                        logicalNode.LnType =
+                            $"{device.Name}{logicalDevice.Inst}.{logicalNode.Prefix + logicalNode.LnClass + logicalNode.Inst}";
+                        lnType.Id = logicalNode.LnType;
+                        var lnId = AddLnTypeToDataTypeTemplates(lnType, newDataTypeTemplates);
+                        newDataTypeTemplates.LNodeTypes.Add(lnType);
+
+                        foreach (var doElement in lnType.DoList)
+                        {
+                            var doType = dataTypeTemplates.DoTypes.FirstOrDefault(dot => dot.Id == doElement.Type);
+                            if (doType == null)
+                            {
+                                _loggingService.LogMessage($"Do data template of {doElement.Type} not found",
+                                    SeverityEnum.Warning);
+                                continue;
+                            }
+
+                            doElement.Type = $"{lnType.Id}.{doElement.Name}";
+                            doType.Id = doElement.Type;
+                            newDataTypeTemplates.DoTypes.Add(doType);
+                            foreach (var daElement in doType.DaList)
+                            {
+                                if (!string.IsNullOrWhiteSpace(daElement.Type) && daElement.BType != "Enum")
+                                {
+
+                                }
+
+                                //var daType = dataTypeTemplates.DaTypes.FirstOrDefault(dat => dat.Id == daElement.)
+                            }
+                        }
+
+                    }
+                }
+            }
+            return newDataTypeTemplates;
+            //    newDataTypeTemplates.LNodeTypes.AddRange(dataTypeTemplates.LNodeTypes.Where(lnt => lnt.Id.Contains(device.Name)));
+
+            //foreach (var lNodeType in newDataTypeTemplates.LNodeTypes)
+            //{
+            //    var lNode = _infoModelService.GetLDevicesFromDevices(device).Select(ld => ld.AlLogicalNodes.First(ln => ln.ty))
+            //    lNodeType.Id = $"{device.Name}{lNodeType.ParentModelElement}.";
+            //    foreach (var doElement in lNodeType.DoList)
+            //    {
+            //        newDataTypeTemplates.DoTypes.AddRange(dataTypeTemplates.DoTypes.Where(dot => dot.Id == doElement.Type));
+            //    }
+            //    foreach (var doType in newDataTypeTemplates.DoTypes)
+            //    {
+            //        doType.Id = $"{device.Name}.{lNodeType.LnClass}";
+            //    }
+            //}
+            //newDataTypeTemplates.DaTypes.AddRange(dataTypeTemplates.DaTypes.Where(dat => dat.Id.Contains(device.Name)));
+            //newDataTypeTemplates.DoTypes.AddRange(dataTypeTemplates.DoTypes.Where(dot => dot.Id.Contains(device.Name)));
+            //newDataTypeTemplates.EnumTypes.AddRange(dataTypeTemplates.EnumTypes.Where(ent => ent.Id.Contains(device.Name)));
+
+            //}
+            //else
+            //{
+            //    sclModel.ChildModelElements.Add(newDataTypeTemplates);
+            //}
+        }
+
+        private void MergeDtt(ISclModel sclModelTo, ISclModel sclModelFrom, IDataTypeTemplates dttFrom)
+        {
+            foreach (var doType in dttFrom.DoTypes)
+            {
+                var resid = AddDoType(doType, sclModelTo);
+                if (resid != doType.Id)
+                {
+                    List<IDo> doList = new List<IDo>();
+                    dttFrom.GetAllChildrenOfType(ref doList);
+                    foreach (var node in doList.Where(node => node.Type == doType.Id))
+                    {
+                        node.Type = resid;
+                    }
+                    //var t = doList.Where(node => node.Type == doType.Id).ToList();
+                }
+
+            }
+            foreach (var daType in dttFrom.DaTypes)
+            {
+                var resId = AddDaType(daType, sclModelTo);
+                if (daType.Id != resId)
+                {
+                    List<IDa> daList = new List<IDa>();
+                    dttFrom.GetAllChildrenOfType(ref daList);
+                    foreach (var node in daList.Where(node => node.Type == daType.Id))
+                    {
+                        if (resId == "MR5PO50N245CTRL.CSWI1.Pos.Oper")
+                        {
+                        }
+                        node.Type = resId;
+                    }
+                    //var t = daList.Where(node => node.Type == daType.Id).ToList();
+                }
+            }
+            foreach (var lNodeType in dttFrom.LNodeTypes)
+            {
+                var resId = AddLnodeType(lNodeType, sclModelTo);
+                if (lNodeType.Id != resId)
+                {
+                    List<ILogicalNode> lnList = new List<ILogicalNode>();
+                    sclModelFrom.GetAllChildrenOfType(ref lnList);
+                    foreach (var node in lnList.Where(node => node.LnType == lNodeType.Id))
+                    {
+                        node.LnType = resId;
+                    }
+                    //var t = lnList.Where(node => node.LnClass == lNodeType.Id).ToList();
+                }
+            }
+            foreach (var enumType in dttFrom.EnumTypes)
+            {
+                var resId = AddEnumType(enumType, sclModelTo);
+                if (enumType.Id != resId)
+                {
+
+                }
+            }
+        }
 
         private void RemoveDoTypes(IDataTypeTemplates dataTypeTemplates, List<string> doTypesToExclude)
         {
@@ -243,31 +575,6 @@ namespace BISC.Modules.InformationModel.Model.Services
             return lnTypesToExclude;
         }
 
-
-
-
-        public string AddLnodeType(ILNodeType lNodeType, ISclModel sclModel)
-        {
-            IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
-            if (lNodeType == null)
-            {
-                return null;
-            }
-
-            var existing = GetExisting(lNodeType, dataTypeTemplates);
-            if (existing == null)
-            {
-                var toadd = new LNodeType();
-                toadd.Id = lNodeType.Id;
-                toadd.LnClass = lNodeType.LnClass;
-
-                toadd.DoList.AddRange(lNodeType.DoList);
-                dataTypeTemplates.LNodeTypes.Add(toadd);
-                return toadd.Id;
-            }
-            return existing.Id;
-        }
-
         private ILNodeType GetExisting(ILNodeType nodetype, IDataTypeTemplates dataTypeTemplates)
         {
             foreach (var nodetypetypeitem in dataTypeTemplates.LNodeTypes)
@@ -320,52 +627,6 @@ namespace BISC.Modules.InformationModel.Model.Services
             return null;
         }
 
-
-
-        public string AddDoType(IDoType dotype, ISclModel sclModel)
-        {
-            IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
-            if (dotype == null)
-            {
-                return null;
-            }
-
-            var existing = CheckExisting(dotype, dataTypeTemplates);
-            if (existing == null)
-            {
-                var toadd = new DoType();
-                toadd.Id = dotype.Id;
-                toadd.Cdc = dotype.Cdc;
-
-                toadd.DaList.AddRange(dotype.DaList);
-                toadd.SdoList.AddRange(dotype.SdoList);
-                dataTypeTemplates.DoTypes.Add(toadd);
-                return dotype.Id;
-            }
-            else
-            {
-                foreach (IDa da in dotype.DaList)
-                {
-
-                    if (CheckIfExist(dotype, da))
-                    {
-                        continue;
-                    }
-
-                    if (da.Name == "stVal")
-                    // костыль для того, чтобы stVal был первым в списке,чтобы контроллер читал файл 
-                    //(он глупый и думает, что stVal по порядку первый)
-
-                    {
-                        existing.DaList.Insert(0, da);
-                        continue;
-                    }
-                    existing.DaList.Add(da);
-                }
-                return existing.Id;
-            }
-        }
-
         private IDoType CheckExisting(IDoType dotype, IDataTypeTemplates dataTypeTemplates)
         {
             if (dotype.Id.Contains("BlkZ"))
@@ -398,52 +659,6 @@ namespace BISC.Modules.InformationModel.Model.Services
             return null;
         }
 
-        public bool CheckIfExist(IDoType do1, IDa newDa)
-        {
-            if (do1.DaList.Contains(newDa))
-            {
-                return true;
-            }
-
-            foreach (var daitem in do1.DaList)
-            {
-                if ((newDa.Type == daitem.Type) &&
-                    (newDa.BType == daitem.BType) &&
-                      (newDa.Name == daitem.Name) &&
-                    //(newDa.count == daitem.count) &&
-                    //(newDa.dchg == daitem.dchg) &&
-                    //(newDa.qchg == daitem.qchg) &&
-                    //(newDa.dupd == daitem.dupd) &&
-                    (newDa.Fc == daitem.Fc))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        public bool CheckIfExist(IDoType do1, ISdo sdo)
-        {
-            return do1.SdoList.Any(sdoitem => (sdoitem.Type == sdo.Type) && (sdoitem.Name == sdo.Name));
-        }
-
-
-        public string AddDaType(IDaType datype, ISclModel sclModel)
-        {
-            if (datype == null)
-            {
-                return null;
-            }
-
-            IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
-            IDaType existing = CheckExistingUsual(datype, dataTypeTemplates);
-            if (existing == null)
-            {
-                dataTypeTemplates.DaTypes.Add(datype);
-                return datype.Id;
-            }
-            return existing.Id;
-        }
-
         private IDaType CheckExistingUsual(IDaType datype, IDataTypeTemplates dataTypeTemplates)
         {
             foreach (IDaType datypeitem in dataTypeTemplates.DaTypes)
@@ -451,7 +666,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 if (((datype.Bdas != null) && (datype.Bdas.Count == datypeitem.Bdas.Count)) &&
                     (datype.Id.Substring(datype.Id.LastIndexOf('.') + 1) == datypeitem.Id.Substring(datypeitem.Id.LastIndexOf('.') + 1)) &&
                     datype.Id == datypeitem.Id
-                    )
+                )
                 {
                     bool b = true;
                     foreach (IBda bda in datypeitem.Bdas)
@@ -470,6 +685,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             }
             return null;
         }
+
         private bool CheckIfBDAExist(IDaType daType, IBda bda)
         {
             foreach (IBda bdaitem in daType.Bdas)
@@ -483,89 +699,6 @@ namespace BISC.Modules.InformationModel.Model.Services
             }
             return false;
         }
-        public string AddEnumType(IEnumType enumtype, ISclModel sclModel)
-        {
-            IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
-
-            if (enumtype == null)
-            {
-                return null;
-            }
-
-            IEnumType existing = CheckIfExist(enumtype, dataTypeTemplates);
-            if (existing == null)
-            {
-                dataTypeTemplates.EnumTypes.Add(enumtype);
-                return enumtype.Id;
-            }
-            return existing.Id;
-        }
-
-        public IDa GetDaOfDai(IDai dai, ISclModel sclModel)
-        {
-            ILDevice parentLDevice = null;
-            ILogicalNode parentLogicalNode = null;
-            IDoi parentDoi = null;
-            List<object> recursiveParents = new List<object>();
-            IModelElement currentElement = dai;
-            recursiveParents.Add(currentElement);
-
-            do
-            {
-                currentElement = currentElement.ParentModelElement;
-
-                if (currentElement is ILDevice)
-                {
-                    parentLDevice = currentElement as ILDevice;
-                    continue;
-                }
-
-                if (currentElement is ILogicalNode)
-                {
-                    parentLogicalNode = currentElement as ILogicalNode;
-                    continue;
-                }
-
-                if (currentElement is IDoi)
-                {
-                    parentDoi = currentElement as IDoi;
-                    continue;
-                }
-
-                recursiveParents.Insert(0, currentElement);
-            } while (parentLDevice == null);
-
-            IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
-            ILNodeType lNodeType =
-                dataTypeTemplates.LNodeTypes.FirstOrDefault((type => type.Id == parentLogicalNode.LnType));
-            IDo parentDo = lNodeType.DoList.FirstOrDefault(parentDoToFind => parentDoToFind.Name == parentDoi.Name);
-
-            IDoType parentDoType = dataTypeTemplates.DoTypes.FirstOrDefault((type => type.Id == parentDo.Type));
-            foreach (var recursiveParent in recursiveParents)
-            {
-                if (recursiveParent is IDai daiParent)
-                {
-                    return parentDoType.DaList.FirstOrDefault((da => da.Name == daiParent.Name));
-                }
-
-                if (recursiveParent is ISdi sdiParent)
-                {
-                    var parentSdo = parentDoType.SdoList.FirstOrDefault((sdo => sdo.Name == sdiParent.Name));
-                    if (parentSdo != null)
-                    {
-                        parentDoType = dataTypeTemplates.DoTypes.First((type => type.Id == parentSdo.Type));
-                    }
-                    else
-                    {
-                        return parentDoType.DaList.First((da => da.Name == sdiParent.Name));
-                    }
-                }
-            }
-
-            return null;
-        }
-
-
 
         private IEnumType CheckIfExist(IEnumType enumtype, IDataTypeTemplates dataTypeTemplates)
         {
@@ -613,24 +746,8 @@ namespace BISC.Modules.InformationModel.Model.Services
             }
             return true;
         }
-
-        public void UpdateTemplatesUnderIdeName(ISclModel sclModel, string oldIdeName, string newIdeName)
-        {
-            var templatesWithId = GetDataTypeTemplates(sclModel).GetAllIds();
-            var replaser = new IdeNameInStringReplacer();
-            foreach (var id in templatesWithId)
-            {
-                id.Id = replaser.ReplaseIdeNameInStringWithoutExeption(id.Id, oldIdeName, newIdeName);
-                id.GetAllITypes().ForEach(el => el.Type = replaser.ReplaseIdeNameInStringWithoutExeption(el.Type, oldIdeName, newIdeName));
-            }
-        }
-
-        public IEnumType GetEnumTypeForDa(IDa da)
-        {
-            IDataTypeTemplates dataTypeTemplates = da.GetFirstParentOfType<IDataTypeTemplates>();
-           return dataTypeTemplates.EnumTypes.FirstOrDefault((type => type.Id == da.Type));
-        }
+        #endregion
     }
 
-   
+
 }

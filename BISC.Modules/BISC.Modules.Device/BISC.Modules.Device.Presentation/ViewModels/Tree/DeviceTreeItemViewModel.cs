@@ -155,7 +155,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 
         private bool CanConnectDevice()
         {
-            return !IsDeviceConnected;
+            return !IsDeviceConnected && _device.Manufacturer == DeviceKeys.DeviceManufacturer.BemnManufacturer;
         }
 
         private bool CanDisconnectDevice()

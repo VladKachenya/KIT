@@ -32,5 +32,7 @@ namespace BISC
             DataContext = shellViewModel;
             Closing += (s, e) => shellViewModel.ShellClosingCommand.Execute(e);
         }
+
+
     }
 }

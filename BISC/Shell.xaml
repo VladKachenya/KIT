@@ -30,11 +30,6 @@
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
     </Window.Resources>
     <ContentControl Style="{StaticResource BlockedContentStyle}">
-        <!--<i:Interaction.Triggers>
-            <i:EventTrigger EventName="Closing" >
-                <command:EventToCommand  PassEventArgsToCommand="True"   Command="{Binding ShellClosingCommand}" />
-            </i:EventTrigger>
-        </i:Interaction.Triggers>-->
         <materialDesign:DialogHost     attachedCommandBehavior:CommandBehavior.Command="{Binding ShellLoadedCommand}"
                                    attachedCommandBehavior:CommandBehavior.Event="Loaded"  Identifier="{x:Static constants:Constants.RootDialogKey}"  SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
 

@@ -99,14 +99,10 @@ namespace BISC.Modules.InformationModel.Model.Services
 
         public List<ILDevice> GetLDevicesFromDevices(IModelElement device)
         {
-            var childModelProperty = (device.ChildModelElements.First((element => element is DeviceAccessPoint)) as DeviceAccessPoint)
-                .DeviceServer;
-            if (childModelProperty != null)
+            var childModelProperty = (device.ChildModelElements.First((element => element is DeviceAccessPoint)) as DeviceAccessPoint)?.DeviceServer;
+            if (childModelProperty?.Value != null)
             {
-                if (childModelProperty.Value != null)
-                {
-                    return childModelProperty.Value.LDevicesCollection.ToList();
-                }
+                return childModelProperty.Value.LDevicesCollection.ToList();
             }
 
             return new List<ILDevice>();

@@ -5,13 +5,15 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.EnumType;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.LNodeType;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using System.Collections.Generic;
+using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates
 {
     public interface IDataTypeTemplatesModelService
     {
-        void MergeDataTypeTemplates(ISclModel sclModelTo,
-            ISclModel sclModelFrom);
+        void MergeDataTypeTemplates(ISclModel sclModelTo, ISclModel sclModelFrom);
+
+        void MergeDataTypeTemplatesOfDevice(ISclModel sclModelTo, ISclModel sclModelFrom, IDevice device);
 
         void FilterDataTypeTemplates(IDataTypeTemplates dataTypeTemplates, List<ILDevice> lDevices, List<ILDevice> lDevicesToLeave);
 
