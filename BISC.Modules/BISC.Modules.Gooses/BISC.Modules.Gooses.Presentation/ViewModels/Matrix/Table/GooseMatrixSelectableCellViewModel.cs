@@ -56,7 +56,6 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Table
 
         protected override void OnDisposing()
         {
-            //_globalEventsService.Unsubscribe<SelectableBoxEventArgs>(OnSelectableBoxSelected);
             base.OnDisposing();
         }
 

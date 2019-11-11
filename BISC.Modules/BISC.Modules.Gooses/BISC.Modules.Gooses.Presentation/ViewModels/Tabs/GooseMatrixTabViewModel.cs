@@ -139,6 +139,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                             _configurationService.IsAutoEnabledValidityInGooseReceiving,
                             initiatorSelectableValueViewModel.SelectedValue);
                     }
+                    ValidateQualities();
                 }
 
                 if (initiatorSelectableValueViewModel.Parent.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Quality)
