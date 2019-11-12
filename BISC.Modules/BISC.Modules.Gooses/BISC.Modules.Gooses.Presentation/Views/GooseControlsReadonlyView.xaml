@@ -38,7 +38,7 @@
                         <ContentControl Grid.Column="0" Background="Transparent" ContentTemplate="{StaticResource AlertBoxIcon}" ToolTip="Присутствует конфликт" Visibility="{Binding IsChanged,Converter={StaticResource boolToVisConverter}}" Width="15" Height="15" ></ContentControl>
 
                         <ContentControl Grid.Column="1" Background="Transparent" ContentTemplate="{StaticResource PencilIcon}" ToolTip="Динамический (редактируемый) блок управления GOOSE" Visibility="{Binding IsDynamic,Converter={StaticResource boolToVisConverter}}" Width="15" Height="15" ></ContentControl>
-                        <ContentControl Grid.Column="1" Background="Transparent" ContentTemplate="{StaticResource PencilLockIcon}" ToolTip="Статический блок управления GOOSE" Visibility="{Binding IsDynamic,Converter={StaticResource boolToInVisConverter}}"  Width="15" Height="15" ></ContentControl>
+                        <ContentControl Grid.Column="1" Background="Transparent" ContentTemplate="{StaticResource PencilLockIcon}" ToolTip="Блок управления GOOSE" Visibility="{Binding IsDynamic,Converter={StaticResource boolToInVisConverter}}"  Width="15" Height="15" ></ContentControl>
 
                         <TextBlock Grid.Column="2" Text="{Binding Name}"></TextBlock>
                     </Grid>

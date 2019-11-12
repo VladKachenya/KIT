@@ -44,7 +44,7 @@
                            </ContextMenu>
                         </Grid.ContextMenu>
                         <ContentControl Background="Transparent" ContentTemplate="{StaticResource PencilIcon}" ToolTip="Динамический (редактируемый) блок управления GOOSE" Visibility="{Binding IsDynamic,Converter={StaticResource boolToVisConverter}}" Grid.Column="0" Width="15" Height="15" ></ContentControl>
-                        <ContentControl Background="Transparent" ContentTemplate="{StaticResource PencilLockIcon}" ToolTip="Статический блок управления GOOSE" Visibility="{Binding IsDynamic,Converter={StaticResource boolToInVisConverter}}" Grid.Column="0" Width="15" Height="15" ></ContentControl>
+                        <ContentControl Background="Transparent" ContentTemplate="{StaticResource PencilLockIcon}" ToolTip="Блок управления GOOSE" Visibility="{Binding IsDynamic,Converter={StaticResource boolToInVisConverter}}" Grid.Column="0" Width="15" Height="15" ></ContentControl>
 
                        <TextBlock Grid.Column="1" Text="{Binding Name}"></TextBlock>
                    </Grid>

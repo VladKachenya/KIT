@@ -107,6 +107,11 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             try
             {
                 UpdateViewModel();
+                var firstDs = DataSets.FirstOrDefault();
+                if (firstDs != null)
+                {
+                    SelectedDataSet = firstDs;
+                }
             }
             finally
             {
@@ -175,9 +180,10 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         private void OnAddNewDataSet()
         {
-            DataSets.Add(
-                _datasetViewModelFactory.CreateDataSetViewModel(
-                    DataSets.Select((model => model.EditableNamePart)).ToList(), _device));
+            var newDs = _datasetViewModelFactory.CreateDataSetViewModel(
+                DataSets.Select((model => model.EditableNamePart)).ToList(), _device);
+            DataSets.Add(newDs);
+            SelectedDataSet = newDs;
             _loggingService.LogUserAction($"Для устройства {_device.Name} добавлен новый DataSet");
             AddNewDataSetCommand.RaiseCanExecute();
         }

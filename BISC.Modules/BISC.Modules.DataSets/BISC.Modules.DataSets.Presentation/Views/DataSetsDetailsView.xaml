@@ -93,7 +93,7 @@
             </Grid>
 
             <ListBox  x:Name="ExpanderItemsControl" behaviors:ListBoxBehavior.ScrollOnNewItem="true" 
-                     ItemsSource="{Binding DataSets}" SelectedItem="{Binding SelectedDataSet, Mode=OneWayToSource}"  
+                     ItemsSource="{Binding DataSets}" SelectedItem="{Binding SelectedDataSet, Mode=TwoWay}"  
                       Grid.Column="1" Grid.Row="1"
                       BorderThickness="0"
                       Style="{StaticResource {x:Type ItemsControl}}"
