@@ -30,5 +30,15 @@ namespace BISC.Modules.Connection.Model.Services
             _deviceConnections.Add(deviceConnection);
             return deviceConnection;
         }
+
+        public bool GetIsDeviceConnect(string ip)
+        {
+            if (ip == null)
+            {
+                return false;
+            }
+
+            return _deviceConnections.Any(c => c.Ip == ip && c.IsConnected);
+        }
     }
 }

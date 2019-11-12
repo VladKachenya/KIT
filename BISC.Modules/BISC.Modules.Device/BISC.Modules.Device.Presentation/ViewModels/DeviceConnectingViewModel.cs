@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Common;
+using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.Device.Presentation.ViewModels
@@ -33,6 +34,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly ILoggingService _loggingService;
         private readonly ISclCommunicationModelService _communicationModelService;
         private readonly IDeviceModelService _deviceModelService;
+        private readonly IConnectionPoolService _connectionPoolService;
         private ILastIpAddressesViewModel _lastConnectedIps;
         private IIpAddressViewModel _selectedIpAddressViewModel;
         private bool _isDeviceConnectionFailed;
@@ -45,7 +47,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             ITreeManagementService treeManagementService,
             IBiscProject biscProject, IDeviceLoadingService deviceLoadingService,
             ILastIpAddressesViewModelFactory lastConnectedIpsFactoty, ILoggingService loggingService,
-            ISclCommunicationModelService communicationModelService, IDeviceModelService deviceModelService)
+            ISclCommunicationModelService communicationModelService, IDeviceModelService deviceModelService,
+            IConnectionPoolService connectionPoolService)
             : base(null)
         {
             _commandFactory = commandFactory;
@@ -57,6 +60,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _loggingService = loggingService;
             _communicationModelService = communicationModelService;
             _deviceModelService = deviceModelService;
+            _connectionPoolService = connectionPoolService;
             ConnectDeviceCommand = commandFactory.CreatePresentationCommand(OnConnectDeviceExecute, () => !_isConnectionProcess);
             lastConnectedIpsFactoty.BuildLastConnectedIpAdresses(out _selectedIpAddressViewModel, out _lastConnectedIps);
             _failedSatatusHidingTimer = new Timer(FailStatusHide, null, Timeout.Infinite, Timeout.Infinite);
@@ -72,7 +76,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             {
                 (ConnectDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
                 await SelectedIpAddressViewModel.PingGlobalEventAsync();
-                if (SelectedIpAddressViewModel.IsPingSuccess == false)
+                if (SelectedIpAddressViewModel.IsPingSuccess == false || _connectionPoolService.GetIsDeviceConnect(SelectedIpAddressViewModel.FullIp))
                 {
                     return;
                 }

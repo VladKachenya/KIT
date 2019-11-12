@@ -268,7 +268,7 @@ namespace BISC.Modules.Device.Presentation.Services
 
         private async Task ShowMissing(string miissingMessage)
         {
-            await _userInteractionService.ShowOptionToUser("Не соответстие модели устройства", miissingMessage,
+            await _userInteractionService.ShowOptionToUser("Не соответствие модели устройства", miissingMessage,
                 new List<string>() { "Ок" });
         }
 

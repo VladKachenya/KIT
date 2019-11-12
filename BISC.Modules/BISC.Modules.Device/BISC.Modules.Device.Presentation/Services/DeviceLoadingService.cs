@@ -131,7 +131,7 @@ namespace BISC.Modules.Device.Presentation.Services
                     _treeManagementService.DeleteTreeItem(treeItemId);
                     _connectionPoolService.GetConnection(device.Ip).StopConnection();
                     var mes = $"Устройство с именем {device.Name} уже существует в проекте";
-                    await _userInteractionService.ShowOptionToUser("Не соответстие модели устройства", mes,
+                    await _userInteractionService.ShowOptionToUser("Не соответствие модели устройства", mes,
                         new List<string>() { "Ок" });
                     return new OperationResult(mes);
                 }
