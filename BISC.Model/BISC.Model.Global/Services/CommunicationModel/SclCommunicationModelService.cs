@@ -45,7 +45,7 @@ namespace BISC.Model.Global.Services.CommunicationModel
             sclAddress.SetProperty("OSI-PSEL", "00000001");
             sclAddress.SetProperty("OSI-SSEL", "0001");
             sclAddress.SetProperty("IP-SUBNET", "255.255.255.0");
-            sclAddress.SetProperty("IP-GATEWAY", ip);
+            sclAddress.SetProperty("IP-GATEWAY", "0.0.0.0");
             connectedAccessPoint.SclAddresses.Add(sclAddress);
             AddCommunicationToSclIfItNeeded(sclModel);
             (sclModel.ChildModelElements.First((element => element is ISclCommunicationModel)) as

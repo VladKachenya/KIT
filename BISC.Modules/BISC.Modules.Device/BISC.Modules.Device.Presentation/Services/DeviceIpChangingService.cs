@@ -8,14 +8,14 @@ using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.Services
 {
-    public class DeviceIpIpChangingService : IDeviceIpChangingService
+    public class DeviceIpChangingService : IDeviceIpChangingService
     {
         private readonly ITreeManagementService _treeManagementService;
         private readonly IDeviceIdentificationService _deviceIdentificationService;
         private readonly ITabManagementService _tabManagementService;
         private readonly IDeviceAddingService _deviceAddingService;
 
-        public DeviceIpIpChangingService(ITreeManagementService treeManagementService, 
+        public DeviceIpChangingService(ITreeManagementService treeManagementService, 
             IDeviceIdentificationService deviceIdentificationService, 
             ITabManagementService tabManagementService, 
             IDeviceAddingService deviceAddingService)
@@ -31,6 +31,7 @@ namespace BISC.Modules.Device.Presentation.Services
             _deviceIdentificationService.ChengeDeviceIp(device, newIp);
 
             _tabManagementService.CloseTabWithChildren(uiEntityIdToUpdate.ItemId.ToString());
+
             _treeManagementService.DeleteTreeItem(uiEntityIdToUpdate);
 
             _deviceAddingService.AddDeviceToTree(device);

@@ -58,7 +58,20 @@ namespace BISC.Modules.Device.Model.Services
 
             if (!_ipValidationService.IsExactFormIpAddress(settableIp)) { throw new ArgumentException($"Not valid IP{settableIp}"); }
             if (device.Manufacturer != DeviceKeys.DeviceManufacturer.BemnManufacturer) { throw new ArgumentException($"Недопустимый производитель {device.Manufacturer}"); }
-            string newDeviceName = device.Name.Split('N')[0] + 'N' + settableIp.Split('.')[3];
+
+            var deviceSplittingName = device.Name.Split('N');
+            var deviceIp = _sclCommunicationModelService.GetIpOfDevice(device.Name, sclModel);
+
+            string newDeviceName = null;
+
+            if (deviceSplittingName.Length == 2 && deviceIp != null && deviceIp.Split('.')[3] == deviceSplittingName[1])
+            {
+                newDeviceName = deviceSplittingName[0] + 'N' + settableIp.Split('.')[3];
+            }
+            else
+            {
+                newDeviceName = device.Name;
+            }
 
             _goosesModelService.ChengeGooseDeviceInputOwner(_biscProject, device, newDeviceName);
             _sclCommunicationModelService.ReplaceAccessPointIp(device.GetFirstParentOfType<ISclModel>(), device.Name, settableIp);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
@@ -134,6 +135,26 @@ namespace BISC.Presentation.Services
                 _tabManagementService.CloseTabWithChildren(itemId.ItemId.ToString());
                 DeleteTreeItem(itemId);
             }
+        }
+
+        public UiEntityIdentifier GetParentDeviceUiIdentifierOfDefault(UiEntityIdentifier uiEntityIdentifier)
+        {
+            if (uiEntityIdentifier == null)
+            {
+                return null;
+            }
+
+            if (uiEntityIdentifier.ViewName == DeviceKeys.DeviceTreeItemViewKey)
+            {
+                return uiEntityIdentifier;
+            }
+
+            if(uiEntityIdentifier.ParenUiEntityIdentifier != null)
+            {
+                return GetParentDeviceUiIdentifierOfDefault(uiEntityIdentifier.ParenUiEntityIdentifier);
+            }
+
+            return null;
         }
     }
 }

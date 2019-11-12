@@ -68,7 +68,7 @@
     <Compile Include="Module\DevicePresentationInitialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DeviceAddingService.cs" />
-    <Compile Include="Services\DeviceIpIpChangingService.cs" />
+    <Compile Include="Services\DeviceIpChangingService.cs" />
     <Compile Include="Services\DeviceLoadingService.cs" />
     <Compile Include="Services\DeviceReconnectionService.cs" />
     <Compile Include="Services\DeviceSavingService.cs" />

@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Input;
 using BISC.Presentation.Infrastructure.Commands;
+using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.ViewModels
 {
@@ -32,6 +33,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IDeviceIdentificationService _deviceIdentificationService;
         private readonly IDeviceIpChangingService _deviceIpChangingService;
         private readonly IUserInteractionService _userInteractionService;
+        private readonly ITreeManagementService _treeManagementService;
 
         private string _deviceName;
         private IDevice _device;
@@ -39,11 +41,17 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private string _deviceIp;
         private bool _isIpUnchangeable;
 
-        public DeviceDetailsViewModel(ISclCommunicationModelService sclCommunicationModel,
-            IConnectionPoolService connectionPoolService, IBiscProject biscProject,
-            IIpAddressViewModelFactory ipAddressViewModelFactory, IGlobalEventsService globalEventsService,
-            ICommandFactory commandFactory, IDeviceIdentificationService deviceIdentificationService,
-            IDeviceIpChangingService deviceIpChangingService, IUserInteractionService userInteractionService)
+        public DeviceDetailsViewModel(
+            ISclCommunicationModelService sclCommunicationModel,
+            IConnectionPoolService connectionPoolService, 
+            IBiscProject biscProject,
+            IIpAddressViewModelFactory ipAddressViewModelFactory, 
+            IGlobalEventsService globalEventsService,
+            ICommandFactory commandFactory, 
+            IDeviceIdentificationService deviceIdentificationService,
+            IDeviceIpChangingService deviceIpChangingService, 
+            IUserInteractionService userInteractionService, 
+            ITreeManagementService treeManagementService)
             : base(globalEventsService)
         {
             _sclCommunicationModel = sclCommunicationModel;
@@ -54,6 +62,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _deviceIdentificationService = deviceIdentificationService;
             _deviceIpChangingService = deviceIpChangingService;
             _userInteractionService = userInteractionService;
+            _treeManagementService = treeManagementService;
             ChengeIpCommand = commandFactory.CreatePresentationCommand(OnChengeIpCommand, () => !IsIpUnchangeable);
         }
 
@@ -125,7 +134,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             try
             {
                 _deviceIpChangingService.ChengeDeviceIp(_device, IpAddressViewModel.FullIp,
-                    _uiEntityIdentifier.ParenUiEntityIdentifier);
+                    _treeManagementService.GetParentDeviceUiIdentifierOfDefault(_uiEntityIdentifier));
             }
             catch (Exception e)
             {

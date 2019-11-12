@@ -12,6 +12,7 @@ namespace BISC.Presentation.Infrastructure.Services
         int GetTreeItemIndex(UiEntityIdentifier uiEntityId);
 
         UiEntityIdentifier GetDeviceTreeItem(Guid deviceGuid);
+        UiEntityIdentifier GetParentDeviceUiIdentifierOfDefault(UiEntityIdentifier uiEntityIdentifier);
         void ClearMainTree();
 
     }

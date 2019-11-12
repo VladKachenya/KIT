@@ -88,7 +88,7 @@ namespace BISC.Modules.Device.Presentation.Module
 
             _injectionContainer.RegisterType<DeviceLoadingTreeItemViewModel>();
             _injectionContainer.RegisterType<IDeviceLoadingService, DeviceLoadingService>();
-            _injectionContainer.RegisterType<IDeviceIpChangingService, DeviceIpIpChangingService>();
+            _injectionContainer.RegisterType<IDeviceIpChangingService, DeviceIpChangingService>();
             _injectionContainer.RegisterType<IDeviceSavingService, DeviceSavingService>();
 
             var presentationInitialization = _injectionContainer.ResolveType(typeof(DevicePresentationInitialization)) as DevicePresentationInitialization;

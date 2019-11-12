@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using BISC.Presentation.Infrastructure.HelperEntities;
+using BISC.Presentation.Windows;
 
 namespace BISC.Presentation.Services
 {
@@ -37,11 +38,21 @@ namespace BISC.Presentation.Services
         #endregion
 
         #region ctor
-        public ProjectManagementService(IProjectService projectService, ISaveCheckingService saveCheckingService, ILoggingService loggingService,
-            IUiFromModelElementRegistryService uiFromModelElementRegistryService, IBiscProject biscProject, IDeviceModelService deviceModelService,
-            ITreeManagementService treeManagementService, IGoosesModelService goosesModelService, IConnectionPoolService connectionPoolService,
-            ITabManagementService tabManagementService, IDeviceWarningsService deviceWarningsService, IUserInteractionService userInteractionService,
-            IGlobalSavingService globalSavingService, ISaveCheckingService checkingService)
+        public ProjectManagementService(
+            IProjectService projectService, 
+            ISaveCheckingService saveCheckingService, 
+            ILoggingService loggingService,
+            IUiFromModelElementRegistryService uiFromModelElementRegistryService, 
+            IBiscProject biscProject, 
+            IDeviceModelService deviceModelService,
+            ITreeManagementService treeManagementService, 
+            IGoosesModelService goosesModelService, 
+            IConnectionPoolService connectionPoolService,
+            ITabManagementService tabManagementService, 
+            IDeviceWarningsService deviceWarningsService, 
+            IUserInteractionService userInteractionService,
+            IGlobalSavingService globalSavingService, 
+            ISaveCheckingService checkingService)
         {
             _projectService = projectService;
             _loggingService = loggingService;

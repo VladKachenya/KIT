@@ -101,7 +101,7 @@ namespace BISC.Modules.Device.Presentation.Services
             if (!await _pingService.GetPing(
                 _sclCommunicationModelService.GetIpOfDevice(existingDevice.Name, _biscProject.MainSclModel.Value)))
             {
-                _loggingService.LogMessage($"Устройство {existingDevice.Name} не отвечает", SeverityEnum.Critical);
+                _loggingService.LogMessage($"Устройство {existingDevice.Name} с IP {existingDevice.Ip} не отвечает", SeverityEnum.Critical);
                 return false;
             }
 
