@@ -64,6 +64,7 @@
     <Compile Include="Interfaces\Factories\IFileViewModelFactory.cs" />
     <Compile Include="Interfaces\Services\IDeviceAddingService.cs" />
     <Compile Include="Interfaces\Services\IDeviceIpChangingService.cs" />
+    <Compile Include="Interfaces\UserControls\IDeviceTechnicalKeyViewModel.cs" />
     <Compile Include="Module\DevicePresentationModule.cs" />
     <Compile Include="Module\DevicePresentationInitialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="ViewModels\Restart\DeviceRestartViewModel.cs" />
     <Compile Include="ViewModels\Tree\DeviceTreeItemViewModel.cs" />
     <Compile Include="ViewModels\Tree\ReconnectDeviceTreeItemViewModel.cs" />
+    <Compile Include="ViewModels\UserControlsViewModels\DeviceTechnicalKeyViewModel.cs" />
     <Compile Include="Views\Config\DeviceConfigView.xaml.cs">
       <DependentUpon>DeviceConfigView.xaml</DependentUpon>
     </Compile>
@@ -138,6 +140,9 @@
     </Compile>
     <Compile Include="Views\Restart\DeviceRestartView.xaml.cs">
       <DependentUpon>DeviceRestartView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\DeviceTechnicalKeyView.xaml.cs">
+      <DependentUpon>DeviceTechnicalKeyView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +197,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Restart\DeviceRestartView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\DeviceTechnicalKeyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

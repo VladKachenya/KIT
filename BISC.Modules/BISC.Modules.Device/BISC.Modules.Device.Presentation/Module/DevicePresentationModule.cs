@@ -15,6 +15,7 @@ using BISC.Modules.Device.Presentation.Commands;
 using BISC.Modules.Device.Presentation.Interfaces;
 using BISC.Modules.Device.Presentation.Interfaces.Factories;
 using BISC.Modules.Device.Presentation.Interfaces.Services;
+using BISC.Modules.Device.Presentation.Interfaces.UserControls;
 using BISC.Modules.Device.Presentation.Services;
 using BISC.Modules.Device.Presentation.ViewModels;
 using BISC.Modules.Device.Presentation.ViewModels.Config;
@@ -22,6 +23,7 @@ using BISC.Modules.Device.Presentation.ViewModels.Conflicts;
 using BISC.Modules.Device.Presentation.ViewModels.Factories;
 using BISC.Modules.Device.Presentation.ViewModels.Restart;
 using BISC.Modules.Device.Presentation.ViewModels.Tree;
+using BISC.Modules.Device.Presentation.ViewModels.UserControlsViewModels;
 using BISC.Modules.Device.Presentation.Views;
 using BISC.Modules.Device.Presentation.Views.Config;
 using BISC.Modules.Device.Presentation.Views.Conflicts;
@@ -65,6 +67,7 @@ namespace BISC.Modules.Device.Presentation.Module
             _injectionContainer.RegisterType<IDeviceViewModel, DeviceViewModel>();
             _injectionContainer.RegisterType<IDeviceWarningsService, DeviceWarningsService>(true);
             _injectionContainer.RegisterType<ISaveBeforeRestartCommand, SaveBeforeRestartCommand>();
+            _injectionContainer.RegisterType<IDeviceTechnicalKeyViewModel, DeviceTechnicalKeyViewModel>();
 
             _injectionContainer.RegisterType<DeviceManualConflictViewModel>();
             _injectionContainer.RegisterType<DeviceConflictsViewModel>();

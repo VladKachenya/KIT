@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Modules.Device.Infrastructure.Model.Config;
+using BISC.Modules.Device.Presentation.Interfaces.UserControls;
 using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.Services;
@@ -28,11 +29,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Config
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private readonly IUserInteractionService _userInteractionService;
         private readonly IProjectManagementService _projectManagementService;
+        private readonly Func<IDeviceTechnicalKeyViewModel> _deviceTechnicalKeyViewModelFactory;
         private string _staticMacAddress;
         private IDevice _device;
         private string _switchMode;
         private string _version;
-        private string _techKey;
+        private IDeviceTechnicalKeyViewModel _techKeyViewModelModel;
         private MacFiltersViewModel _macFilterAViewModel;
         private MacFiltersViewModel _macFilterBViewModel;
         private IDeviceFtpConfig _deviceConfig;
@@ -46,7 +48,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Config
             IUserInterfaceComposingService userInterfaceComposingService,
             IGlobalEventsService globalEventsService,
             IUserInteractionService userInteractionService,
-            IProjectManagementService projectManagementService)
+            IProjectManagementService projectManagementService,
+            Func<IDeviceTechnicalKeyViewModel> deviceTechnicalKeyViewModelFactory)
             : base(globalEventsService)
         {
             _sclCommunicationModelService = sclCommunicationModelService;
@@ -55,6 +58,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Config
             _userInterfaceComposingService = userInterfaceComposingService;
             _userInteractionService = userInteractionService;
             _projectManagementService = projectManagementService;
+            _deviceTechnicalKeyViewModelFactory = deviceTechnicalKeyViewModelFactory;
             UpdateConfigCommand = commandFactory.CreatePresentationCommand(OnLoadConfig, CanExecuteLoadConfig);
             SwitchModeList = new List<string>(new[] { "HSR", "PRP", "NORMAL", "BLOCK" });
             MacFilterAViewModel = macFiltersViewModelFunc();
@@ -65,6 +69,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Config
 
         private async void OnSave()
         {
+            if(!TechKeyViewModel.IsValid) return;
             var res = await _userInteractionService.ShowOptionToUser("Запись файла конфигурации устройства",
                 "После записи файла конфигурации устройство будет удалено из проекта" + Environment.NewLine + "Желаете записать файл конфигурации?",
                 new List<string>() { "Ок", "Отмена" });
@@ -85,7 +90,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Config
             _deviceConfig.FilterAMacList = MacFilterAViewModel.GetResultList();
             _deviceConfig.FilterBMacList = MacFilterBViewModel.GetResultList();
             _deviceConfig.MacAddress = StaticMacAddress;
-            _deviceConfig.TechKey = TechKey;
+            _deviceConfig.TechKey = TechKeyViewModel.TechKey;
             _deviceConfig.Version = Version;
             _deviceConfig.SwitchMode = SwitchMode;
             return _deviceConfig;
@@ -120,10 +125,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Config
             set => SetProperty(ref _version, value);
         }
 
-        public string TechKey
+        public IDeviceTechnicalKeyViewModel TechKeyViewModel
         {
-            get => _techKey;
-            set => SetProperty(ref _techKey, value);
+            get => _techKeyViewModelModel;
+            set => SetProperty(ref _techKeyViewModelModel, value);
         }
         public List<string> SwitchModeList { get; }
 
@@ -150,10 +155,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Config
                 var deviceCfgResult = await _deviceFtpConfigService.ReadDeviceFtpConfig(_device.Ip);
                 if (deviceCfgResult.IsSucceed)
                 {
+                    TechKeyViewModel = _deviceTechnicalKeyViewModelFactory();
                     _deviceConfig = deviceCfgResult.Item;
                     StaticMacAddress = deviceCfgResult.Item.MacAddress;
                     Version = deviceCfgResult.Item.Version;
-                    TechKey = deviceCfgResult.Item.TechKey;
+                    TechKeyViewModel.SetTechKey(deviceCfgResult.Item.TechKey);
                     SwitchMode = deviceCfgResult.Item.SwitchMode;
                     MacFilterAViewModel.SetResultList(deviceCfgResult.Item.FilterAMacList, "FILTERA");
                     MacFilterBViewModel.SetResultList(deviceCfgResult.Item.FilterBMacList, "FILTERB");

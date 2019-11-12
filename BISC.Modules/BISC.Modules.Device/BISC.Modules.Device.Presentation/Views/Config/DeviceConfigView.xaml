@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BISC.Modules.Device.Presentation.Views.Config"
+             xmlns:localUserControls="clr-namespace:BISC.Modules.Device.Presentation.Views.UserControls"
              xmlns:config="clr-namespace:BISC.Modules.Device.Presentation.ViewModels.Config"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance config:DeviceConfigViewModel}"
              d:DesignHeight="300" d:DesignWidth="500">
@@ -17,15 +18,7 @@
                 <TextBlock Margin="2" Text="Статический MAC-адрес:"></TextBlock>
                 <TextBox Margin="2" HorizontalAlignment="Left" Grid.Row="1" Width="400" Text="{Binding StaticMacAddress}"></TextBox>
             </Grid>
-            <Grid VerticalAlignment="Top">
-                <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                </Grid.RowDefinitions>
-                <TextBlock Margin="2" Text="Технический ключ устройства:"></TextBlock>
-                <TextBox Margin="2" HorizontalAlignment="Left" Grid.Row="1" Width="400" Text="{Binding TechKey}"></TextBox>
-            </Grid>
-
+            <localUserControls:DeviceTechnicalKeyView DataContext="{Binding TechKeyViewModel}"/>
             <Grid VerticalAlignment="Top" Visibility="Collapsed">
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
