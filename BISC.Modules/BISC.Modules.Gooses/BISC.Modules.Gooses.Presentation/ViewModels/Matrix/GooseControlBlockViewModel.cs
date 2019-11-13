@@ -19,7 +19,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
         private bool _isReferenceEnabled;
         private string _gocbReferenceString;
         private string _dataSetName;
-        private string _name;
+        private string _deviceName;
         private string _appId;
         private List<IGooseRowViewModel> _gooseRowViewModels;
         private List<string> _columnsName;
@@ -53,12 +53,12 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             }
         }
 
-        public string Name
+        public string DeviceName
         {
-            get { return _name; }
+            get { return _deviceName; }
             set
             {
-                SetProperty(ref _name, value);
+                SetProperty(ref _deviceName, value);
             }
         }
 

@@ -1,10 +1,10 @@
 ﻿using BISC.Model.Infrastructure.Elements;
 
 namespace BISC.Modules.DataSets.Infrastructure.Model
-{ 
-    public interface IFcda:IModelElement
+{
+    public interface IFcda : IModelElement
     {
-      
+
         string LdInst { get; set; }
         string Prefix { get; set; }
         string LnClass { get; set; }
@@ -12,6 +12,7 @@ namespace BISC.Modules.DataSets.Infrastructure.Model
         string DoName { get; set; }
         string DaName { get; set; }
         string Fc { get; set; }
+        string FullName { get; }
 
     }
 }

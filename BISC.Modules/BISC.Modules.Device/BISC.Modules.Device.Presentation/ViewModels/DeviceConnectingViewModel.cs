@@ -106,6 +106,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
                     IsDeviceConnectionFailed = true;
                     _failedSatatusHidingTimer.Change(5000, Timeout.Infinite);
                 }
+                _loggingService.LogMessage($"Устройство {connectResult.Item.Name} c IP {connectResult.Item.Ip} подключено!", SeverityEnum.Info);
             }
             finally
             {

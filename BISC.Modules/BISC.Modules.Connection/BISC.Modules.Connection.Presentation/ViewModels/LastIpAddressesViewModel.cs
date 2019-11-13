@@ -24,7 +24,7 @@ namespace BISC.Modules.Connection.Presentation.ViewModels
         ObservableCollection<IIpAddressViewModel> _lastIpAddresses;
         private string _configurationCollectionName;
 
-        private int _sizeLastConnectionCollection = 20;
+        private int _sizeLastConnectionCollection = 100;
         #endregion
 
         #region C-tor

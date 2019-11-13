@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.DataSets.Presentation.Interfaces.ViewModels;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Presentation.Infrastructure.ChangeTracker;
 

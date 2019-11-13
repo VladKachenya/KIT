@@ -12,6 +12,7 @@ using BISC.Modules.DataSets.Infrastructure.ViewModels.Services;
 using BISC.Modules.DataSets.Model.Services;
 using BISC.Modules.DataSets.Presentation.Commands;
 using BISC.Modules.DataSets.Presentation.Factorys;
+using BISC.Modules.DataSets.Presentation.Interfaces.ViewModels;
 using BISC.Modules.DataSets.Presentation.Services;
 using BISC.Modules.DataSets.Presentation.Services.Interfaces;
 using BISC.Modules.DataSets.Presentation.ViewModels;

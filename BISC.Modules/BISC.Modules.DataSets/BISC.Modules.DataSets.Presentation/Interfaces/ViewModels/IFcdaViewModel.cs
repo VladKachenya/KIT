@@ -1,15 +1,7 @@
 ﻿using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Base;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using BISC.Modules.DataSets.Presentation.HelperEntites;
 
-namespace BISC.Modules.DataSets.Infrastructure.ViewModels
+namespace BISC.Modules.DataSets.Presentation.Interfaces.ViewModels
 {
     public interface IFcdaViewModel: IDataSetElementBaseViewModel<IFcda>, IFunctionalConstrainter
     {

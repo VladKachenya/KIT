@@ -24,6 +24,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
+using BISC.Modules.DataSets.Presentation.Interfaces.ViewModels;
 using TreeItemViewModelBase = BISC.Modules.InformationModel.Presentation.ViewModels.Base.TreeItemViewModelBase;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels

@@ -171,15 +171,6 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
                 goinNumTextBlock.Padding = new Thickness(2);
                 _goinNumTextBlocks.Add(goinNumTextBlock);
             }
-            //for (int i = 0; i < GoInCount; i++)
-            //{
-            //    TextBlock goinNumTextBlock = new TextBlock();
-            //    goinNumTextBlock.Text = (i + 1).ToString();
-            //    goinNumTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
-            //    goinNumTextBlock.VerticalAlignment = VerticalAlignment.Top;
-            //    goinNumTextBlock.Padding = new Thickness(2);
-            //    _goinNumTextBlocks.Add(goinNumTextBlock);
-            //}
         }
 
 
@@ -231,7 +222,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
                 mainGrid.Children.Clear();
                 mainGrid.ColumnDefinitions.Clear();
                 mainGrid.RowDefinitions.Clear();
-                mainGrid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(CellSize)}); // номера GoIn
+                mainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) }); // номера GoIn
 
                 for (int i = 0; i < GoInCount; i++)
                 {
@@ -248,15 +239,16 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
                 Grid scrollViewerGrid = new Grid();
                 mainGrid.ColumnDefinitions.Add(new ColumnDefinition()
-                    {Width = GridLength.Auto}); //левая шапка для названий
+                { Width = GridLength.Auto }); //левая шапка для названий
 
                 for (int i = 0; i < GoInCount; i++)
                 {
                     scrollViewerGrid.ColumnDefinitions.Add(new ColumnDefinition()
-                        {Width = new GridLength(1, GridUnitType.Star), MinWidth = CellSize}); //new GridLength(CellSize)
+                    { Width = new GridLength(1, GridUnitType.Star), MinWidth = CellSize }); //new GridLength(CellSize)
                     mainGrid.ColumnDefinitions.Add(new ColumnDefinition()
                     {
-                        Width = new GridLength(1, GridUnitType.Star), MinWidth = CellSize
+                        Width = new GridLength(1, GridUnitType.Star),
+                        MinWidth = CellSize
                     }); // new GridLength(CellSize)
 
                 }
@@ -271,7 +263,7 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
                         Height = new GridLength(CellSize + 35)
                     }); //первая шапка
 
-                    scrollViewerGrid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(CellSize + 35)});
+                    scrollViewerGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize + 35) });
 
 
                     Grid headerGrid = new Grid();
@@ -304,15 +296,15 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
                     foreach (var gooseRow in gooseControlBlockViewModel.GooseRowViewModels)
                     {
-                        if (gooseRow.GooseRowType == "State")
+                        if (gooseRow.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.State)
                         {
-                            mainGrid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(CellSize)});
+                            mainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) });
                             scrollViewerGrid.RowDefinitions.Add(new RowDefinition()
-                                {Height = new GridLength(CellSize)});
+                            { Height = new GridLength(CellSize) });
 
                             TextBlock stateRowNameTextBlock = new TextBlock();
                             stateRowNameTextBlock.Text = gooseRow.RowName;
-                            stateRowNameTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                            stateRowNameTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
                             stateRowNameTextBlock.SetValue(Grid.ColumnProperty, 0);
                             stateRowNameTextBlock.SetValue(Grid.RowProperty,
                                 mainGridRowIndex); //добавить в главную гриду (фиксированную)
@@ -361,14 +353,14 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
                     foreach (var gooseRow in gooseControlBlockViewModel.GooseRowViewModels)
                     {
-                        if ((gooseRow.GooseRowType == "Quality"))
+                        if ((gooseRow.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Quality))
                         {
-                            mainGrid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(CellSize)});
+                            mainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) });
                             scrollViewerGrid.RowDefinitions.Add(new RowDefinition()
-                                {Height = new GridLength(CellSize)});
+                            { Height = new GridLength(CellSize) });
                             TextBlock qualityRowNameTextBlock = new TextBlock();
                             qualityRowNameTextBlock.Text = gooseRow.RowName;
-                            qualityRowNameTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                            qualityRowNameTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
                             qualityRowNameTextBlock.SetValue(Grid.ColumnProperty, 0);
                             qualityRowNameTextBlock.SetValue(Grid.RowProperty,
                                 mainGridRowIndex); //добавить в главную гриду (фиксированную)
@@ -391,14 +383,14 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
                     foreach (var gooseRow in gooseControlBlockViewModel.GooseRowViewModels)
                     {
-                        if ((gooseRow.GooseRowType == "Validity"))
+                        if ((gooseRow.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Validity))
                         {
-                            mainGrid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(CellSize)});
+                            mainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(CellSize) });
                             scrollViewerGrid.RowDefinitions.Add(new RowDefinition()
-                                {Height = new GridLength(CellSize)});
+                            { Height = new GridLength(CellSize) });
                             TextBlock validityRowNameTextBlock = new TextBlock();
                             validityRowNameTextBlock.Text = gooseRow.RowName;
-                            validityRowNameTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                            validityRowNameTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
                             validityRowNameTextBlock.SetValue(Grid.ColumnProperty, 0);
                             validityRowNameTextBlock.SetValue(Grid.RowProperty,
                                 mainGridRowIndex); //добавить в главную гриду (фиксированную)

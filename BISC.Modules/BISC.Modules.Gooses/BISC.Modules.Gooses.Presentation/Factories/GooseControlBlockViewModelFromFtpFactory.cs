@@ -190,7 +190,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             GooseControlBlockViewModel gooseControlBlockViewModel = _gooseControlBlockViewModelFunc();
 
             gooseControlBlockViewModel.AppId = gooseInput.EmittingDeviceName + " " + gooseInput.EmittingGooseControl.Value.Name;
-            gooseControlBlockViewModel.Name = gooseInput.EmittingGooseControl.Value.Name;
+            gooseControlBlockViewModel.DeviceName = gooseInput.EmittingDeviceName;
             gooseControlBlockViewModel.GoCbReference = _cbFtpEntityFactory.GetIGoCbFtpEntityFromGooseInputModelInfo(gooseInput);
 
             switch (parientDevice.Type)

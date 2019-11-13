@@ -8,32 +8,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
+using BISC.Modules.DataSets.Presentation.Interfaces.ViewModels;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
     public class FcdaViewModel : ComplexViewModelBase, IFcdaViewModel
     {
-        #region private string constants
-
-
-        #endregion
-
         #region private filds
 
         private IFcda _model;
         private FcHelperEntity _sellectedFc;
-
-        #endregion
-
-        #region C-tor
-
-        public FcdaViewModel()
-        {
-        }
-
-        #endregion
-
-        #region private methods
 
         #endregion
 
@@ -96,21 +80,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             return _model;
         }
 
-        public string FullName
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_model.DaName))
-                {
-                    return $"{_model.LdInst}/{_model.Prefix + _model.LnClass + _model.LnInst}.{_model.DoName}";
-                }
-                else
-                {
-                    return
-                        $"{_model.LdInst}/{_model.Prefix + _model.LnClass + _model.LnInst}.{_model.DoName}.{_model.DaName}";
-                }
-            }
-        }
+        public string FullName => _model.FullName;
 
         public IWeigher ParentWeiger { get; set; }
 

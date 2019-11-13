@@ -84,8 +84,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 {
                     gooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.Quality;
                     gooseRowViewModel.NumberOfFcdaInDataSet = indexOfFcda;
-                    gooseRowViewModel.RowName =
-                    parent.AppId + " [" + fcda.DoName + "." + fcda.DaName + "] (" + gooseRowViewModel.GooseRowType + ")";
+                    gooseRowViewModel.RowName = $"{parent.DeviceName}{fcda.FullName}";
                     InitailizeColumns(gooseRowViewModel, parent.ColumnsName.Count);
                     gooseRowViewModel.RelatedDataSet = gooseInput.EmittingDataSet.Value;
 
@@ -97,8 +96,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                     gooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.State;
                     gooseRowViewModel.NumberOfFcdaInDataSet = indexOfFcda;
                     gooseRowViewModel.RelatedDataSet = gooseInput.EmittingDataSet.Value;
-                    gooseRowViewModel.RowName =
-                        parent.AppId + " [" + fcda.DoName + "." + fcda.DaName + "] (" + gooseRowViewModel.GooseRowType + ")";
+                    gooseRowViewModel.RowName = $"{parent.DeviceName}{fcda.FullName}";
                     InitailizeColumns(gooseRowViewModel, parent.ColumnsName.Count);
                     gooseRowViewModels.Add(gooseRowViewModel);
                 }
@@ -107,7 +105,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             if (parent.IsConsigerTheQuality)
             {
                 IGooseRowViewModel validityGooseRowViewModel = new GooseRowViewModel();
-                validityGooseRowViewModel.RowName = $"{gooseInput.EmittingGooseControl.Value.Name} {GooseKeys.GooseSubscriptionPresentationKeys.Validity}";
+                validityGooseRowViewModel.RowName = "Enable goose monitoring";
                 InitailizeColumns(validityGooseRowViewModel, parent.ColumnsName.Count);
                 validityGooseRowViewModel.GooseRowType = GooseKeys.GooseSubscriptionPresentationKeys.Validity;
                 gooseRowViewModels.Add(validityGooseRowViewModel);

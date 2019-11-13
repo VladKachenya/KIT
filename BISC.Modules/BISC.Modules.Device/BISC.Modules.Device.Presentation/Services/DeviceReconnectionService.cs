@@ -193,6 +193,7 @@ namespace BISC.Modules.Device.Presentation.Services
                                 itemsCount, ++currentElementsCount));
                         }), sclModel, cts.Token);
                 }
+                _loggingService.LogMessage($"Устройство {device.Name} c IP {device.Ip} переподключено!", SeverityEnum.Info);
             }
             catch (Exception e)
             {
@@ -200,7 +201,6 @@ namespace BISC.Modules.Device.Presentation.Services
                 {
                     _connectionPoolService.GetConnection(device.Ip).StopConnection();
                     _loggingService.LogUserAction($"Загрузка устройства отменена пользователем {device.Name}");
-                    //  return new OperationResult($"Загрузка устройства отменена пользователем {device.Name}");
                 }
                 else
                 {

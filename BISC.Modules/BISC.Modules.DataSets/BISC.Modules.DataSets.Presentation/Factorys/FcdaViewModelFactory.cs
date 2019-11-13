@@ -15,6 +15,7 @@ using BISC.Infrastructure.Global.Services;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Base;
 using BISC.Modules.DataSets.Presentation.HelperEntites;
+using BISC.Modules.DataSets.Presentation.Interfaces.ViewModels;
 using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.DataSets.Presentation.Factorys

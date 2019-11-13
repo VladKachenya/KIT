@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Modules.DataSets.Infrastructure.ViewModels.Base;
+using BISC.Modules.DataSets.Presentation.Interfaces.ViewModels;
 using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.DataSets.Infrastructure.ViewModels.Factorys

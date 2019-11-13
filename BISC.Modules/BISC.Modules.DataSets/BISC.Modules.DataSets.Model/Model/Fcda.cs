@@ -11,9 +11,9 @@ using BISC.Modules.DataSets.Infrastructure.Model;
 
 namespace BISC.Modules.DataSets.Model.Model
 {
-   public class Fcda:ModelElement,IFcda
+    public class Fcda : ModelElement, IFcda
     {
-        public Fcda(string iecAddress, string doName, string daName, string fc):this()
+        public Fcda(string iecAddress, string doName, string daName, string fc) : this()
         {
             ElementName = DatasetKeys.DatasetModelKeys.FcdaModelKey;
 
@@ -98,6 +98,23 @@ namespace BISC.Modules.DataSets.Model.Model
         public string DoName { get; set; }
         public string DaName { get; set; }
         public string Fc { get; set; }
+
+        public string FullName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(DaName))
+                {
+                    return $"{LdInst}/{Prefix + LnClass + LnInst}.{DoName}";
+                }
+                else
+                {
+                    return
+                        $"{LdInst}/{Prefix + LnClass + LnInst}.{DoName}.{DaName}";
+                }
+            }
+        }
+
         #endregion
 
         public override bool ModelElementCompareTo(IModelElement obj)

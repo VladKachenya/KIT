@@ -9,7 +9,7 @@
              xmlns:controls="clr-namespace:BISC.Presentation.BaseItems.Controls;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             MinWidth="300" MinHeight="400"
+             MinWidth="300" MinHeight="600"
              MaxHeight="450">
     <UserControl.Resources>
         <!--Тригер для лампочки пинга-->

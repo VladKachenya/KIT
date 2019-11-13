@@ -10,8 +10,9 @@
              xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
              xmlns:keys1="clr-namespace:BISC.Modules.Device.Infrastructure.Keys;assembly=BISC.Modules.Device.Infrastructure"
              xmlns:views="clr-namespace:BISC.Presentation.BaseItems.Views;assembly=BISC.Presentation.BaseItems"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300">
     <UserControl.Resources>
         <Style  x:Key="ToggleLikeButtonStyleForFile" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
             <Style.Triggers>
@@ -43,11 +44,8 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button Style="{StaticResource ToggleLikeButtonStyleForFile}" Command="{Binding SelectOpenFromFileCommand}" Width="200" Content="Добавить из файла">
-
-            </Button>
-            <Button Style="{StaticResource ToggleLikeButtonStyleForConnection}" Command="{Binding SelectConnectCommand}" Width="200" Content="Подключить" Grid.ColumnSpan="2" Margin="143,0,-53,0"/>
-
+            <Button Style="{StaticResource ToggleLikeButtonStyleForFile}" Command="{Binding SelectOpenFromFileCommand}" Width="200" Content="Добавить из файла"/>
+            <Button Style="{StaticResource ToggleLikeButtonStyleForConnection}" Command="{Binding SelectConnectCommand}" Width="200" Content="Подключить" Grid.Column="1"/>
         </Grid>
         <Grid Margin="8" Grid.Row="1">
             <views:DynamicRegion HorizontalAlignment="Stretch" Margin ="2" RegionKey="{x:Static keys1:DeviceKeys.DeviceAddingRegionKey}" />
