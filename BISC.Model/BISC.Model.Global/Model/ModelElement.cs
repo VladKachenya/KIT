@@ -29,7 +29,6 @@ namespace BISC.Model.Global.Model
         {
             if (obj == null) return false;
             if (obj.ElementName != ElementName) return false;
-            if (obj.Namespace != Namespace) return false;
             if (obj.ChildModelElements.Count != ChildModelElements.Count) return false;
 
             foreach (var childModelElement in ChildModelElements)
