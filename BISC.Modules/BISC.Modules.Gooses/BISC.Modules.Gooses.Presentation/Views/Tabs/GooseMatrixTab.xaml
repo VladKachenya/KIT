@@ -33,27 +33,27 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <!--<StackPanel Orientation="Horizontal">
-                <Grid>
-                    <ContentControl Margin="4"  Background="White" ToolTip="Синхронизированы ли данные (устройство - проект)"  Width="25" Height="25" ContentTemplate="{DynamicResource SyncIcon}">
-                        <ContentControl.Style>
-                            <Style TargetType="ContentControl">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSynchronizedWithDevice}" Value="True">
-                                        <Setter Property="Foreground" Value="DarkGreen"></Setter>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsSynchronizedWithDevice}" Value="False">
-                                        <Setter Property="Foreground" Value="DarkRed"></Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ContentControl.Style>
-                    </ContentControl>
-                </Grid>
-                <Button Margin="4" ToolTip="Проверить, синхронизирована ли матрица проекта с устройством" Width="25" Height="25" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding CheckConformityCommand}">
-                    <ContentControl ContentTemplate="{DynamicResource CheckIcon}"></ContentControl>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Command="{Binding EnableGoinsCommand}" ToolTip="Назначить все сигналы" Height="30" Width="30"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                        Margin="5,2">
+                    <Button.Content>
+                        <ContentControl ContentTemplate="{DynamicResource CheckboxMultipleMarkedIcon}" Height="20"/>
+                    </Button.Content>
                 </Button>
-            </StackPanel>-->
+                <Button Grid.Column="1" Command="{Binding DisableGoinsComand}" ToolTip="Убрать все подписки" Height="30" Width="30"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                        Margin="5,2">
+                    <Button.Content>
+                        <ContentControl ContentTemplate="{DynamicResource CheckboxMultipleBlankOutlineIcon}" Height="20"/>
+                    </Button.Content>
+                </Button>
+            </Grid>
             <userControl:GooseGrid IsActive="{Binding IsActive}" Grid.Row="1" x:Name="gooseGrid" GoInCount="{Binding ColumnCount}" GooseControlBlockViewModels="{Binding GooseControlBlockViewModels}"></userControl:GooseGrid>
             <!--<DataGrid ItemsSource="{Binding GroupedGoosesViewModels}">
                 <DataGrid.GroupStyle>

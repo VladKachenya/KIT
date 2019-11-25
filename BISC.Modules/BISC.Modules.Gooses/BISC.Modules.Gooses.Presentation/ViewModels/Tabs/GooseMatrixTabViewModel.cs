@@ -84,6 +84,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             MessagesList = new ObservableCollection<string>();
             SaveCommand = commandFactory.CreatePresentationCommand(OnSave, () => _isCommandEnabled);
             UpdateCommand = commandFactory.CreatePresentationCommand(OnUpdateExecute, () => _isCommandEnabled);
+            EnableGoinsCommand = commandFactory.CreatePresentationCommand(OnEnableGoins);
+            DisableGoinsComand = commandFactory.CreatePresentationCommand(OnDisableGoins);
             GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>();
         }
         #endregion
@@ -91,6 +93,10 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         #region public methods
         public ICommand SaveCommand { get; }
         public ICommand UpdateCommand { get; }
+
+        public ICommand EnableGoinsCommand { get; }
+
+        public ICommand DisableGoinsComand { get; }
 
         public DataView GooseMatrixDataView => _gooseMatrix?.DefaultView; 
 
@@ -292,6 +298,82 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
                 BlockViewModelBehavior.Unlock();
             }
+        }
+
+        private void OnDisableGoins()
+        {
+            foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
+            {
+                foreach (var gooseRowViewModel in gooseControlBlockViewModel.GooseRowViewModels)
+                {
+                    if (gooseRowViewModel.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.State ||
+                        gooseRowViewModel.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Quality ||
+                        gooseRowViewModel.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Validity)
+                    {
+                        foreach (var selectableValueViewModel in gooseRowViewModel.SelectableValueViewModels)
+                        {
+                            selectableValueViewModel.IsSelectingEnabled = true;
+                            if (selectableValueViewModel.SelectedValue)
+                            {
+                                selectableValueViewModel.SetValue(false);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void OnEnableGoins()
+        {
+            var unspesifiedCollumns = GetUnspecifiedGoinNumbers();
+            foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
+            {
+                foreach (var gooseRowViewModel in gooseControlBlockViewModel.GooseRowViewModels)
+                {
+                    if (gooseRowViewModel.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.State && gooseRowViewModel.SelectableValueViewModels.All(el => !el.SelectedValue))
+                    {
+                        int index = -1;
+                        try
+                        {
+                            index = unspesifiedCollumns.First();
+                        }
+                        catch
+                        {
+                            return;
+                        }
+                        gooseRowViewModel.SelectableValueViewModels[index].SelectedValue = true;
+                        unspesifiedCollumns.Remove(index);
+                    }
+                }
+            }
+        }
+
+        private List<int> GetUnspecifiedGoinNumbers()
+        {
+            foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
+            {
+                foreach (var gooseRowViewModel in gooseControlBlockViewModel.GooseRowViewModels)
+                {
+                    if (gooseRowViewModel.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.State)
+                    {
+                        if (gooseRowViewModel.SelectableValueViewModels.All(el => !el.SelectedValue))
+                        {
+                            var result = new List<int>();
+                            foreach (var selectableValueViewModel in gooseRowViewModel.SelectableValueViewModels)
+                            {
+                                if (selectableValueViewModel.IsSelectingEnabled)
+                                {
+                                    result.Add(selectableValueViewModel.ColumnNumber);
+                                }
+                            }
+
+                            return result;
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
 
         private void ResetChangeTracker()
