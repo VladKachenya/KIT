@@ -26,7 +26,19 @@
                                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Margin="5" Text="{Binding ShortPath}" ToolTip="{Binding ShortPath}"/>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ToolTip>
+                                        <ToolTip>
+                                            <TextBlock FontSize="15" Text="{Binding FullPath}"></TextBlock>
+                                        </ToolTip>
+                                    </Grid.ToolTip>
+                                    <TextBlock Grid.Row="0" Margin="5,0" FontWeight="Bold" Text="{Binding ShortPath}"/>
+                                    <TextBlock FontSize="10" Grid.Row="1" TextWrapping="Wrap" Margin="5,0" Text="{Binding FullPath}"/>
+                                </Grid>
                                 <Button Margin="1" Width="24" Height="24" Grid.Column="1" Padding="1"  ToolTip="Убрать из списка"
                                                 Command="{Binding DataContext.DeleteFileFromView,Source={x:Reference lastOpenedFilesListBox}}" CommandParameter="{Binding .}">
                                     <Button.Content>

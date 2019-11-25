@@ -129,11 +129,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         {
             _selectFileIsOpen = false;
             (OpenFileWithDevices as IPresentationCommand)?.RaiseCanExecute();
-            var fileMaybe = FileHelper.SelectFileToOpen("Открыть файл с устройствами", "SCL Files (*.cid,*.icd,*.iid,*.SCD)|*.cid;*.icd;*.iid;*.SCD|" +
-                                                                        "Configured IED Description Files (*.cid)|*.cid|" +
-                                                                        "IED Capability Description Files (*.icd)|*.icd|" +
-                                                                        "Instantiated IED description Files (*.iid)|*.iid|" +
-                                                                        "Substation Configuration Description Files (*.SCD*)|*.SCD");
+            var fileMaybe = FileHelper.SelectFileToOpen("Открыть файл с устройствами",
+                "SCL Files (*.cid,*.icd,*.iid)|*.cid;*.icd;*.iid|" +
+                "Configured IED Description Files (*.cid)|*.cid|" +
+                "IED Capability Description Files (*.icd)|*.icd|" +
+                "Instantiated IED description Files (*.iid)|*.iid");
+            // +"Substation Configuration Description Files (*.SCD*)|*.SCD");
             _selectFileIsOpen = true;
             (OpenFileWithDevices as IPresentationCommand)?.RaiseCanExecute();
             if (!fileMaybe.Any()) return;
