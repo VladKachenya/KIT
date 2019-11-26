@@ -53,7 +53,8 @@ namespace BISC.Modules.InformationModel.Presentation.Module
             _injectionContainer.RegisterType<SetFcTreeItemViewModel>();
             _injectionContainer.RegisterType<SettingControlDetailsViewModel>();
             _injectionContainer.RegisterType<SettingsControlTreeItemViewModel>();
-            _injectionContainer.RegisterType<IElementConflictResolver, SettingControlConflictResolver>(Guid.NewGuid().ToString());
+            //We don't need to resolve conflict for settings group
+            //_injectionContainer.RegisterType<IElementConflictResolver, SettingControlConflictResolver>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<SettingsControlConflivtsViewModel>();
             _injectionContainer.RegisterType<SettingsControlSavingService>();
             _injectionContainer.RegisterType<ModelValuesLoadingHelper>();

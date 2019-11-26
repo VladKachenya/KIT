@@ -38,15 +38,10 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private readonly DatasetsProjectSavingCommand _datasetsProjectSavingCommand;
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
-        private readonly IConnectionPoolService _connectionPoolService;
-        private readonly IGlobalEventsService _globalEventsService;
         private readonly INavigationService _navigationService;
         private readonly ILoggingService _loggingService;
         private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly IGlobalSavingService _globalSavingService;
-
-        private readonly DatasetsLoadingService _datasetsLoadingService;
-        private IBiscProject _biscProject;
         private ObservableCollection<IDataSetViewModel> _dataSets1;
         private string _regionName;
         private bool _isModelShowed;
@@ -56,32 +51,31 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         #region C-tor
 
-        public DataSetsDetailsViewModel(ICommandFactory commandFactory,
-            IBiscProject biscProject, IDatasetModelService datasetModelService,
+        public DataSetsDetailsViewModel(
+            ICommandFactory commandFactory,
+            IDatasetModelService datasetModelService,
             IDatasetViewModelFactory datasetViewModelFactory,
-            ISaveCheckingService saveCheckingService, IUserInterfaceComposingService userInterfaceComposingService,
-            IConnectionPoolService connectionPoolService, IGlobalEventsService globalEventsService,
-            INavigationService navigationService, ILoggingService loggingService,
-            DatasetsLoadingService datasetsLoadingService,
-            DatasetsProjectSavingCommand datasetsProjectSavingCommandCommand, IDeviceWarningsService deviceWarningsService,
+            ISaveCheckingService saveCheckingService, 
+            IUserInterfaceComposingService userInterfaceComposingService,
+            IGlobalEventsService globalEventsService,
+            INavigationService navigationService,
+            ILoggingService loggingService,
+            DatasetsProjectSavingCommand datasetsProjectSavingCommandCommand, 
+            IDeviceWarningsService deviceWarningsService,
             IGlobalSavingService globalSavingService)
             : base(globalEventsService)
         {
             _userInterfaceComposingService = userInterfaceComposingService;
-            _connectionPoolService = connectionPoolService;
-            _globalEventsService = globalEventsService;
             _navigationService = navigationService;
             _loggingService = loggingService;
-            _datasetsLoadingService = datasetsLoadingService;
             _datasetsProjectSavingCommand = datasetsProjectSavingCommandCommand;
-            _biscProject = biscProject;
             _datasetModelService = datasetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
             _saveCheckingService = saveCheckingService;
             _deviceWarningsService = deviceWarningsService;
             _globalSavingService = globalSavingService;
 
-            SaveСhangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand, () => _isSaveСhanges);
+            SaveChangesCommand = commandFactory.CreatePresentationCommand(OnSaveСhangesCommand, () => _isSaveСhanges);
             ExpandModelCommand = commandFactory.CreatePresentationCommand(OnExpandModel);
             CollapseModelCommand = commandFactory.CreatePresentationCommand(OnCollapseModel);
             AddNewDataSetCommand = commandFactory.CreatePresentationCommand(OnAddNewDataSet, IsAddNewDataSet);
@@ -198,7 +192,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             return true;
         }
 
-
         private void ResetAllDataSetCollections()
         {
             _dataSets.Clear();
@@ -208,7 +201,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private async void OnSaveСhangesCommand()
         {
             _isSaveСhanges = false;
-            (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
+            (SaveChangesCommand as IPresentationCommand)?.RaiseCanExecute();
             try
             {
                 _loggingService.LogUserAction($"Изменения DataSets устройства {_device.Name}");
@@ -227,7 +220,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             {
                 BlockViewModelBehavior.Unlock();
                 _isSaveСhanges = true;
-                (SaveСhangesCommand as IPresentationCommand)?.RaiseCanExecute();
+                (SaveChangesCommand as IPresentationCommand)?.RaiseCanExecute();
             }
         }
 
@@ -293,7 +286,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public string ModelRegionKey { get; }
 
-        public ICommand SaveСhangesCommand { get; }
+        public ICommand SaveChangesCommand { get; }
         public ICommand ExpandModelCommand { get; }
         public ICommand CollapseModelCommand { get; }
 
@@ -308,7 +301,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             set { SetProperty(ref _isModelShowed, value, true); }
         }
 
-        public int MaxNambOfDataSet => 30;
+        public int MaxNumberOfDataSet => 30;
 
         #endregion
 
@@ -330,7 +323,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public override void OnActivate()
         {
-            _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand,
+            _userInterfaceComposingService.SetCurrentSaveCommand(SaveChangesCommand,
                 $"Сохранить DataSets устройства {_device.Name}", false);
             _userInterfaceComposingService.AddGlobalCommand(UpdateDataSetsCommand, $"Обновить DataSets {_device.Name}",
                 IconsKeys.UpdateIconKey, false, true);
@@ -339,8 +332,6 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
             base.OnActivate();
         }
-
-
 
         public override void OnDeactivate()
         {
@@ -351,14 +342,12 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             base.OnDeactivate();
         }
 
-
         protected override void OnDisposing()
         {
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _navigationService.DisposeRegionViewModel(ModelRegionKey);
             base.OnDisposing();
         }
-
         #endregion
     }
 }

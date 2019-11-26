@@ -21,6 +21,7 @@ using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.InformationModel.Presentation.Services
 {
+    //Legacy
     public class SettingControlConflictResolver : IElementConflictResolver
     {
         private IDeviceModelService _deviceModelService;
