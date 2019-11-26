@@ -115,7 +115,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
                 // Проверка модифицированных датасетов
                 foreach (var dataSetToSave in _dataSetsToSave)
                 {
-                    if (dataSetToSave.IsEditeble)
+                    if (dataSetToSave.IsEditable)
                     {
                         if (!dataSetToSave.ChangeTracker.GetIsModifiedRecursive())
                         {
@@ -165,7 +165,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
             // Валидация имён
             var dataSetsNames = new List<string>();
-            foreach (var name in _dataSetsToSave.Where(ds => ds.IsEditeble).Select(ds => ds.EditableNamePart))
+            foreach (var name in _dataSetsToSave.Where(ds => ds.IsEditable).Select(ds => ds.EditableNamePart))
             {
                 if (!dataSetsNames.Contains(name))
                 {
@@ -175,7 +175,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
             foreach (var name in dataSetsNames)
             {
-                var dataSets = _dataSetsToSave.Where(el => el.EditableNamePart == name && el.IsEditeble);
+                var dataSets = _dataSetsToSave.Where(el => el.EditableNamePart == name && el.IsEditable);
                 if (dataSets.Count() > 1)
                 {
                     foreach (var dataSetViewModel in dataSets)
@@ -190,7 +190,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
                 if (!_dataSetNameService.GetIsDynamic(name))
                 {
-                    var dataset = _dataSetsToSave.First(ds => ds.EditableNamePart == name && ds.IsEditeble);
+                    var dataset = _dataSetsToSave.First(ds => ds.EditableNamePart == name && ds.IsEditable);
                     ((ViewModelBase) dataset).IsWarning = true;
                     var mess = $"Имя {name} зарезервированное.";
                     _loggingService.LogMessage(mess, SeverityEnum.Warning);

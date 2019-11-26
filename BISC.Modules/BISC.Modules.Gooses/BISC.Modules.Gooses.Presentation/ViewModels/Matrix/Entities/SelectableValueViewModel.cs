@@ -52,7 +52,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Entities
 
         public bool SelectedValue
         {
-            get { return _selectedValue; }
+            get => _selectedValue;
             set
             {
                 SetProperty(ref _selectedValue, value);

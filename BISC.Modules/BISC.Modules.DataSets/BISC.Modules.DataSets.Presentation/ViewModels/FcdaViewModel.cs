@@ -32,7 +32,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _model = model ?? throw new NullReferenceException();
         }
 
-        public bool IsEditeble
+        public bool IsEditable
         {
             get
             {

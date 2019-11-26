@@ -51,7 +51,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private List<string> _parentLdList;
         private List<string> _parentLnList;
         private bool _isEditing;
-        private bool _isEditeble;
+        private bool _isEditable;
         private IModelElement _device;
         private bool _isChanged;
         private bool _isInitialized = true;
@@ -62,12 +62,17 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         #region C-tor
 
-        public DataSetViewModel(IFcdaViewModelFactory fcdaViewModelFactory, ICommandFactory commandFactory,
+        public DataSetViewModel(
+            IFcdaViewModelFactory fcdaViewModelFactory, 
+            ICommandFactory commandFactory,
             IFcdaAdderViewModelService fcdaAdderViewModelService,
             IDataTypeTemplatesModelService dataTypeTemplatesModelService,
-            IBiscProject biscProject, IFcdaFactory fcdaFactory, ISaveCheckingService saveCheckingService,
+            IBiscProject biscProject, 
+            IFcdaFactory fcdaFactory, 
+            ISaveCheckingService saveCheckingService,
             IInfoModelService infoModelService,
-            ILoggingService loggingService, IFcdaInfoService fcdaInfoService)
+            ILoggingService loggingService, 
+            IFcdaInfoService fcdaInfoService)
         {
             _fcdaFactory = fcdaFactory;
             _saveCheckingService = saveCheckingService;
@@ -80,8 +85,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _fcdaAdderViewModelService = fcdaAdderViewModelService;
 
             DeleteFcdaCommand = commandFactory.CreatePresentationCommand<object>(OnDeleteFcda);
-            AddFcdaToDataset = commandFactory.CreatePresentationCommand(OnAddFcdaTpDataset, () => IsEditeble);
-
+            AddFcdaToDataset = commandFactory.CreatePresentationCommand(OnAddFcdaTpDataset, () => IsEditable);
             FcdaViewModels = new ObservableCollection<IFcdaViewModel>();
         }
 
@@ -133,7 +137,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             SelectedParentLd =
                 ParentLdList.FirstOrDefault((s =>
                     s == ((_model.ParentModelElement as ILogicalNode).ParentModelElement as ILDevice).Inst));
-            IsEditeble = model.IsDynamic;
+            IsEditable = model.IsDynamic;
 
             EditableNamePart = _model.Name;
             Name = model.Name;
@@ -182,10 +186,10 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             }
         }
 
-        public bool IsEditeble
+        public bool IsEditable
         {
-            get => _isEditeble;
-            set => SetProperty(ref _isEditeble, value, true);
+            get => _isEditable;
+            set => SetProperty(ref _isEditable, value, true);
         }
 
         public bool IsChanged
@@ -234,19 +238,19 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         public string SelectedParentLn
         {
             get => _selectedParentLn;
-            set { SetProperty(ref _selectedParentLn, value); }
+            set => SetProperty(ref _selectedParentLn, value);
         }
 
         public List<string> ParentLdList
         {
             get => _parentLdList;
-            set { SetProperty(ref _parentLdList, value, true); }
+            set => SetProperty(ref _parentLdList, value, true);
         }
 
         public List<string> ParentLnList
         {
             get => _parentLnList;
-            set { SetProperty(ref _parentLnList, value, true); }
+            set => SetProperty(ref _parentLnList, value, true);
         }
 
         public void SetParentDevice(IModelElement device)
@@ -423,15 +427,15 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             Weigh();
         }
 
-        private void AddFcdaViewModel(int insertIdex, IFcdaViewModel fcdaViewModel)
+        private void AddFcdaViewModel(int insertIndex, IFcdaViewModel fcdaViewModel)
         {
             var fcdaName = $"{fcdaViewModel.FullName}[{fcdaViewModel.SellectedFc.Fc}]";
             if (FcdaViewModels.Any(el => el.Equals(fcdaViewModel)))
             {
                 var elementIndex = FcdaViewModels.IndexOf(fcdaViewModel);
                 FcdaViewModels.Remove(fcdaViewModel);
-                if (insertIdex > elementIndex) insertIdex--;
-                FcdaViewModels.Insert(insertIdex, fcdaViewModel);
+                if (insertIndex > elementIndex) insertIndex--;
+                FcdaViewModels.Insert(insertIndex, fcdaViewModel);
             }
 
             _loggingService.LogUserAction($"FCDA {fcdaName} перенесён через DragDrop");
@@ -445,9 +449,9 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
                 return treeItemViewModelBase.Header;
             }
 
-            if (treeItemViewModelBase.Parent != null && treeItemViewModelBase.Parent is TreeItemViewModelBase parient)
+            if (treeItemViewModelBase.Parent != null && treeItemViewModelBase.Parent is TreeItemViewModelBase parent)
             {
-                return GetSellectedFc(parient);
+                return GetSellectedFc(parent);
             }
 
             return null;

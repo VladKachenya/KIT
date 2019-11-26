@@ -84,8 +84,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             MessagesList = new ObservableCollection<string>();
             SaveCommand = commandFactory.CreatePresentationCommand(OnSave, () => _isCommandEnabled);
             UpdateCommand = commandFactory.CreatePresentationCommand(OnUpdateExecute, () => _isCommandEnabled);
-            EnableGoinsCommand = commandFactory.CreatePresentationCommand(OnEnableGoins);
-            DisableGoinsComand = commandFactory.CreatePresentationCommand(OnDisableGoins);
+            EnableGoinsCommand = commandFactory.CreatePresentationCommand(OnEnableGoIns);
+            DisableGoinsComand = commandFactory.CreatePresentationCommand(OnDisableGoIns);
             GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>();
         }
         #endregion
@@ -300,7 +300,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             }
         }
 
-        private void OnDisableGoins()
+        private void OnDisableGoIns()
         {
             foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
             {
@@ -323,9 +323,9 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             }
         }
 
-        private void OnEnableGoins()
+        private void OnEnableGoIns()
         {
-            var unspesifiedCollumns = GetUnspecifiedGoinNumbers();
+            var unspecifiedColumns = GetUnspecifiedGoInNumbers();
             foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
             {
                 foreach (var gooseRowViewModel in gooseControlBlockViewModel.GooseRowViewModels)
@@ -335,20 +335,20 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                         int index = -1;
                         try
                         {
-                            index = unspesifiedCollumns.First();
+                            index = unspecifiedColumns.First();
                         }
                         catch
                         {
                             return;
                         }
                         gooseRowViewModel.SelectableValueViewModels[index].SelectedValue = true;
-                        unspesifiedCollumns.Remove(index);
+                        unspecifiedColumns.Remove(index);
                     }
                 }
             }
         }
 
-        private List<int> GetUnspecifiedGoinNumbers()
+        private List<int> GetUnspecifiedGoInNumbers()
         {
             foreach (var gooseControlBlockViewModel in GooseControlBlockViewModels)
             {
@@ -456,7 +456,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                     var selectedValueInColumn =
                         _columnSelectableValueViewModelsDictionary[i].FirstOrDefault((model =>
                         {
-                            if ((model.Parent.GooseRowType != "State"))
+                            if (model.Parent.GooseRowType != "State")
                             {
                                 return false;
                             }

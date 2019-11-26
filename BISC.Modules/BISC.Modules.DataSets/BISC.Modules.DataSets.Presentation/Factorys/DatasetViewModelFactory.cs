@@ -41,7 +41,7 @@ namespace BISC.Modules.DataSets.Presentation.Factorys
             newDataSetViewModel.EditableNamePart = name;
             newDataSetViewModel.ParentLdList = _infoModelService.GetLDevicesFromDevices(device).Select((ldevice => ldevice.Inst)).ToList();
             newDataSetViewModel.SelectedParentLd = newDataSetViewModel.ParentLdList.First();
-            newDataSetViewModel.IsEditeble = true;
+            newDataSetViewModel.IsEditable = true;
             newDataSetViewModel.IsEditing = true;
             newDataSetViewModel.IsInitialized = false;
             newDataSetViewModel.ChangeTracker.SetModified();

@@ -104,7 +104,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
                 foreach (var dataSetToSave in _dataSetsToSave)
                 {
-                    if (dataSetToSave.IsEditeble)
+                    if (dataSetToSave.IsEditable)
                     {
                         if (!dataSetToSave.ChangeTracker.GetIsModifiedRecursive()) { continue; }
 

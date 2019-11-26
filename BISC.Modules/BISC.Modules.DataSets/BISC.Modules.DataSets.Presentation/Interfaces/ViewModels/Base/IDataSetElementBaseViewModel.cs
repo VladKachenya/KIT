@@ -11,7 +11,7 @@ namespace BISC.Modules.DataSets.Infrastructure.ViewModels.Base
     {
         string ElementName { get;}
         void SetModel(T model);
-        bool IsEditeble { get; set; }
+        bool IsEditable { get; set; }
         Brush TypeColorBrush { get; }
 
     }

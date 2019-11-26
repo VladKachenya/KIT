@@ -104,7 +104,7 @@
 
                                 <ContentControl Grid.Column="2" x:Name="EditToggleButton" Width="17" Height="17"
                                                     ContentTemplate="{DynamicResource PencilIcon}"
-                                                           Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}" 
+                                                           Visibility="{Binding IsEditable,Converter={StaticResource booleanToVisibilityConverter}}" 
                                                       ToolTip="Динамический Dataset"/>
 
                             </Grid>

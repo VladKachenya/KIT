@@ -131,36 +131,13 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
+
                                     <ContentControl Content="{Binding .}">
                                         <ContentControl.Style>
                                             <Style TargetType="ContentControl">
                                                 <Style.Triggers>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding IsEditing}" Value="True"/>
-                                                            <Condition Binding="{Binding IsInitialized}" Value="False"/>
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter Property="ContentTemplate">
-                                                            <Setter.Value>
-                                                                <DataTemplate>
-                                                                    <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                                                        <Border Margin="5" Background="{Binding TypeColorBrush}" >
-                                                                            <TextBlock Margin="4"  Text="{Binding ElementName}"/>
-                                                                        </Border>
-                                                                        <ComboBox VerticalAlignment="Center" Margin="4,0,0,4" SelectedItem="{Binding SelectedParentLd}" ItemsSource="{Binding ParentLdList}" MinWidth="100"></ComboBox>
-                                                                        <ComboBox VerticalAlignment="Center" Margin="4,0,0,4" SelectedItem="{Binding SelectedParentLn}" ItemsSource="{Binding ParentLnList}" MinWidth="100"></ComboBox>
-                                                                        <TextBox VerticalAlignment="Center" Margin="4,0,0,4"  Text="{Binding EditableNamePart,UpdateSourceTrigger=PropertyChanged}" />
 
-                                                                    </StackPanel>
-                                                                </DataTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </MultiDataTrigger>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding IsEditing}" Value="True"/>
-                                                            <Condition Binding="{Binding IsInitialized}" Value="True"/>
-                                                        </MultiDataTrigger.Conditions>
+                                                    <DataTrigger Binding="{Binding IsEditing}" Value="True">
                                                         <Setter Property="ContentTemplate">
                                                             <Setter.Value>
                                                                 <DataTemplate>
@@ -177,7 +154,7 @@
                                                                 </DataTemplate>
                                                             </Setter.Value>
                                                         </Setter>
-                                                    </MultiDataTrigger>
+                                                    </DataTrigger>
                                                     <DataTrigger Binding="{Binding IsEditing}" Value="False">
                                                         <Setter Property="ContentTemplate">
                                                             <Setter.Value>
@@ -207,7 +184,7 @@
                                                 <ContentControl ContentTemplate="{DynamicResource AlertIcon}" Foreground="DarkRed" Width="20" Height="20"/>
                                             </Label.Content>
                                         </Label>
-                                        <Button Margin="5" Padding="3" Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"
+                                        <Button Margin="5" Padding="3" Visibility="{Binding IsEditable,Converter={StaticResource booleanToVisibilityConverter}}"
                                                             Command="{Binding DataContext.DeleteDataSetViewModelCommand,Source={x:Reference ExpanderItemsControl}}"
                                                             CommandParameter="{Binding .}"
                                                             IsEnabled="{Binding ElementName = EditToggleButton, Path= IsChecked}"
@@ -219,8 +196,8 @@
                                             </Button.Content>
                                         </Button>
                                         <ToggleButton x:Name="EditToggleButton" IsChecked="{Binding IsEditing}" 
-                                                      IsEnabled="{Binding IsEditeble}"
-                                                           Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"   
+                                                      IsEnabled="{Binding IsEditable}"
+                                                           Visibility="{Binding IsEditable,Converter={StaticResource booleanToVisibilityConverter}}"   
                                                       Style="{StaticResource MaterialDesignSwitchToggleButton}"
                                                       ToolTip="Разрешить редактирование датасета"/>
                                     </StackPanel>
@@ -291,8 +268,9 @@
                                         <ContentControl.Style>
                                             <Style TargetType="ContentControl">
                                                 <!--<Style.Triggers>
-                                                    --><!--Тут устанавливается ComboBox с Fc-->
-                                                    <!--<MultiDataTrigger>
+                                                    -->
+                                                <!--Тут устанавливается ComboBox с Fc-->
+                                                <!--<MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding ="{ Binding Path=SelectedItem.IsEditing,Source={x:Reference ExpanderItemsControl}}" Value="True"/>
                                                         </MultiDataTrigger.Conditions>
@@ -323,7 +301,8 @@
                                                                 </DataTemplate>
                                                             </Setter.Value>
                                                         </Setter>
-                                                    </MultiDataTrigger>--><!--
+                                                    </MultiDataTrigger>-->
+                                                <!--
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding ="{ Binding Path=SelectedItem.IsEditing,Source={x:Reference ExpanderItemsControl}}" Value="False"/>

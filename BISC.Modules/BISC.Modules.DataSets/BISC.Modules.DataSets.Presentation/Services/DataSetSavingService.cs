@@ -77,7 +77,7 @@ namespace BISC.Modules.DataSets.Presentation.Services
 
         //        foreach (var dataSetToSave in dataSetsToSave)
         //        {
-        //            if (dataSetToSave.IsEditeble)
+        //            if (dataSetToSave.IsEditable)
         //            {
         //                if (!dataSetToSave.ChangeTracker.GetIsModifiedRecursive()) { continue; }
 
