@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
-using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.InformationModel.Model.Elements;
 
 namespace BISC.Modules.InformationModel.Model.Services
@@ -74,11 +73,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 dataTypeTemplates.LNodeTypes.Remove(removeItem);
             }
 
-
-
             RemoveDoTypes(dataTypeTemplates, doTypesToExclude);
-
-
         }
 
         public string AddLnodeType(ILNodeType lNodeType, ISclModel sclModel)
@@ -148,11 +143,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             {
                 if ((newDa.Type == daitem.Type) &&
                     (newDa.BType == daitem.BType) &&
-                      (newDa.Name == daitem.Name) &&
-                    //(newDa.count == daitem.count) &&
-                    //(newDa.dchg == daitem.dchg) &&
-                    //(newDa.qchg == daitem.qchg) &&
-                    //(newDa.dupd == daitem.dupd) &&
+                    (newDa.Name == daitem.Name) &&
                     (newDa.Fc == daitem.Fc))
                 {
                     return true;
@@ -294,7 +285,6 @@ namespace BISC.Modules.InformationModel.Model.Services
                 var toadd = new LNodeType();
                 toadd.Id = lNodeType.Id;
                 toadd.LnClass = lNodeType.LnClass;
-
                 toadd.DoList.AddRange(lNodeType.DoList);
                 dataTypeTemplates.LNodeTypes.Add(toadd);
                 return toadd.Id;
@@ -302,23 +292,22 @@ namespace BISC.Modules.InformationModel.Model.Services
             return existing.Id;
         }
 
+
         private IDataTypeTemplates GetDataTypeTemplates(ISclModel sclModel)
         {
             if (sclModel.TryGetFirstChildOfType(out IDataTypeTemplates dataTypeTemplates))
             {
                 return dataTypeTemplates;
             }
-            else
-            {
-                IDataTypeTemplates newDataTypeTemplates = new DataTypeTemplates.DataTypeTemplates();
-                sclModel.ChildModelElements.Add(newDataTypeTemplates);
-                return newDataTypeTemplates;
-            }
+
+            IDataTypeTemplates newDataTypeTemplates = new DataTypeTemplates.DataTypeTemplates();
+            sclModel.ChildModelElements.Add(newDataTypeTemplates);
+            return newDataTypeTemplates;
         }
 
         private IDataTypeTemplates GetDataTypeTemplatesOfDevice(ISclModel sclModel, IDevice device)
         {
-            IDataTypeTemplates newDataTypeTemplates = new DataTypeTemplates.DataTypeTemplates();
+            IDataTypeTemplates deviceDataTypeTemplates = new DataTypeTemplates.DataTypeTemplates();
             var logicalDevices = (device.ChildModelElements
                 .First((element => element is DeviceAccessPoint)) as DeviceAccessPoint)?
                 .DeviceServer?
@@ -326,76 +315,173 @@ namespace BISC.Modules.InformationModel.Model.Services
                 .LDevicesCollection;
             if (sclModel.TryGetFirstChildOfType(out IDataTypeTemplates dataTypeTemplates))
             {
-                foreach (var logicalDevice in logicalDevices)
+                if (logicalDevices != null)
                 {
-                    foreach (var logicalNode in logicalDevice.AlLogicalNodes)
+
+                    foreach (var logicalDevice in logicalDevices)
                     {
-                        var lnType = dataTypeTemplates.LNodeTypes.FirstOrDefault(lnt => lnt.Id == logicalNode.LnType);
-                        if (lnType == null)
+                        foreach (var logicalNode in logicalDevice.AlLogicalNodes)
                         {
-                            _loggingService.LogMessage($"LN data template of {logicalNode.LnType} not found",
-                                SeverityEnum.Warning);
-                            continue;
-                        }
-
-                        logicalNode.LnType =
-                            $"{device.Name}{logicalDevice.Inst}.{logicalNode.Prefix + logicalNode.LnClass + logicalNode.Inst}";
-                        lnType.Id = logicalNode.LnType;
-                        var lnId = AddLnTypeToDataTypeTemplates(lnType, newDataTypeTemplates);
-                        newDataTypeTemplates.LNodeTypes.Add(lnType);
-
-                        foreach (var doElement in lnType.DoList)
-                        {
-                            var doType = dataTypeTemplates.DoTypes.FirstOrDefault(dot => dot.Id == doElement.Type);
-                            if (doType == null)
+                            var lnType =
+                                dataTypeTemplates.LNodeTypes.FirstOrDefault(lnt => lnt.Id == logicalNode.LnType);
+                            if (lnType == null)
                             {
-                                _loggingService.LogMessage($"Do data template of {doElement.Type} not found",
+                                _loggingService.LogMessage($"LN data template of {logicalNode.LnType} not found",
                                     SeverityEnum.Warning);
                                 continue;
                             }
 
-                            doElement.Type = $"{lnType.Id}.{doElement.Name}";
-                            doType.Id = doElement.Type;
-                            newDataTypeTemplates.DoTypes.Add(doType);
-                            foreach (var daElement in doType.DaList)
+                            if (deviceDataTypeTemplates.LNodeTypes.Contains(lnType))
                             {
-                                if (!string.IsNullOrWhiteSpace(daElement.Type) && daElement.BType != "Enum")
-                                {
+                                continue;
+                            }
+                            deviceDataTypeTemplates.LNodeTypes.Add(lnType);
 
+                            foreach (var doElement in lnType.DoList)
+                            {
+                                var doType = dataTypeTemplates.DoTypes.FirstOrDefault(dot => dot.Id == doElement.Type);
+                                if (doType == null)
+                                {
+                                    _loggingService.LogMessage($"Do data template of {doElement.Type} not found",
+                                        SeverityEnum.Warning);
+                                    continue;
                                 }
 
-                                //var daType = dataTypeTemplates.DaTypes.FirstOrDefault(dat => dat.Id == daElement.)
+                                if (deviceDataTypeTemplates.DoTypes.Contains(doType))
+                                {
+                                    continue;
+                                }
+                                deviceDataTypeTemplates.DoTypes.Add(doType);
+
+                                var daElements = ParseSdoToDataTemplate(dataTypeTemplates, deviceDataTypeTemplates, doType);
+                                foreach (var enumElement in daElements.Where(da => da.BType == "Enum"))
+                                {
+                                    var enumType =
+                                        dataTypeTemplates.EnumTypes.FirstOrDefault(et => et.Id == enumElement.Type);
+                                    if (enumType == null)
+                                    {
+                                        _loggingService.LogMessage($"Do data template of {enumElement.Type} not found",
+                                            SeverityEnum.Warning);
+                                        continue;
+                                    }
+
+                                    if (deviceDataTypeTemplates.EnumTypes.Contains(enumType))
+                                    {
+                                        continue;
+                                    }
+                                    deviceDataTypeTemplates.EnumTypes.Add(enumType);
+                                }
+
+                                foreach (var daElement in daElements.Where(da => da.BType == "Struct"))
+                                {
+                                    var daType = dataTypeTemplates.DaTypes.FirstOrDefault(dat => dat.Id == daElement.Type);
+                                    if (daType == null)
+                                    {
+                                        _loggingService.LogMessage($"Da data template of {daElement.Type} not found",
+                                            SeverityEnum.Warning);
+                                        continue;
+                                    }
+
+                                    if (deviceDataTypeTemplates.DaTypes.Contains(daType))
+                                    {
+                                        continue;
+                                    }
+
+                                    deviceDataTypeTemplates.DaTypes.Add(daType);
+
+                                    ParseBdaToDataTemplate(dataTypeTemplates, deviceDataTypeTemplates, daType);
+                                }
+
                             }
                         }
-
                     }
                 }
             }
-            return newDataTypeTemplates;
-            //    newDataTypeTemplates.LNodeTypes.AddRange(dataTypeTemplates.LNodeTypes.Where(lnt => lnt.Id.Contains(device.Name)));
+            return deviceDataTypeTemplates;
+        }
 
-            //foreach (var lNodeType in newDataTypeTemplates.LNodeTypes)
-            //{
-            //    var lNode = _infoModelService.GetLDevicesFromDevices(device).Select(ld => ld.AlLogicalNodes.First(ln => ln.ty))
-            //    lNodeType.Id = $"{device.Name}{lNodeType.ParentModelElement}.";
-            //    foreach (var doElement in lNodeType.DoList)
-            //    {
-            //        newDataTypeTemplates.DoTypes.AddRange(dataTypeTemplates.DoTypes.Where(dot => dot.Id == doElement.Type));
-            //    }
-            //    foreach (var doType in newDataTypeTemplates.DoTypes)
-            //    {
-            //        doType.Id = $"{device.Name}.{lNodeType.LnClass}";
-            //    }
-            //}
-            //newDataTypeTemplates.DaTypes.AddRange(dataTypeTemplates.DaTypes.Where(dat => dat.Id.Contains(device.Name)));
-            //newDataTypeTemplates.DoTypes.AddRange(dataTypeTemplates.DoTypes.Where(dot => dot.Id.Contains(device.Name)));
-            //newDataTypeTemplates.EnumTypes.AddRange(dataTypeTemplates.EnumTypes.Where(ent => ent.Id.Contains(device.Name)));
+        private void ParseBdaToDataTemplate(IDataTypeTemplates dataTypeTemplates,
+            IDataTypeTemplates deviceDataTypeTemplates, IDaType daType)
+        {
+            Queue<IBda> bdaQueue = new Queue<IBda>(daType.Bdas.Where(bda => bda.BType == "Struct"));
+            List<IBda> bdaEnums = new List<IBda>(daType.Bdas.Where(da => da.BType == "Enum"));
 
-            //}
-            //else
-            //{
-            //    sclModel.ChildModelElements.Add(newDataTypeTemplates);
-            //}
+            while (bdaQueue.Count != 0)
+            {
+                var bdaElement = bdaQueue.Dequeue();
+                var bdaDaType = dataTypeTemplates.DaTypes.First(dat => dat.Id == bdaElement.Type);
+                if (bdaDaType == null)
+                {
+                    _loggingService.LogMessage($"Do data template of {bdaElement.Type} not found",
+                        SeverityEnum.Warning);
+                    continue;
+                }
+
+                if (deviceDataTypeTemplates.DaTypes.Contains(bdaDaType))
+                {
+                    continue;
+                }
+                deviceDataTypeTemplates.DaTypes.Add(bdaDaType);
+
+                foreach (var bda in bdaDaType.Bdas.Where(bdaEl => bdaEl.BType == "Struct"))
+                {
+                    bdaQueue.Enqueue(bda);
+                }
+
+                bdaEnums.AddRange(bdaDaType.Bdas.Where(bdaEl => bdaEl.BType == "Enum"));
+            }
+
+            foreach (var enumElement in bdaEnums)
+            {
+                var enumType =
+                    dataTypeTemplates.EnumTypes.FirstOrDefault(et => et.Id == enumElement.Type);
+                if (enumType == null)
+                {
+                    _loggingService.LogMessage($"Do data template of {enumElement.Type} not found",
+                        SeverityEnum.Warning);
+                    continue;
+                }
+
+                if (deviceDataTypeTemplates.EnumTypes.Contains(enumType))
+                {
+                    continue;
+                }
+                deviceDataTypeTemplates.EnumTypes.Add(enumType);
+            }
+        }
+
+        private List<IDa> ParseSdoToDataTemplate(IDataTypeTemplates dataTypeTemplates, IDataTypeTemplates deviceDataTypeTemplates, IDoType doType)
+        {
+            Queue<ISdo> sdoQueue = new Queue<ISdo>(doType.SdoList);
+            List<IDa> result = new List<IDa>(doType.DaList.Where(da => da.BType == "Enum" || da.BType == "Struct"));
+
+            while (sdoQueue.Count != 0)
+            {
+                var sdoElement = sdoQueue.Dequeue();
+                var sdoDoType = dataTypeTemplates.DoTypes.FirstOrDefault(dot => dot.Id == sdoElement.Type);
+                if (sdoDoType == null)
+                {
+                    _loggingService.LogMessage($"Do data template of {sdoElement.Type} not found",
+                        SeverityEnum.Warning);
+                    continue;
+                }
+
+                if (deviceDataTypeTemplates.DoTypes.Contains(sdoDoType))
+                {
+                    continue;
+                }
+                deviceDataTypeTemplates.DoTypes.Add(sdoDoType);
+
+
+                foreach (var sdo in doType.SdoList)
+                {
+                    sdoQueue.Enqueue(sdo);
+                }
+
+                result.AddRange(doType.DaList.Where(da => da.BType == "Enum" || da.BType == "Struct"));
+            }
+
+            return result;
         }
 
         private void MergeDtt(ISclModel sclModelTo, ISclModel sclModelFrom, IDataTypeTemplates dttFrom)
@@ -411,10 +497,9 @@ namespace BISC.Modules.InformationModel.Model.Services
                     {
                         node.Type = resid;
                     }
-                    //var t = doList.Where(node => node.Type == doType.Id).ToList();
                 }
-
             }
+
             foreach (var daType in dttFrom.DaTypes)
             {
                 var resId = AddDaType(daType, sclModelTo);
@@ -424,14 +509,11 @@ namespace BISC.Modules.InformationModel.Model.Services
                     dttFrom.GetAllChildrenOfType(ref daList);
                     foreach (var node in daList.Where(node => node.Type == daType.Id))
                     {
-                        if (resId == "MR5PO50N245CTRL.CSWI1.Pos.Oper")
-                        {
-                        }
                         node.Type = resId;
                     }
-                    //var t = daList.Where(node => node.Type == daType.Id).ToList();
                 }
             }
+
             foreach (var lNodeType in dttFrom.LNodeTypes)
             {
                 var resId = AddLnodeType(lNodeType, sclModelTo);
@@ -443,16 +525,12 @@ namespace BISC.Modules.InformationModel.Model.Services
                     {
                         node.LnType = resId;
                     }
-                    //var t = lnList.Where(node => node.LnClass == lNodeType.Id).ToList();
                 }
             }
+
             foreach (var enumType in dttFrom.EnumTypes)
             {
-                var resId = AddEnumType(enumType, sclModelTo);
-                if (enumType.Id != resId)
-                {
-
-                }
+                AddEnumType(enumType, sclModelTo);
             }
         }
 
@@ -579,10 +657,7 @@ namespace BISC.Modules.InformationModel.Model.Services
         {
             foreach (var nodetypetypeitem in dataTypeTemplates.LNodeTypes)
             {
-                // if ((nodetype.DO.Count == nodetypetypeitem.DO.Count) &&
-                // (nodetype.id.Substring(nodetype.id.LastIndexOf('.')+1, nodetype.id.Length - nodetype.id.LastIndexOf('.') - 2) ==
-                //nodetypetypeitem.id.Substring(nodetypetypeitem.id.LastIndexOf('.')+1, nodetypetypeitem.id.Length - nodetypetypeitem.id.LastIndexOf('.') - 2))) return nodetypetypeitem;      
-                // //проверка только по количеству     
+                //проверка только по количеству     
                 bool isExist = true;
                 foreach (IDo newDo in nodetype.DoList)
                 {
@@ -640,22 +715,6 @@ namespace BISC.Modules.InformationModel.Model.Services
                     return dotypeitem;
                 }
             }
-            //foreach (IDoType dotypeitem in dataTypeTemplates.DoTypes)
-            //{
-            //    if ((dotypeitem.DaList.Count == dotype.DaList.Count) && (dotypeitem.SdoList.Count == dotype.SdoList.Count))
-            //    {
-            //        bool b = true;
-            //        foreach (var da in dotype.DaList)
-            //            if (!CheckIfExist(dotypeitem, da))
-            //                b = false;
-            //        foreach (var sdo in dotype.SdoList)
-            //            if (!CheckIfExist(dotypeitem, sdo))
-            //                b = false;
-
-            //        if ((dotype.Cdc == dotypeitem.Cdc) && (b))
-            //            return dotypeitem;
-            //    }
-            //}
             return null;
         }
 
@@ -748,6 +807,4 @@ namespace BISC.Modules.InformationModel.Model.Services
         }
         #endregion
     }
-
-
 }

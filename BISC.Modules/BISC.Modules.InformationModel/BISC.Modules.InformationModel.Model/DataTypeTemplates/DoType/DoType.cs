@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using BISC.Model.Global.Model;
-using BISC.Model.Global.Serializators;
 using BISC.Model.Infrastructure.Elements;
-using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplate.TemplatesBase;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 
 namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType
 {
-  public  class DoType:ModelElement, IDoType
+    public class DoType : ModelElement, IDoType
     {
         public DoType()
         {
@@ -21,7 +15,7 @@ namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType
         public string Id { get; set; }
         public string Cdc { get; set; }
         public ChildModelsList<IDa> DaList => new ChildModelsList<IDa>(this, "DA");
-        public ChildModelsList<ISdo> SdoList=>new ChildModelsList<ISdo>(this,"SDO");
+        public ChildModelsList<ISdo> SdoList => new ChildModelsList<ISdo>(this, "SDO");
         public List<IDataEntityWithType> GetAllITypes()
         {
             var res = new List<IDataEntityWithType>(DaList);

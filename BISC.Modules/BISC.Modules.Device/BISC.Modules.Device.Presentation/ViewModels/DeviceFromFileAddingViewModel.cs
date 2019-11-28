@@ -37,9 +37,15 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private bool _selectFileIsOpen;
         private IFileViewModel _activeFileViewModel;
 
-        public DeviceFromFileAddingViewModel(ICommandFactory commandFactory, IConfigurationService configurationService,
-            IFileViewModelFactory fileViewModelFactory, IModelComposingService modelComposingService, IDeviceModelService deviceModelService,
-            IDeviceViewModelFactory deviceViewModelFactory, IDeviceAddingService deviceAddingService, ILoggingService loggingService)
+        public DeviceFromFileAddingViewModel(
+            ICommandFactory commandFactory, 
+            IConfigurationService configurationService,
+            IFileViewModelFactory fileViewModelFactory, 
+            IModelComposingService modelComposingService, 
+            IDeviceModelService deviceModelService,
+            IDeviceViewModelFactory deviceViewModelFactory, 
+            IDeviceAddingService deviceAddingService, 
+            ILoggingService loggingService)
             : base(null)
         {
             _commandFactory = commandFactory;
@@ -61,7 +67,6 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _selectFileIsOpen = true;
             _activeFileViewModel = null;
         }
-
 
         private void OnAddSelectedDevicesExecute()
         {
@@ -130,11 +135,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _selectFileIsOpen = false;
             (OpenFileWithDevices as IPresentationCommand)?.RaiseCanExecute();
             var fileMaybe = FileHelper.SelectFileToOpen("Открыть файл с устройствами",
-                "SCL Files (*.cid,*.icd,*.iid)|*.cid;*.icd;*.iid|" +
+                "SCL Files (*.cid,*.icd,*.iid,*.SCD)|*.cid;*.icd;*.iid;*.SCD|" +
                 "Configured IED Description Files (*.cid)|*.cid|" +
                 "IED Capability Description Files (*.icd)|*.icd|" +
-                "Instantiated IED description Files (*.iid)|*.iid");
-            // +"Substation Configuration Description Files (*.SCD*)|*.SCD");
+                "Instantiated IED description Files (*.iid)|*.iid|" +
+                "Substation Configuration Description Files (*.SCD*)|*.SCD");
             _selectFileIsOpen = true;
             (OpenFileWithDevices as IPresentationCommand)?.RaiseCanExecute();
             if (!fileMaybe.Any()) return;

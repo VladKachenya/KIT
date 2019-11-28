@@ -85,7 +85,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             SaveCommand = commandFactory.CreatePresentationCommand(OnSave, () => _isCommandEnabled);
             UpdateCommand = commandFactory.CreatePresentationCommand(OnUpdateExecute, () => _isCommandEnabled);
             EnableGoinsCommand = commandFactory.CreatePresentationCommand(OnEnableGoIns);
-            DisableGoinsComand = commandFactory.CreatePresentationCommand(OnDisableGoIns);
+            DisableGoinsCommand = commandFactory.CreatePresentationCommand(OnDisableGoIns);
             GooseControlBlockViewModels = new ObservableCollection<GooseControlBlockViewModel>();
         }
         #endregion
@@ -96,7 +96,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         public ICommand EnableGoinsCommand { get; }
 
-        public ICommand DisableGoinsComand { get; }
+        public ICommand DisableGoinsCommand { get; }
 
         public DataView GooseMatrixDataView => _gooseMatrix?.DefaultView; 
 

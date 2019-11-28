@@ -9,7 +9,7 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates.DoType;
 
 namespace BISC.Modules.InformationModel.Model.DataTypeTemplates.DoType
 {
-   public class Sdo:ModelElement,ISdo
+    public class Sdo : ModelElement, ISdo
     {
         public Sdo()
         {
