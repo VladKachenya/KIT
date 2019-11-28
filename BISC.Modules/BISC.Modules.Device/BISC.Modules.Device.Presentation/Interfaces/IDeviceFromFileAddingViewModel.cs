@@ -11,5 +11,6 @@ namespace BISC.Modules.Device.Presentation.Interfaces
         ICommand LoadDevicesFromFile { get; }
         ObservableCollection<IFileViewModel> LastOpenedFiles { get; }
         ObservableCollection<IDeviceViewModel> CurrentDevicesToAdd { get; }
+        bool IsAddingEnable { get; set; }
     }
 }

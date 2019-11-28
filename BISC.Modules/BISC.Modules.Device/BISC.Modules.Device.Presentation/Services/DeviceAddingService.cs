@@ -12,6 +12,8 @@ using BISC.Presentation.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.UiFromModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Windows.Threading;
 using BISC.Model.Infrastructure.Services.Communication;
 
 namespace BISC.Modules.Device.Presentation.Services

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 using System.Xml.Linq;
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
@@ -36,18 +36,21 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private ISclModel _currentAddingSclModel;
         private bool _selectFileIsOpen;
         private IFileViewModel _activeFileViewModel;
+        private Dispatcher _dispatcher;
+        private bool _isAddingEnable;
 
         public DeviceFromFileAddingViewModel(
-            ICommandFactory commandFactory, 
+            ICommandFactory commandFactory,
             IConfigurationService configurationService,
-            IFileViewModelFactory fileViewModelFactory, 
-            IModelComposingService modelComposingService, 
+            IFileViewModelFactory fileViewModelFactory,
+            IModelComposingService modelComposingService,
             IDeviceModelService deviceModelService,
-            IDeviceViewModelFactory deviceViewModelFactory, 
-            IDeviceAddingService deviceAddingService, 
+            IDeviceViewModelFactory deviceViewModelFactory,
+            IDeviceAddingService deviceAddingService,
             ILoggingService loggingService)
             : base(null)
         {
+            _dispatcher = Dispatcher.CurrentDispatcher;
             _commandFactory = commandFactory;
             _commandFactory = commandFactory;
             _configurationService = configurationService;
@@ -66,37 +69,61 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             CurrentDevicesToAdd = new ObservableCollection<IDeviceViewModel>();
             _selectFileIsOpen = true;
             _activeFileViewModel = null;
+            IsAddingEnable = true;
         }
 
-        private void OnAddSelectedDevicesExecute()
+        private async void OnAddSelectedDevicesExecute()
         {
-            _deviceAddingService.AddDevicesInProject(CurrentDevicesToAdd.Where((model => model.IsSelected)).Select((model => model.Device)).ToList(),
-                _currentAddingSclModel,
-                _activeFileViewModel.ShortPath.Substring(_activeFileViewModel.ShortPath.Length - 3).ToLower() == "scd");
+            await Task.Run(() =>
+            {
+                _dispatcher.Invoke(() => IsAddingEnable = false);
+                try
+                {
+                    _deviceAddingService.AddDevicesInProject(CurrentDevicesToAdd.Where((model => model.IsSelected)).Select((model => model.Device)).ToList(),
+                        _currentAddingSclModel,
+                        _activeFileViewModel.ShortPath.Substring(_activeFileViewModel.ShortPath.Length - 3).ToLower() == "scd");
+                }
+                finally
+                {
+                    _dispatcher.Invoke(() => IsAddingEnable = true);
+                }
+            });
         }
 
-        private void OnLoadDevicesFromFileExecute(IFileViewModel fileViewModel)
+        private async void OnLoadDevicesFromFileExecute(IFileViewModel fileViewModel)
         {
-            _activeFileViewModel = fileViewModel;
-            if (!File.Exists(_activeFileViewModel.FullPath))
+            await Task.Run(() =>
             {
-                _loggingService.LogMessage($"File {_activeFileViewModel.FullPath} not found!", SeverityEnum.Warning);
-                OnDeleteFileFromViewExecute(_activeFileViewModel);
-                return;
-            }
-            var model = _modelComposingService.DeserializeModelFromFile(XElement.Load(fileViewModel.FullPath));
-            _currentAddingSclModel = model;
-            var devices = _deviceModelService.GetDevicesFromModel(model);
-            CurrentDevicesToAdd.Clear();
-            foreach (var device in devices)
-            {
-                CurrentDevicesToAdd.Add(_deviceViewModelFactory.CreateDeviceViewModel(device));
-            }
+                _dispatcher.Invoke(() => fileViewModel.IsAddingFileProcess = true);
+                try
+                {
+                    _activeFileViewModel = fileViewModel;
+                    if (!File.Exists(_activeFileViewModel.FullPath))
+                    {
+                        _loggingService.LogMessage($"File {_activeFileViewModel.FullPath} not found!", SeverityEnum.Warning);
+                        OnDeleteFileFromViewExecute(_activeFileViewModel);
+                        return;
+                    }
+                    var model = _modelComposingService.DeserializeModelFromFile(XElement.Load(fileViewModel.FullPath));
+                    _currentAddingSclModel = model;
+                    var devices = _deviceModelService.GetDevicesFromModel(model);
+                    _dispatcher.Invoke(() => CurrentDevicesToAdd.Clear());
+                    foreach (var device in devices)
+                    {
+                        _dispatcher.Invoke(() => CurrentDevicesToAdd.Add(_deviceViewModelFactory.CreateDeviceViewModel(device)));
+                    }
 
-            if (CurrentDevicesToAdd.Count == 1)
-            {
-                CurrentDevicesToAdd[0].IsSelected = true;
-            }
+                    if (CurrentDevicesToAdd.Count == 1)
+                    {
+                        _dispatcher.Invoke(() => CurrentDevicesToAdd[0].IsSelected = true);
+                    }
+                }
+                finally
+                {
+                    _dispatcher.Invoke(() => fileViewModel.IsAddingFileProcess = false);
+                }
+
+            });
         }
 
         private void OnDeleteFileFromViewExecute(IFileViewModel fileViewModel)
@@ -200,5 +227,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels
 
         public ObservableCollection<IFileViewModel> LastOpenedFiles { get; }
         public ObservableCollection<IDeviceViewModel> CurrentDevicesToAdd { get; }
+
+        public bool IsAddingEnable
+        {
+            get => _isAddingEnable;
+            set => SetProperty(ref _isAddingEnable, value);
+        }
     }
 }

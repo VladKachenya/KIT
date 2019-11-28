@@ -4,8 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BISC.Modules.Device.Presentation.Views"
+             xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:InverseConverter x:Key="inverseConverter"></converters:InverseConverter>
+        <converters:IsNullToVisibilityConverter x:Key="IsNullToVisibilityConverter"></converters:IsNullToVisibilityConverter>
+        <converters:BoolToVisConverter x:Key="boolToVisConverter"></converters:BoolToVisConverter>
+        <converters:BoolToVisConverter Invert="True" x:Key="boolToInVisConverter"></converters:BoolToVisConverter>
+    </UserControl.Resources>
     <Grid Width="800" Height="500">
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -48,7 +55,16 @@
                                 <Button Width="24" Margin="1" Height="24" Grid.Column="2" Padding="1" ToolTip="Загрузить устройства"
                                                 Command="{Binding DataContext.LoadDevicesFromFile,Source={x:Reference lastOpenedFilesListBox}}" CommandParameter="{Binding .}">
                                     <Button.Content>
-                                        <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}"></ContentControl>
+                                        <StackPanel>
+                                            <ContentControl ContentTemplate="{DynamicResource RightArrowIcon}" 
+                                            Visibility="{Binding IsAddingFileProcess, Converter={StaticResource boolToInVisConverter}}"/>
+                                            <ProgressBar
+                                                Foreground="AntiqueWhite"
+                                                Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                                Value="0"
+                                                IsIndeterminate="True" 
+                                                Visibility="{Binding IsAddingFileProcess, Converter={StaticResource boolToVisConverter}}"/>
+                                        </StackPanel>
                                     </Button.Content>
                                 </Button>
                             </Grid>
@@ -63,7 +79,7 @@
                 <Button Grid.Row="1" HorizontalAlignment="Left" Content="..." ToolTip="Открыть" Command="{Binding OpenFileWithDevices}"></Button>
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Column="1" Header="Текущий файл">
+        <GroupBox Grid.Column="1" Header="Текущий файл" IsEnabled="{Binding IsAddingEnable}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
@@ -79,7 +95,23 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <Button Grid.Row="1" Content="Добавить" ToolTip="Добавить выделенные устройства в проект" Command="{Binding DataContext.AddSelectedDevices,ElementName=devicesListBox}"></Button>
+                <Button Grid.Row="1" ToolTip="Добавить выделенные устройства в проект" 
+                        Command="{Binding DataContext.AddSelectedDevices,ElementName=devicesListBox}"
+                        IsEnabled="{Binding IsAddingEnable}" 
+                        Opacity="1">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Добавить"/>
+                            <ProgressBar  Margin="5, 0" Padding="0"
+                                Foreground="AntiqueWhite"
+                                Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                Value="0"
+                                IsIndeterminate="True" 
+                                Visibility="{Binding IsAddingEnable, Converter={StaticResource boolToInVisConverter}}"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+
             </Grid>
 
         </GroupBox>

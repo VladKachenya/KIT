@@ -8,5 +8,7 @@ namespace BISC.Modules.Device.Presentation.Interfaces
         string ShortPath { get; set; }
         ICommand OpenFile { get; }
         bool IsFileExists { get; set; }
+        bool IsAddingFileProcess { get; set; }
+        bool IsAddingDevicesProcess { get; set; }
     }
 }

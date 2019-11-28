@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.HelperEntities;
@@ -43,25 +44,35 @@ namespace BISC.Presentation.Services
             newItemViewModel.DynamicRegionId = newTreeItemGuid;
 
             parameters.AddParameterByName(UiEntityIdentifier.Key, uiEntityIdentifier);
-            if (parentUiEntityIdentifier != null && parentUiEntityIdentifier.ItemId.HasValue)
-            {
-                if (_mainTreeViewModels.ContainsKey(parentUiEntityIdentifier.ItemId.Value))
-                {
-                    _mainTreeViewModels[parentUiEntityIdentifier.ItemId.Value].Item2.ChildItemViewModels.Add(newItemViewModel);
-                }
-            }
-            else
-            {
-                if ((index == null) || (_mainTreeViewModel.ChildItemViewModels.Count - 1 < index))
-                {
-                    _mainTreeViewModel.ChildItemViewModels.Add(newItemViewModel);
-                }
-                else
-                {
-                    _mainTreeViewModel.ChildItemViewModels.Insert(index.Value, newItemViewModel);
-                }
-            }
-            _mainTreeViewModels.Add(newTreeItemGuid, new Tuple<UiEntityIdentifier, ITreeItemViewModel>(uiEntityIdentifier, newItemViewModel));
+
+            // For work with main tree from different threads
+            if (Application.Current.Dispatcher != null)
+                Application.Current.Dispatcher.BeginInvoke(new Action((() =>
+                    {
+                        if (parentUiEntityIdentifier != null && parentUiEntityIdentifier.ItemId.HasValue)
+                        {
+                            if (_mainTreeViewModels.ContainsKey(parentUiEntityIdentifier.ItemId.Value))
+                            {
+                                _mainTreeViewModels[parentUiEntityIdentifier.ItemId.Value].Item2.ChildItemViewModels
+                                    .Add(newItemViewModel);
+                            }
+                        }
+                        else
+                        {
+                            if ((index == null) || (_mainTreeViewModel.ChildItemViewModels.Count - 1 < index))
+                            {
+                                _mainTreeViewModel.ChildItemViewModels.Add(newItemViewModel);
+                            }
+                            else
+                            {
+                                _mainTreeViewModel.ChildItemViewModels.Insert(index.Value, newItemViewModel);
+                            }
+                        }
+
+                        _mainTreeViewModels.Add(newTreeItemGuid,
+                            new Tuple<UiEntityIdentifier, ITreeItemViewModel>(uiEntityIdentifier, newItemViewModel));
+                    })));
+
             _navigationService.NavigateViewToRegion(viewName, newTreeItemGuid.ToString(), parameters);
             return uiEntityIdentifier;
         }
@@ -149,7 +160,7 @@ namespace BISC.Presentation.Services
                 return uiEntityIdentifier;
             }
 
-            if(uiEntityIdentifier.ParenUiEntityIdentifier != null)
+            if (uiEntityIdentifier.ParenUiEntityIdentifier != null)
             {
                 return GetParentDeviceUiIdentifierOfDefault(uiEntityIdentifier.ParenUiEntityIdentifier);
             }
