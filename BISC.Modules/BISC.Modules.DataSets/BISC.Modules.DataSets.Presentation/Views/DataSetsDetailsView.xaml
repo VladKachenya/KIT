@@ -19,10 +19,10 @@
 
         <Style x:Key ="IsEditebleStyle" TargetType="ContentControl">
             <Style.Triggers >
-                <DataTrigger Binding="{Binding IsEditeble}" Value="true">
+                <DataTrigger Binding="{Binding IsEditable}" Value="true">
                     <Setter Property="ContentTemplate" Value="{DynamicResource BookmarkPlusIcon}"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding IsEditeble}" Value="false">
+                <DataTrigger Binding="{Binding IsEditable}" Value="false">
                     <Setter Property="ContentTemplate" Value="{DynamicResource PencilLockIcon}"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -236,7 +236,7 @@
                                             Style="{StaticResource {x:Type ItemsControl}}"
                                             ItemsSource="{Binding FcdaViewModels}"  
                                             dd:DragDrop.IsDragSource="True" 
-                                            dd:DragDrop.IsDropTarget="{Binding IsEditeble}"
+                                            dd:DragDrop.IsDropTarget="{Binding IsEditable}"
                                             dd:DragDrop.DropHandler="{Binding .}">
                     <ListBox.Template>
                         <ControlTemplate TargetType="ItemsControl">
@@ -336,7 +336,7 @@
                                             </Style>
                                         </ContentControl.Style>
                                     </ContentControl>
-                                    <Button Margin="2" Padding="3" Visibility="{Binding IsEditeble,Converter={StaticResource booleanToVisibilityConverter}}"
+                                    <Button Margin="2" Padding="3" Visibility="{Binding IsEditable,Converter={StaticResource booleanToVisibilityConverter}}"
                                             IsEnabled="{Binding DataContext.IsEditing, Source={x:Reference fcdaListBox}}"
                                             Command="{Binding DataContext.DeleteFcdaCommand,Source={x:Reference fcdaListBox}}"
                                             CommandParameter="{Binding .}" VerticalAlignment="Center"
