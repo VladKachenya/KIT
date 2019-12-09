@@ -275,7 +275,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public int MaxSizeFcdaList
         {
-            get => 100;
+            get => 140;
         }
 
         public bool IsSelect

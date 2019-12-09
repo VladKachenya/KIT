@@ -229,9 +229,17 @@ namespace BISC.Modules.InformationModel.Model.Services
             IDataTypeTemplates dataTypeTemplates = GetDataTypeTemplates(sclModel);
             ILNodeType lNodeType =
                 dataTypeTemplates.LNodeTypes.FirstOrDefault((type => type.Id == parentLogicalNode.LnType));
+            if (lNodeType == null)
+            {
+                return null;
+            }
             IDo parentDo = lNodeType.DoList.FirstOrDefault(parentDoToFind => parentDoToFind.Name == parentDoi.Name);
 
             IDoType parentDoType = dataTypeTemplates.DoTypes.FirstOrDefault((type => type.Id == parentDo.Type));
+            if (parentDoType == null)
+            {
+                return null;
+            }
             foreach (var recursiveParent in recursiveParents)
             {
                 if (recursiveParent is IDai daiParent)

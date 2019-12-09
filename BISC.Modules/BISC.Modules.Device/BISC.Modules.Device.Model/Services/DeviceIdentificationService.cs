@@ -74,11 +74,11 @@ namespace BISC.Modules.Device.Model.Services
             }
 
             _goosesModelService.ChengeGooseDeviceInputOwner(_biscProject, device, newDeviceName);
-            _sclCommunicationModelService.ReplaceAccessPointIp(device.GetFirstParentOfType<ISclModel>(), device.Name, settableIp);
-            _sclCommunicationModelService.ReplaceAccessPointIdeName(device.GetFirstParentOfType<ISclModel>(), device.Name, newDeviceName);
+            _sclCommunicationModelService.ReplaceAccessPointIp(sclModel, device.Name, settableIp);
+            _sclCommunicationModelService.ReplaceAccessPointIdeName(sclModel, device.Name, newDeviceName);
 
             _infoModelService.UpdateLnTypesOfDevice(device, newDeviceName);
-            _dataTypeTemplatesModelService.UpdateTemplatesUnderIdeName(device.GetFirstParentOfType<ISclModel>(), device.Name, newDeviceName);
+            _dataTypeTemplatesModelService.UpdateTemplatesUnderIdeName(sclModel, device.Name, newDeviceName);
 
             device.Ip = settableIp;
             device.Name = newDeviceName;

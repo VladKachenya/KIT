@@ -87,7 +87,7 @@
                 <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="10, 0">
                     <TextBlock Text="{Binding DataSets.Count}"/>
                     <TextBlock Text="/"/>
-                    <TextBlock Text="{Binding MaxNambOfDataSet}"/>
+                    <TextBlock Text="{Binding MaxNumberOfDataSet}"/>
 
                 </StackPanel>
             </Grid>

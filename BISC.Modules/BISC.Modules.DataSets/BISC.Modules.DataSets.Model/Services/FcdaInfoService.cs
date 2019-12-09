@@ -104,7 +104,7 @@ namespace BISC.Modules.DataSets.Model.Services
             int weight = 0;
             foreach (var dai in daisOfModelEment)
             {
-                IDa da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel.Value);
+                IDa da = _dataTypeTemplatesModelService.GetDaOfDai(dai, device.GetFirstParentOfType<ISclModel>());
                 if (da.Fc == fc)
                 {
                     weight++;

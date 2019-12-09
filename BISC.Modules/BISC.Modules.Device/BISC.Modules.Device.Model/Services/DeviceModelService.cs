@@ -21,6 +21,23 @@ namespace BISC.Modules.Device.Model.Services
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
 
+        void SetSclModelForModelElement(IModelElement element, ISclModel sclModel)
+        {
+            if (element.ParentModelElement == null)
+            {
+                return;
+            }
+            else if (element.ParentModelElement is IModelElement)
+            {
+                element.ParentModelElement = (IModelElement)sclModel;
+                return;
+            }
+            else
+            {
+                SetSclModelForModelElement(element.ParentModelElement, sclModel);
+            }
+        }
+
         public DeviceModelService(ISclCommunicationModelService sclCommunicationModelService, IDataTypeTemplatesModelService dataTypeTemplatesModelService)
         {
             _sclCommunicationModelService = sclCommunicationModelService;
@@ -71,6 +88,10 @@ namespace BISC.Modules.Device.Model.Services
 
             _sclCommunicationModelService.AddConnectedAccessPoint(sclModel, FindConnectedAccessPointOfTheDevice(modelFrom, device.Name));
             sclModel.ChildModelElements.Add(device);
+
+            //It is too important
+            SetSclModelForModelElement(device, sclModel);
+
             return OperationResult.SucceedResult;
         }
 
