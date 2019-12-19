@@ -170,7 +170,7 @@ namespace BISC.Modules.Device.Presentation.Services
                     return;
                 }
 
-                if (existingDevice.RevisionDetails.CompareVersionTo(device.RevisionDetails) != 0)
+                if (existingDevice.RevisionDetails.CompareVersionTo(device.RevisionDetails) > 0)
                 {
                     await ShowMissing("Несоответствие версий:\n" +
                                       $"Версия устройства в проекте: {existingDevice.Revision}\n" +
