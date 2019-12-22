@@ -76,6 +76,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _globalSavingService = globalSavingService;
             _userInterfaceComposingService = userInterfaceComposingService;
             ApplySubscriptionCommand = commandFactory.CreatePresentationCommand(OnApplySubscription);
+            ClearSubscriptionCommand = commandFactory.CreatePresentationCommand(OnClearSubscrioption);
             SaveCommand = commandFactory.CreatePresentationCommand(OnSave, () => _isCommandEnabled);
             UpdateCommand = commandFactory.CreatePresentationCommand(OnUpdateExecute, () => _isCommandEnabled);
         }
@@ -98,7 +99,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             {
                 _selectedGoInViewModel = value;
                 OnPropertyChanged();
-                SelectedGooseDataReferenceViewModel = GooseDataReferenceViewModels.FirstOrDefault();
+                //SelectedGooseDataReferenceViewModel = GooseDataReferenceViewModels.FirstOrDefault();
             }
         }
 
@@ -122,8 +123,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         }
 
         public ICommand ApplySubscriptionCommand { get; }
+        public ICommand ClearSubscriptionCommand { get; }
+
         public ICommand UpdateCommand { get; }
         public ICommand SaveCommand { get; }
+
 
 
         private async void OnUpdateExecute()
@@ -180,13 +184,21 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
                 return;
             }
             SelectedGoInViewModel.EnableState = true;
-            if (!String.IsNullOrWhiteSpace(SelectedGooseDataReferenceViewModel.DataSetReferenceQuality) ||
-                SelectedGooseDataReferenceViewModel.DataSetReferenceQuality.ToLower() != "нет")
+            if (String.IsNullOrWhiteSpace(SelectedGooseDataReferenceViewModel.DataSetReferenceQuality) ||
+                SelectedGooseDataReferenceViewModel.DataSetReferenceQuality.ToLower() == "нет")
             {
-                SelectedGoInViewModel.EnableQuality = true;
-                SelectedGoInViewModel.EnableGooseMonitoring = true;
+                SelectedGoInViewModel.EnableQuality = false;
+                SelectedGoInViewModel.EnableGooseMonitoring = false;
                 return;
             }
+            SelectedGoInViewModel.EnableQuality = true;
+            SelectedGoInViewModel.EnableGooseMonitoring = true;
+        }
+
+        private void OnClearSubscrioption()
+        {
+            SelectedGoInViewModel.GooseDataReferenceViewModel = GooseDataReferenceViewModels.First();
+            SelectedGoInViewModel.EnableState = false;
             SelectedGoInViewModel.EnableQuality = false;
             SelectedGoInViewModel.EnableGooseMonitoring = false;
         }
