@@ -1,0 +1,137 @@
+﻿<UserControl x:Class="BISC.Modules.Gooses.Presentation.Views.Tabs.GooseMatrixTabLight"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BISC.Modules.Gooses.Presentation.Views.Tabs"
+             xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
+             xmlns:gooseSubscriptionLight="clr-namespace:BISC.Modules.Gooses.Presentation.Interfaces.GooseSubscriptionLight"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        <ListBox  x:Name="GoInList" behaviors:ListBoxBehavior.ScrollOnNewItem="true" 
+                  ItemsSource="{Binding GoInViewModels}" SelectedItem="{Binding SelectedGoInViewModel, Mode=TwoWay}"  
+                  Grid.Column="0" 
+                  BorderThickness="0"
+                  Style="{StaticResource {x:Type ItemsControl}}">
+            <ListBox.Template>
+                <ControlTemplate TargetType="ItemsControl">
+                    <ScrollViewer VerticalScrollBarVisibility="Visible">
+                        <!-- I'm not sure if the correct name is necessary, or if
+                 it's just for applying visual states -->
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ListBox.Template>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="gooseSubscriptionLight:IGoInViewModel">
+                    <Border 
+                        x:Name="Border"
+                        BorderBrush="{DynamicResource MaterialDesignDivider}">
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding EnableState}" IsEnabled="False"></CheckBox>
+                            <TextBlock Text="{Binding Name}"></TextBlock>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ListBox>
+        <GridSplitter Grid.Column="1" ShowsPreview="False" Width="4" Background="Black"
+                      HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+
+        <Grid Grid.Column="2" Margin="4, 4, 4, 4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{Binding SelectedGoInViewModel.Name}"  Grid.Row="0" Grid.ColumnSpan="2" FontWeight="Bold" FontSize="30"/>
+
+            <TextBlock Text="{Binding SelectedGoInViewModel.GooseDataReferenceViewModel.DoiDataReference}" TextWrapping="Wrap" Grid.Column="0" Grid.Row="1" Padding="0, 5, 0, 5"/>
+            <Border BorderBrush="#6a7e91" BorderThickness="1" Grid.Column="0" Grid.Row="2" Padding="0, 5, 0, 5">
+                <StackPanel  Orientation="Vertical">
+                    <StackPanel  Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding SelectedGoInViewModel.EnableState}" IsEnabled="{Binding SelectedGoInViewModel.IsSetSateEnable}"/>
+                        <TextBlock Text=" (Состояние)"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding SelectedGoInViewModel.GooseDataReferenceViewModel.DataSetReferenceState}" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+            <Border BorderBrush="#6a7e91" BorderThickness="1" Grid.Column="0" Grid.Row="3" Padding="0, 5, 0, 5">
+                <StackPanel  Orientation="Vertical">
+                    <StackPanel  Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding SelectedGoInViewModel.EnableQuality}" IsEnabled="{Binding SelectedGoInViewModel.IsSetQualityEnable}"/>
+                        <TextBlock Text=" (Качество)"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding SelectedGoInViewModel.GooseDataReferenceViewModel.DataSetReferenceQuality}" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+            <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="0" Grid.Row="4" Padding="0, 5, 0, 5">
+                <StackPanel  Orientation="Vertical">
+                    <CheckBox IsChecked="{Binding SelectedGoInViewModel.EnableGooseMonitoring}" IsEnabled="{Binding SelectedGoInViewModel.IsSetGooseMonitoringEnable}"/>
+                    <TextBlock Text="Контроль потери связи" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+
+
+            <TextBlock Text="{Binding SelectedGooseDataReferenceViewModel.DoiDataReference}" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" Padding="0, 5, 0, 5"/>
+            <Border BorderBrush="#6a7e91" BorderThickness="1" Grid.Column="1" Grid.Row="2" Padding="0, 5, 0, 5">
+                <StackPanel  Orientation="Vertical">
+                    <TextBlock Text="{Binding SelectedGooseDataReferenceViewModel.DataSetReferenceState}" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+            <Border BorderBrush="#6a7e91" BorderThickness="1" Grid.Column="1" Grid.Row="3" Padding="0, 5, 0, 5">
+                <StackPanel  Orientation="Vertical">
+                    <TextBlock Text="{Binding SelectedGooseDataReferenceViewModel.DataSetReferenceState}" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+            <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="1" Grid.Row="5" Padding="0, 5, 0, 5">
+                <StackPanel  Orientation="Vertical">
+                    <Button Content="Применить" Command="{Binding ApplySubscriptionCommand}"/>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+        <GridSplitter Grid.Column="3" ShowsPreview="False" Width="4" Background="Black"
+                      HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+        <ListBox  x:Name="GooseRefList" behaviors:ListBoxBehavior.ScrollOnNewItem="true" 
+                  ItemsSource="{Binding GooseDataReferenceViewModels}" SelectedItem="{Binding SelectedGooseDataReferenceViewModel, Mode=TwoWay}"  
+                  Grid.Column="4" 
+                  BorderThickness="0"
+                  Style="{StaticResource {x:Type ItemsControl}}">
+            <ListBox.Template>
+                <ControlTemplate TargetType="ItemsControl">
+                    <ScrollViewer VerticalScrollBarVisibility="Visible">
+                        <!-- I'm not sure if the correct name is necessary, or if
+                 it's just for applying visual states -->
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ListBox.Template>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="gooseSubscriptionLight:IGooseDataReferenceViewModel">
+                    <Border 
+                        x:Name="Border"
+                        BorderBrush="{DynamicResource MaterialDesignDivider}">
+                        <TextBlock Text="{Binding DoiDataReference}"></TextBlock>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

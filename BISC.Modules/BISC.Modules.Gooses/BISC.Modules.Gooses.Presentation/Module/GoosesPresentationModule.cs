@@ -19,8 +19,10 @@ using BISC.Modules.Gooses.Presentation.Views.Tree;
 using BISC.Presentation.Infrastructure.UiFromModel;
 using System;
 using BISC.Modules.Device.Infrastructure.Saving;
+using BISC.Modules.Gooses.Presentation.Interfaces.GooseSubscriptionLight;
 using BISC.Modules.Gooses.Presentation.Interfaces.Services;
 using BISC.Modules.Gooses.Presentation.Services.SavingServices;
+using BISC.Modules.Gooses.Presentation.ViewModels.GooseSubscriptionLight;
 using BISC.Modules.Gooses.Presentation.ViewModels.Matrix.Table;
 
 namespace BISC.Modules.Gooses.Presentation.Module
@@ -43,6 +45,7 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<GooseGroupTreeItemViewModel>();
             _injectionContainer.RegisterType<GooseSubscriptionTabViewModel>();
             _injectionContainer.RegisterType<GooseMatrixTabViewModel>();
+            _injectionContainer.RegisterType<GooseMatrixTabLightViewModel>();
             _injectionContainer.RegisterType<GooseControlsTabViewModel>();
             _injectionContainer.RegisterType<ISelectableValueViewModel, SelectableValueViewModel>();
             _injectionContainer.RegisterType<GooseRowViewModelFactory>();
@@ -67,6 +70,7 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<object, GooseSubscriptionTab>(GooseKeys.GoosePresentationKeys.GooseSubscriptionTabKey);
             _injectionContainer.RegisterType<object, GooseControlsTab>(GooseKeys.GoosePresentationKeys.GooseControlsTabKey);
             _injectionContainer.RegisterType<object, GooseMatrixTab>(GooseKeys.GoosePresentationKeys.GooseMatrixTabKey);
+            _injectionContainer.RegisterType<object, GooseMatrixTabLight>(GooseKeys.GoosePresentationKeys.GooseMatrixTabLightKey);
             _injectionContainer.RegisterType<IDeviceElementSavingService, GooseSubscriptionsSavingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IDeviceElementSavingService, GooseControlSavingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<object, GooseControlsConflictsView>(GooseKeys.GoosePresentationKeys.GooseControlsConflictsView);
@@ -78,6 +82,10 @@ namespace BISC.Modules.Gooses.Presentation.Module
 
             _injectionContainer.RegisterType<IGooseMatrixSelectableCellViewModel, GooseMatrixSelectableCellViewModel>();
             _injectionContainer.RegisterType<IGooseMatrixRowDescription, GooseMatrixRowDescription>();
+
+            _injectionContainer.RegisterType<IGoInViewModel, GoInViewModel>();
+            _injectionContainer.RegisterType<IGooseDataReferenceViewModel, GooseDataReferenceViewModel>();
+            _injectionContainer.RegisterType<IGooseMatrixLightViewModelFactory, GooseMatrixLightViewModelFactory>();
 
 
             GoosePresentationInitialization presentationInitialization = _injectionContainer.ResolveType(typeof(GoosePresentationInitialization)) as GoosePresentationInitialization;

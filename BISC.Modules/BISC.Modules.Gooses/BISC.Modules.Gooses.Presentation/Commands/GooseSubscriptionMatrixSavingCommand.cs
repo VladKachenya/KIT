@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BISC.Modules.Gooses.Presentation.Interfaces.GooseSubscriptionLight;
 
 namespace BISC.Modules.Gooses.Presentation.Commands
 {
@@ -25,6 +26,7 @@ namespace BISC.Modules.Gooses.Presentation.Commands
         private readonly ILoggingService _loggingService;
         private IDevice _device;
         private List<GooseControlBlockViewModel> _gooseControlBlockViewModels;
+        private List<IGoInViewModel> _goInViewModels;
 
         public GooseSubscriptionMatrixSavingCommand(IGooseSavingService gooseSavingService,
             IDeviceWarningsService deviceWarningsService, IConnectionPoolService connectionPoolService,
@@ -38,9 +40,10 @@ namespace BISC.Modules.Gooses.Presentation.Commands
 
 
         public void Initialize(IDevice device,
-            List<GooseControlBlockViewModel> gooseControlBlockViewModels)
+            List<GooseControlBlockViewModel> gooseControlBlockViewModels, List<IGoInViewModel> goInViewModels = null)
         {
             _device = device;
+            _goInViewModels = goInViewModels;
             _gooseControlBlockViewModels = gooseControlBlockViewModels;
         }
 
@@ -48,6 +51,10 @@ namespace BISC.Modules.Gooses.Presentation.Commands
         {
             try
             {
+                if (_goInViewModels != null)
+                {
+                    UpdateGooseMatrix();
+                }
                 List<Tuple<IGoCbFtpEntity, IGooseRowFtpEntity>>
                     entitysForSaving = new List<Tuple<IGoCbFtpEntity, IGooseRowFtpEntity>>();
                 // Перебираем гусы
@@ -120,5 +127,41 @@ namespace BISC.Modules.Gooses.Presentation.Commands
         }
 
         public Action RefreshViewModel { get; set; }
+
+        private void UpdateGooseMatrix()
+        {
+            if(_goInViewModels == null) return;
+            foreach (var gooseControlBlockViewModel in _gooseControlBlockViewModels)
+            {
+                foreach (var gooseRowViewModel in gooseControlBlockViewModel.GooseRowViewModels)
+                {
+                    if (gooseRowViewModel.SelectableValueViewModels != null)
+                    {
+                        foreach (var selectableValueViewModel in gooseRowViewModel.SelectableValueViewModels)
+                        {
+                            selectableValueViewModel.SetValue(false);
+                        }
+                    }
+                }
+            }
+
+            foreach (var goInViewModel in _goInViewModels)
+            {
+                if(!goInViewModel.EnableState) continue;
+                var gooseControlBlockViewModel = _gooseControlBlockViewModels.First(gcb =>
+                    gcb.DeviceName == goInViewModel.GooseDataReferenceViewModel.DeviceName);
+                gooseControlBlockViewModel.GooseRowViewModels
+                    .First(gr => gr.RowName == goInViewModel.GooseDataReferenceViewModel.DataSetReferenceState)
+                    .SelectableValueViewModels[goInViewModel.Number].SetValue(true);
+                if(!goInViewModel.EnableQuality) continue;
+                gooseControlBlockViewModel.GooseRowViewModels
+                    .First(gr => gr.RowName == goInViewModel.GooseDataReferenceViewModel.DataSetReferenceQuality)
+                    .SelectableValueViewModels[goInViewModel.Number].SetValue(true);
+                if (!goInViewModel.EnableGooseMonitoring) continue;
+                gooseControlBlockViewModel.GooseRowViewModels
+                    .First(gr => gr.GooseRowType == GooseKeys.GooseSubscriptionPresentationKeys.Validity)
+                    .SelectableValueViewModels[goInViewModel.Number].SetValue(true);
+            }
+        }
     }
 }

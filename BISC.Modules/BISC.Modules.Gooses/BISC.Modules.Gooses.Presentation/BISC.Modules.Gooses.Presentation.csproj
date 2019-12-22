@@ -63,11 +63,15 @@
     <Compile Include="Events\SelectableBoxEventArgs.cs" />
     <Compile Include="Factories\GooseControlBlockViewModelFromFtpFactory.cs" />
     <Compile Include="Factories\GooseControlViewModelFactory.cs" />
+    <Compile Include="Factories\GooseMatrixLightViewModelFactory.cs" />
     <Compile Include="Factories\GooseRowViewModelFactory.cs" />
     <Compile Include="Factories\GooseSubscriptionDataTableFactory.cs" />
     <Compile Include="Interfaces\Factories\IGooseControlBlockViewModelFactory.cs" />
+    <Compile Include="Interfaces\Factories\IGooseMatrixLightViewModelFactory.cs" />
     <Compile Include="Interfaces\Factories\IGooseRowViewModelFactory.cs" />
     <Compile Include="Interfaces\Factories\IGooseSubscriptionDataTableFactory.cs" />
+    <Compile Include="Interfaces\GooseSubscriptionLight\IGoInViewModel.cs" />
+    <Compile Include="Interfaces\GooseSubscriptionLight\IGooseDataReferenceViewModel.cs" />
     <Compile Include="Interfaces\IGooseMatrixRowDescription.cs" />
     <Compile Include="Interfaces\IGooseMatrixSelectableCellViewModel.cs" />
     <Compile Include="Interfaces\IGooseRowViewModel.cs" />
@@ -85,6 +89,8 @@
     <Compile Include="ViewModels\GooseControls\GooseControlsConflictContext.cs" />
     <Compile Include="ViewModels\GooseControls\GooseControlsConflictsViewModel.cs" />
     <Compile Include="ViewModels\GooseControls\GooseControlViewModel.cs" />
+    <Compile Include="ViewModels\GooseSubscriptionLight\GoInViewModel.cs" />
+    <Compile Include="ViewModels\GooseSubscriptionLight\GooseDataReferenceViewModel.cs" />
     <Compile Include="ViewModels\Matrix\Entities\FcdaAssignmentItem.cs" />
     <Compile Include="ViewModels\Matrix\Entities\GooseControlBlockAssignmentItem.cs" />
     <Compile Include="ViewModels\Matrix\Entities\GooseDescriptionEntity.cs" />
@@ -97,6 +103,7 @@
     <Compile Include="ViewModels\Matrix\Table\GooseMatrixSelectableCellViewModel.cs" />
     <Compile Include="ViewModels\Subscriptions\SubscriptionValue.cs" />
     <Compile Include="ViewModels\Tabs\GooseControlsTabViewModel.cs" />
+    <Compile Include="ViewModels\Tabs\GooseMatrixTabLightViewModel.cs" />
     <Compile Include="ViewModels\Tabs\GooseMatrixTabViewModel.cs" />
     <Compile Include="ViewModels\Tabs\GooseSubscriptionTabViewModel.cs" />
     <Compile Include="Views\GooseControlsConflictsView.xaml.cs">
@@ -110,6 +117,9 @@
     </Compile>
     <Compile Include="Views\Tabs\GooseMatrixTab.xaml.cs">
       <DependentUpon>GooseMatrixTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Tabs\GooseMatrixTabLight.xaml.cs">
+      <DependentUpon>GooseMatrixTabLight.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Tabs\GooseSubscriptionTab.xaml.cs">
       <DependentUpon>GooseSubscriptionTab.xaml</DependentUpon>
@@ -142,6 +152,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Tabs\GooseMatrixTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Tabs\GooseMatrixTabLight.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
