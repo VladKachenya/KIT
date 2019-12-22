@@ -83,6 +83,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Matrix
             base.OnDisposing();
         }
 
+        public override string ToString()
+        {
+	        return GoCbReference?.GoCbReference;
+        }
+
         //#region Implementation of IGooseControlBlockViewModel
 
         //public IGooseControlBlock Model

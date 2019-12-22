@@ -23,11 +23,10 @@ namespace BISC.Presentation.Windows
     {
         private Timer _timer;
         private readonly int _maxValue;
-        public ProgressWindow(int maxValue, Func<int> getCurrentProgress, Func<bool> isClose) : base()
+        public ProgressWindow(int maxValue, Func<int> getCurrentProgress) : base()
         {
             _maxValue = maxValue;
             GetCurrentProgress = getCurrentProgress;
-            _isClose = isClose;
             InitializeComponent();
             ProgressBar.Maximum = maxValue;
             var tm = new TimerCallback(UpdateProgressBar);
@@ -36,15 +35,14 @@ namespace BISC.Presentation.Windows
 
         private void UpdateProgressBar(object state)
         {
-            if (_isClose())
-            {
-                Dispatcher?.Invoke(this.Close);
-            }
-
             Dispatcher?.Invoke(() => ProgressBar.Value = GetCurrentProgress());
         }
 
+        public void CloseWindow()
+        {
+	        _timer.Dispose();
+	        Dispatcher?.Invoke(this.Close);
+		}
         public Func<int> GetCurrentProgress;
-        private readonly Func<bool> _isClose;
     }
 }

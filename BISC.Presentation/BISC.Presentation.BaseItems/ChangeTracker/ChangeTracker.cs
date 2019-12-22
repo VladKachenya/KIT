@@ -42,9 +42,10 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
             if (_isTrackingEnabled)
             {
                 ChangeTrackerState = ChangeTrackerState.Modified;
-            }
+                StaticContainer.CurrentContainer.ResolveType<IGlobalEventsService>().SendMessage(new SaveCheckEvent());
+			}
 
-        }
+		}
 
         private void TrySubscribeOnCollectionChanged(object collection)
         {
@@ -63,8 +64,9 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
             if (_isTrackingEnabled)
             {
                 ChangeTrackerState = ChangeTrackerState.Modified;
-            }
-        }
+                StaticContainer.CurrentContainer.ResolveType<IGlobalEventsService>().SendMessage(new SaveCheckEvent());
+			}
+		}
 
         private void TryUnSubscribeOnCollectionChanged(object collection)
         {
@@ -101,13 +103,13 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
             _isTrackingEnabled = isTrackingEnabled;
         }
 
-        public void AcceptChanges()
+        public void AcceptChanges(bool generateCheckEvent=true)
         {
             foreach (var value in _valuesDictionary)
             {
                 if (value.Value is IObjectWithChangeTracker objectWithChangeTracker)
                 {
-                    objectWithChangeTracker.ChangeTracker.AcceptChanges();
+                    objectWithChangeTracker.ChangeTracker.AcceptChanges(false);
                 }
 
                 if (value.Value is IEnumerable enumerable)
@@ -116,13 +118,17 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
                     {
                         if (eVal is IObjectWithChangeTracker eValWithChangeTracker)
                         {
-                            eValWithChangeTracker.ChangeTracker.AcceptChanges();
+                            eValWithChangeTracker.ChangeTracker.AcceptChanges(false);
                         }
                     }
                 }
             }
             ChangeTrackerState = ChangeTrackerState.Unchanged;
-        }
+            if (generateCheckEvent)
+            {
+	            StaticContainer.CurrentContainer.ResolveType<IGlobalEventsService>().SendMessage(new SaveCheckEvent());
+			}
+		}
 
         public ChangeTrackerState ChangeTrackerState
         {
@@ -131,10 +137,9 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
             {
                 if(_changeTrackerState==value)return;
                 _changeTrackerState = value;
-                StaticContainer.CurrentContainer.ResolveType<IGlobalEventsService>().SendMessage(new SaveCheckEvent());
             }
         }
-        
+     
 
 
         public bool GetIsModifiedRecursive()
@@ -172,9 +177,10 @@ namespace BISC.Presentation.BaseItems.ChangeTracker
         public void SetModified()
         {
             ChangeTrackerState = ChangeTrackerState.Modified;
-        }
+            StaticContainer.CurrentContainer.ResolveType<IGlobalEventsService>().SendMessage(new SaveCheckEvent());
+		}
 
-        public void Dispose()
+		public void Dispose()
         {
             foreach (var value in _valuesDictionary)
             {

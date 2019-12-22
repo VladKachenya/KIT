@@ -1,17 +1,20 @@
-﻿<UserControl x:Class="BISC.Modules.Gooses.Presentation.Views.Tabs.GooseMatrixTab"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:BISC.Modules.Gooses.Presentation.Views.Tabs"
-             xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
-             xmlns:commands="clr-namespace:BISC.Presentation.BaseItems.Commands;assembly=BISC.Presentation.BaseItems"
-             xmlns:keys1="clr-namespace:BISC.Modules.Device.Infrastructure.Keys;assembly=BISC.Modules.Device.Infrastructure"
-             xmlns:keys="clr-namespace:BISC.Modules.Gooses.Infrastructure.Keys;assembly=BISC.Modules.Gooses.Infrastructure"
-             xmlns:views="clr-namespace:BISC.Presentation.BaseItems.Views;assembly=BISC.Presentation.BaseItems"
-             xmlns:userControl="clr-namespace:BISC.Modules.Gooses.Presentation.Views.UserControl"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+﻿<UserControl
+    x:Class="BISC.Modules.Gooses.Presentation.Views.Tabs.GooseMatrixTab"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
+    xmlns:commands="clr-namespace:BISC.Presentation.BaseItems.Commands;assembly=BISC.Presentation.BaseItems"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:keys="clr-namespace:BISC.Modules.Gooses.Infrastructure.Keys;assembly=BISC.Modules.Gooses.Infrastructure"
+    xmlns:keys1="clr-namespace:BISC.Modules.Device.Infrastructure.Keys;assembly=BISC.Modules.Device.Infrastructure"
+    xmlns:local="clr-namespace:BISC.Modules.Gooses.Presentation.Views.Tabs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControl="clr-namespace:BISC.Modules.Gooses.Presentation.Views.UserControl"
+    xmlns:views="clr-namespace:BISC.Presentation.BaseItems.Views;assembly=BISC.Presentation.BaseItems"
+    Name="gooseMatrixTab"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
     <ContentControl Style="{StaticResource BlockedContentStyle}">
         <ContentControl.Resources>
             <!--<Style x:Key="GroupHeaderStyle" TargetType="{x:Type GroupItem}">
@@ -28,33 +31,66 @@
                 </Setter>
             </Style>-->
         </ContentControl.Resources>
-        <Grid>
+        <Grid VerticalAlignment="Stretch" >
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button Command="{Binding EnableGoinsCommand}" ToolTip="Назначить все сигналы" Height="30" Width="30"
-                        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
-                        Margin="5,2">
+                <Button
+                    Width="30"
+                    Height="30"
+                    Margin="5,2"
+                    Command="{Binding EnableGoinsCommand}"
+                    Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                    ToolTip="Назначить все сигналы">
                     <Button.Content>
-                        <ContentControl ContentTemplate="{DynamicResource CheckboxMultipleMarkedIcon}" Height="20"/>
+                        <ContentControl Height="20" ContentTemplate="{DynamicResource CheckboxMultipleMarkedIcon}" />
                     </Button.Content>
                 </Button>
-                <Button Grid.Column="1" Command="{Binding DisableGoinsComand}" ToolTip="Убрать все подписки" Height="30" Width="30"
-                        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
-                        Margin="5,2">
+                <Button
+                    Grid.Column="1"
+                    Width="30"
+                    Height="30"
+                    Margin="5,2"
+                    Command="{Binding DisableGoinsComand}"
+                    Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                    ToolTip="Убрать все подписки">
                     <Button.Content>
-                        <ContentControl ContentTemplate="{DynamicResource CheckboxMultipleBlankOutlineIcon}" Height="20"/>
+                        <ContentControl Height="20" ContentTemplate="{DynamicResource CheckboxMultipleBlankOutlineIcon}" />
                     </Button.Content>
                 </Button>
             </Grid>
-            <userControl:GooseGrid IsActive="{Binding IsActive}" Grid.Row="1" x:Name="gooseGrid" GoInCount="{Binding ColumnCount}" GooseControlBlockViewModels="{Binding GooseControlBlockViewModels}"></userControl:GooseGrid>
+            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+                <ItemsControl
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    ItemsSource="{Binding GooseControlBlockViewModels}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Expander
+                                Header="{Binding .}"
+                                Name="Expander"
+                                HorizontalAlignment="Stretch"
+                                IsExpanded="False">
+                                <userControl:GooseGrid
+                                    x:Name="gooseGrid"
+                                    HorizontalAlignment="Left"
+                                    GoInCount="{Binding ElementName=gooseMatrixTab, Path=DataContext.ColumnCount}"
+                                    GooseControlBlockViewModel="{Binding .}"
+                                    IsActive="{Binding ElementName=Expander, Path=IsExpanded}" />
+                            </Expander>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
             <!--<DataGrid ItemsSource="{Binding GroupedGoosesViewModels}">
                 <DataGrid.GroupStyle>
                     <GroupStyle ContainerStyle="{StaticResource GroupHeaderStyle}">
