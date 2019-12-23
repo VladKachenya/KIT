@@ -7,5 +7,6 @@
         string DoiDataReference { get; set; }
         string DataSetReferenceState { get; set; }
         string DataSetReferenceQuality { get; set; }
+        bool IsUsing { get; set; }
     }
 }

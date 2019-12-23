@@ -75,15 +75,25 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseSubscriptionLight
             get => _gooseDataReferenceViewModel;
             set
             {
-                //if (string.IsNullOrWhiteSpace(value.DataSetReferenceState) ||
-                //    value.DataSetReferenceState.ToLower() == "нет")
-                //{
-                //    IsSetSateEnable = false;
-                //}
-                //else
-                //{
-                //    IsSetSateEnable = true;
-                //}
+                if (string.IsNullOrWhiteSpace(value.DoiDataReference) ||
+                    value.DataSetReferenceState.ToLower() == "нет")
+                {
+                    if (_gooseDataReferenceViewModel != null)
+                    {
+                        _gooseDataReferenceViewModel.IsUsing = false;
+                    }
+                }
+                else
+                {
+                    if (_gooseDataReferenceViewModel != null)
+                    {
+                        _gooseDataReferenceViewModel.IsUsing = false;
+                    }
+                    if (value != null)
+                    {
+                        value.IsUsing = true;
+                    }
+                }
 
                 //if (string.IsNullOrWhiteSpace(value.DataSetReferenceQuality) ||
                 //    value.DataSetReferenceQuality.ToLower() == "нет")

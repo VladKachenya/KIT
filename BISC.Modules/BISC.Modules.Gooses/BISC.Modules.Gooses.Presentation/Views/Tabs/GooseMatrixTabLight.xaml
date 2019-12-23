@@ -127,7 +127,10 @@
                     <Border 
                         x:Name="Border"
                         BorderBrush="{DynamicResource MaterialDesignDivider}">
-                        <TextBlock Text="{Binding DoiDataReference}"></TextBlock>
+                        <StackPanel  Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding IsUsing}" IsEnabled="False"/>
+                            <TextBlock Text="{Binding DoiDataReference}"/>
+                        </StackPanel>
                     </Border>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
