@@ -24,8 +24,6 @@
             <ListBox.Template>
                 <ControlTemplate TargetType="ItemsControl">
                     <ScrollViewer VerticalScrollBarVisibility="Visible">
-                        <!-- I'm not sure if the correct name is necessary, or if
-                 it's just for applying visual states -->
                         <ItemsPresenter />
                     </ScrollViewer>
                 </ControlTemplate>
@@ -103,7 +101,7 @@
             <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="1" Grid.Row="5" Padding="0, 5, 0, 5">
                 <StackPanel  Orientation="Vertical">
                     <Button Content="Применить" Command="{Binding ApplySubscriptionCommand}" Margin="5"/>
-                    <Button Content="Очтистить" Command="{Binding ClearSubscriptionCommand}" Margin="5"/>
+                    <Button Content="Очистить" Command="{Binding ClearSubscriptionCommand}" Margin="5"/>
                 </StackPanel>
             </Border>
 
