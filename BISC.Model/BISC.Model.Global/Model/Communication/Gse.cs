@@ -24,14 +24,22 @@ namespace BISC.Model.Global.Model.Communication
 
         public string MacAddress
         {
-            get => SclAddress.Value.GetProperty("MAC-Address");
-            set => SclAddress.Value.SetProperty("MAC-Address", value);
+            get
+            {
+                var val = SclAddress.Value.GetProperty("MAC-Address");
+                return val.Replace(':', '-');
+            }
+            set
+            {
+                var val = value.Replace(':', '-');
+                SclAddress.Value.SetProperty("MAC-Address", val);
+            }
         }
         public int VlanPriority
         {
             get
             {
-                if ((SclAddress.Value != null)&& (SclAddress.Value.GetProperty("VLAN-PRIORITY")!=null)) return int.Parse(SclAddress.Value.GetProperty("VLAN-PRIORITY"));
+                if ((SclAddress.Value != null) && (SclAddress.Value.GetProperty("VLAN-PRIORITY") != null)) return int.Parse(SclAddress.Value.GetProperty("VLAN-PRIORITY"));
                 return 0;
             }
             set => SclAddress.Value.SetProperty("VLAN-PRIORITY", value.ToString());
@@ -46,14 +54,14 @@ namespace BISC.Model.Global.Model.Communication
         public string AppIdDec
         {
             get =>
-                uint.Parse(SclAddress.Value.GetProperty("APPID"),NumberStyles.HexNumber).ToString();
+                uint.Parse(SclAddress.Value.GetProperty("APPID"), NumberStyles.HexNumber).ToString();
             set =>
                 SclAddress.Value.SetProperty("APPID", uint.Parse(value).ToString("X4"));
         }
 
         public string LdInst { get; set; }
         public string CbName { get; set; }
-        public ChildModelProperty<IDurationInMilliSec> MinTime =>new ChildModelProperty<IDurationInMilliSec>(this, "MinTime");
+        public ChildModelProperty<IDurationInMilliSec> MinTime => new ChildModelProperty<IDurationInMilliSec>(this, "MinTime");
         public ChildModelProperty<IDurationInMilliSec> MaxTime => new ChildModelProperty<IDurationInMilliSec>(this, "MaxTime");
         public ChildModelProperty<ISclAddress> SclAddress => new ChildModelProperty<ISclAddress>(this, ModelKeys.SclAddressKey);
         public override bool ModelElementCompareTo(IModelElement obj)
