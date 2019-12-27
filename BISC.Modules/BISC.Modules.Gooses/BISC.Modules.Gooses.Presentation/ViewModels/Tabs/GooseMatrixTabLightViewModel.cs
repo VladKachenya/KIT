@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
@@ -40,12 +42,15 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         private string _regionName;
         private bool _isInitialized = false;
         private bool _isCommandEnabled = true;
+        private string _adressFilterText;
+        private ICollectionView _adressFilter;
 
         private List<GooseControlBlockViewModel> _gooseControlBlockViewModels;
         private List<IGoInViewModel> _goInViewModels;
         private List<IGooseDataReferenceViewModel> _gooseDataReferenceViewModels;
         private IGoInViewModel _selectedGoInViewModel;
         private IGooseDataReferenceViewModel _selectedGooseDataReferenceViewModel;
+
 
 
         public GooseMatrixTabLightViewModel(
@@ -61,7 +66,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             ICommandFactory commandFactory,
             IGooseMatrixLightViewModelFactory gooseMatrixLightViewModelFactory,
             IGlobalSavingService globalSavingService,
-            IUserInterfaceComposingService userInterfaceComposingService) 
+            IUserInterfaceComposingService userInterfaceComposingService)
             : base(globalEventsService)
         {
             _biscProject = biscProject;
@@ -76,9 +81,11 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _globalSavingService = globalSavingService;
             _userInterfaceComposingService = userInterfaceComposingService;
             ApplySubscriptionCommand = commandFactory.CreatePresentationCommand(OnApplySubscription);
-            ClearSubscriptionCommand = commandFactory.CreatePresentationCommand(OnClearSubscrioption);
+            ClearCurrentSubscriptionCommand = commandFactory.CreatePresentationCommand(OnClearCurrentSubscription);
             SaveCommand = commandFactory.CreatePresentationCommand(OnSave, () => _isCommandEnabled);
             UpdateCommand = commandFactory.CreatePresentationCommand(OnUpdateExecute, () => _isCommandEnabled);
+            ClearSubscriptionsCommand =
+                commandFactory.CreatePresentationCommand(OnClearSubscriptions, () => _isCommandEnabled);
         }
 
         public List<IGoInViewModel> GoInViewModels
@@ -109,6 +116,40 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             set
             {
                 SetProperty(ref _gooseDataReferenceViewModels, value);
+                _adressFilter = CollectionViewSource.GetDefaultView(GooseDataReferenceViewModels);
+                AvailableGooses = new List<string>();
+                value.ForEach(el =>
+                {
+                    if (!AvailableGooses.Contains(el.GooseName))
+                    {
+                        AvailableGooses.Add(el.GooseName);
+                    }
+                });
+                OnPropertyChanged(nameof(AvailableGooses));
+            }
+        }
+
+        public List<string> AvailableGooses { get; set;}
+
+        public string AdressFilterText
+        {
+            get => _adressFilterText;
+            set
+            {
+                if (value != _adressFilterText)
+                {
+                    _adressFilterText = value;
+                    OnPropertyChanged();
+                }
+
+                _adressFilter.Filter = o =>
+                {
+                    if (((IGooseDataReferenceViewModel) o).DoiDataReference.ToLower().Contains(value.ToLower()))
+                    {
+                        return true;
+                    }
+                    return false;
+                };
             }
         }
 
@@ -123,12 +164,17 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         }
 
         public ICommand ApplySubscriptionCommand { get; }
-        public ICommand ClearSubscriptionCommand { get; }
+        public ICommand ClearCurrentSubscriptionCommand { get; }
 
         public ICommand UpdateCommand { get; }
         public ICommand SaveCommand { get; }
+        public ICommand ClearSubscriptionsCommand { get; }
 
 
+        private void OnClearSubscriptions()
+        {
+            GoInViewModels.ForEach(ClearGoIn);
+        }
 
         private async void OnUpdateExecute()
         {
@@ -195,12 +241,17 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             SelectedGoInViewModel.EnableGooseMonitoring = true;
         }
 
-        private void OnClearSubscrioption()
+        private void OnClearCurrentSubscription()
         {
-            SelectedGoInViewModel.GooseDataReferenceViewModel = GooseDataReferenceViewModels.First();
-            SelectedGoInViewModel.EnableState = false;
-            SelectedGoInViewModel.EnableQuality = false;
-            SelectedGoInViewModel.EnableGooseMonitoring = false;
+            ClearGoIn(SelectedGoInViewModel);
+        }
+
+        private void ClearGoIn(IGoInViewModel goInViewModel)
+        {
+            goInViewModel.GooseDataReferenceViewModel = GooseDataReferenceViewModels.First();
+            goInViewModel.EnableState = false;
+            goInViewModel.EnableQuality = false;
+            goInViewModel.EnableGooseMonitoring = false;
         }
 
         protected override async void OnNavigatedTo(BiscNavigationContext navigationContext)
@@ -280,9 +331,10 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         public override void OnActivate()
         {
-
             _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить подписки GOOSE устройства {_device.Name}", false);
             _userInterfaceComposingService.AddGlobalCommand(UpdateCommand, $"Обновить GOOSE-подписки устройства {_device.Name}", IconsKeys.UpdateIconKey, false, true);
+            _userInterfaceComposingService.AddGlobalCommand(ClearSubscriptionsCommand, $"Очистить GOOSE-подписки устройства {_device.Name}", IconsKeys.BroomIconKey, false, true);
+
             base.OnActivate();
         }
 
@@ -290,6 +342,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         {
             _userInterfaceComposingService.ClearCurrentSaveCommand();
             _userInterfaceComposingService.DeleteGlobalCommand(UpdateCommand);
+            _userInterfaceComposingService.DeleteGlobalCommand(ClearSubscriptionsCommand);
+
 
             base.OnDeactivate();
         }

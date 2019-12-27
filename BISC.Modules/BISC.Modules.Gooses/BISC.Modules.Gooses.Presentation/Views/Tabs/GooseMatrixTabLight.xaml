@@ -6,8 +6,13 @@
              xmlns:local="clr-namespace:BISC.Modules.Gooses.Presentation.Views.Tabs"
              xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
              xmlns:gooseSubscriptionLight="clr-namespace:BISC.Modules.Gooses.Presentation.Interfaces.GooseSubscriptionLight"
+             xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:BoolToVisConverter x:Key="boolToVisConverter"></converters:BoolToVisConverter>
+        <converters:BoolToVisConverter Invert="True" x:Key="boolToInVisConverter"></converters:BoolToVisConverter>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -34,8 +39,9 @@
                         x:Name="Border"
                         BorderBrush="{DynamicResource MaterialDesignDivider}">
                         <StackPanel Orientation="Horizontal">
-                            <CheckBox IsChecked="{Binding EnableState}" IsEnabled="False"></CheckBox>
-                            <TextBlock Text="{Binding Name}"></TextBlock>
+                            <Label Height="Auto" Foreground="#607D8B" Visibility="{Binding EnableState, Converter={StaticResource boolToInVisConverter}}"  VerticalAlignment="Center" ContentTemplate="{DynamicResource CheckboxBlankCircleOutlineIcon}" Padding="0"/>
+                            <Label Height="Auto" Foreground="#607D8B" Visibility="{Binding EnableState, Converter={StaticResource boolToVisConverter}}" VerticalAlignment="Center" ContentTemplate="{DynamicResource CheckboxMarkedCircleIcon}" Padding="0"/>
+                            <TextBlock VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
                         </StackPanel>
                     </Border>
                 </DataTemplate>
@@ -101,39 +107,50 @@
             <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="1" Grid.Row="5" Padding="0, 5, 0, 5">
                 <StackPanel  Orientation="Vertical">
                     <Button Content="Применить" Command="{Binding ApplySubscriptionCommand}" Margin="5"/>
-                    <Button Content="Очистить" Command="{Binding ClearSubscriptionCommand}" Margin="5"/>
+                    <Button Content="Очистить" Command="{Binding ClearCurrentSubscriptionCommand}" Margin="5"/>
                 </StackPanel>
             </Border>
 
         </Grid>
         <GridSplitter Grid.Column="3" ShowsPreview="False" Width="4" Background="Black"
                       HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-        <ListBox  x:Name="GooseRefList" behaviors:ListBoxBehavior.ScrollOnNewItem="true" 
+        <Grid Grid.Column="4" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" Margin="5, 5" Grid.Row="0">
+                <Border Background="#D0D7DB" CornerRadius="3" Margin="0,0,5,0" BorderThickness="1" BorderBrush="Black">
+                    <Label Height="Auto"  VerticalAlignment="Center" ContentTemplate="{DynamicResource MagnifyIcon}" Padding="0" />
+                </Border>
+                <ComboBox IsEditable="True" Width="300" FontSize="12" ItemsSource="{Binding AvailableGooses}" Text="{Binding AdressFilterText, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <ListBox Grid.Row="1" x:Name="GooseRefList" behaviors:ListBoxBehavior.ScrollOnNewItem="true" 
                   ItemsSource="{Binding GooseDataReferenceViewModels}" SelectedItem="{Binding SelectedGooseDataReferenceViewModel, Mode=TwoWay}"  
-                  Grid.Column="4" 
                   BorderThickness="0"
                   Style="{StaticResource {x:Type ItemsControl}}">
-            <ListBox.Template>
-                <ControlTemplate TargetType="ItemsControl">
-                    <ScrollViewer VerticalScrollBarVisibility="Visible">
-                        <!-- I'm not sure if the correct name is necessary, or if
+                <ListBox.Template>
+                    <ControlTemplate TargetType="ItemsControl">
+                        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+                            <!-- I'm not sure if the correct name is necessary, or if
                  it's just for applying visual states -->
-                        <ItemsPresenter />
-                    </ScrollViewer>
-                </ControlTemplate>
-            </ListBox.Template>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="gooseSubscriptionLight:IGooseDataReferenceViewModel">
-                    <Border 
-                        x:Name="Border"
-                        BorderBrush="{DynamicResource MaterialDesignDivider}">
-                        <StackPanel  Orientation="Horizontal">
-                            <CheckBox IsChecked="{Binding IsUsing}" IsEnabled="False"/>
-                            <TextBlock Text="{Binding DoiDataReference}"/>
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ListBox>
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ListBox.Template>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="gooseSubscriptionLight:IGooseDataReferenceViewModel">
+                        <Border x:Name="Border"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}">
+                            <StackPanel  Orientation="Horizontal">
+                                <Label Height="Auto" Foreground="#607D8B" Visibility="{Binding IsUsing, Converter={StaticResource boolToInVisConverter}}"  VerticalAlignment="Center" ContentTemplate="{DynamicResource CheckboxBlankCircleOutlineIcon}" Padding="0"/>
+                                <Label Height="Auto" Foreground="#607D8B" Visibility="{Binding IsUsing, Converter={StaticResource boolToVisConverter}}" VerticalAlignment="Center" ContentTemplate="{DynamicResource CheckboxMarkedCircleIcon}" Padding="0"/>
+                                <TextBlock VerticalAlignment="Center" Text="{Binding DoiDataReference}"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ListBox>
+        </Grid>
     </Grid>
 </UserControl>
