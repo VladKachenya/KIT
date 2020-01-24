@@ -9,12 +9,12 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <converters:BoolToVisConverter x:Key="boolToVisConverter"></converters:BoolToVisConverter>
-
+        <converters:InverseConverter x:Key="boolInverseConverter"></converters:InverseConverter>
     </UserControl.Resources>
     <Grid Background="Transparent">
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="Отменить процедуру перезагрузки" Command="{Binding CancelLoadingCommand}"></MenuItem>
+                <MenuItem Header="Отменить процедуру перезагрузки" Command="{Binding CancelLoadingCommand}" IsEnabled="{Binding HaveConflicts, Converter={StaticResource boolInverseConverter}}"></MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
         <Grid.RowDefinitions>

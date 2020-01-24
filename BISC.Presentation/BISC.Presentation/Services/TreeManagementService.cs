@@ -21,6 +21,7 @@ namespace BISC.Presentation.Services
         private readonly INavigationService _navigationService;
         private readonly ITabManagementService _tabManagementService;
         private readonly Func<ITreeItemViewModel> _treeItemViewModelFunc;
+        private object lockObject = new object();
 
         private Dictionary<Guid, Tuple<UiEntityIdentifier, ITreeItemViewModel>> _mainTreeViewModels
             = new Dictionary<Guid, Tuple<UiEntityIdentifier, ITreeItemViewModel>>();
@@ -59,13 +60,16 @@ namespace BISC.Presentation.Services
                         }
                         else
                         {
-                            if ((index == null) || (_mainTreeViewModel.ChildItemViewModels.Count - 1 < index))
+                            lock (lockObject)
                             {
-                                _mainTreeViewModel.ChildItemViewModels.Add(newItemViewModel);
-                            }
-                            else
-                            {
-                                _mainTreeViewModel.ChildItemViewModels.Insert(index.Value, newItemViewModel);
+                                if ((index == null) || (_mainTreeViewModel.ChildItemViewModels.Count - 1 < index))
+                                {
+                                    _mainTreeViewModel.ChildItemViewModels.Add(newItemViewModel);
+                                }
+                                else
+                                {
+                                    _mainTreeViewModel.ChildItemViewModels.Insert(index.Value, newItemViewModel);
+                                }
                             }
                         }
 

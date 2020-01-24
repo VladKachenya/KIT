@@ -32,5 +32,8 @@
     <Setting Name="FtpTimeOutDelay" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2000</Value>
     </Setting>
+    <Setting Name="MaxResponseTime" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

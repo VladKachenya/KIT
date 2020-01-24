@@ -1,4 +1,5 @@
-﻿using BISC.Infrastructure.Global.Logging;
+﻿using System;
+using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
 using BISC.Model.Infrastructure.Services.Communication;
@@ -19,6 +20,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Infrastructure.Global.Common;
 using BISC.Modules.Connection.Infrastructure.Services;
+using BISC.Modules.Device.Infrastructure.Events;
 using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.Device.Presentation.ViewModels
@@ -76,7 +78,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             {
                 (ConnectDeviceCommand as IPresentationCommand)?.RaiseCanExecute();
                 await SelectedIpAddressViewModel.PingGlobalEventAsync();
-                if (SelectedIpAddressViewModel.IsPingSuccess == false || _connectionPoolService.GetIsDeviceConnect(SelectedIpAddressViewModel.FullIp))
+                if (SelectedIpAddressViewModel.IsPingSuccess == false ||
+                    _connectionPoolService.GetIsDeviceConnect(SelectedIpAddressViewModel.FullIp))
                 {
                     return;
                 }
@@ -85,7 +88,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels
                     _communicationModelService.GetIpOfDevice(d.Name, _biscProject.MainSclModel.Value) ==
                     SelectedIpAddressViewModel.FullIp))
                 {
-                    _loggingService.LogMessage($"Устройство с IP {SelectedIpAddressViewModel.FullIp} уже имеется в проектеп"
+                    _loggingService.LogMessage(
+                        $"Устройство с IP {SelectedIpAddressViewModel.FullIp} уже имеется в проектеп"
                         , SeverityEnum.Warning);
                     return;
                 }
@@ -106,7 +110,17 @@ namespace BISC.Modules.Device.Presentation.ViewModels
                     IsDeviceConnectionFailed = true;
                     _failedSatatusHidingTimer.Change(5000, Timeout.Infinite);
                 }
-                _loggingService.LogMessage($"Устройство {connectResult.Item.Name} c IP {connectResult.Item.Ip} подключено!", SeverityEnum.Info);
+
+                _loggingService.LogMessage(
+                    $"Устройство {connectResult.Item.Name} c IP {connectResult.Item.Ip} подключено!",
+                    SeverityEnum.Info);
+            }
+            catch (Exception e)
+            {
+                _loggingService.LogMessage(
+                    $"Ошибка загрузки устройства {e.Message + Environment.NewLine + e.StackTrace}",
+                    SeverityEnum.Critical);
+                //_globalEventsService.SendMessage(new LoadErrorEvent(existingDevice.Ip, existingDevice.DeviceGuid));
             }
             finally
             {

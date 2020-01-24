@@ -18,6 +18,7 @@ namespace BISC.Presentation.Interfaces.Menu
         bool IsAutoEnabledQualityInGooseReceiving { get; set; }
         string MmsQueryDelay { get; set; }
         string FtpTimeOutDelay { get; set; }
+        string MaxResponseTime { get; set; }
         bool IsVisibleValidadionError { get; set; }
 
     }

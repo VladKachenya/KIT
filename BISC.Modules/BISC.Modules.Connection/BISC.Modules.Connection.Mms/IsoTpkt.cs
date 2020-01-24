@@ -183,10 +183,10 @@ namespace BISC.Modules.Connection.MMS
             {
                 mmSpdu = await TcpRw.GetMmsPduAsync(tcps);
             }
-            if (mmSpdu == null && !isMmsCanBeNull)
-            {
-                mmSpdu = await TcpRw.GetMmsPduAsync(tcps);
-            }
+            //if (mmSpdu == null && !isMmsCanBeNull)
+            //{
+            //    mmSpdu = await TcpRw.GetMmsPduAsync(tcps);
+            //}
             return mmSpdu;
         }
 

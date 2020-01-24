@@ -118,25 +118,26 @@ namespace BISC.Modules.Device.Presentation.Services
             }
             catch (Exception e)
             {
+                _treeManagementService.DeleteTreeItem(treeItemId);
+                if (device?.Ip != null)
+                {
+                    _connectionPoolService.GetConnection(device.Ip).StopConnection();
+                }
+
                 if (cts.IsCancellationRequested)
                 {
-                    _treeManagementService.DeleteTreeItem(treeItemId);
-                    _connectionPoolService.GetConnection(device.Ip).StopConnection();
                     _loggingService.LogUserAction($"Загрузка устройства отменена пользователем {device.Name}");
                     return new OperationResult($"Загрузка устройства отменена пользователем {device.Name}");
                 }
 
                 if (isDeviceExist)
                 {
-                    _treeManagementService.DeleteTreeItem(treeItemId);
-                    _connectionPoolService.GetConnection(device.Ip).StopConnection();
                     var mes = $"Устройство с именем {device.Name} уже существует в проекте";
                     await _userInteractionService.ShowOptionToUser("Не соответствие модели устройства", mes,
                         new List<string>() { "Ок" });
                     return new OperationResult(mes);
                 }
 
-                _treeManagementService.DeleteTreeItem(treeItemId);
                 _loggingService.LogMessage($"Ошибка загрузки устройства {e.Message + Environment.NewLine + e.StackTrace}", SeverityEnum.Critical);
                 return new OperationResult($"Ошибка загрузки устройства {device.Name}");
             }

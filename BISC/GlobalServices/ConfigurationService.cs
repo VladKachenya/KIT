@@ -133,6 +133,16 @@ namespace BISC.GlobalServices
             }
         }
 
+        public int MaxResponseTime
+        {
+            get => Settings.Default.MaxResponseTime;
+            set
+            {
+                Settings.Default.MaxResponseTime = value;
+                Settings.Default.Save();
+            }
+        }
+
         public List<string> GetIpsCollection(string key)
         {
             if (key == Constants.ConfigurationServiceConstants.LastConnectedIpAddresses)

@@ -197,9 +197,12 @@ namespace BISC.Modules.Device.Presentation.Services
             }
             catch (Exception e)
             {
-                if (cts.IsCancellationRequested)
+                if (device?.Ip != null)
                 {
                     _connectionPoolService.GetConnection(device.Ip).StopConnection();
+                }
+                if (cts.IsCancellationRequested)
+                {
                     _loggingService.LogUserAction($"Загрузка устройства отменена пользователем {device.Name}");
                 }
                 else

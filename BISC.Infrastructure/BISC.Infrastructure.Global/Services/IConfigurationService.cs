@@ -19,5 +19,7 @@ namespace BISC.Infrastructure.Global.Services
         int MmsQueryDelay { get; set; }
 
         int FtpTimeOutDelay { get; set; }
+
+        int MaxResponseTime { get; set; }
     }
 }

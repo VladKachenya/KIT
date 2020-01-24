@@ -248,12 +248,13 @@ namespace BISC.Modules.Connection.MMS
             {
                 lock (tcps)
                 {
+                    var configurationServer = StaticContainer.CurrentContainer.ResolveType<IConfigurationService>();
                     int millSec = 0;
                     do
                     {
                         Thread.Sleep(1);
                         millSec++;
-                        if (millSec > 5000) throw new SocketException();
+                        if (millSec > configurationServer.MaxResponseTime) throw new SocketException();
                     } while (tcps.workSocket.Available == 0);
                     Thread.Sleep(1);
 

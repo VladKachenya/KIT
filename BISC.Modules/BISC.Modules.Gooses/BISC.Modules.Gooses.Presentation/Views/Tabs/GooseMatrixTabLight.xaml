@@ -21,9 +21,20 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="4*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Column="0" Grid.Row="0" BorderBrush="#607D8B" BorderThickness="0, 0, 0, 4">
+            <StackPanel>
+                <TextBlock VerticalAlignment="Center" FontSize="20" Margin="10, 3, 0, 3" TextWrapping="Wrap">Входа</TextBlock>
+            </StackPanel>
+        </Border>
         <ListBox  x:Name="GoInList" behaviors:ListBoxBehavior.ScrollOnNewItem="true" 
                   ItemsSource="{Binding GoInViewModels}" SelectedItem="{Binding SelectedGoInViewModel, Mode=TwoWay}"  
                   Grid.Column="0" 
+                  Grid.Row="1"
                   BorderThickness="0"
                   Style="{StaticResource {x:Type ItemsControl}}">
             <ListBox.Template>
@@ -48,9 +59,14 @@
             </ItemsControl.ItemTemplate>
         </ListBox>
         <GridSplitter Grid.Column="1" ShowsPreview="False" Width="4" Background="Black"
-                      HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+                      HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.RowSpan="2"/>
 
-        <Grid Grid.Column="2" Margin="4, 4, 4, 4">
+        <Border Grid.Column="2" Grid.Row="0" BorderBrush="#607D8B" BorderThickness="0, 0, 0, 4">
+            <StackPanel>
+                <TextBlock VerticalAlignment="Center" FontSize="20" Margin="10, 3, 0, 3" FontWeight="Bold" Text="{Binding SelectedGoInViewModel.Name}"/>
+            </StackPanel>
+        </Border>
+        <Grid Grid.Column="2" Margin="4, 4, 4, 4" Grid.Row="1" ShowGridLines="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto"/>
@@ -63,10 +79,9 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{Binding SelectedGoInViewModel.Name}"  Grid.Row="0" Grid.ColumnSpan="2" FontWeight="Bold" FontSize="30"/>
 
             <TextBlock Text="{Binding SelectedGoInViewModel.GooseDataReferenceViewModel.DoiDataReference}" TextWrapping="Wrap" Grid.Column="0" Grid.Row="1" Padding="0, 5, 0, 5"/>
-            <Border BorderBrush="#6a7e91" BorderThickness="1" Grid.Column="0" Grid.Row="2" Padding="0, 5, 0, 5">
+            <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="0" Grid.Row="2" Padding="0, 5, 0, 5">
                 <StackPanel  Orientation="Vertical">
                     <StackPanel  Orientation="Horizontal">
                         <CheckBox IsChecked="{Binding SelectedGoInViewModel.EnableState}" IsEnabled="{Binding SelectedGoInViewModel.IsSetSateEnable}"/>
@@ -75,7 +90,7 @@
                     <TextBlock Text="{Binding SelectedGoInViewModel.GooseDataReferenceViewModel.DataSetReferenceState}" TextWrapping="Wrap"/>
                 </StackPanel>
             </Border>
-            <Border BorderBrush="#6a7e91" BorderThickness="1" Grid.Column="0" Grid.Row="3" Padding="0, 5, 0, 5">
+            <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="0" Grid.Row="3" Padding="0, 5, 0, 5">
                 <StackPanel  Orientation="Vertical">
                     <StackPanel  Orientation="Horizontal">
                         <CheckBox IsChecked="{Binding SelectedGoInViewModel.EnableQuality}" IsEnabled="{Binding SelectedGoInViewModel.IsSetQualityEnable}"/>
@@ -94,12 +109,12 @@
 
 
             <TextBlock Text="{Binding SelectedGooseDataReferenceViewModel.DoiDataReference}" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" Padding="0, 5, 0, 5"/>
-            <Border BorderBrush="#6a7e91" BorderThickness="1" Grid.Column="1" Grid.Row="2" Padding="0, 5, 0, 5">
+            <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="1" Grid.Row="2" Padding="0, 5, 0, 5">
                 <StackPanel  Orientation="Vertical">
                     <TextBlock Text="{Binding SelectedGooseDataReferenceViewModel.DataSetReferenceState}" TextWrapping="Wrap"/>
                 </StackPanel>
             </Border>
-            <Border BorderBrush="#6a7e91" BorderThickness="1" Grid.Column="1" Grid.Row="3" Padding="0, 5, 0, 5">
+            <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="1" Grid.Row="3" Padding="0, 5, 0, 5">
                 <StackPanel  Orientation="Vertical">
                     <TextBlock Text="{Binding SelectedGooseDataReferenceViewModel.DataSetReferenceQuality}" TextWrapping="Wrap"/>
                 </StackPanel>
@@ -107,50 +122,51 @@
             <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="1" Grid.Row="5" Padding="0, 5, 0, 5">
                 <StackPanel  Orientation="Vertical">
                     <Button Content="Применить" Command="{Binding ApplySubscriptionCommand}" Margin="5"/>
+                </StackPanel>
+            </Border>
+            <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="0" Grid.Row="5" Padding="0, 5, 0, 5">
+                <StackPanel  Orientation="Vertical">
                     <Button Content="Очистить" Command="{Binding ClearCurrentSubscriptionCommand}" Margin="5"/>
                 </StackPanel>
             </Border>
 
         </Grid>
         <GridSplitter Grid.Column="3" ShowsPreview="False" Width="4" Background="Black"
-                      HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-        <Grid Grid.Column="4" >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+                      HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.RowSpan="2" />
+        <Border Grid.Column="4" Grid.Row="0" BorderBrush="#607D8B" BorderThickness="0, 0, 0, 4">
             <StackPanel Orientation="Horizontal" Margin="5, 5" Grid.Row="0">
                 <Border Background="#D0D7DB" CornerRadius="3" Margin="0,0,5,0" BorderThickness="1" BorderBrush="Black">
                     <Label Height="Auto"  VerticalAlignment="Center" ContentTemplate="{DynamicResource MagnifyIcon}" Padding="0" />
                 </Border>
                 <ComboBox IsEditable="True" Width="300" FontSize="12" ItemsSource="{Binding AvailableGooses}" Text="{Binding AdressFilterText, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
-            <ListBox Grid.Row="1" x:Name="GooseRefList" behaviors:ListBoxBehavior.ScrollOnNewItem="true" 
+        </Border>
+        <ListBox x:Name="GooseRefList" behaviors:ListBoxBehavior.ScrollOnNewItem="true" 
+                     Grid.Column="4" Grid.Row="1"
                   ItemsSource="{Binding GooseDataReferenceViewModels}" SelectedItem="{Binding SelectedGooseDataReferenceViewModel, Mode=TwoWay}"  
                   BorderThickness="0"
                   Style="{StaticResource {x:Type ItemsControl}}">
-                <ListBox.Template>
-                    <ControlTemplate TargetType="ItemsControl">
-                        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
-                            <!-- I'm not sure if the correct name is necessary, or if
+            <ListBox.Template>
+                <ControlTemplate TargetType="ItemsControl">
+                    <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+                        <!-- I'm not sure if the correct name is necessary, or if
                  it's just for applying visual states -->
-                            <ItemsPresenter />
-                        </ScrollViewer>
-                    </ControlTemplate>
-                </ListBox.Template>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="gooseSubscriptionLight:IGooseDataReferenceViewModel">
-                        <Border x:Name="Border"
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ListBox.Template>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="gooseSubscriptionLight:IGooseDataReferenceViewModel">
+                    <Border x:Name="Border"
                             BorderBrush="{DynamicResource MaterialDesignDivider}">
-                            <StackPanel  Orientation="Horizontal">
-                                <Label Height="Auto" Foreground="#607D8B" Visibility="{Binding IsUsing, Converter={StaticResource boolToInVisConverter}}"  VerticalAlignment="Center" ContentTemplate="{DynamicResource CheckboxBlankCircleOutlineIcon}" Padding="0"/>
-                                <Label Height="Auto" Foreground="#607D8B" Visibility="{Binding IsUsing, Converter={StaticResource boolToVisConverter}}" VerticalAlignment="Center" ContentTemplate="{DynamicResource CheckboxMarkedCircleIcon}" Padding="0"/>
-                                <TextBlock VerticalAlignment="Center" Text="{Binding DoiDataReference}"/>
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ListBox>
-        </Grid>
+                        <StackPanel  Orientation="Horizontal">
+                            <Label Height="Auto" Foreground="#607D8B" Visibility="{Binding IsUsing, Converter={StaticResource boolToInVisConverter}}"  VerticalAlignment="Center" ContentTemplate="{DynamicResource CheckboxBlankCircleOutlineIcon}" Padding="0"/>
+                            <Label Height="Auto" Foreground="#607D8B" Visibility="{Binding IsUsing, Converter={StaticResource boolToVisConverter}}" VerticalAlignment="Center" ContentTemplate="{DynamicResource CheckboxMarkedCircleIcon}" Padding="0"/>
+                            <TextBlock VerticalAlignment="Center" Text="{Binding DoiDataReference}"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ListBox>
     </Grid>
 </UserControl>
