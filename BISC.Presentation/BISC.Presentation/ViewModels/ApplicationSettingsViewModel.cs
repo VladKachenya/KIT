@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Presentation.Infrastructure.Commands;
 
 namespace BISC.Presentation.ViewModels
 {
@@ -23,9 +24,10 @@ namespace BISC.Presentation.ViewModels
         private int _ftpTimeOutDelay;
         private int _maxResponseTime;
 
-
-        private bool _isVisibleValidadionError;
         private bool _isUserLoggingEnabled;
+        private bool _isMmsQueryDelayValid;
+        private bool _isFtpTimeOutDelayValid;
+        private bool _isMaxResponseTimeValid;
 
         #endregion
 
@@ -42,14 +44,14 @@ namespace BISC.Presentation.ViewModels
             {
                 DialogCommands.CloseDialogCommand.Execute(null, null);
                 SaveChanges();
-            }));
+            }), () => !IsFtpTimeOutDelayValid && !IsMmsQueryDelayValid && !IsMaxResponseTimeValid);
+
             IsAutoEnabledValidityInGooseReceiving = _configurationService.IsAutoEnabledValidityInGooseReceiving;
             IsAutoEnabledQualityInGooseReceiving = _configurationService.IsAutoEnabledQualityInGooseReceiving;
             _mmsQueryDelay = _configurationService.MmsQueryDelay;
             _ftpTimeOutDelay = _configurationService.FtpTimeOutDelay;
             _maxResponseTime = _configurationService.MaxResponseTime;
 
-            IsVisibleValidadionError = false;
             IsUserLoggingEnabled = _configurationService.IsUserLoggingEnabled;
         }
         #endregion
@@ -86,22 +88,25 @@ namespace BISC.Presentation.ViewModels
             get => _mmsQueryDelay.ToString();
             set
             {
-                int buf = 0;
-                bool res = true;
-                if (value != string.Empty)
-                    res = Int32.TryParse(value, out buf);
-                if (!res || buf < 0 || buf > 100)
+                if (!Int32.TryParse(value, out int buffer))
                 {
-                    IsVisibleValidadionError = true;
                     return;
                 }
-                else
-                {
-                    IsVisibleValidadionError = false;
-                    _mmsQueryDelay = buf;
-                    OnPropertyChanged();
-                }
 
+                IsMmsQueryDelayValid = buffer < 0 || buffer > 100;
+
+                _mmsQueryDelay = buffer;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsMmsQueryDelayValid
+        {
+            get => _isMmsQueryDelayValid;
+            set
+            {
+                SetProperty(ref _isMmsQueryDelayValid, value);
+                (ConfirmCommand as IPresentationCommand)?.RaiseCanExecute();
             }
         }
 
@@ -110,22 +115,26 @@ namespace BISC.Presentation.ViewModels
             get => _ftpTimeOutDelay.ToString();
             set
             {
-                int buf = 0;
-                bool res = true;
-                if (value != string.Empty)
-                    res = Int32.TryParse(value, out buf);
-                if (!res || buf < 0 || buf > 100000)
+                if (!Int32.TryParse(value, out int buffer))
                 {
-                    IsVisibleValidadionError = true;
                     return;
                 }
-                else
-                {
-                    IsVisibleValidadionError = false;
-                    _ftpTimeOutDelay = buf;
-                    OnPropertyChanged();
-                }
 
+                IsFtpTimeOutDelayValid = buffer < 100 || buffer > 10000;
+
+                SetProperty(ref _ftpTimeOutDelay, buffer);
+                OnPropertyChanged();
+
+            }
+        }
+
+        public bool IsFtpTimeOutDelayValid
+        {
+            get => _isFtpTimeOutDelayValid;
+            set
+            {
+                SetProperty(ref _isFtpTimeOutDelayValid, value);
+                (ConfirmCommand as IPresentationCommand)?.RaiseCanExecute();
             }
         }
 
@@ -134,29 +143,26 @@ namespace BISC.Presentation.ViewModels
             get => _maxResponseTime.ToString();
             set
             {
-                int buf = 0;
-                bool res = true;
-                if (value != string.Empty)
-                    res = Int32.TryParse(value, out buf);
-                if (!res || buf < 500 || buf > 100000)
+                if (!Int32.TryParse(value, out int buffer))
                 {
-                    IsVisibleValidadionError = true;
                     return;
                 }
-                else
-                {
-                    IsVisibleValidadionError = false;
-                    _maxResponseTime = buf;
-                    OnPropertyChanged();
-                }
+
+                IsMaxResponseTimeValid = buffer < 500 || buffer > 10000;
+
+                _maxResponseTime = buffer;
+                OnPropertyChanged();
             }
         }
 
-
-        public bool IsVisibleValidadionError
+        public bool IsMaxResponseTimeValid
         {
-            get => _isVisibleValidadionError;
-            set => SetProperty(ref _isVisibleValidadionError, value);
+            get => _isMaxResponseTimeValid;
+            set
+            {
+                SetProperty(ref _isMaxResponseTimeValid, value);
+                (ConfirmCommand as IPresentationCommand)?.RaiseCanExecute();
+            }
         }
 
 

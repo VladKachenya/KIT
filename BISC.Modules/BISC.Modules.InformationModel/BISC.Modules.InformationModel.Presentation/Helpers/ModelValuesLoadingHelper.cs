@@ -110,41 +110,39 @@ namespace BISC.Modules.InformationModel.Presentation.Helpers
             {
                 try
                 {
-
-             
-                if (dai.ParentModelElement is IDoi doi)
-                {
-                    var mmsTypeDescriptionForDoi = varDescForFc.Components.FirstOrDefault((description => description.Name == doi.Name));
-                    var mmsTypeDescriptionForDai = mmsTypeDescriptionForDoi.Components.FirstOrDefault((description => description.Name == dai.Name));
-                    var indexOfDai = mmsTypeDescriptionForDoi.Components.IndexOf(mmsTypeDescriptionForDai);
-                    dai.Value.Value = new Val();
-                    dai.Value.Value.Value = valuesResItem.Components[indexOfDai].Value;
-                }
-                else
-                {
-
-                    var pathToDai = new List<string>();
-                    GetPathToDai(dai, pathToDai);
-                    pathToDai.Reverse();
-
-                    var doiName = pathToDai.First();
-                    pathToDai.Remove(doiName);
-                    var mmsTypeDesc = varDescForFc.Components.FirstOrDefault((description => description.Name == doiName));
-                    var valueDesc = valuesResItem;
-
-                    foreach (var pathElement in pathToDai)
+                    if (dai.ParentModelElement is IDoi doi)
                     {
-                        var innerMmsTypeDesc =
-                            mmsTypeDesc.Components.FirstOrDefault((description => description.Name == pathElement));
-                        if (innerMmsTypeDesc != null)
-                        {
-                            var index = mmsTypeDesc.Components.IndexOf(innerMmsTypeDesc);
-                            mmsTypeDesc = innerMmsTypeDesc;
-                            valueDesc = valueDesc.Components[index];
-                        }
+                        var mmsTypeDescriptionForDoi = varDescForFc.Components.FirstOrDefault((description => description.Name == doi.Name));
+                        var mmsTypeDescriptionForDai = mmsTypeDescriptionForDoi.Components.FirstOrDefault((description => description.Name == dai.Name));
+                        var indexOfDai = mmsTypeDescriptionForDoi.Components.IndexOf(mmsTypeDescriptionForDai);
+                        dai.Value.Value = new Val();
+                        dai.Value.Value.Value = valuesResItem.Components[indexOfDai].Value;
                     }
-                    dai.Value.Value = new Val();
-                    dai.Value.Value.Value = valueDesc.Value;
+                    else
+                    {
+
+                        var pathToDai = new List<string>();
+                        GetPathToDai(dai, pathToDai);
+                        pathToDai.Reverse();
+
+                        var doiName = pathToDai.First();
+                        pathToDai.Remove(doiName);
+                        var mmsTypeDesc = varDescForFc.Components.FirstOrDefault((description => description.Name == doiName));
+                        var valueDesc = valuesResItem;
+
+                        foreach (var pathElement in pathToDai)
+                        {
+                            var innerMmsTypeDesc =
+                                mmsTypeDesc.Components.FirstOrDefault((description => description.Name == pathElement));
+                            if (innerMmsTypeDesc != null)
+                            {
+                                var index = mmsTypeDesc.Components.IndexOf(innerMmsTypeDesc);
+                                mmsTypeDesc = innerMmsTypeDesc;
+                                valueDesc = valueDesc.Components[index];
+                            }
+                        }
+                        dai.Value.Value = new Val();
+                        dai.Value.Value.Value = valueDesc.Value;
 
                         //TODO
                     }

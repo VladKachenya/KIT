@@ -47,33 +47,38 @@
         </GroupBox>
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="5">
             <CheckBox Margin="5" Content="Выводить лог действий пользователя"  IsChecked="{Binding IsUserLoggingEnabled}"></CheckBox>
-            <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="MmsQueryDelay" FontSize="17" MinWidth="50" Margin="5"
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <TextBox x:Name="MmsQueryDelay" FontSize="17" MinWidth="50" Margin="5"
                      Text="{Binding MmsQueryDelay,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
-                <TextBlock FontSize="17" Text="Задержка между запросами MMS (мс)" VerticalAlignment="Center"/>
+                    <TextBlock FontSize="17" Text="Задержка между запросами MMS (мс)" VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Foreground="DarkRed" Margin="1" 
+                           Visibility="{Binding IsMmsQueryDelayValid,Converter={StaticResource BooleanToVisibilityConverter}}"
+                           Text="Задержка между запросами MMS должна находится в диапазоне от 0 до 100."/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="FtpTimeOutDelay" FontSize="17" MinWidth="50" Margin="5"
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <TextBox x:Name="FtpTimeOutDelay" FontSize="17" MinWidth="50" Margin="5"
                          Text="{Binding FtpTimeOutDelay,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
-                <TextBlock FontSize="17" Text="Время ожидания ответа от FTP (мс)" VerticalAlignment="Center"/>
+                    <TextBlock FontSize="17" Text="Время ожидания ответа от FTP (мс)" VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Foreground="DarkRed" Margin="1" 
+                           Visibility="{Binding IsFtpTimeOutDelayValid, Converter={StaticResource BooleanToVisibilityConverter}}"
+                           Text="Время ожидания ответа от FTP должно находится в диапазоне от 100 до 10000."/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="MaxResponseTime" FontSize="17" MinWidth="50" Margin="5"
+            <StackPanel Orientation="Vertical">
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBox x:Name="MaxResponseTime" FontSize="17" MinWidth="50" Margin="5"
                          Text="{Binding MaxResponseTime,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
-                <TextBlock FontSize="17" Text="Время ожидания ответа по MMS (мс)" VerticalAlignment="Center"/>
+                    <TextBlock FontSize="17" Text="Время ожидания ответа по MMS (мс)" VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Foreground="DarkRed" Margin="1" 
+                           Visibility="{Binding IsMaxResponseTimeValid, Converter={StaticResource BooleanToVisibilityConverter}}"
+                           Text="Время ожидания ответа по MMS должно находится в диапазоне от 500 до 10000."/>
             </StackPanel>
-            <TextBlock Foreground="DarkRed" Margin="1" 
-                       Visibility="{Binding IsVisibleValidadionError,Converter={StaticResource BooleanToVisibilityConverter}}">
-                        Задержка между запросами MMS должна находится в диапазоне от 0 до 100.
-            </TextBlock>
-            <TextBlock Foreground="DarkRed" Margin="1" 
-                       Visibility="{Binding IsVisibleValidadionError,Converter={StaticResource BooleanToVisibilityConverter}}">
-                        Время ожидания ответа от FTP должно находится в диапазоне от 100 до 100000.
-            </TextBlock>
-            <TextBlock Foreground="DarkRed" Margin="1" 
-                       Visibility="{Binding IsVisibleValidadionError,Converter={StaticResource BooleanToVisibilityConverter}}">
-                Время ожидания ответа по MMS должно находится в диапазоне от 500 до 10000.
-            </TextBlock>
+            
         </StackPanel>
         <Button Grid.Row="3" 
                 Grid.Column="0"
