@@ -2,3 +2,8 @@
 - Added BISC.Resources folder to installer.
 - Moved BasicConfiguration.xml file to BISC.Resources folder.
 - Added CHANGELOG.txt file to BISC.Resources folder.
+
+- Change connection logik: if conflicts not exists, "KIT" replace device in the project to loaded device.
+- Solved problem with device disconnect for loading cancellation on conflict resolving tree item.
+- Excluded trigger options, optional fields and integrity period in report control for model comparison. 
+This fields will not make conflicts if different.
