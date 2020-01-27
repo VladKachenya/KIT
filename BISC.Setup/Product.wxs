@@ -1,6 +1,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
   <?define ProductName="КИТ" ?>
+  <?define Resources="BISC.Resources" ?>
   <?define ProductVersion="2.0.0.9" ?>
   <?define ProductCode="*"?>
   <?define UpgradeCode="D1091144-1DA7-4107-A412-F1ACEB40A422"?>
@@ -36,6 +37,8 @@
 
       <Directory  Id="ProgramFilesFolder">
         <Directory  Id="INSTALLLOCATION" Name="$(var.ProductName)">
+          <Directory  Id="RESOURCES" Name="$(var.Resources)">
+          </Directory>
         </Directory>
 
 
@@ -70,6 +73,7 @@
       <ComponentRef Id="ProductComponent" />
       <ComponentRef Id="ApplicationShortcutKIT" />
       <ComponentRef Id="ApplicationShortcutDesktop" />
+      <ComponentRef Id="ResourcesComponent" />
     </Feature>
 
 

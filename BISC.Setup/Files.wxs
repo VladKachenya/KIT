@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?define SourceDir="D:\AzureDevOps\Unicon2\BISC\BISC\bin\Release"?>
+<?define ResourcesDir="\BISC.Resources"?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!--<Directory Id='ResourcesDirectory' Name='BISC.Resources'>
+    
+  </Directory>-->
+
   <Fragment>
+    <DirectoryRef Id="RESOURCES" >
+      <Component Id="ResourcesComponent" Guid="b11556a2-e066-4393-af5c-9c9210187229">
+        <File Id="filA30B0BA577D1A9F40F005B5C7CB99A01" KeyPath="no" Source="$(var.SourceDir)$(var.ResourcesDir)\BasicСonfiguration.xml" />
+        <File Id="filA30B0BA577D1A9F40F005B5C7CB99A02" KeyPath="no" Source="$(var.SourceDir)$(var.ResourcesDir)\CHANGELOG.txt" />
+      </Component>
+    </DirectoryRef>
     <DirectoryRef Id="INSTALLLOCATION" >
       <Component Id="ProductComponent" Guid="b11556a2-e066-4393-af5c-9c9210187228">
         <File Id="filA30B0BA577D1A9F40F005B5C7CB99A07" KeyPath="no" Source="$(var.SourceDir)\AttachedCommandBehavior.dll" />
-        <File Id="filFEAE3E5509C3F37B887687BAAU8667F4" KeyPath="no" Source="$(var.SourceDir)\BasicСonfiguration.xml" />
         <File Id="filFEAE3E5509C3F37B887687BAA75667F4" KeyPath="no" Source="$(var.SourceDir)\BISC.Infrastructure.CompositionRoot.dll" />
         <File Id="fil4113F826CCDFA38C3DCDD88F0B78ADD9" KeyPath="no" Source="$(var.SourceDir)\BISC.Infrastructure.CompositionRoot.dll.config" />
         <File Id="fil775B767BB0F0C62EC8E33417DACF960E" KeyPath="no" Source="$(var.SourceDir)\BISC.Infrastructure.CompositionRoot.pdb" />
