@@ -1,1 +1,4 @@
-﻿Some text
+﻿2020/01/27
+- Added BISC.Resources folder to installer.
+- Moved BasicConfiguration.xml file to BISC.Resources folder.
+- Added CHANGELOG.txt file to BISC.Resources folder.
