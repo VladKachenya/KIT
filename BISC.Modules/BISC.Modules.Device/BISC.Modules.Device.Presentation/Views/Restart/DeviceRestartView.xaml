@@ -14,7 +14,7 @@
     <Grid Background="Transparent">
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="Отменить процедуру перезагрузки" Command="{Binding CancelLoadingCommand}" IsEnabled="{Binding HaveConflicts, Converter={StaticResource boolInverseConverter}}"></MenuItem>
+                <MenuItem Header="Отменить процедуру перезагрузки" Command="{Binding CancelLoadingCommand}" />
             </ContextMenu>
         </Grid.ContextMenu>
         <Grid.RowDefinitions>

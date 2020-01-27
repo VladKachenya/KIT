@@ -231,8 +231,8 @@ namespace BISC.Modules.Device.Presentation.Services
             {
                 var index2 = _treeManagementService.GetTreeItemIndex(treeItemId);
                 _treeManagementService.DeleteTreeItem(treeItemId);
-                _deviceAddingService.AddDeviceToTree(existingDevice, index2);
-                _deviceWarningsService.ClearDeviceWarningsOfDevice(existingDevice.DeviceGuid);
+                _deviceAddingService.AddDeviceToTree(device, index2);
+                _deviceWarningsService.ClearDeviceWarningsOfDevice(device.DeviceGuid);
             }
             else
             {

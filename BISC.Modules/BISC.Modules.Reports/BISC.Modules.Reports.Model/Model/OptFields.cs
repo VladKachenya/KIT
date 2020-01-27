@@ -31,13 +31,13 @@ namespace BISC.Modules.Reports.Model.Model
             if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is IOptFields)) return false;
             var element = obj as IOptFields;
-            if (element.SeqNum != SeqNum) return false;
-            if (element.TimeStamp != TimeStamp) return false;
-            if (element.DataSet != DataSet) return false;
-            if (element.ReasonCode != ReasonCode) return false;
-            if (element.DataRef != DataRef) return false;
-            if (element.EntryID != EntryID) return false;
-            if (element.ConfigRef != ConfigRef) return false;
+            //if (element.SeqNum != SeqNum) return false;
+            //if (element.TimeStamp != TimeStamp) return false;
+            //if (element.DataSet != DataSet) return false;
+            //if (element.ReasonCode != ReasonCode) return false;
+            //if (element.DataRef != DataRef) return false;
+            //if (element.EntryID != EntryID) return false;
+            //if (element.ConfigRef != ConfigRef) return false;
 
             return true;
         }

@@ -30,6 +30,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
         private readonly IInjectionContainer _injectionContainer;
         private readonly ITreeManagementService _treeManagementService;
         private readonly IDeviceReconnectionService _deviceReconnectionService;
+        private readonly IDeviceConnectionService _deviceConnectionService;
         private int _totalProgress;
         private int _currentProgress;
         private bool _isIntermetiateProgress;
@@ -41,7 +42,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
 
         public DeviceRestartViewModel(IGlobalEventsService globalEventsService, ICommandFactory commandFactory, INavigationService navigationService,
             IDeviceAddingService deviceAddingService, IDeviceWarningsService deviceWarningsService, IInjectionContainer injectionContainer,
-            ITreeManagementService treeManagementService, IDeviceReconnectionService deviceReconnectionService)
+            ITreeManagementService treeManagementService, IDeviceReconnectionService deviceReconnectionService, IDeviceConnectionService deviceConnectionService)
             : base(null)
         {
             _globalEventsService = globalEventsService;
@@ -51,6 +52,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
             _injectionContainer = injectionContainer;
             _treeManagementService = treeManagementService;
             _deviceReconnectionService = deviceReconnectionService;
+            _deviceConnectionService = deviceConnectionService;
             CancelLoadingCommand = commandFactory.CreatePresentationCommand(OnCancel);
             ResolveConflictsCommand = commandFactory.CreatePresentationCommand(OnResolveConflicts);
             _elementConflictResolvers = injectionContainer.ResolveAll(typeof(IElementConflictResolver))
@@ -94,9 +96,11 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Restart
 
         private void OnCancel()
         {
+            _deviceConnectionService.DisconnectDevice(_restartDeviceContext.Device.Ip);
             _restartDeviceContext.Cts.Cancel();
             _treeManagementService.DeleteTreeItem(_restartDeviceContext.UiEntityIdentifier);
             _deviceAddingService.AddDeviceToTree(_restartDeviceContext.Device);
+
         }
 
         #region Overrides of NavigationViewModelBase

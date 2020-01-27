@@ -47,7 +47,7 @@ namespace BISC.Modules.Reports.Model.Model
             if (element.Buffered != Buffered) return false;
             if (element.BufTime != BufTime) return false;
             if (element.DataSet != DataSet) return false;
-            if (element.IntgPd != IntgPd) return false;
+            //if (element.IntgPd != IntgPd) return false;
             if (element.ConfRev != ConfRev) return false;
             //if (element.IsDynamic != IsDynamic) return false;
             return true;

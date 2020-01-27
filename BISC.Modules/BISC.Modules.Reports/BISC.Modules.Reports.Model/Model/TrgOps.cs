@@ -27,11 +27,11 @@ namespace BISC.Modules.Reports.Model.Model
             if (!base.ModelElementCompareTo(obj)) return false;
             if (!(obj is ITrgOps)) return false;
             var element = obj as ITrgOps;
-            if (element.Dchg != Dchg) return false;
-            if (element.Qchg != Qchg) return false;
-            if (element.Dupd != Dupd) return false;
-            if (element.Period != Period) return false;
-            if (element.Gi != Gi) return false;
+            //if (element.Dchg != Dchg) return false;
+            //if (element.Qchg != Qchg) return false;
+            //if (element.Dupd != Dupd) return false;
+            //if (element.Period != Period) return false;
+            //if (element.Gi != Gi) return false;
             return true;
         }
     }
