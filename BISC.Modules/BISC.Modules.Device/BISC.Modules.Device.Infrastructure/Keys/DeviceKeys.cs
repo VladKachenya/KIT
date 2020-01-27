@@ -58,7 +58,7 @@ namespace BISC.Modules.Device.Infrastructure.Keys
 
         public static class ConfigurationKeys
         {
-            public const string BasicConfigurationPathKey = "BasicСonfiguration.xml";
+            public const string BasicConfigurationPathKey = "BISC.Resources/BasicСonfiguration.xml";
             public const string BasicConfigurationNodeKey = "BaseConfigure";
         }
     }

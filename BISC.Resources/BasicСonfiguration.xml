@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BaseConfigure>
+	<ReportControl name="BaseReport" rptID="LLN0$RP$BaseReport" buffered="False" bufTime="3000" datSet="" intgPd="5000" confRev="1" IsDynamic="True">
+		<OptFields seqNum="True" timeStamp="True" dataSet="True" reasonCode="True" dataRef="False" entryID="True" configRef="False" bufOvfl="True" segmentation="False" />
+        <TrgOps dchg="False" qchg="False" dupd="False" period="True" gi="False" />
+        <RptEnabled max="1" />
+	</ReportControl>
+</BaseConfigure>
