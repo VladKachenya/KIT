@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Common;
+using BISC.Modules.Gooses.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.Services
 {
@@ -49,6 +51,8 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInteractionService _userInteractionService;
         private readonly IModelsComparingService _comparingService;
+        private readonly IGoosesModelService _goosesModelService;
+        private readonly IGooseMatrixFtpService _gooseMatrixFtpService;
 
         public DeviceReconnectionService(
             IDeviceFileWritingServices deviceFileWritingServices,
@@ -69,7 +73,9 @@ namespace BISC.Modules.Device.Presentation.Services
             IPingService pingService,
             ISaveCheckingService saveCheckingService,
             IUserInteractionService userInteractionService,
-            IModelsComparingService comparingService)
+            IModelsComparingService comparingService,
+            IGoosesModelService goosesModelService,
+            IGooseMatrixFtpService gooseMatrixFtpService)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
             _deviceConnectionService = deviceConnectionService;
@@ -89,6 +95,8 @@ namespace BISC.Modules.Device.Presentation.Services
             _saveCheckingService = saveCheckingService;
             _userInteractionService = userInteractionService;
             _comparingService = comparingService;
+            _goosesModelService = goosesModelService;
+            _gooseMatrixFtpService = gooseMatrixFtpService;
             _elementLoadingServices = injectionContainer.ResolveAll(typeof(IDeviceElementLoadingService))
                 .Cast<IDeviceElementLoadingService>().ToList();
             _elementConflictResolvers = injectionContainer.ResolveAll(typeof(IElementConflictResolver))
@@ -231,7 +239,20 @@ namespace BISC.Modules.Device.Presentation.Services
             {
                 var index2 = _treeManagementService.GetTreeItemIndex(treeItemId);
                 _treeManagementService.DeleteTreeItem(treeItemId);
-                _deviceAddingService.AddDeviceToTree(device, index2);
+                _deviceModelService.DeleteDeviceFromModel(existingDevice.GetFirstParentOfType<ISclModel>(),
+                    existingDevice.DeviceGuid);
+                _deviceAddingService.AddDevicesInProject(new List<IDevice>() { device }, device.GetFirstParentOfType<ISclModel>(), treeItemIndex: index2);
+                //Adding Goose subscription to device
+                var biscProject = device.GetFirstParentOfType<IBiscProject>();
+                if (biscProject != null)
+                {
+                    // Устанавливаем полученные Goose подписки из sclMode в наш текущий проект
+                    _goosesModelService.SetGooseInputModelInfosToProject(_biscProject, device,
+                        _goosesModelService.GetGooseInputModelInfos(device, biscProject));
+                    // Устанавливаем полученную Goose матрицн из sclMode в наш текущий проект
+                    _gooseMatrixFtpService.SetGooseMatrixFtpForDevice(device,
+                        _gooseMatrixFtpService.GetGooseMatrixFtpForDevice(device, biscProject));
+                }
                 _deviceWarningsService.ClearDeviceWarningsOfDevice(device.DeviceGuid);
             }
             else

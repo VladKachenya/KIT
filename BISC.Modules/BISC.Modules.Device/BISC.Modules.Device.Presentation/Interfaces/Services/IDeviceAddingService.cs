@@ -8,7 +8,7 @@ namespace BISC.Modules.Device.Presentation.Interfaces.Services
     public interface IDeviceAddingService : IUiFromModelElementService
     {
         void OpenDeviceAddingView();
-        void AddDevicesInProject(List<IDevice> devicesToAdd, ISclModel modelFrom, bool isSubstationScl = false);
+        void AddDevicesInProject(List<IDevice> devicesToAdd, ISclModel modelFrom, bool isSubstationScl = false, int treeItemIndex = -1);
         void AddDeviceToTree(IDevice device, int? index = null);
         void AddDeviceToTreeIfMissing(IDevice device, int? index = null);
     }

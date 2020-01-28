@@ -7,3 +7,6 @@
 - Solved problem with device disconnect for loading cancellation on conflict resolving tree item.
 - Excluded trigger options, optional fields and integrity period in report control for model comparison. 
 This fields will not make conflicts if different.
+
+2020/01/28
+- Excluded goose control max and min times from model comparison.

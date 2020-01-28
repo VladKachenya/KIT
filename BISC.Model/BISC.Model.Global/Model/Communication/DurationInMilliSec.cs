@@ -30,7 +30,7 @@ namespace BISC.Model.Global.Model.Communication
             var element = obj as IDurationInMilliSec;
             if (element.Unit != Unit) return false;
             if (element.Multiplier != Multiplier) return false;
-            if (element.Value != Value) return false;
+            //if (element.Value != Value) return false;
             return true;
         }
     }

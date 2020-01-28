@@ -108,13 +108,10 @@ namespace BISC.Modules.Device.Presentation.Services
                         }), sclModel, cts.Token);
                 }
 
-                // Устанавливаем полученные Goose подписки из sclMode в наш текущий проект
-                _goosesModelService.SetGooseInputModelInfosToProject(_biscProject, device,
-                    _goosesModelService.GetGooseInputModelInfos(device, sclModel.GetFirstParentOfType<IBiscProject>()));
-                // Устанавливаем полученную Goose матрицн из sclMode в наш текущий проект
-                _gooseMatrixFtpService.SetGooseMatrixFtpForDevice(device,
-                    _gooseMatrixFtpService.GetGooseMatrixFtpForDevice(device, sclModel.GetFirstParentOfType<IBiscProject>()));
-
+                
+                _treeManagementService.DeleteTreeItem(treeItemId);
+                _deviceAddingService.AddDevicesInProject(new List<IDevice>() { device }, sclModel);
+                return OperationResult.SucceedResult;
             }
             catch (Exception e)
             {
@@ -141,11 +138,6 @@ namespace BISC.Modules.Device.Presentation.Services
                 _loggingService.LogMessage($"Ошибка загрузки устройства {e.Message + Environment.NewLine + e.StackTrace}", SeverityEnum.Critical);
                 return new OperationResult($"Ошибка загрузки устройства {device.Name}");
             }
-
-            _treeManagementService.DeleteTreeItem(treeItemId);
-            _deviceAddingService.AddDevicesInProject(new List<IDevice>() { device }, sclModel);
-            return OperationResult.SucceedResult;
-
         }
 
     }

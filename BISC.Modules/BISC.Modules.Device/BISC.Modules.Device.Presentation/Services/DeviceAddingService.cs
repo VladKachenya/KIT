@@ -52,7 +52,7 @@ namespace BISC.Modules.Device.Presentation.Services
             await _navigationService.NavigateViewToGlobalRegion(DeviceKeys.DeviceAddingViewKey);
         }
 
-        public void AddDevicesInProject(List<IDevice> devicesToAdd, ISclModel modelFrom, bool isSubstationScl = false)
+        public void AddDevicesInProject(List<IDevice> devicesToAdd, ISclModel modelFrom, bool isSubstationScl = false, int treeItemIndex = -1)
         {
             foreach (var device in devicesToAdd)
             {
@@ -63,7 +63,7 @@ namespace BISC.Modules.Device.Presentation.Services
                     _loggingService.LogMessage(mes, SeverityEnum.Info);
                     continue;
                 }
-
+                
                 if (deviceNameInProject.Any(d =>
                     _communicationModelService.GetIpOfDevice(d.Name, _biscProject.MainSclModel.Value) ==
                     _communicationModelService.GetIpOfDevice(device.Name, modelFrom)))
@@ -81,7 +81,14 @@ namespace BISC.Modules.Device.Presentation.Services
                 }
                 else
                 {
-                    AddDeviceToTree(device);
+                    if (treeItemIndex != -1)
+                    {
+                        AddDeviceToTree(device, treeItemIndex);
+                    }
+                    else
+                    {
+                        AddDeviceToTree(device);
+                    }
                 }
             }
         }

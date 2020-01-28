@@ -13,6 +13,7 @@ using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using System.Collections.Generic;
 using System.Linq;
+using BISC.Modules.Gooses.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Model.Services
 {
@@ -20,6 +21,23 @@ namespace BISC.Modules.Device.Model.Services
     {
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
+        private readonly IGoosesModelService _goosesModelService;
+        private readonly IGooseMatrixFtpService _gooseMatrixFtpService;
+        private readonly IBiscProject _biscProject;
+
+        public DeviceModelService(
+            ISclCommunicationModelService sclCommunicationModelService, 
+            IDataTypeTemplatesModelService dataTypeTemplatesModelService,
+            //IGoosesModelService goosesModelService,
+            //IGooseMatrixFtpService gooseMatrixFtpService,
+            IBiscProject biscProject)
+        {
+            _sclCommunicationModelService = sclCommunicationModelService;
+            _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
+            //_goosesModelService = goosesModelService;
+            //_gooseMatrixFtpService = gooseMatrixFtpService;
+            _biscProject = biscProject;
+        }
 
         void SetSclModelForModelElement(IModelElement element, ISclModel sclModel)
         {
@@ -27,21 +45,15 @@ namespace BISC.Modules.Device.Model.Services
             {
                 return;
             }
-            else if (element.ParentModelElement is IModelElement)
+            else if (element.ParentModelElement is ISclModel)
             {
-                element.ParentModelElement = (IModelElement)sclModel;
+                element.ParentModelElement = sclModel;
                 return;
             }
             else
             {
                 SetSclModelForModelElement(element.ParentModelElement, sclModel);
             }
-        }
-
-        public DeviceModelService(ISclCommunicationModelService sclCommunicationModelService, IDataTypeTemplatesModelService dataTypeTemplatesModelService)
-        {
-            _sclCommunicationModelService = sclCommunicationModelService;
-            _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
         }
 
 
@@ -91,6 +103,18 @@ namespace BISC.Modules.Device.Model.Services
 
             //It is too important
             SetSclModelForModelElement(device, sclModel);
+
+            //Adding Goose subscription to device
+            //var biscProject = sclModel.GetFirstParentOfType<IBiscProject>();
+            //if (biscProject != null)
+            //{
+            //    // Устанавливаем полученные Goose подписки из sclMode в наш текущий проект
+            //    _goosesModelService.SetGooseInputModelInfosToProject(_biscProject, device,
+            //        _goosesModelService.GetGooseInputModelInfos(device, biscProject));
+            //    // Устанавливаем полученную Goose матрицн из sclMode в наш текущий проект
+            //    _gooseMatrixFtpService.SetGooseMatrixFtpForDevice(device,
+            //        _gooseMatrixFtpService.GetGooseMatrixFtpForDevice(device, biscProject));
+            //}
 
             return OperationResult.SucceedResult;
         }
