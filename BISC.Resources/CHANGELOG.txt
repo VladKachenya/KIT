@@ -13,3 +13,4 @@ This fields will not make conflicts if different.
 
 2020/02/06
 - Refactoring project structure for goose. Made goose module more losse coupling.
+- Refactoring project structure for report control. Made report module more losse coupling.
