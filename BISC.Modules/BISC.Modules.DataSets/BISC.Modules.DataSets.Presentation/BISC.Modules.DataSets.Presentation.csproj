@@ -53,7 +53,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\DatasetsProjectSavingCommand.cs" />
+    <Compile Include="Commands\DataSetsProjectSavingCommand.cs" />
     <Compile Include="Commands\DatasetsSavingByMmsCommand.cs" />
     <Compile Include="Factorys\DatasetViewModelFactory.cs" />
     <Compile Include="Factorys\FcdaViewModelFactory.cs" />
@@ -154,9 +154,9 @@
       <Project>{60a162a1-2a6a-4a39-b349-4b718ba1fa1f}</Project>
       <Name>BISC.Modules.FTP.Infrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\BISC.Modules.Gooses\BISC.Modules.Gooses.Presentation\BISC.Modules.Gooses.Presentation.csproj">
-      <Project>{69D09B0A-122B-4CE2-84EA-2A5DA30991E7}</Project>
-      <Name>BISC.Modules.Gooses.Presentation</Name>
+    <ProjectReference Include="..\..\BISC.Modules.Gooses\BISC.Modules.Gooses.Infrastructure\BISC.Modules.Gooses.Infrastructure.csproj">
+      <Project>{7fd15be3-633c-4063-8948-b1663736523d}</Project>
+      <Name>BISC.Modules.Gooses.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\BISC.Modules.InformationModel\BISC.Modules.InformationModel.Infrastucture\BISC.Modules.InformationModel.Infrastucture.csproj">
       <Project>{1642183D-562D-4E50-B8F7-22205D731E45}</Project>

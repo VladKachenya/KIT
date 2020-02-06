@@ -76,7 +76,6 @@
     <Compile Include="Interfaces\IGooseMatrixSelectableCellViewModel.cs" />
     <Compile Include="Interfaces\IGooseRowViewModel.cs" />
     <Compile Include="Interfaces\ISelectableValueViewModel.cs" />
-    <Compile Include="Interfaces\Services\IGooseViewModelService.cs" />
     <Compile Include="Module\GoosePresentationInitialization.cs" />
     <Compile Include="Module\GoosesPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

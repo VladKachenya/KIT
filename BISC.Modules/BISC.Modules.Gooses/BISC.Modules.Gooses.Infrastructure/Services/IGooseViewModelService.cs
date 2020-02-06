@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BISC.Modules.Device.Infrastructure.Model;
 
-namespace BISC.Modules.Gooses.Presentation.Interfaces.Services
+namespace BISC.Modules.Gooses.Infrastructure.Services
 {
     public interface IGooseViewModelService
     {

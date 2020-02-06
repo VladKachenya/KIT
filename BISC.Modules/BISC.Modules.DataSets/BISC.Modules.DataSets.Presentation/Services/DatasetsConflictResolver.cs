@@ -27,13 +27,13 @@ namespace BISC.Modules.DataSets.Model.Services
         private readonly INavigationService _navigationService;
         private readonly IDatasetViewModelFactory _datasetViewModelFactory;
         private readonly IInfoModelService _infoModelService;
-        private readonly DatasetsProjectSavingCommand _datasetsProjectSavingCommand;
+        private readonly DataSetsProjectSavingCommand _dataSetsProjectSavingCommand;
         private readonly DataSetSavingService _dataSetSavingService;
 
 
         public DatasetsConflictResolver(IDatasetModelService datasetModelService, IDeviceModelService deviceModelService, IConnectionPoolService connectionPoolService,
             INavigationService navigationService, IDatasetViewModelFactory datasetViewModelFactory, IInfoModelService infoModelService,
-            DatasetsProjectSavingCommand datasetsProjectSavingCommand, DataSetSavingService dataSetSavingService)
+            DataSetsProjectSavingCommand dataSetsProjectSavingCommand, DataSetSavingService dataSetSavingService)
         {
             _datasetModelService = datasetModelService;
             _deviceModelService = deviceModelService;
@@ -41,7 +41,7 @@ namespace BISC.Modules.DataSets.Model.Services
             _navigationService = navigationService;
             _datasetViewModelFactory = datasetViewModelFactory;
             _infoModelService = infoModelService;
-            _datasetsProjectSavingCommand = datasetsProjectSavingCommand;
+            _dataSetsProjectSavingCommand = dataSetsProjectSavingCommand;
             _dataSetSavingService = dataSetSavingService;
         }
 
@@ -126,8 +126,8 @@ namespace BISC.Modules.DataSets.Model.Services
             {
                 if (_connectionPoolService.GetConnection(deviceInsclModelInDevice.Ip).IsConnected)
                 {
-                    _datasetsProjectSavingCommand.Initialize(ref datasetsViewModelsInProject, deviceInsclModelInDevice, datasetsViewModelsInProject.Select(el => el.ChangeTracker).ToArray());
-                    await _datasetsProjectSavingCommand.SaveAsync();
+                    _dataSetsProjectSavingCommand.Initialize(ref datasetsViewModelsInProject, deviceInsclModelInDevice, datasetsViewModelsInProject.Select(el => el.ChangeTracker).ToArray());
+                    await _dataSetsProjectSavingCommand.SaveAsync();
                     await _dataSetSavingService.Save(devicesclModelInProject);
                     return new ResolvingResult() { IsRestartNeeded = true };
 

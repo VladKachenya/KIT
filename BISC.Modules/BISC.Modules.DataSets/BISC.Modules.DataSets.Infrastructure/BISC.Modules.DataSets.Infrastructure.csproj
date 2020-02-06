@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\DataSetChangeEvent.cs" />
     <Compile Include="Factorys\IDataSetFactory.cs" />
     <Compile Include="Factorys\IFcdaFactory.cs" />
     <Compile Include="Keys\DatasetKeys.cs" />

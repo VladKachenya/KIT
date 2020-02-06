@@ -65,6 +65,7 @@
     <Compile Include="Services\IGooseModelServicesFacade.cs" />
     <Compile Include="Services\IGooseSavingService.cs" />
     <Compile Include="Services\IGoosesModelService.cs" />
+    <Compile Include="Services\IGooseViewModelService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">

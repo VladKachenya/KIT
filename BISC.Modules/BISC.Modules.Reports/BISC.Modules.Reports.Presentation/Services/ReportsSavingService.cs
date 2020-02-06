@@ -15,13 +15,16 @@ using BISC.Modules.Reports.Infrastructure.Services;
 
 namespace BISC.Modules.Reports.Presentation.Services
 {
-    public class ReportsSavingService:IDeviceElementSavingService
+    public class ReportsSavingService: IDeviceElementSavingService
     {
         private readonly IFtpReportModelService _ftpReportModelService;
         private readonly IInfoModelService _infoModelService;
         private readonly ILoggingService _loggingService;
 
-        public ReportsSavingService(IFtpReportModelService ftpReportModelService,IInfoModelService infoModelService,ILoggingService loggingService)
+        public ReportsSavingService(
+            IFtpReportModelService ftpReportModelService,
+            IInfoModelService infoModelService,
+            ILoggingService loggingService)
         {
             _ftpReportModelService = ftpReportModelService;
             _infoModelService = infoModelService;

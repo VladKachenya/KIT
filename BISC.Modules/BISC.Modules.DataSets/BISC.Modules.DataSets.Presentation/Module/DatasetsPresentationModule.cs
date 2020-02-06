@@ -59,7 +59,7 @@ namespace BISC.Modules.DataSets.Presentation.Module
             _injectionContainer.RegisterType<IFtpDataSetModelService, FtpDataSetModelService>();
             _injectionContainer.RegisterType<DataSetsConflictsViewModel>();
             _injectionContainer.RegisterType<DatasetsSavingByMmsCommand>();
-            _injectionContainer.RegisterType<DatasetsProjectSavingCommand>();
+            _injectionContainer.RegisterType<DataSetsProjectSavingCommand>();
         }
 
         #endregion

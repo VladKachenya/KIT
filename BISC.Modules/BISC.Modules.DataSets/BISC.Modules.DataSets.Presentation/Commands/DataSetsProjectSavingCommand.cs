@@ -24,23 +24,20 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using BISC.Modules.Gooses.Presentation.Interfaces.Services;
+using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Reports.Infrastructure.Presentation.Services;
 
 namespace BISC.Modules.DataSets.Presentation.Commands
 {
-    public class DatasetsProjectSavingCommand : ISavingCommand
+    public class DataSetsProjectSavingCommand : ISavingCommand
     {
 
         private readonly IDatasetModelService _datasetModelService;
         private readonly IInfoModelService _infoModelService;
         private readonly IDataSetFactory _dataSetFactory;
-        private readonly IProjectService _projectService;
+
         private readonly ILoggingService _loggingService;
         private readonly IConnectionPoolService _connectionPoolService;
-        private readonly ISclCommunicationModelService _sclCommunicationModelService;
-        private readonly IBiscProject _biscProject;
-        //private readonly IFtpDataSetModelService _ftpDataSetModelService;
 
         private readonly IDeviceWarningsService _deviceWarningsService;
 
@@ -49,29 +46,30 @@ namespace BISC.Modules.DataSets.Presentation.Commands
         private readonly IReportVeiwModelService _reportVeiwModelService;
 
         private readonly IDataSetNameService _dataSetNameService;
-        //private Action<bool> _fineshSaving;
 
         private IDevice _device;
         private ObservableCollection<IDataSetViewModel> _dataSetsToSave;
-        private IChangeTracker[] _changeTrackers;
 
-        //private string _errorDeleteMessagePattern = $"Не удалось удалить DataSet {0} в устройстве: {1}";
-        //private string _successDeleteMessagePattern = $"DataSet {0} удален в устройстве: {1}";
-
-        public DatasetsProjectSavingCommand(IDatasetModelService datasetModelService, IInfoModelService infoModelService,
-            IDataSetFactory dataSetFactory, IProjectService projectService, ILoggingService loggingService, 
-            IConnectionPoolService connectionPoolService, ISclCommunicationModelService sclCommunicationModelService, IBiscProject biscProject, 
-            IDeviceWarningsService deviceWarningsService, IGooseViewModelService gooseViewModelService, IReportVeiwModelService reportVeiwModelService,
+        public DataSetsProjectSavingCommand(
+            IDatasetModelService datasetModelService, 
+            IInfoModelService infoModelService,
+            IDataSetFactory dataSetFactory, 
+            IProjectService projectService, 
+            ILoggingService loggingService, 
+            IConnectionPoolService connectionPoolService, 
+            ISclCommunicationModelService sclCommunicationModelService, 
+            IBiscProject biscProject, 
+            IDeviceWarningsService deviceWarningsService, 
+            IGooseViewModelService gooseViewModelService, 
+            IReportVeiwModelService reportVeiwModelService,
             IDataSetNameService dataSetNameService)
         {
             _datasetModelService = datasetModelService;
             _infoModelService = infoModelService;
             _dataSetFactory = dataSetFactory;
-            _projectService = projectService;
             _loggingService = loggingService;
             _connectionPoolService = connectionPoolService;
-            _sclCommunicationModelService = sclCommunicationModelService;
-            _biscProject = biscProject;
+
             _deviceWarningsService = deviceWarningsService;
             _gooseViewModelService = gooseViewModelService;
             _reportVeiwModelService = reportVeiwModelService;
@@ -87,7 +85,6 @@ namespace BISC.Modules.DataSets.Presentation.Commands
         {
             _dataSetsToSave = dataSetsToSave;
             _device = device as IDevice;
-            _changeTrackers = changeTrackers;
         }
 
 
@@ -140,7 +137,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
                 _gooseViewModelService.IncrementConfRevisionGooseControls(_device, dataSetNamesWithChengests);
                 _reportVeiwModelService.IncrementConfRevisionReportControl(_device, dataSetNamesWithChengests);
-                //_projectService.SaveCurrentProject();
+
                 if (_connectionPoolService.GetConnection(_device.Ip).IsConnected)
                 {
                     _deviceWarningsService.SetWarningOfDevice(_device.DeviceGuid, DatasetKeys.DataSetWarningKeys.DataSetsUnsavedWarningTagKey, "Datasets не соответствуют устройству");

@@ -8,7 +8,6 @@ using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Keys;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Presentation.Events;
-using BISC.Modules.Gooses.Presentation.Interfaces.Services;
 
 namespace BISC.Modules.Gooses.Presentation.Services
 {
@@ -20,8 +19,12 @@ namespace BISC.Modules.Gooses.Presentation.Services
         private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly IGlobalEventsService _globalEventsService;
 
-        public GooseViewModelService(IGoosesModelService goosesModelService, IConnectionPoolService connectionPoolService, 
-            ILoggingService loggingService, IDeviceWarningsService deviceWarningsService, IGlobalEventsService globalEventsService)
+        public GooseViewModelService(
+            IGoosesModelService goosesModelService, 
+            IConnectionPoolService connectionPoolService, 
+            ILoggingService loggingService, 
+            IDeviceWarningsService deviceWarningsService, 
+            IGlobalEventsService globalEventsService)
         {
             _goosesModelService = goosesModelService;
             _connectionPoolService = connectionPoolService;

@@ -35,7 +35,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
         private List<IDataSet> _dataSets;
         private readonly IDatasetModelService _datasetModelService;
         private readonly IDatasetViewModelFactory _datasetViewModelFactory;
-        private readonly DatasetsProjectSavingCommand _datasetsProjectSavingCommand;
+        private readonly DataSetsProjectSavingCommand _dataSetsProjectSavingCommand;
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInterfaceComposingService _userInterfaceComposingService;
         private readonly INavigationService _navigationService;
@@ -60,7 +60,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             IGlobalEventsService globalEventsService,
             INavigationService navigationService,
             ILoggingService loggingService,
-            DatasetsProjectSavingCommand datasetsProjectSavingCommandCommand, 
+            DataSetsProjectSavingCommand dataSetsProjectSavingCommandCommand, 
             IDeviceWarningsService deviceWarningsService,
             IGlobalSavingService globalSavingService)
             : base(globalEventsService)
@@ -68,7 +68,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _userInterfaceComposingService = userInterfaceComposingService;
             _navigationService = navigationService;
             _loggingService = loggingService;
-            _datasetsProjectSavingCommand = datasetsProjectSavingCommandCommand;
+            _dataSetsProjectSavingCommand = dataSetsProjectSavingCommandCommand;
             _datasetModelService = datasetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
             _saveCheckingService = saveCheckingService;
@@ -143,7 +143,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
             _saveCheckingService.RemoveSaveCheckingEntityByOwner(_regionName);
             _saveCheckingService.AddSaveCheckingEntity(new SaveCheckingEntity(ChangeTracker,
-                $"DataSets устройства {_device.Name}", _datasetsProjectSavingCommand, _device.DeviceGuid, _regionName));
+                $"DataSets устройства {_device.Name}", _dataSetsProjectSavingCommand, _device.DeviceGuid, _regionName));
             AddNewDataSetCommand.RaiseCanExecute();
             ChangeTracker.AcceptChanges();
             ChangeTracker.SetTrackingEnabled(true);
@@ -256,8 +256,8 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             protected set
             {
                 SetProperty(ref _dataSets1, value);
-                _datasetsProjectSavingCommand.Initialize(ref _dataSets1, _device, this.ChangeTracker);
-                _datasetsProjectSavingCommand.RefreshViewModel =
+                _dataSetsProjectSavingCommand.Initialize(ref _dataSets1, _device, this.ChangeTracker);
+                _dataSetsProjectSavingCommand.RefreshViewModel =
                     async () =>
                     {
                         await UpdateDataSets();
