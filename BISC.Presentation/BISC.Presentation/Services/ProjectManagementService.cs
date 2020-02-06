@@ -90,7 +90,7 @@ namespace BISC.Presentation.Services
 
             if (result.IsSucceed)
             {
-                _gooseModelServicesFacade.DeleteGooseInputsByDeviceName(_biscProject, device.Name);
+                _gooseModelServicesFacade.RemoveGooseInputsByDeviceName(_biscProject, device.Name);
                 _connectionPoolService.GetConnection(device.Ip).StopConnection();
             }
             _treeManagementService.DeleteTreeItem(deviceTreeItemIdentifier);
@@ -112,7 +112,7 @@ namespace BISC.Presentation.Services
                 var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, device.DeviceGuid);
                 if (result.IsSucceed)
                 {
-                    _gooseModelServicesFacade.DeleteGooseInputsByDeviceName(_biscProject, device.Name);
+                    _gooseModelServicesFacade.RemoveGooseInputsByDeviceName(_biscProject, device.Name);
                     _connectionPoolService.GetConnection(device.Ip).StopConnection();
                     _deviceWarningsService.ClearDeviceWarningsOfDevice(device.DeviceGuid);
                 }

@@ -235,7 +235,7 @@ namespace BISC.Modules.Device.Presentation.Services
                 var biscProject = device.GetFirstParentOfType<IBiscProject>();
                 if (biscProject != null)
                 {
-                    _gooseModelServicesFacade.SetGooseReceivingAndSending(device, _biscProject, biscProject);
+                    _gooseModelServicesFacade.SetGooseReceiving(device, _biscProject, biscProject);
                 }
                 _deviceWarningsService.ClearDeviceWarningsOfDevice(device.DeviceGuid);
             }

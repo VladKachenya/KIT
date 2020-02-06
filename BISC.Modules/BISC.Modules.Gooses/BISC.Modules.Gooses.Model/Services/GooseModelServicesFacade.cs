@@ -11,7 +11,8 @@ namespace BISC.Modules.Gooses.Model.Services
     {
         private readonly IGooseMatrixFtpService _gooseMatrixFtpService;
         private readonly IGoosesModelService _goosesModelService;
-
+        
+        // Only goose model services
         public GooseModelServicesFacade(
             IGooseMatrixFtpService gooseMatrixFtpService,
             IGoosesModelService goosesModelService)
@@ -20,12 +21,12 @@ namespace BISC.Modules.Gooses.Model.Services
             _goosesModelService = goosesModelService;
         }
 
-        public void DeleteGooseInputsByDeviceName(IBiscProject biscProject, string deviceName)
+        public void RemoveGooseInputsByDeviceName(IBiscProject biscProject, string deviceName)
         {
             _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(biscProject, deviceName);
         }
 
-        public void SetGooseReceivingAndSending(IDevice device, IBiscProject projectTo, IBiscProject projectFrom)
+        public void SetGooseReceiving(IDevice device, IBiscProject projectTo, IBiscProject projectFrom)
         {
             // Устанавливаем полученные Goose подписки из sclMode в наш текущий проект
             _goosesModelService.SetGooseInputModelInfosToProject(projectTo, device,
@@ -35,20 +36,6 @@ namespace BISC.Modules.Gooses.Model.Services
                 _gooseMatrixFtpService.GetGooseMatrixFtpForDevice(device, projectFrom), projectTo);
         }
 
-        public IGooseMatrixFtp GetGooseMatrix(IDevice device, IBiscProject biscProject = null)
-        {
-            return _gooseMatrixFtpService.GetGooseMatrixFtpForDevice(device, biscProject);
-        }
-
-        public void SetGooseMatrix(IDevice device, IGooseMatrixFtp gooseMatrixFtp, IBiscProject biscProject = null)
-        {
-            _gooseMatrixFtpService.SetGooseMatrixFtpForDevice(device, gooseMatrixFtp, biscProject);
-        }
-
-        public List<IGooseInputModelInfo> GetGooseInputs(IDevice device, IBiscProject biscProject = null)
-        {
-            return _goosesModelService.GetGooseInputModelInfos(device, biscProject);
-        }
 
         public void ChangeGooseInputOwnerName(IBiscProject biscProject, IDevice device, string newDeviceOwnerName)
         {
