@@ -15,30 +15,34 @@ namespace BISC.Modules.Device.Model.Services
 {
     public class DeviceIdentificationService : IDeviceIdentificationService
     {
-        private readonly IConnectionPoolService _connectionPoolService;
+
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IIpValidationService _ipValidationService;
         private readonly IInfoModelService _infoModelService;
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
         private readonly IDeviceModelService _deviceModelService;
         private readonly IBiscProject _biscProject;
-        private readonly IGoosesModelService _goosesModelService;
+
+        private readonly IGooseModelServicesFacade _gooseModelServicesFacade;
 
         #region Ctor
 
-        public DeviceIdentificationService(IConnectionPoolService connectionPoolService,
-            ISclCommunicationModelService sclCommunicationModelService, IIpValidationService ipValidationService,
-            IInfoModelService infoModelService, IDataTypeTemplatesModelService dataTypeTemplatesModelService,
-            IDeviceModelService deviceModelService, IBiscProject biscProject, IGoosesModelService goosesModelService)
+        public DeviceIdentificationService(
+            ISclCommunicationModelService sclCommunicationModelService, 
+            IIpValidationService ipValidationService,
+            IInfoModelService infoModelService, 
+            IDataTypeTemplatesModelService dataTypeTemplatesModelService,
+            IDeviceModelService deviceModelService, 
+            IBiscProject biscProject, 
+            IGooseModelServicesFacade gooseModelServicesFacade)
         {
-            _connectionPoolService = connectionPoolService;
             _sclCommunicationModelService = sclCommunicationModelService;
             _ipValidationService = ipValidationService;
             _infoModelService = infoModelService;
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
             _deviceModelService = deviceModelService;
             _biscProject = biscProject;
-            _goosesModelService = goosesModelService;
+            _gooseModelServicesFacade = gooseModelServicesFacade;
         }
 
         #endregion
@@ -73,7 +77,7 @@ namespace BISC.Modules.Device.Model.Services
                 newDeviceName = device.Name;
             }
 
-            _goosesModelService.ChengeGooseDeviceInputOwner(_biscProject, device, newDeviceName);
+            _gooseModelServicesFacade.ChangeGooseInputOwnerName(_biscProject, device, newDeviceName);
             _sclCommunicationModelService.ReplaceAccessPointIp(sclModel, device.Name, settableIp);
             _sclCommunicationModelService.ReplaceAccessPointIdeName(sclModel, device.Name, newDeviceName);
 

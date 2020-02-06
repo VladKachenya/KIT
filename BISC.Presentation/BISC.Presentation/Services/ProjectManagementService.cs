@@ -13,8 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using BISC.Presentation.Infrastructure.HelperEntities;
-using BISC.Presentation.Windows;
 
 namespace BISC.Presentation.Services
 {
@@ -27,7 +25,7 @@ namespace BISC.Presentation.Services
         private readonly IDeviceModelService _deviceModelService;
         private readonly IBiscProject _biscProject;
         private readonly ITreeManagementService _treeManagementService;
-        private readonly IGoosesModelService _goosesModelService;
+        private readonly IGooseModelServicesFacade _gooseModelServicesFacade;
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly ITabManagementService _tabManagementService;
         private readonly IDeviceWarningsService _deviceWarningsService;
@@ -39,14 +37,13 @@ namespace BISC.Presentation.Services
 
         #region ctor
         public ProjectManagementService(
-            IProjectService projectService, 
-            ISaveCheckingService saveCheckingService, 
+            IProjectService projectService,
             ILoggingService loggingService,
             IUiFromModelElementRegistryService uiFromModelElementRegistryService, 
             IBiscProject biscProject, 
             IDeviceModelService deviceModelService,
             ITreeManagementService treeManagementService, 
-            IGoosesModelService goosesModelService, 
+            IGooseModelServicesFacade gooseModelServicesFacade,
             IConnectionPoolService connectionPoolService,
             ITabManagementService tabManagementService, 
             IDeviceWarningsService deviceWarningsService, 
@@ -60,7 +57,7 @@ namespace BISC.Presentation.Services
             _biscProject = biscProject;
             _deviceModelService = deviceModelService;
             _treeManagementService = treeManagementService;
-            _goosesModelService = goosesModelService;
+            _gooseModelServicesFacade = gooseModelServicesFacade;
             _connectionPoolService = connectionPoolService;
             _tabManagementService = tabManagementService;
             _deviceWarningsService = deviceWarningsService;
@@ -93,8 +90,7 @@ namespace BISC.Presentation.Services
 
             if (result.IsSucceed)
             {
-                _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject,
-                    device.Name);
+                _gooseModelServicesFacade.DeleteGooseInputsByDeviceName(_biscProject, device.Name);
                 _connectionPoolService.GetConnection(device.Ip).StopConnection();
             }
             _treeManagementService.DeleteTreeItem(deviceTreeItemIdentifier);
@@ -116,7 +112,7 @@ namespace BISC.Presentation.Services
                 var result = _deviceModelService.DeleteDeviceFromModel(_biscProject.MainSclModel.Value, device.DeviceGuid);
                 if (result.IsSucceed)
                 {
-                    _goosesModelService.DeleteAllDeviceReferencesInGooseControlsInModel(_biscProject, device.Name);
+                    _gooseModelServicesFacade.DeleteGooseInputsByDeviceName(_biscProject, device.Name);
                     _connectionPoolService.GetConnection(device.Ip).StopConnection();
                     _deviceWarningsService.ClearDeviceWarningsOfDevice(device.DeviceGuid);
                 }

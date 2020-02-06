@@ -53,8 +53,9 @@ namespace BISC.Modules.Gooses.Model.Module
             _injectionContainer.RegisterType<IFtpGooseModelService, FtpGooseModelService>();
             _injectionContainer.RegisterType<IGooseSavingService, GooseSavingService>();
             _injectionContainer.RegisterType<IGooseMatrixFtpService, GooseMatrixFtpService>();
-            _injectionContainer.RegisterType<IGooseMatrixParsersFactory, GooseMatrixParsersFactory>();
+            _injectionContainer.RegisterType<IGooseModelServicesFacade, GooseModelServicesFacade>();
 
+            _injectionContainer.RegisterType<IGooseMatrixParsersFactory, GooseMatrixParsersFactory>();
             _injectionContainer.RegisterType<IGooseInputModelInfoFactory, GooseInputModelInfoFactory>();
             _injectionContainer.RegisterType<IGoCbFtpEntityFactory, GoCbFtpEntityFactory>();
 

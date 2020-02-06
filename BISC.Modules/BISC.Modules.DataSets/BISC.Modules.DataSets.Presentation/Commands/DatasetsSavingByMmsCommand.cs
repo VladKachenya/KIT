@@ -39,11 +39,16 @@ namespace BISC.Modules.DataSets.Presentation.Commands
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IBiscProject _biscProject;
-        private readonly IReportsModelService _reportsModelService;
 
-        public DatasetsSavingByMmsCommand(IDatasetModelService datasetModelService, IInfoModelService infoModelService, IDataSetFactory dataSetFactory,
-            IProjectService projectService, ILoggingService loggingService, IConnectionPoolService connectionPoolService,
-            ISclCommunicationModelService sclCommunicationModelService, IBiscProject biscProject, IReportsModelService reportsModelService)
+        public DatasetsSavingByMmsCommand(
+            IDatasetModelService datasetModelService, 
+            IInfoModelService infoModelService, 
+            IDataSetFactory dataSetFactory,
+            IProjectService projectService, 
+            ILoggingService loggingService, 
+            IConnectionPoolService connectionPoolService,
+            ISclCommunicationModelService sclCommunicationModelService, 
+            IBiscProject biscProject)
         {
             _datasetModelService = datasetModelService;
             _infoModelService = infoModelService;
@@ -53,7 +58,6 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             _connectionPoolService = connectionPoolService;
             _sclCommunicationModelService = sclCommunicationModelService;
             _biscProject = biscProject;
-            _reportsModelService = reportsModelService;
         }
 
 

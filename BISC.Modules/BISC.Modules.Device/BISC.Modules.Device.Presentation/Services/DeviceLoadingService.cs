@@ -31,19 +31,22 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly Func<ISclModel> _sclModelCreator;
         private readonly IGlobalEventsService _globalEventsService;
         private readonly IBiscProject _biscProject;
-        private readonly IUserNotificationService _userNotificationService;
         private readonly ILoggingService _loggingService;
         private readonly IConnectionPoolService _connectionPoolService;
-        private readonly IGooseMatrixFtpService _gooseMatrixFtpService;
-        private readonly IGoosesModelService _goosesModelService;
         private readonly IUserInteractionService _userInteractionService;
         private List<IDeviceElementLoadingService> _elementLoadingServices;
 
-        public DeviceLoadingService(IInjectionContainer injectionContainer, IDeviceModelService deviceModelService,
-            ITreeManagementService treeManagementService, IDeviceAddingService deviceAddingService,
-            Func<ISclModel> sclModelCreator, IGlobalEventsService globalEventsService, IBiscProject biscProject,
-            IUserNotificationService userNotificationService, ILoggingService loggingService, IConnectionPoolService connectionPoolService,
-            IGooseMatrixFtpService gooseMatrixFtpService, IGoosesModelService goosesModelService, IUserInteractionService userInteractionService)
+        public DeviceLoadingService(
+            IInjectionContainer injectionContainer, 
+            IDeviceModelService deviceModelService,
+            ITreeManagementService treeManagementService, 
+            IDeviceAddingService deviceAddingService,
+            Func<ISclModel> sclModelCreator, 
+            IGlobalEventsService globalEventsService, 
+            IBiscProject biscProject,
+            ILoggingService loggingService, 
+            IConnectionPoolService connectionPoolService,
+            IUserInteractionService userInteractionService)
         {
             _deviceModelService = deviceModelService;
             _treeManagementService = treeManagementService;
@@ -51,11 +54,8 @@ namespace BISC.Modules.Device.Presentation.Services
             _sclModelCreator = sclModelCreator;
             _globalEventsService = globalEventsService;
             _biscProject = biscProject;
-            _userNotificationService = userNotificationService;
             _loggingService = loggingService;
             _connectionPoolService = connectionPoolService;
-            _gooseMatrixFtpService = gooseMatrixFtpService;
-            _goosesModelService = goosesModelService;
             _userInteractionService = userInteractionService;
             _elementLoadingServices = injectionContainer.ResolveAll(typeof(IDeviceElementLoadingService))
                 .Cast<IDeviceElementLoadingService>().ToList();

@@ -21,22 +21,14 @@ namespace BISC.Modules.Device.Model.Services
     {
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
-        private readonly IGoosesModelService _goosesModelService;
-        private readonly IGooseMatrixFtpService _gooseMatrixFtpService;
-        private readonly IBiscProject _biscProject;
+
 
         public DeviceModelService(
             ISclCommunicationModelService sclCommunicationModelService, 
-            IDataTypeTemplatesModelService dataTypeTemplatesModelService,
-            //IGoosesModelService goosesModelService,
-            //IGooseMatrixFtpService gooseMatrixFtpService,
-            IBiscProject biscProject)
+            IDataTypeTemplatesModelService dataTypeTemplatesModelService)
         {
             _sclCommunicationModelService = sclCommunicationModelService;
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
-            //_goosesModelService = goosesModelService;
-            //_gooseMatrixFtpService = gooseMatrixFtpService;
-            _biscProject = biscProject;
         }
 
         void SetSclModelForModelElement(IModelElement element, ISclModel sclModel)

@@ -10,3 +10,6 @@ This fields will not make conflicts if different.
 
 2020/01/28
 - Excluded goose control max and min times from model comparison.
+
+2020/02/06
+- Refactoring project structure for goose. Made goose module more losse coupling.

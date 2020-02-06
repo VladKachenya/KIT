@@ -35,13 +35,9 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
 {
     public class DeviceTreeItemViewModel : NavigationViewModelBase, IDeviceTreeItemViewModel
     {
-        private readonly IDeviceModelService _deviceModelService;
         private readonly IGlobalEventsService _globalEventsService;
         private readonly IConnectionPoolService _connectionPoolService;
-        private readonly IBiscProject _biscProject;
-        private readonly ITreeManagementService _treeManagementService;
         private readonly ITabManagementService _tabManagementService;
-        private readonly IGoosesModelService _goosesModelService;
         private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInteractionService _userInteractionService;
         private readonly ILoggingService _loggingService;
@@ -62,17 +58,12 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
         private UiEntityIdentifier _uiEntityIdentifier;
 
         private bool _isDeviceConnected;
-        private bool _isReportWarning;
 
         public DeviceTreeItemViewModel(
             ICommandFactory commandFactory,
-            IDeviceModelService deviceModelService,
             IGlobalEventsService globalEventsService,
             IConnectionPoolService connectionPoolService,
-            IBiscProject biscProject,
-            ITreeManagementService treeManagementService,
             ITabManagementService tabManagementService,
-            IGoosesModelService goosesModelService,
             ISaveCheckingService saveCheckingService,
             IUserInteractionService userInteractionService,
             ILoggingService loggingService,
@@ -87,13 +78,9 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             : base(null)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
-            _deviceModelService = deviceModelService;
             _globalEventsService = globalEventsService;
             _connectionPoolService = connectionPoolService;
-            _biscProject = biscProject;
-            _treeManagementService = treeManagementService;
             _tabManagementService = tabManagementService;
-            _goosesModelService = goosesModelService;
             _saveCheckingService = saveCheckingService;
             _userInteractionService = userInteractionService;
             _loggingService = loggingService;
@@ -105,6 +92,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Tree
             _deviceSavingService = deviceSavingService;
             _globalSavingService = globalSavingService;
             _projectManagementService = projectManagementService;
+
             DeleteDeviceCommand = commandFactory.CreatePresentationCommand(OnDeleteDeviceExecute);
             NavigateToDetailsCommand = commandFactory.CreatePresentationCommand(OnNavigateToDetailsExecute);
             ResetDeviceViaFtpCommand = commandFactory.CreatePresentationCommand(OnResetDeviceViaFtp, IsDeviceReadyForFtpOps);

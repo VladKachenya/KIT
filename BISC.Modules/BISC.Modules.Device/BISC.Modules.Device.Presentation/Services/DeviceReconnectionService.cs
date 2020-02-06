@@ -2,7 +2,6 @@
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Project;
-using BISC.Model.Infrastructure.Services;
 using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Events;
@@ -38,7 +37,6 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly ITabManagementService _tabManagementService;
         private readonly ILoggingService _loggingService;
         private readonly IGlobalEventsService _globalEventsService;
-        private readonly INavigationService _navigationService;
         private List<IDeviceElementLoadingService> _elementLoadingServices;
         private List<IElementConflictResolver> _elementConflictResolvers;
 
@@ -48,11 +46,9 @@ namespace BISC.Modules.Device.Presentation.Services
         private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IPingService _pingService;
-        private readonly ISaveCheckingService _saveCheckingService;
         private readonly IUserInteractionService _userInteractionService;
-        private readonly IModelsComparingService _comparingService;
-        private readonly IGoosesModelService _goosesModelService;
-        private readonly IGooseMatrixFtpService _gooseMatrixFtpService;
+        private readonly IGooseModelServicesFacade _gooseModelServicesFacade;
+
 
         public DeviceReconnectionService(
             IDeviceFileWritingServices deviceFileWritingServices,
@@ -63,7 +59,6 @@ namespace BISC.Modules.Device.Presentation.Services
             ITabManagementService tabManagementService,
             ILoggingService loggingService,
             IGlobalEventsService globalEventsService,
-            INavigationService navigationService,
             IInjectionContainer injectionContainer,
             Func<ISclModel> sclModelCreator,
             IBiscProject biscProject,
@@ -71,11 +66,8 @@ namespace BISC.Modules.Device.Presentation.Services
             IDeviceWarningsService deviceWarningsService,
             ISclCommunicationModelService sclCommunicationModelService,
             IPingService pingService,
-            ISaveCheckingService saveCheckingService,
             IUserInteractionService userInteractionService,
-            IModelsComparingService comparingService,
-            IGoosesModelService goosesModelService,
-            IGooseMatrixFtpService gooseMatrixFtpService)
+            IGooseModelServicesFacade gooseModelServicesFacade)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
             _deviceConnectionService = deviceConnectionService;
@@ -85,18 +77,15 @@ namespace BISC.Modules.Device.Presentation.Services
             _tabManagementService = tabManagementService;
             _loggingService = loggingService;
             _globalEventsService = globalEventsService;
-            _navigationService = navigationService;
             _sclModelCreator = sclModelCreator;
             _biscProject = biscProject;
             _deviceAddingService = deviceAddingService;
             _deviceWarningsService = deviceWarningsService;
             _sclCommunicationModelService = sclCommunicationModelService;
             _pingService = pingService;
-            _saveCheckingService = saveCheckingService;
             _userInteractionService = userInteractionService;
-            _comparingService = comparingService;
-            _goosesModelService = goosesModelService;
-            _gooseMatrixFtpService = gooseMatrixFtpService;
+            _gooseModelServicesFacade = gooseModelServicesFacade;
+
             _elementLoadingServices = injectionContainer.ResolveAll(typeof(IDeviceElementLoadingService))
                 .Cast<IDeviceElementLoadingService>().ToList();
             _elementConflictResolvers = injectionContainer.ResolveAll(typeof(IElementConflictResolver))
@@ -246,12 +235,7 @@ namespace BISC.Modules.Device.Presentation.Services
                 var biscProject = device.GetFirstParentOfType<IBiscProject>();
                 if (biscProject != null)
                 {
-                    // Устанавливаем полученные Goose подписки из sclMode в наш текущий проект
-                    _goosesModelService.SetGooseInputModelInfosToProject(_biscProject, device,
-                        _goosesModelService.GetGooseInputModelInfos(device, biscProject));
-                    // Устанавливаем полученную Goose матрицн из sclMode в наш текущий проект
-                    _gooseMatrixFtpService.SetGooseMatrixFtpForDevice(device,
-                        _gooseMatrixFtpService.GetGooseMatrixFtpForDevice(device, biscProject));
+                    _gooseModelServicesFacade.SetGooseReceivingAndSending(device, _biscProject, biscProject);
                 }
                 _deviceWarningsService.ClearDeviceWarningsOfDevice(device.DeviceGuid);
             }
