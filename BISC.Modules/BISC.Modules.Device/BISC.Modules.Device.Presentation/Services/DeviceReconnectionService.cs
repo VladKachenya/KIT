@@ -106,6 +106,34 @@ namespace BISC.Modules.Device.Presentation.Services
             return true;
         }
 
+        public async Task RebootOnly(IDevice existingDevice)
+        {
+            await _deviceFileWritingServices.ResetDevice(existingDevice.Ip);
+            _connectionPoolService.GetConnection(existingDevice.Ip).StopConnection();
+            _loggingService.LogMessage($"Перезагрузка устройства {existingDevice.Name}", SeverityEnum.Critical);
+        }
+
+        public async Task RestartDevice(IDevice existingDevice, UiEntityIdentifier uiEntityIdToRemove = null)
+        {
+            await RebootOnly(existingDevice);
+            if (uiEntityIdToRemove == null)
+            {
+                var treeItem = _treeManagementService.GetDeviceTreeItem(existingDevice.DeviceGuid);
+                if (treeItem == null)
+                {
+                    _loggingService.LogMessage($"Ошибка при подключении к устройству: {existingDevice.Name}", SeverityEnum.Critical);
+                    return;
+                }
+                await Reconnect(existingDevice, treeItem, true);
+
+            }
+            else
+            {
+                await Reconnect(existingDevice, uiEntityIdToRemove, true);
+            }
+        }
+        #endregion
+
         private async Task Reconnect(IDevice existingDevice, UiEntityIdentifier uiEntityIdToRemove, bool isRestarting)
         {
             _globalEventsService.SendMessage(new ShellBlockEvent() { IsBlocked = true, Message = $"Подготовка к перезапуску{existingDevice.Name}" });
@@ -246,33 +274,6 @@ namespace BISC.Modules.Device.Presentation.Services
             }
         }
 
-        public async Task RebootOnly(IDevice existingDevice)
-        {
-            await _deviceFileWritingServices.ResetDevice(existingDevice.Ip);
-            _connectionPoolService.GetConnection(existingDevice.Ip).StopConnection();
-            _loggingService.LogMessage($"Перезагрузка устройства {existingDevice.Name}", SeverityEnum.Critical);
-        }
-
-        public async Task RestartDevice(IDevice existingDevice, UiEntityIdentifier uiEntityIdToRemove = null)
-        {
-            await RebootOnly(existingDevice);
-            if (uiEntityIdToRemove == null)
-            {
-                var treeItem = _treeManagementService.GetDeviceTreeItem(existingDevice.DeviceGuid);
-                if (treeItem == null)
-                {
-                    _loggingService.LogMessage($"Ошибка при подключении к устройству: {existingDevice.Name}", SeverityEnum.Critical);
-                    return;
-                }
-                await Reconnect(existingDevice, treeItem, true);
-
-            }
-            else
-            {
-                await Reconnect(existingDevice, uiEntityIdToRemove, true);
-            }
-        }
-        #endregion
 
         private async Task ShowMissing(string miissingMessage)
         {

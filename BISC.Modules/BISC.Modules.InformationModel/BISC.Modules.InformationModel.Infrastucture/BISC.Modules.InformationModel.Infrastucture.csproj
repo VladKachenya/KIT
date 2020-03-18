@@ -69,6 +69,7 @@
     <Compile Include="Elements\ISettingControl.cs" />
     <Compile Include="Elements\IVal.cs" />
     <Compile Include="InfoModelKeys.cs" />
+    <Compile Include="Keys\InformationModelKeys.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IInfoModelService.cs" />
     <Compile Include="Services\ILogicalDeviceLoadingService.cs" />

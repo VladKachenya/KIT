@@ -21,6 +21,9 @@ namespace BISC.Infrastructure.Global.Services
         public const string LanPendingIconKey = "LanPendingIcon";
         public const string DragIconKey = "DragIcon";
         public const string BroomIconKey = "BroomIcon";
+        public const string ArrowDownBoldCircleOutlineIcon = nameof(ArrowDownBoldCircleOutlineIcon);
+        public const string ArrowDownBoldCircleIcon = nameof(ArrowDownBoldCircleIcon);
+
 
     }
 

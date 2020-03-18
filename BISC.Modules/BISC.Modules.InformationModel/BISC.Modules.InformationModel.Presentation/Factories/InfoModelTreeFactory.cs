@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Modules.InformationModel.Infrastucture.Keys;
 using BISC.Modules.InformationModel.Infrastucture.Services;
+using BISC.Modules.InformationModel.Presentation.Helpers;
 using BISC.Modules.InformationModel.Presentation.Interfaces;
 using BISC.Modules.InformationModel.Presentation.Interfaces.Factories;
 using BISC.Modules.InformationModel.Presentation.ViewModels.Base;
 using BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree;
+using static System.String;
 
 namespace BISC.Modules.InformationModel.Presentation.Factories
 {
@@ -27,12 +30,20 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
         private readonly IBiscProject _biscProject;
         private readonly Func<SetFcTreeItemViewModel> _fcSetCreator;
         private readonly IInfoModelService _infoModelService;
+        private readonly ValueValidatorsHelper _valueValidatorsHelper;
 
-        public InfoModelTreeFactory(Func<LogicalNodeInfoModelItemViewModel> lnViewModelCreator,
+        public InfoModelTreeFactory(
+            Func<LogicalNodeInfoModelItemViewModel> lnViewModelCreator,
             Func<LogicalNodeZeroInfoModelItemViewModel> ln0ViewModelCreator,
-            Func<LDeviceInfoModelItemViewModel> ldeviceViewModelCreator, Func<DoiInfoModelItemViewModel> doiCreator,
-            Func<DaiInfoModelItemViewModel> daiCreator, Func<SdiInfoModelItemViewModel> sdiCreator,
-            IDataTypeTemplatesModelService dataTypeTemplatesModelService, IBiscProject biscProject, Func<SetFcTreeItemViewModel> fcSetCreator,IInfoModelService infoModelService)
+            Func<LDeviceInfoModelItemViewModel> ldeviceViewModelCreator, 
+            Func<DoiInfoModelItemViewModel> doiCreator,
+            Func<DaiInfoModelItemViewModel> daiCreator, 
+            Func<SdiInfoModelItemViewModel> sdiCreator,
+            IDataTypeTemplatesModelService dataTypeTemplatesModelService, 
+            IBiscProject biscProject, 
+            Func<SetFcTreeItemViewModel> fcSetCreator,
+            IInfoModelService infoModelService,
+            ValueValidatorsHelper valueValidatorsHelper)
         {
             _lnViewModelCreator = lnViewModelCreator;
             _ln0ViewModelCreator = ln0ViewModelCreator;
@@ -44,6 +55,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             _biscProject = biscProject;
             _fcSetCreator = fcSetCreator;
             _infoModelService = infoModelService;
+            _valueValidatorsHelper = valueValidatorsHelper;
         }
 
 
@@ -140,9 +152,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                 if(da==null)continue;
                 if (fc == da.Fc)
                 {
-                    var daiTreeItem = _daiCreator();
-                    daiTreeItem.Model = dai;
-                    fcItems.Add(daiTreeItem);
+                    fcItems.Add(GetDaiInfoModelItemViewModel(dai));
                 }
             }
 
@@ -202,14 +212,24 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
             ObservableCollection<IInfoModelItemViewModel> infoModelItemViewModels =
                 new ObservableCollection<IInfoModelItemViewModel>();
 
-            foreach (var dai in dais)
-            {
-                DaiInfoModelItemViewModel daiInfoModelItemViewModel = _daiCreator();
-                daiInfoModelItemViewModel.Model = dai;
-                infoModelItemViewModels.Add(daiInfoModelItemViewModel);
-            }
+            dais.ForEach(dai => infoModelItemViewModels.Add(GetDaiInfoModelItemViewModel(dai)));
 
             return infoModelItemViewModels;
+        }
+
+        private DaiInfoModelItemViewModel GetDaiInfoModelItemViewModel(IDai dai)
+        {
+            DaiInfoModelItemViewModel daiInfoModelItemViewModel = _daiCreator();
+            if (String.Equals(dai.Name, InformationModelKeys.DataAttributeHeaderKeys.db,
+                    StringComparison.CurrentCultureIgnoreCase) ||
+                String.Equals(dai.Name, InformationModelKeys.DataAttributeHeaderKeys.zeroDb,
+                    StringComparison.CurrentCultureIgnoreCase))
+            {
+                daiInfoModelItemViewModel.ValueValidationFunction = _valueValidatorsHelper.ValidateDbOrZeroDb;
+                daiInfoModelItemViewModel.ValueToolTip = _valueValidatorsHelper.DbOrZeroDbToolTip;
+            }
+            daiInfoModelItemViewModel.Model = dai;
+            return daiInfoModelItemViewModel;
         }
 
         public ObservableCollection<IInfoModelItemViewModel> CreateLDeviceInfoModelTree(ILDevice lDevice,

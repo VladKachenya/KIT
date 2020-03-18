@@ -169,6 +169,12 @@
     <DataTemplate x:Key="CheckboxMarkedCircleIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="CheckboxMarkedCircle" />
     </DataTemplate>
+    <DataTemplate x:Key="ArrowDownBoldCircleIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ArrowDownBoldCircle" />
+    </DataTemplate>
+    <DataTemplate x:Key="ArrowDownBoldCircleOutlineIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ArrowDownBoldCircleOutline" />
+    </DataTemplate>
     <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
         <Style.Resources >
             <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#44111121" />

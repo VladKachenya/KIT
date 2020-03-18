@@ -134,7 +134,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.Base
             }
         }
 
-        public virtual Brush TypeColorBrush =>Brushes.Transparent;
+        public virtual Brush TypeColorBrush => Brushes.Transparent;
 
         public virtual bool IsChildItemsShowing => true;
 

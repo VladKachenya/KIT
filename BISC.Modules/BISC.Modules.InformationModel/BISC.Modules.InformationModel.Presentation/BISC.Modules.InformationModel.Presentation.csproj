@@ -72,12 +72,14 @@
     <Compile Include="Behaviors\TreeViewToggleButtonBehavior.cs" />
     <Compile Include="Converters\IsGroupedToMarginConverter.cs" />
     <Compile Include="Converters\LevelToMarginConverter.cs" />
+    <Compile Include="Converters\DataAttributeHeaderToToggleButtonVisibilityConverter.cs" />
     <Compile Include="Converters\TypeNameToIsDragSourceConverter.cs" />
     <Compile Include="Factories\InfoModelTreeFactory.cs" />
     <Compile Include="Factories\SettingControlViewModelFactory.cs" />
     <Compile Include="Helpers\ModelValuesLoadingHelper.cs" />
     <Compile Include="Helpers\SettingsControlConflictsContext.cs" />
     <Compile Include="Helpers\TreeItemDetailsBuilder.cs" />
+    <Compile Include="Helpers\ValueValidatorsHelper.cs" />
     <Compile Include="Interfaces\Factories\IInfoModelTreeFactory.cs" />
     <Compile Include="Interfaces\Helpers\ITreeItemDetailsBuilder.cs" />
     <Compile Include="Interfaces\IInfoModelItemViewModel.cs" />
@@ -94,7 +96,7 @@
     <Compile Include="Services\SettingControlConflictResolver.cs" />
     <Compile Include="Services\SettingsControlSavingService.cs" />
     <Compile Include="TemplateSelectors\ModelItemTemplateSelector.cs" />
-    <Compile Include="ViewModels\Base\InfoModelItemViewModelBase.cs" />
+    <Compile Include="ViewModels\Base\TreeItemViewModelBase.cs" />
     <Compile Include="ViewModels\InfoModelDetails\BoolInfoModelDetail.cs" />
     <Compile Include="ViewModels\InfoModelDetails\DefaultInfoModelDetail.cs" />
     <Compile Include="ViewModels\InfoModelDetails\GroupInfoModelDetail.cs" />

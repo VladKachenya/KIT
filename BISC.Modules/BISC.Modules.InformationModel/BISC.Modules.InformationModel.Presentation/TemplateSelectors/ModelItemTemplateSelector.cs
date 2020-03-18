@@ -14,6 +14,8 @@ namespace BISC.Modules.InformationModel.Presentation.TemplateSelectors
 
         public DataTemplate NoValueDataTemplate { get; set; }
         public DataTemplate ValueDataTemplate { get; set; }
+        public DataTemplate DoiDataTemplate { get; set; }
+
 
         #region Overrides of DataTemplateSelector
 
@@ -22,6 +24,11 @@ namespace BISC.Modules.InformationModel.Presentation.TemplateSelectors
             if (item is DaiInfoModelItemViewModel)
             {
                 return ValueDataTemplate;
+            }
+
+            if (item is DoiInfoModelItemViewModel)
+            {
+                return DoiDataTemplate;
             }
             return NoValueDataTemplate;
         }

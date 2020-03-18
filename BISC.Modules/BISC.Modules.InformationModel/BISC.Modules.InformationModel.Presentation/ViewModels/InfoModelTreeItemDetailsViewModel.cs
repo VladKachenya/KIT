@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree;
 
 namespace BISC.Modules.InformationModel.Presentation.ViewModels
 {
@@ -36,7 +37,8 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         private bool _isFcSortChecked;
         private IModelElement _model;
         private BiscNavigationParameters _biscNavigationParameters;
-        private bool _isLoadingValuesInProgress;
+        private bool _isLoadingAllValuesInProgress;
+        private bool _isLoadingDoiValuesInProgress;
         private bool _isHideButtons;
 
         public InfoModelTreeItemDetailsViewModel(
@@ -55,15 +57,16 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
             _globalEventsService = globalEventsService;
             _connectionPoolService = connectionPoolService;
             _modelValuesLoadingHelper = modelValuesLoadingHelper;
-            LoadValuesCommand = commandFactory.CreatePresentationCommand(OnLoadValues, CanExecuteLoadValues);
+            LoadAllValuesCommand = commandFactory.CreatePresentationCommand(OnLoadAllValues, CanExecuteLoadAllValues);
+            LoadDoiValuesCommand = commandFactory.CreatePresentationCommand<DoiInfoModelItemViewModel>(OnLoadDoiValues, CanExecuteLoadDoiValues);
         }
 
-        private async void OnLoadValues()
+        private async void OnLoadAllValues()
         {
             try
             {
-                _isLoadingValuesInProgress = true;
-                (LoadValuesCommand as IPresentationCommand)?.RaiseCanExecute();
+                _isLoadingAllValuesInProgress = true;
+                (LoadAllValuesCommand as IPresentationCommand)?.RaiseCanExecute();
                 var device = (_model as IDevice) ?? _model.GetFirstParentOfType<IDevice>();
                 await _modelValuesLoadingHelper.LoadValues(AllIecTreeItems, device);
             }
@@ -73,19 +76,50 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
             }
             finally
             {
-                _isLoadingValuesInProgress = false;
-                (LoadValuesCommand as IPresentationCommand)?.RaiseCanExecute();
+                _isLoadingAllValuesInProgress = false;
+                (LoadAllValuesCommand as IPresentationCommand)?.RaiseCanExecute();
             }
         }
 
-        private bool CanExecuteLoadValues()
+        private async void OnLoadDoiValues(DoiInfoModelItemViewModel viewModel)
         {
-            if (_isLoadingValuesInProgress)
+            try
+            {
+                _isLoadingDoiValuesInProgress = true;
+                (LoadDoiValuesCommand as IPresentationCommand)?.RaiseCanExecute();
+                var device = (_model as IDevice) ?? _model.GetFirstParentOfType<IDevice>();
+                await _modelValuesLoadingHelper.UpdateDoiViewModelValues(device, viewModel);
+            }
+            catch (Exception e)
+            {
+                _loggingService.LogException(e);
+            }
+            finally
+            {
+                _isLoadingDoiValuesInProgress = false;
+                (LoadDoiValuesCommand as IPresentationCommand)?.RaiseCanExecute();
+            }
+        }
+
+        private bool CanExecuteLoadAllValues()
+        {
+            if (_isLoadingAllValuesInProgress)
             {
                 return false;
             }
             var device = (_model as IDevice) ?? _model.GetFirstParentOfType<IDevice>();
             return _connectionPoolService.GetConnection(device.Ip).IsConnected;
+        }
+
+        private bool CanExecuteLoadDoiValues(DoiInfoModelItemViewModel vieIInfoModelItemViewModel)
+        {
+            if (_isLoadingDoiValuesInProgress)
+            {
+                return false;
+            }
+            var device = (_model as IDevice) ?? _model.GetFirstParentOfType<IDevice>();
+            //var doi = vieIInfoModelItemViewModel?.Model as IDoi;
+            return _connectionPoolService.GetConnection(device.Ip).IsConnected; //&& doi != null;
         }
 
         public ObservableCollection<IInfoModelItemViewModel> AllIecTreeItems
@@ -97,7 +131,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         public IInfoModelItemViewModel SelectedTreeItem
         {
             get => _selectedTreeItem;
-            set { SetProperty(ref _selectedTreeItem, value, true); }
+            set { SetProperty(ref _selectedTreeItem, value, true);}
         }
 
         private bool IsLocalValuesShowing
@@ -134,7 +168,9 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
                 SetProperty(ref _isFcSortChecked, value);
             }
         }
-        public ICommand LoadValuesCommand { get; }
+        public ICommand LoadAllValuesCommand { get; }
+        public ICommand LoadDoiValuesCommand { get; }
+
 
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
@@ -171,7 +207,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
             var name = (_model as IDevice)?.Name ?? (_model as ILDevice)?.Inst;
             if (!_isHideButtons)
             {
-                _userInterfaceComposingService.AddGlobalCommand(LoadValuesCommand, $"Обновить значения модели {name}", IconsKeys.UpdateIconKey, false, true);
+                _userInterfaceComposingService.AddGlobalCommand(LoadAllValuesCommand, $"Прочитать значения модели {name} из устройства", IconsKeys.ArrowDownBoldCircleIcon, false, true);
             }
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnActivate();
@@ -182,13 +218,13 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
             var device = (_model as IDevice) ?? _model.GetFirstParentOfType<IDevice>();
             if (connectionEvent.Ip == device.Ip)
             {
-                (LoadValuesCommand as IPresentationCommand)?.RaiseCanExecute();
+                (LoadAllValuesCommand as IPresentationCommand)?.RaiseCanExecute();
             }
         }
 
         public override void OnDeactivate()
         {
-            _userInterfaceComposingService.DeleteGlobalCommand(LoadValuesCommand);
+            _userInterfaceComposingService.DeleteGlobalCommand(LoadAllValuesCommand);
             _globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnDeactivate();
         }

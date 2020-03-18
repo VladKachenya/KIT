@@ -24,16 +24,18 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
         private readonly IInfoModelService _infoModelService;
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
 
-        //private readonly IProjectSclModel _projectSclModel;
-        //private readonly IValuesEditingController _valuesEditingController;
         private List<IInfoModelDetail> _treeItemDetails;
 
 
         private string _valueLocal;
         private bool _isByteTransferred;
         private string _value;
+        private bool _canEditingValue;
 
-        public DaiInfoModelItemViewModel(ITreeItemDetailsBuilder treeItemDetailsBuilder, IInfoModelService infoModelService, IDataTypeTemplatesModelService dataTypeTemplatesModelService)
+        public DaiInfoModelItemViewModel(
+            ITreeItemDetailsBuilder treeItemDetailsBuilder, 
+            IInfoModelService infoModelService, 
+            IDataTypeTemplatesModelService dataTypeTemplatesModelService)
         {
             _treeItemDetailsBuilder = treeItemDetailsBuilder;
             _infoModelService = infoModelService;
@@ -78,13 +80,30 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
         public string Value
         {
             get => _value;
-            set => SetProperty(ref _value, value);
+            set
+            {
+                if (ValueValidationFunction != null && !ValueValidationFunction(value))
+                {
+                    return;
+                }
+                SetProperty(ref _value, value);
+            }
+        }
+
+        public string ValueToolTip { get; set; }
+
+        public bool CanEditingValue
+        {
+            get => _canEditingValue;
+            set => SetProperty(ref _canEditingValue, value);
         }
 
         public override List<IInfoModelDetail> TreeItemDetails
         {
             get { return _treeItemDetails; }
         }
+
+        public Func<string, bool> ValueValidationFunction { get; set;}
 
         #endregion
 
@@ -102,10 +121,6 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
             {
                 Value = dai.Value.Value.Value;
             }
-            //if (_projectSclModel.Scl.IsLoadedFromFile && dai.Val != null)
-            //{
-            //    ValueLocal = dai.Val;
-            //}
             base.SetModel(value);
 
         }
