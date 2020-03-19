@@ -77,6 +77,7 @@
     <Compile Include="Factories\InfoModelTreeFactory.cs" />
     <Compile Include="Factories\SettingControlViewModelFactory.cs" />
     <Compile Include="Helpers\ModelValuesLoadingHelper.cs" />
+    <Compile Include="Helpers\ModelValueWritingHelper.cs" />
     <Compile Include="Helpers\SettingsControlConflictsContext.cs" />
     <Compile Include="Helpers\TreeItemDetailsBuilder.cs" />
     <Compile Include="Helpers\ValueValidatorsHelper.cs" />

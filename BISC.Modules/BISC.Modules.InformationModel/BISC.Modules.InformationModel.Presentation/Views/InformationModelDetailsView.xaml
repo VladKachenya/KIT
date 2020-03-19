@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:baseConverters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
              xmlns:local="clr-namespace:BISC.Modules.InformationModel.Presentation.Views"
              xmlns:behaviors="clr-namespace:BISC.Modules.InformationModel.Presentation.Behaviors"
-
              xmlns:converters="clr-namespace:BISC.Modules.InformationModel.Presentation.Converters"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:infoModelDetails="clr-namespace:BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelDetails"
@@ -13,14 +13,15 @@
              xmlns:interfaces="clr-namespace:BISC.Modules.InformationModel.Presentation.Interfaces"
              xmlns:templateSelectors="clr-namespace:BISC.Modules.InformationModel.Presentation.TemplateSelectors"
              xmlns:infoModelTree="clr-namespace:BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree"
-             mc:Ignorable="d" >
+             mc:Ignorable="d">
 
     <UserControl.Resources>
         <converters:LevelToMarginConverter x:Key="LevelToMarginConverter" />
         <converters:TypeNameToIsDragSourceConverter x:Key="TypeToIsDragSourceConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:DataAttributeHeaderToToggleButtonVisibilityConverter x:Key="ToggleButtonVisibilityConverter"/>
-        <converters:IsGroupedToMarginConverter x:Key="GroupedToMarginConverter"></converters:IsGroupedToMarginConverter>
+        <converters:IsGroupedToMarginConverter x:Key="GroupedToMarginConverter"/>
+        <baseConverters:TriggerConverter x:Key="TriggerConverter"/>
 
     </UserControl.Resources>
     <Grid HorizontalAlignment="Stretch" Name="MainGrid">
@@ -61,11 +62,11 @@
             </Grid>
             <TreeView
                 Name="SclTreeView"
-             Width="auto"
-            HorizontalAlignment="Stretch"
-            ItemsSource="{Binding Path=AllIecTreeItems}"
+                Width="auto"
+                HorizontalAlignment="Stretch"
+                ItemsSource="{Binding Path=AllIecTreeItems}"
                 dd:DragDrop.IsDragSource="True" 
-            dd:DragDrop.IsDropTarget="False">
+                dd:DragDrop.IsDropTarget="False">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
                         <Setter Property="IsExpanded" Value="False"/>
@@ -78,18 +79,34 @@
                             <HierarchicalDataTemplate DataType="infoModelTree:DaiInfoModelItemViewModel" ItemsSource="{Binding ChildInfoModelItemViewModels}">
                                 <Grid HorizontalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <Border Grid.Column="0" Margin="2"  Background="{Binding TypeColorBrush}" >
                                         <TextBlock Margin="2"  Text="{Binding TypeName}"></TextBlock>
                                     </Border>
-                                    <TextBlock Grid.Column="1" Margin="4" Text="{Binding Header}"></TextBlock>
-                                    <!--Тут вообщем нужно сделать команду которая будет передовать контекст данных и обновлять это-->
-                                        <ToggleButton Grid.Column="3" IsChecked="{Binding CanEditingValue}" Margin="10, 0" Visibility="{Binding Header, Converter={StaticResource ToggleButtonVisibilityConverter}}"/>
+                                    <TextBlock Grid.Column="1" Margin="4" Text="{Binding Header}"/>
+
+                                    <StackPanel Grid.Column="3" Orientation="Horizontal" Visibility="{Binding Header, Converter={StaticResource ToggleButtonVisibilityConverter}}">
+                                        <Button IsEnabled="{Binding IsValueChanged}"  
+                                                Height="25" Width="25" Padding="3" 
+                                                CommandParameter="{Binding}"
+                                                Command="{Binding DataContext.WriteDbValueOfDaiCommand,ElementName=SclTreeView}"
+                                                Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}">
+                                            <Button.Content>
+                                                <ContentControl ContentTemplate="{DynamicResource UploadNetworkIcon}"/>
+                                            </Button.Content>
+                                        </Button>
+                                        <ToggleButton 
+                                            CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.AddItemToSaveCommand,ElementName=SclTreeView}"
+                                            IsChecked="{Binding CanEditingValue}" 
+                                                      Margin="10, 0"/>
+                                    </StackPanel>
+
                                     <ContentControl Content="{Binding .}"  Grid.Column="4" >
                                         <ContentControl.Style>
                                             <Style TargetType="ContentControl">
@@ -98,7 +115,7 @@
                                                         <Setter Property="ContentTemplate">
                                                             <Setter.Value>
                                                                 <DataTemplate>
-                                                                    <TextBlock Text="{Binding Value}" TextAlignment="Right" Height="Auto" Margin="2" MinWidth="150"/>
+                                                                    <TextBlock Text="{Binding Value}" TextAlignment="Right" Height="Auto" Padding="0, 4" MinWidth="150"/>
                                                                 </DataTemplate>
                                                             </Setter.Value>
                                                         </Setter>
@@ -107,7 +124,7 @@
                                                         <Setter Property="ContentTemplate">
                                                             <Setter.Value>
                                                                 <DataTemplate>
-                                                                    <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Margin="0" TextAlignment="Right" VerticalAlignment="Center" MinWidth="150"
+                                                                    <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Margin="0" Padding="0" TextAlignment="Right" VerticalAlignment="Center" MinWidth="150"
                                                                              ToolTip="{Binding ValueToolTip}">
                                                                     </TextBox>
                                                                 </DataTemplate>
@@ -130,19 +147,24 @@
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Orientation="Horizontal">
-                                        <Border Margin="2"  Background="{Binding TypeColorBrush}" >
-                                            <TextBlock Margin="2"  Text="{Binding TypeName}"></TextBlock>
-                                        </Border>
-                                        <TextBlock Margin="4" Text="{Binding Header}"></TextBlock>
-                                    </StackPanel>
+                                            <Border Margin="2"  Background="{Binding TypeColorBrush}" >
+                                                <TextBlock Margin="2"  Text="{Binding TypeName}"/>
+                                            </Border>
+                                            <TextBlock Margin="4" Text="{Binding Header}"/>
+                                        </StackPanel>
 
                                         <Button Margin="0" Padding="0" Grid.Column="1"
                                                 Height="25" Width="25"
                                                 Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
-                                                CommandParameter="{Binding .}" 
-                                                Command="{Binding DataContext.LoadDoiValuesCommand, Source={x:Reference Name=SclTreeView}}" >
+                                                CommandParameter="{Binding .}" >
+                                            <Button.Command>
+                                                <MultiBinding Converter="{StaticResource TriggerConverter}">
+                                                    <Binding Path="DataContext.LoadDoiValuesCommand"
+                                                             ElementName="SclTreeView"/>
+                                                </MultiBinding>
+                                            </Button.Command>
                                             <Button.Content>
-                                                <ContentControl ContentTemplate="{DynamicResource ArrowDownBoldCircleOutlineIcon}"></ContentControl>
+                                                <ContentControl ContentTemplate="{DynamicResource ArrowDownBoldCircleOutlineIcon}"/>
                                             </Button.Content>
                                             <Button.ToolTip>
                                                 <StackPanel Orientation="Horizontal">
@@ -207,10 +229,10 @@
                         <DataTemplate DataType="{x:Type infoModelDetails:GroupInfoModelDetail}">
                             <Grid Margin="{Binding IsGrouped,Converter={StaticResource GroupedToMarginConverter}}" ToolTip="{Binding ToolTip}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding DetailDescription}"></TextBlock>
+                                <TextBlock Grid.Column="0" Text="{Binding DetailDescription}"/>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.Resources>

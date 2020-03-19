@@ -65,6 +65,7 @@
     <Compile Include="Elements\ILDevice.cs" />
     <Compile Include="Elements\ILogicalNode.cs" />
     <Compile Include="Elements\ILogicalNodeZero.cs" />
+    <Compile Include="Elements\INameable.cs" />
     <Compile Include="Elements\ISdi.cs" />
     <Compile Include="Elements\ISettingControl.cs" />
     <Compile Include="Elements\IVal.cs" />

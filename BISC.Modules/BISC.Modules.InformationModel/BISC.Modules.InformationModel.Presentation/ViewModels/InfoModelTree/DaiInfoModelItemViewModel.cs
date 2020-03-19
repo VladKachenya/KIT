@@ -31,6 +31,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
         private bool _isByteTransferred;
         private string _value;
         private bool _canEditingValue;
+        private bool _isValueChanged;
 
         public DaiInfoModelItemViewModel(
             ITreeItemDetailsBuilder treeItemDetailsBuilder, 
@@ -95,7 +96,24 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
         public bool CanEditingValue
         {
             get => _canEditingValue;
-            set => SetProperty(ref _canEditingValue, value);
+            set
+            {
+                if (!value)
+                {
+                    CheckValue();
+                }
+                SetProperty(ref _canEditingValue, value);
+            }
+        }
+
+        public bool IsValueChanged
+        {
+            get => _isValueChanged;
+            set
+            {
+                _isValueChanged = value;
+                OnPropertyChanged();
+            }
         }
 
         public override List<IInfoModelDetail> TreeItemDetails
@@ -104,6 +122,22 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree
         }
 
         public Func<string, bool> ValueValidationFunction { get; set;}
+
+        #endregion
+
+        #region private fields
+
+        public void CheckValue()
+        {
+            IDai dai = (Model as IDai);
+            if (dai?.Value?.Value?.Value != Value)
+            {
+                IsValueChanged = true;
+                return;
+            }
+
+            IsValueChanged = false;
+        }
 
         #endregion
 

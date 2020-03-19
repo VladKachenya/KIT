@@ -14,3 +14,10 @@ This fields will not make conflicts if different.
 2020/02/06
 - Refactoring project structure for goose. Made goose module more losse coupling.
 - Refactoring project structure for report control. Made report module more losse coupling.
+
+2020/03/18
+- Added command for getting DOI values.
+- Added command for writing db, zeroDb DAI values.
+
+2020/03/19
+- Added command to write all changed db and zeroDb

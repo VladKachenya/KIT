@@ -2,9 +2,8 @@
 
 namespace BISC.Modules.InformationModel.Infrastucture.Elements
 {
-    public interface IDai:IModelElement
+    public interface IDai:IModelElement, INameable
     {
-        string Name { get; set; }
         string Description { get; set; }
         ChildModelProperty<IVal> Value { get; }
 

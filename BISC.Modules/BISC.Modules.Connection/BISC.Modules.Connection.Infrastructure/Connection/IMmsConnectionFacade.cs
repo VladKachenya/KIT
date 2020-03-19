@@ -39,6 +39,8 @@ namespace BISC.Modules.Connection.Infrastructure.Connection
         Task<bool> SetSettingsControl(string fc, string iedName, string lnName,
             string ldName, string newVal);
 
+        Task<bool> WriteDaiValueAsync(string fc, string iedName, string lnName, string ldName, List<string> daPath, string newVal);
+
 
         Task<OperationResult<ValueDescription>> ReadValuesAsync(string fc, string iedName, string lnName, string ldName, List<string> customItemPathParts = null);
     }

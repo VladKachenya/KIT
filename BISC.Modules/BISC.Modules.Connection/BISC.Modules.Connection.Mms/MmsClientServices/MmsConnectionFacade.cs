@@ -581,6 +581,12 @@ namespace BISC.Modules.Connection.MMS.MmsClientServices
             return true;
         }
 
+        public async Task<bool> WriteDaiValueAsync(string fc, string iedName, string lnName, string ldName, List<string> daPath, string newVal)
+        {
+            var res = await new InfoModelClientService(_state).SendWriteAsync(tBasicTypeEnum.INT32U, iedName + ldName, lnName, fc, newVal, daPath);
+            return true;
+        }
+
         public async Task<OperationResult<ValueDescription>> ReadValuesAsync(string fc, string iedName, string lnName, string ldName, List<string> customItemPathParts = null)
         {
             var res = await new ReadingValuesClientService(_state).SendReadAsync(iedName + ldName, lnName, fc,

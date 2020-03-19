@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree;
 
@@ -30,6 +31,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         private readonly IGlobalEventsService _globalEventsService;
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly ModelValuesLoadingHelper _modelValuesLoadingHelper;
+        private readonly ModelValueWritingHelper _modelValueWritingHelper;
         private bool _isDeviceConnected;
         private bool _isLocalValuesShowing;
         private ObservableCollection<IInfoModelItemViewModel> _allIecTreeItems;
@@ -39,7 +41,11 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         private BiscNavigationParameters _biscNavigationParameters;
         private bool _isLoadingAllValuesInProgress;
         private bool _isLoadingDoiValuesInProgress;
+        private bool _isWritingValuesInProgress;
         private bool _isHideButtons;
+        private List<DaiInfoModelItemViewModel> _daiViewModelsToSave = new List<DaiInfoModelItemViewModel>();
+        private IDevice _device;
+
 
         public InfoModelTreeItemDetailsViewModel(
             IInfoModelTreeFactory infoModelTreeFactory,
@@ -48,7 +54,8 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
             ICommandFactory commandFactory,
             IGlobalEventsService globalEventsService,
             IConnectionPoolService connectionPoolService,
-            ModelValuesLoadingHelper modelValuesLoadingHelper)
+            ModelValuesLoadingHelper modelValuesLoadingHelper,
+            ModelValueWritingHelper modelValueWritingHelper)
         : base(globalEventsService)
         {
             _infoModelTreeFactory = infoModelTreeFactory;
@@ -57,69 +64,12 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
             _globalEventsService = globalEventsService;
             _connectionPoolService = connectionPoolService;
             _modelValuesLoadingHelper = modelValuesLoadingHelper;
+            _modelValueWritingHelper = modelValueWritingHelper;
             LoadAllValuesCommand = commandFactory.CreatePresentationCommand(OnLoadAllValues, CanExecuteLoadAllValues);
             LoadDoiValuesCommand = commandFactory.CreatePresentationCommand<DoiInfoModelItemViewModel>(OnLoadDoiValues, CanExecuteLoadDoiValues);
-        }
-
-        private async void OnLoadAllValues()
-        {
-            try
-            {
-                _isLoadingAllValuesInProgress = true;
-                (LoadAllValuesCommand as IPresentationCommand)?.RaiseCanExecute();
-                var device = (_model as IDevice) ?? _model.GetFirstParentOfType<IDevice>();
-                await _modelValuesLoadingHelper.LoadValues(AllIecTreeItems, device);
-            }
-            catch (Exception e)
-            {
-                _loggingService.LogException(e);
-            }
-            finally
-            {
-                _isLoadingAllValuesInProgress = false;
-                (LoadAllValuesCommand as IPresentationCommand)?.RaiseCanExecute();
-            }
-        }
-
-        private async void OnLoadDoiValues(DoiInfoModelItemViewModel viewModel)
-        {
-            try
-            {
-                _isLoadingDoiValuesInProgress = true;
-                (LoadDoiValuesCommand as IPresentationCommand)?.RaiseCanExecute();
-                var device = (_model as IDevice) ?? _model.GetFirstParentOfType<IDevice>();
-                await _modelValuesLoadingHelper.UpdateDoiViewModelValues(device, viewModel);
-            }
-            catch (Exception e)
-            {
-                _loggingService.LogException(e);
-            }
-            finally
-            {
-                _isLoadingDoiValuesInProgress = false;
-                (LoadDoiValuesCommand as IPresentationCommand)?.RaiseCanExecute();
-            }
-        }
-
-        private bool CanExecuteLoadAllValues()
-        {
-            if (_isLoadingAllValuesInProgress)
-            {
-                return false;
-            }
-            var device = (_model as IDevice) ?? _model.GetFirstParentOfType<IDevice>();
-            return _connectionPoolService.GetConnection(device.Ip).IsConnected;
-        }
-
-        private bool CanExecuteLoadDoiValues(DoiInfoModelItemViewModel vieIInfoModelItemViewModel)
-        {
-            if (_isLoadingDoiValuesInProgress)
-            {
-                return false;
-            }
-            var device = (_model as IDevice) ?? _model.GetFirstParentOfType<IDevice>();
-            //var doi = vieIInfoModelItemViewModel?.Model as IDoi;
-            return _connectionPoolService.GetConnection(device.Ip).IsConnected; //&& doi != null;
+            WriteDbValueOfDaiCommand = commandFactory.CreatePresentationCommand<DaiInfoModelItemViewModel>(OnWriteDbValueOfDai);
+            AddItemToSaveCommand = commandFactory.CreatePresentationCommand<DaiInfoModelItemViewModel>(OnAddItemToSave);
+            WriteAllDbValuesCommand = commandFactory.CreatePresentationCommand(OnWriteAllDbValues, CanExecuteWriteAllDbValues);
         }
 
         public ObservableCollection<IInfoModelItemViewModel> AllIecTreeItems
@@ -171,6 +121,133 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         public ICommand LoadAllValuesCommand { get; }
         public ICommand LoadDoiValuesCommand { get; }
 
+        public ICommand WriteDbValueOfDaiCommand { get; set; }
+        public ICommand AddItemToSaveCommand { get; set; }
+        public ICommand WriteAllDbValuesCommand { get; set; }
+
+        #region command implementation
+
+        private async void OnWriteAllDbValues()
+        {
+            try
+            {
+                _isWritingValuesInProgress = true;
+                foreach (var daiViewModel in _daiViewModelsToSave)
+                {
+                    await WriteDbValueOfDaiAsync(daiViewModel);
+                }
+            }
+            finally
+            {
+                _daiViewModelsToSave.Clear();
+                _isWritingValuesInProgress = false;
+                (WriteAllDbValuesCommand as IPresentationCommand)?.RaiseCanExecute();
+            }
+        }
+
+        private void OnAddItemToSave(DaiInfoModelItemViewModel daiInfoModelItemViewModel)
+        {
+            if(daiInfoModelItemViewModel == null) return;
+            if (daiInfoModelItemViewModel.IsValueChanged)
+            {
+                if (!_daiViewModelsToSave.Contains(daiInfoModelItemViewModel))
+                {
+                    _daiViewModelsToSave.Add(daiInfoModelItemViewModel);
+                }
+            }
+            else
+            {
+                if (_daiViewModelsToSave.Contains(daiInfoModelItemViewModel))
+                {
+                    _daiViewModelsToSave.Remove(daiInfoModelItemViewModel);
+                }
+            }
+            (WriteAllDbValuesCommand as IPresentationCommand)?.RaiseCanExecute();
+        }
+
+        private async void OnWriteDbValueOfDai(DaiInfoModelItemViewModel daiInfoModelItemViewModel)
+        {
+            await WriteDbValueOfDaiAsync(daiInfoModelItemViewModel);
+        }
+
+        private async Task WriteDbValueOfDaiAsync(DaiInfoModelItemViewModel daiInfoModelItemViewModel)
+        {
+            try
+            {
+                await _modelValueWritingHelper.WriteValue(daiInfoModelItemViewModel, _device);
+            }
+            catch (Exception e)
+            {
+                _loggingService.LogException(e);
+            }
+        }
+
+        private async void OnLoadAllValues()
+        {
+            try
+            {
+                _isLoadingAllValuesInProgress = true;
+                (LoadAllValuesCommand as IPresentationCommand)?.RaiseCanExecute();
+
+                await _modelValuesLoadingHelper.LoadValues(AllIecTreeItems, _device);
+            }
+            catch (Exception e)
+            {
+                _loggingService.LogException(e);
+            }
+            finally
+            {
+                _isLoadingAllValuesInProgress = false;
+                (LoadAllValuesCommand as IPresentationCommand)?.RaiseCanExecute();
+            }
+        }
+
+        private async void OnLoadDoiValues(DoiInfoModelItemViewModel viewModel)
+        {
+            try
+            {
+                _isLoadingDoiValuesInProgress = true;
+                (LoadDoiValuesCommand as IPresentationCommand)?.RaiseCanExecute();
+
+                await _modelValuesLoadingHelper.UpdateDoiViewModelValues(_device, viewModel);
+            }
+            catch (Exception e)
+            {
+                _loggingService.LogException(e);
+            }
+            finally
+            {
+                _isLoadingDoiValuesInProgress = false;
+                (LoadDoiValuesCommand as IPresentationCommand)?.RaiseCanExecute();
+            }
+        }
+
+        private bool CanExecuteWriteAllDbValues()
+        {
+            return _connectionPoolService.GetConnection(_device.Ip).IsConnected && _daiViewModelsToSave.Count != 0 && !_isWritingValuesInProgress;
+        }
+
+        private bool CanExecuteLoadAllValues()
+        {
+            if (_isLoadingAllValuesInProgress)
+            {
+                return false;
+            }
+            return _connectionPoolService.GetConnection(_device.Ip).IsConnected;
+        }
+
+        private bool CanExecuteLoadDoiValues(DoiInfoModelItemViewModel vieIInfoModelItemViewModel)
+        {
+            if (_isLoadingDoiValuesInProgress)
+            {
+                return false;
+            }
+            var doi = vieIInfoModelItemViewModel?.Model as IDoi;
+            return _connectionPoolService.GetConnection(_device.Ip).IsConnected && doi != null;
+        }
+
+        #endregion
+
 
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
@@ -186,12 +263,14 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
             if (ldevice != null)
             {
                 _model = ldevice;
+                _device = _model.GetFirstParentOfType<IDevice>();
                 AllIecTreeItems =
                     _infoModelTreeFactory.CreateLDeviceInfoModelTree(ldevice, IsFcSortChecked, AllIecTreeItems);
             }
             else if (_biscNavigationParameters.Any((parameter => parameter.ParameterName == "IED")))
             {
                 _model = _biscNavigationParameters.GetParameterByName<IModelElement>("IED");
+                _device = _model as IDevice;
                 _isHideButtons = _biscNavigationParameters.GetParameterByName<bool>("IsHideButtons");
                 List<ILDevice> devices = new List<ILDevice>();
                 _model.GetAllChildrenOfType(ref devices);
@@ -208,6 +287,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
             if (!_isHideButtons)
             {
                 _userInterfaceComposingService.AddGlobalCommand(LoadAllValuesCommand, $"Прочитать значения модели {name} из устройства", IconsKeys.ArrowDownBoldCircleIcon, false, true);
+                _userInterfaceComposingService.AddGlobalCommand(WriteAllDbValuesCommand, $"Записать значения модели {name} в устройства", IconsKeys.UploadNetworkKey, false, true);
             }
             _globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnActivate();
@@ -215,16 +295,17 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
 
         private void OnConnectionChanged(ConnectionEvent connectionEvent)
         {
-            var device = (_model as IDevice) ?? _model.GetFirstParentOfType<IDevice>();
-            if (connectionEvent.Ip == device.Ip)
+            if (connectionEvent.Ip == _device.Ip)
             {
                 (LoadAllValuesCommand as IPresentationCommand)?.RaiseCanExecute();
+                (WriteAllDbValuesCommand as IPresentationCommand)?.RaiseCanExecute();
             }
         }
 
         public override void OnDeactivate()
         {
             _userInterfaceComposingService.DeleteGlobalCommand(LoadAllValuesCommand);
+            _userInterfaceComposingService.DeleteGlobalCommand(WriteAllDbValuesCommand);
             _globalEventsService.Unsubscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnDeactivate();
         }
