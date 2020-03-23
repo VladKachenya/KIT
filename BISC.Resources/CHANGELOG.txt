@@ -21,3 +21,6 @@ This fields will not make conflicts if different.
 
 2020/03/19
 - Added command to write all changed db and zeroDb
+
+2020/03/23
+- Added commands to conflict resolving. Resolve all from project and resolve all from device.

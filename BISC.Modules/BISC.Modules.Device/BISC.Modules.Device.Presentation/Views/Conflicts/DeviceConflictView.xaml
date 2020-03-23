@@ -23,7 +23,7 @@
         <TextBlock Margin="4" Visibility="{Binding IsConflictResolvedAsFromProject,Converter={StaticResource booleanToVisibilityConverter}}" Grid.Column="1" Text="Ок (из проекта)" ToolTip="Данные будут соответствовать данным из проекта" Foreground="DarkGreen"></TextBlock>
         <TextBlock Margin="4" Visibility="{Binding IsConflictResolvedAsFromDevice,Converter={StaticResource booleanToVisibilityConverter}}" Grid.Column="1" Text="Ок (из устройства)" ToolTip="Данные будут соответствовать данным из устройства" Foreground="DarkGreen"></TextBlock>
 
-        <TextBlock Margin="4" Grid.Column="1" Visibility="{Binding IsConflictResolved,Converter={StaticResource boolToInVisConverter}}" Foreground="Red" Text="Конфликт"></TextBlock>
+        <TextBlock Margin="4" Grid.Column="1" Visibility="{Binding IsConflictResolved,Converter={StaticResource boolToInVisConverter}}" Foreground="Red" Text="Конфликт"/>
         <StackPanel Grid.Column="2" Visibility="{Binding IsConflictResolved,Converter={StaticResource boolToInVisConverter}}" Orientation="Horizontal">
             <Button Width="40" Margin="4" Padding="1" Style="{StaticResource MaterialDesignFlatButton}"  Command="{Binding SelectDeviceOptionCommand}" ToolTip="Выбрать из устройства">
                 <ContentControl Width="20" Height="20" ContentTemplate="{DynamicResource DownloadIcon}"></ContentControl>
@@ -37,9 +37,9 @@
         </StackPanel>
         <Border Grid.Column="2" Visibility="{Binding IsConflictOk,Converter={StaticResource boolToInVisConverter}}" >
             <Button Width="40" Padding="1" Style="{StaticResource MaterialDesignFlatButton}" Margin="3" Visibility="{Binding IsConflictResolved,Converter={StaticResource booleanToVisibilityConverter}}"  Command="{Binding CancelSelectionCommand}" ToolTip="Отменить выбор">
-            <ContentControl Width="20" Height="20" ContentTemplate="{DynamicResource CancelIcon}"></ContentControl>
+                <ContentControl Width="20" Height="20" ContentTemplate="{DynamicResource CancelIcon}"></ContentControl>
 
-        </Button>
-            </Border>
+            </Button>
+        </Border>
     </Grid>
 </UserControl>

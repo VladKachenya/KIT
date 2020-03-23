@@ -25,7 +25,10 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
         private bool _isApplyButtonEnabled;
         private DeviceConflictContext _conflictContext;
 
-        public DeviceConflictsViewModel(ICommandFactory commandFactory, IInjectionContainer injectionContainer, DeviceConflictFactory deviceConflictFactory)
+        public DeviceConflictsViewModel(
+            ICommandFactory commandFactory,
+            IInjectionContainer injectionContainer, 
+            DeviceConflictFactory deviceConflictFactory)
             : base(null)
         {
             _commandFactory = commandFactory;
@@ -35,6 +38,48 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
             _elementConflictResolvers = injectionContainer.ResolveAll(typeof(IElementConflictResolver)).Cast<IElementConflictResolver>().ToList();
             CancelCommand = commandFactory.CreatePresentationCommand(OnCancel);
             BlockViewModelBehavior = new BlockViewModelBehavior();
+
+            TakeAllFromDeviceCommand = commandFactory.CreatePresentationCommand(OnTakeAllFromDevice);
+            TakeAllFromProjectCommand = commandFactory.CreatePresentationCommand(OnTakeAllFromProject);
+        }
+
+        public ICommand CancelCommand { get; }
+
+        public ICommand ApplyCommand { get; }
+
+        public ICommand TakeAllFromDeviceCommand { get; }
+        public ICommand TakeAllFromProjectCommand { get; }
+
+
+
+        public bool IsApplyButtonEnabled
+        {
+            get => _isApplyButtonEnabled;
+            set => SetProperty(ref _isApplyButtonEnabled, value);
+        }
+
+        private void OnTakeAllFromDevice()
+        {
+            foreach (var deviceConflictViewModel in DeviceConflictViewModels)
+            {
+                if (deviceConflictViewModel is DeviceManualConflictViewModel deviceManualConflict && !deviceManualConflict.IsConflictOk)
+                {
+                    deviceManualConflict.CancelSelectionCommand.Execute(null);
+                    deviceManualConflict.SelectDeviceOptionCommand.Execute(null);
+                }
+            }
+        }
+
+        private void OnTakeAllFromProject()
+        {
+            foreach (var deviceConflictViewModel in DeviceConflictViewModels)
+            {
+                if (deviceConflictViewModel is DeviceManualConflictViewModel deviceManualConflict && !deviceManualConflict.IsConflictOk)
+                {
+                    deviceManualConflict.CancelSelectionCommand.Execute(null);
+                    deviceManualConflict.SelectProjectOptionCommand.Execute(null);
+                }
+            }
         }
 
         private void OnCancel()
@@ -120,16 +165,6 @@ namespace BISC.Modules.Device.Presentation.ViewModels.Conflicts
                 }
                 return true;
             }));
-        }
-
-        public ICommand CancelCommand { get; }
-
-        public ICommand ApplyCommand { get; }
-
-        public bool IsApplyButtonEnabled
-        {
-            get => _isApplyButtonEnabled;
-            set => SetProperty(ref _isApplyButtonEnabled, value);
         }
 
         #region Overrides of ViewModelBase
