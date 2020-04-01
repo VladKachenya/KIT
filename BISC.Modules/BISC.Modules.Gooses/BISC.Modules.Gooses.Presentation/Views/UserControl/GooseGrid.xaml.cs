@@ -207,11 +207,11 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 			int mainGridRowIndex = 0;
 
 			maxRow = maxRow + 1 + GooseControlBlockViewModel.GooseRowViewModels.Count;
-			ProgressWindow progressWindow=null;
-			var progressBarThread = new Thread(() =>
+            ProgressWindow progressWindow = null;
+            var progressBarThread = new Thread(() =>
 			{
-				progressWindow = new ProgressWindow(maxRow, () => mainGridRowIndex);
-				progressWindow.Show();
+                progressWindow = new ProgressWindow(maxRow, () => mainGridRowIndex);
+                progressWindow.Show();
 				System.Windows.Threading.Dispatcher.Run();
 			});
 
@@ -426,10 +426,14 @@ namespace BISC.Modules.Gooses.Presentation.Views.UserControl
 
 			}
 			finally
-			{
-				progressWindow.CloseWindow();
-				progressBarThread?.Abort();
-			}
+            {
+                while (progressWindow == null)
+                {
+                    Thread.Sleep(100);
+                }
+                progressWindow.CloseWindow();
+				progressBarThread.Abort();
+            }
 
 		}
 
