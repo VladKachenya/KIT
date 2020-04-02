@@ -18,7 +18,6 @@ namespace BISC.Modules.Reports.Infrastructure.Keys
         public static class ReportsPresentationKeys
         {
             public const string ReportsTreeItemView = "ReportsTreeItemView";
-            public const string ReportsDetailsView = "ReportsDetailsView";
             public const string ReportsConflictsWindow = "ReportsConflictsWindow";
             public const string ReportsConflictsContext = "ReportsConflictsContext";
 

@@ -3,24 +3,46 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-
              xmlns:local="clr-namespace:BISC.Modules.Device.Presentation.Views"
              xmlns:view="clr-namespace:BISC.Modules.Connection.Presentation.View;assembly=BISC.Modules.Connection.Presentation"
+             xmlns:views="clr-namespace:BISC.Presentation.BaseItems.Views;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock Margin="10" Text="{Binding DeviceName}" Grid.Row="0" FontSize="16"/>
-        <StackPanel Grid.Row="1">
-            <view:IpAddressView DataContext="{Binding IpAddressViewModel}"/>
+        <StackPanel Orientation="Horizontal">
             <StackPanel Orientation="Horizontal">
-                <Button Margin="5" Command="{Binding ChengeIpCommand}" Content="Изменить Ip устройства" />
+                <view:IpAddressView DataContext="{Binding IpAddressViewModel}"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="5" Command="{Binding ChengeIpCommand}" Content="Изменить Ip устройства" />
+                </StackPanel>
             </StackPanel>
         </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Конфигурация устройства" FontSize="26"/>
+            <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="4*"/>
+                </Grid.ColumnDefinitions>
+                <ListBox ItemsSource="{Binding ConfigKeysDictionary}" SelectedItem="{Binding SelectedConfigView}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Value}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <views:DynamicRegion Grid.Column="1" RegionKey="{Binding ModelRegionKey}"/>
+            </Grid>
+
+        </Grid>
     </Grid>
 </UserControl>
 

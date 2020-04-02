@@ -57,7 +57,7 @@
                     </TextBox>
                     <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
                     <TextBox PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp" IsEnabled="{Binding IsEditable}" FontSize="20" Text="{Binding IpPart2, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="35" TextAlignment="Center"
-                             Name="IP1"   TabIndex="1"/>
+                             Name="IP1"   TabIndex="1" Height="Auto"/>
                     <TextBlock FontSize="20" Text="." Width="8" TextAlignment="Center" VerticalAlignment="Bottom"/>
                     <TextBox PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp" IsEnabled="{Binding IsEditable}" FontSize="20" Text="{Binding IpPart3, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="35" TextAlignment="Center"
                              Name="IP2"   TabIndex="2"/>

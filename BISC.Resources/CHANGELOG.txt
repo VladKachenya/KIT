@@ -24,3 +24,9 @@ This fields will not make conflicts if different.
 
 2020/03/23
 - Added commands to conflict resolving. Resolve all from project and resolve all from device.
+
+2020/04/01
+- Added device configuration viewer.
+
+2020/04/02
+- Made keyboard hook for saving.

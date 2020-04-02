@@ -33,13 +33,19 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             defaultGooseDataRef.DataSetReferenceState = "Нет";
             defaultGooseDataRef.DeviceName = "Нет";
             gooseDataReferences.Add(defaultGooseDataRef);
-            for (int i = 0; i < 64; i++)
+            int i = 0;
+            var firstGooseControl = gooseMatrix.FirstOrDefault();
+            if (firstGooseControl?.ColumnsName != null)
             {
-                var goInViewModel = _goInViewModelFunc();
-                goInViewModel.Name = $"GoIn {i + 1}";
-                goInViewModel.Number = i;
-                goInViewModel.GooseDataReferenceViewModel = defaultGooseDataRef;
-                goIns.Add(goInViewModel);
+                foreach (var columnName in firstGooseControl.ColumnsName)
+                {
+                    var goInViewModel = _goInViewModelFunc();
+                    goInViewModel.Name = $"GoIn: {columnName}";
+                    goInViewModel.Number = i;
+                    goInViewModel.GooseDataReferenceViewModel = defaultGooseDataRef;
+                    goIns.Add(goInViewModel);
+                    i++;
+                }
             }
 
             foreach (var gooseControlBlockViewModel in gooseMatrix)
@@ -88,7 +94,6 @@ namespace BISC.Modules.Gooses.Presentation.Factories
                 }
             }
 
-            
             return res;
         }
     }

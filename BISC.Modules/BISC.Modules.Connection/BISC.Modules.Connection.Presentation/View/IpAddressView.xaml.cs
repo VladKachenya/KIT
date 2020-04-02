@@ -104,10 +104,19 @@ namespace BISC.Modules.Connection.Presentation.View
             }
         }
 
-      
+        //#region Dependency properties
 
+        //public static readonly DependencyProperty ControlFontSizeProperty =
+        //    DependencyProperty.Register("ControlFontSize", typeof(string), typeof(string), 
+        //        new FrameworkPropertyMetadata("20",
+        //        FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
+        //public string ControlFontSize
+        //{
+        //    get => (string) GetValue(ControlFontSizeProperty);
+        //    set => SetValue(ControlFontSizeProperty, value);
+        //}
 
-
+        //#endregion
 
 
     }

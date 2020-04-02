@@ -24,6 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Modules.Gooses.Presentation.Events;
+using BISC.Presentation.Infrastructure.Keys;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 {
@@ -193,6 +194,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>("IED");
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
+            SetIsReadOnly(navigationContext.BiscNavigationParameters.GetParameterByName<bool>(KeysForNavigation.NavigationParameter.IsReadOnly));
             await UpdateGooses(false);
 
             base.OnNavigatedTo(navigationContext);
@@ -202,13 +204,20 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         {
             var gooseControls = _goosesModelService.GetGooseControlsOfDevice(_device);
             GooseControlViewModels = new ObservableCollection<GooseControlViewModel>(_gooseControlViewModelFactory.CreateGooseControlViewModel(_device, gooseControls));
+            foreach (var gooseControlViewModel in GooseControlViewModels)
+            {
+                gooseControlViewModel.SetIsReadOnly(IsReadOnly);
+            }
         }
 
         public override void OnActivate()
         {
-            _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить блоки управления GOOSE устройства { _device.Name}", false);
-            _userInterfaceComposingService.AddGlobalCommand(UpdateGoosesCommand, $"Обновить GOOSE { _device.Name}", IconsKeys.UpdateIconKey, false, true);
-            _userInterfaceComposingService.AddGlobalCommand(AddGooseCommand, $"Добавить блок управления GOOSE в устройство { _device.Name}", IconsKeys.AddIconKey, false, true);
+            if (!IsReadOnly)
+            {
+                _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить блоки управления GOOSE устройства { _device.Name}", false);
+                _userInterfaceComposingService.AddGlobalCommand(UpdateGoosesCommand, $"Обновить GOOSE { _device.Name}", IconsKeys.UpdateIconKey, false, true);
+                _userInterfaceComposingService.AddGlobalCommand(AddGooseCommand, $"Добавить блок управления GOOSE в устройство { _device.Name}", IconsKeys.AddIconKey, false, true);
+            }
             //_globalEventsService.Subscribe<ConnectionEvent>(OnConnectionChanged);
             base.OnActivate();
         }

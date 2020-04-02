@@ -20,6 +20,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree;
+using BISC.Presentation.Infrastructure.Keys;
 
 namespace BISC.Modules.InformationModel.Presentation.ViewModels
 {
@@ -43,8 +44,11 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         private bool _isLoadingDoiValuesInProgress;
         private bool _isWritingValuesInProgress;
         private bool _isHideButtons;
+        private bool _isFromDeviceDetails;
+
         private List<DaiInfoModelItemViewModel> _daiViewModelsToSave = new List<DaiInfoModelItemViewModel>();
         private IDevice _device;
+        private bool _isDbFilterEnable;
 
 
         public InfoModelTreeItemDetailsViewModel(
@@ -84,6 +88,12 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
             set { SetProperty(ref _selectedTreeItem, value, true);}
         }
 
+        public bool IsSortingVisible
+        {
+            get => !_isFromDeviceDetails;
+            set => SetProperty(ref _isFromDeviceDetails, !value, true);
+        }
+
         private bool IsLocalValuesShowing
         {
             get => _isLocalValuesShowing;
@@ -94,6 +104,29 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         {
             get => _isDeviceConnected;
             set { SetProperty(ref _isDeviceConnected, value); }
+        }
+
+        public bool IsDbFilterEnable
+        {
+            get => _isDbFilterEnable;
+            set
+            {
+                if (_isDbFilterEnable != value)
+                {
+                    SetProperty(ref _isDbFilterEnable, value);
+                    if (value)
+                    {
+                        _loggingService.LogUserAction($"Включена фильтрация по DB");
+                    }
+                    else
+                    {
+                        _loggingService.LogUserAction($"Отключена фильтрация по DB");
+                    }
+                    UpdateInfoModelTree(null);
+                }
+
+                SetProperty(ref _isDbFilterEnable, value);
+            }
         }
 
         public bool IsFcSortChecked
@@ -112,7 +145,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
                     {
                         _loggingService.LogUserAction($"Отключена сортировка по FC");
                     }
-                    UpdateInfoModelTree();
+                    UpdateInfoModelTree(AllIecTreeItems);
                 }
 
                 SetProperty(ref _isFcSortChecked, value);
@@ -252,11 +285,11 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         protected override void OnNavigatedTo(BiscNavigationContext navigationContext)
         {
             _biscNavigationParameters = navigationContext.BiscNavigationParameters;
-            UpdateInfoModelTree();
+            UpdateInfoModelTree(AllIecTreeItems);
             base.OnNavigatedTo(navigationContext);
         }
 
-        private void UpdateInfoModelTree()
+        private void UpdateInfoModelTree(ObservableCollection<IInfoModelItemViewModel> defaultCollection)
         {
             var ldevice = _biscNavigationParameters.GetParameterByName<ILDevice>(
                 InfoModelKeys.ModelKeys.LDeviceKey);
@@ -265,17 +298,25 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
                 _model = ldevice;
                 _device = _model.GetFirstParentOfType<IDevice>();
                 AllIecTreeItems =
-                    _infoModelTreeFactory.CreateLDeviceInfoModelTree(ldevice, IsFcSortChecked, AllIecTreeItems);
+                    _infoModelTreeFactory.CreateLDeviceInfoModelTree(ldevice, IsFcSortChecked, IsDbFilterEnable, defaultCollection);
             }
             else if (_biscNavigationParameters.Any((parameter => parameter.ParameterName == "IED")))
             {
                 _model = _biscNavigationParameters.GetParameterByName<IModelElement>("IED");
                 _device = _model as IDevice;
                 _isHideButtons = _biscNavigationParameters.GetParameterByName<bool>("IsHideButtons");
+                _isFromDeviceDetails = _biscNavigationParameters.GetParameterByName<bool>(KeysForNavigation.NavigationParameter.IsFromDeviceDetails);
+                SetIsReadOnly(_biscNavigationParameters.GetParameterByName<bool>(KeysForNavigation.NavigationParameter.IsReadOnly));
+                _isHideButtons = _isHideButtons || IsReadOnly;
+                if (_isFromDeviceDetails)
+                {
+                    _isDbFilterEnable = true;
+                    _isFcSortChecked = false;
+                }
                 List<ILDevice> devices = new List<ILDevice>();
                 _model.GetAllChildrenOfType(ref devices);
                 AllIecTreeItems =
-                    _infoModelTreeFactory.CreateFullInfoModelTree(devices, IsFcSortChecked, AllIecTreeItems);
+                    _infoModelTreeFactory.CreateFullInfoModelTree(devices, IsFcSortChecked, IsDbFilterEnable, defaultCollection);
             }
         }
 
@@ -284,7 +325,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
         public override void OnActivate()
         {
             var name = (_model as IDevice)?.Name ?? (_model as ILDevice)?.Inst;
-            if (!_isHideButtons)
+            if (!_isHideButtons || !IsReadOnly)
             {
                 _userInterfaceComposingService.AddGlobalCommand(LoadAllValuesCommand, $"Прочитать значения модели {name} из устройства", IconsKeys.ArrowDownBoldCircleIcon, false, true);
                 _userInterfaceComposingService.AddGlobalCommand(WriteAllDbValuesCommand, $"Записать значения модели {name} в устройства", IconsKeys.UploadNetworkKey, false, true);
@@ -301,7 +342,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
                 (WriteAllDbValuesCommand as IPresentationCommand)?.RaiseCanExecute();
             }
         }
-
+        
         public override void OnDeactivate()
         {
             _userInterfaceComposingService.DeleteGlobalCommand(LoadAllValuesCommand);

@@ -26,6 +26,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BISC.Presentation.Infrastructure.Keys;
 
 namespace BISC.Modules.DataSets.Presentation.ViewModels
 {
@@ -250,6 +251,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         #region public components
 
+
         public ObservableCollection<IDataSetViewModel> DataSets
         {
             get => _dataSets1;
@@ -313,9 +315,15 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
-            //Для чего так сделанно
-            _navigationService.NavigateViewToRegion(InfoModelKeys.InfoModelTreeItemDetailsViewKey, ModelRegionKey,
-                new BiscNavigationParameters().AddParameterByName("IED", _device).AddParameterByName("IsHideButtons", true));
+            SetIsReadOnly(
+                navigationContext.BiscNavigationParameters.GetParameterByName<bool>(KeysForNavigation
+                    .NavigationParameter.IsReadOnly));
+            _navigationService.NavigateViewToRegion(KeysForNavigation.RegionNames.InfoModelTreeItemDetailsViewKey, ModelRegionKey,
+                new BiscNavigationParameters()
+                    .AddParameterByName("IED", _device)
+                    .AddParameterByName("IsHideButtons", true)
+                    .AddParameterByName(KeysForNavigation.NavigationParameter.IsReadOnly, true));
+
             await UpdateDataSets();
             base.OnNavigatedTo(navigationContext);
         }
@@ -323,12 +331,15 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public override void OnActivate()
         {
-            _userInterfaceComposingService.SetCurrentSaveCommand(SaveChangesCommand,
+            if (!IsReadOnly)
+            {
+                _userInterfaceComposingService.SetCurrentSaveCommand(SaveChangesCommand,
                 $"Сохранить DataSets устройства {_device.Name}", false);
-            _userInterfaceComposingService.AddGlobalCommand(UpdateDataSetsCommand, $"Обновить DataSets {_device.Name}",
-                IconsKeys.UpdateIconKey, false, true);
-            _userInterfaceComposingService.AddGlobalCommand(AddNewDataSetCommand, $"Добавить DataSet {_device.Name}",
-                IconsKeys.AddIconKey, false, true);
+                _userInterfaceComposingService.AddGlobalCommand(UpdateDataSetsCommand, $"Обновить DataSets {_device.Name}",
+                    IconsKeys.UpdateIconKey, false, true);
+                _userInterfaceComposingService.AddGlobalCommand(AddNewDataSetCommand, $"Добавить DataSet {_device.Name}",
+                    IconsKeys.AddIconKey, false, true);
+            }
 
             base.OnActivate();
         }

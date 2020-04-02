@@ -20,6 +20,7 @@ using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.HelperEntities;
+using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 
@@ -42,6 +43,9 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
         private string _regionName;
         private bool _isInitialized = false;
         private bool _isCommandEnabled = true;
+        private bool _isApplyEnabled = true;
+        private bool _isClearEnabled = true;
+
         private string _adressFilterText;
         private ICollectionView _adressFilter;
 
@@ -80,8 +84,8 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _gooseMatrixLightViewModelFactory = gooseMatrixLightViewModelFactory;
             _globalSavingService = globalSavingService;
             _userInterfaceComposingService = userInterfaceComposingService;
-            ApplySubscriptionCommand = commandFactory.CreatePresentationCommand(OnApplySubscription);
-            ClearCurrentSubscriptionCommand = commandFactory.CreatePresentationCommand(OnClearCurrentSubscription);
+            ApplySubscriptionCommand = commandFactory.CreatePresentationCommand(OnApplySubscription, () => _isApplyEnabled);
+            ClearCurrentSubscriptionCommand = commandFactory.CreatePresentationCommand(OnClearCurrentSubscription, () => _isClearEnabled);
             SaveCommand = commandFactory.CreatePresentationCommand(OnSave, () => _isCommandEnabled);
             UpdateCommand = commandFactory.CreatePresentationCommand(OnUpdateExecute, () => _isCommandEnabled);
             ClearSubscriptionsCommand =
@@ -104,6 +108,20 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             get => _selectedGoInViewModel;
             set
             {
+                if (value == null)
+                {
+                    _isApplyEnabled = false;
+                    _isClearEnabled = false;
+                }
+                else
+                {
+                    _isApplyEnabled = true;
+                    _isClearEnabled = true;
+                }
+
+                (ApplySubscriptionCommand as IPresentationCommand)?.RaiseCanExecute();
+                (ClearCurrentSubscriptionCommand as IPresentationCommand)?.RaiseCanExecute();
+
                 _selectedGoInViewModel = value;
                 OnPropertyChanged();
                 //SelectedGooseDataReferenceViewModel = GooseDataReferenceViewModels.FirstOrDefault();
@@ -158,6 +176,10 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             get => _selectedGooseDataReferenceViewModel;
             set
             {
+                if (IsReadOnly)
+                {
+                    return;
+                }
                 _selectedGooseDataReferenceViewModel = value;
                 OnPropertyChanged();
             }
@@ -263,6 +285,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
             _regionName =
                 navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(
                     UiEntityIdentifier.Key).ItemId.ToString();
+            SetIsReadOnly(navigationContext.BiscNavigationParameters.GetParameterByName<bool>(KeysForNavigation.NavigationParameter.IsReadOnly));
             await UpdateGooseMatrix(false);
         }
 
@@ -331,9 +354,12 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tabs
 
         public override void OnActivate()
         {
-            _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить подписки GOOSE устройства {_device.Name}", false);
-            _userInterfaceComposingService.AddGlobalCommand(UpdateCommand, $"Обновить GOOSE-подписки устройства {_device.Name}", IconsKeys.UpdateIconKey, false, true);
-            _userInterfaceComposingService.AddGlobalCommand(ClearSubscriptionsCommand, $"Очистить GOOSE-подписки устройства {_device.Name}", IconsKeys.BroomIconKey, false, true);
+            if (!IsReadOnly)
+            {
+                _userInterfaceComposingService.SetCurrentSaveCommand(SaveCommand, $"Сохранить подписки GOOSE устройства {_device.Name}", false);
+                _userInterfaceComposingService.AddGlobalCommand(UpdateCommand, $"Обновить GOOSE-подписки устройства {_device.Name}", IconsKeys.UpdateIconKey, false, true);
+                _userInterfaceComposingService.AddGlobalCommand(ClearSubscriptionsCommand, $"Очистить GOOSE-подписки устройства {_device.Name}", IconsKeys.BroomIconKey, false, true);
+            }
 
             base.OnActivate();
         }

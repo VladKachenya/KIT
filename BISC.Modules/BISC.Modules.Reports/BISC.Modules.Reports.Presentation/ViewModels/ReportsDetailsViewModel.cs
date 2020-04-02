@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Modules.Reports.Infrastructure.Events;
+using BISC.Presentation.Infrastructure.Keys;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
 {
@@ -198,6 +199,10 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
             _reportControlsModel = _reportsModelService.GetAllReportControlsOfDevice(_device);
             ReportControlViewModels = _reportVeiwModelService.SortReportViewModels(_reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device));
+            foreach (var reportControlViewModel in ReportControlViewModels)
+            {
+                reportControlViewModel.IsEditable = IsEditable;
+            }
         }
         #endregion
 
@@ -240,15 +245,22 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _device = navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey);
             _regionName = navigationContext.BiscNavigationParameters
                 .GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier.Key).ItemId.ToString();
+            SetIsReadOnly(navigationContext.BiscNavigationParameters.GetParameterByName<bool>(KeysForNavigation
+                    .NavigationParameter.IsReadOnly));
+            IsEditable = !IsReadOnly;
             await UpdateReports();
             base.OnNavigatedTo(navigationContext);
         }
 
         public override void OnActivate()
         {
-            _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", false);
-            _userInterfaceComposingService.AddGlobalCommand(UpdateReportsCommad, $"Обновить Report-ы {_device.Name}", IconsKeys.UpdateIconKey, false, true);
-            _userInterfaceComposingService.AddGlobalCommand(AddNewReportCommand, $"Добавить Report {_device.Name}", IconsKeys.AddIconKey, false, true);
+            if (!IsReadOnly)
+            {
+                _userInterfaceComposingService.SetCurrentSaveCommand(SaveСhangesCommand, $"Сохранить Report устройства { _device.Name}", false);
+                _userInterfaceComposingService.AddGlobalCommand(UpdateReportsCommad, $"Обновить Report-ы {_device.Name}", IconsKeys.UpdateIconKey, false, true);
+                _userInterfaceComposingService.AddGlobalCommand(AddNewReportCommand, $"Добавить Report {_device.Name}", IconsKeys.AddIconKey, false, true);
+            }
+
             base.OnActivate();
         }
 

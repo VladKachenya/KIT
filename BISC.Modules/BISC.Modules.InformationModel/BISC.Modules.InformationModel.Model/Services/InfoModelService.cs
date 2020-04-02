@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
+using BISC.Modules.InformationModel.Infrastucture.Keys;
 using BISC.Modules.InformationModel.Model.Helpers;
 
 namespace BISC.Modules.InformationModel.Model.Services
@@ -95,6 +96,34 @@ namespace BISC.Modules.InformationModel.Model.Services
                 _sclCommunicationModelService.GetConnectedAccessPoint(sclModel, deviceName).ApName;
             device.ChildModelElements.Add(deviceAccessPoint);
             deviceAccessPoint.ParentModelElement = device;
+        }
+
+        public bool ContainsDb(IModelElement modelElement)
+        {
+            if (modelElement is IDai dai)
+            {
+                if (String.Equals(dai.Name, InformationModelKeys.DataAttributeHeaderKeys.db,
+                        StringComparison.CurrentCultureIgnoreCase) ||
+                    String.Equals(dai.Name, InformationModelKeys.DataAttributeHeaderKeys.zeroDb,
+                        StringComparison.CurrentCultureIgnoreCase))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            else
+            {
+                foreach (var child in modelElement.ChildModelElements)
+                {
+                    if (ContainsDb(child))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         public List<ILDevice> GetLDevicesFromDevices(IModelElement device)

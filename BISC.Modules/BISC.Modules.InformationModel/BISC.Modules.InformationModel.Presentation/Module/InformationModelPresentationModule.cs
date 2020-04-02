@@ -19,6 +19,7 @@ using BISC.Modules.InformationModel.Presentation.ViewModels.InfoModelTree;
 using BISC.Modules.InformationModel.Presentation.ViewModels.SettingControl;
 using BISC.Modules.InformationModel.Presentation.Views;
 using BISC.Modules.InformationModel.Presentation.Views.SettingsControl;
+using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.UiFromModel;
 
 namespace BISC.Modules.InformationModel.Presentation.Module
@@ -65,7 +66,7 @@ namespace BISC.Modules.InformationModel.Presentation.Module
             _injectionContainer.RegisterType<InfoModelLoadingTreeItemViewModel>();
 
             _injectionContainer.RegisterType<object, InfoModelTreeItemView>(InfoModelKeys.InfoModelTreeItemViewKey);
-            _injectionContainer.RegisterType<object, InformationModelDetailsView>(InfoModelKeys.InfoModelTreeItemDetailsViewKey);
+            _injectionContainer.RegisterType<object, InformationModelDetailsView>(KeysForNavigation.RegionNames.InfoModelTreeItemDetailsViewKey);
             _injectionContainer.RegisterType<object, LDeviceTreeItemView>(InfoModelKeys.LdeviceTreeItemViewKey);
             _injectionContainer.RegisterType<object, SettingControlDetailsView>(InfoModelKeys.SettingControlDetailsViewKey);
             _injectionContainer.RegisterType<object, SettingsControlTreeItemView>(InfoModelKeys.SettingsControlTreeItemViewKey);

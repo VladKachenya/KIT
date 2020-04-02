@@ -82,6 +82,7 @@
     <Compile Include="Converters\BoolToVisConverter.cs" />
     <Compile Include="Converters\InverseConverter.cs" />
     <Compile Include="Converters\IsNullToVisibilityConverter.cs" />
+    <Compile Include="Converters\IsReadOnlyToVisibilityConverter.cs" />
     <Compile Include="Converters\TriggerConverter.cs" />
     <Compile Include="Events\GlobalEvent.cs" />
     <Compile Include="Events\NavigationViewModelActiveEvent.cs" />

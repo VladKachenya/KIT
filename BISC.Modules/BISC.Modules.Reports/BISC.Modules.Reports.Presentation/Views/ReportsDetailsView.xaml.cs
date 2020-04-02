@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 namespace BISC.Modules.Reports.Presentation.Views
 {
     /// <summary>
-    /// Логика взаимодействия для ReportsDetailsView.xaml
+    /// Логика взаимодействия для ReportsDetailsViewKey.xaml
     /// </summary>
     public partial class ReportsDetailsView : UserControl
     {

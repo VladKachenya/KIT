@@ -33,6 +33,10 @@ namespace BISC.Presentation.ViewModels.Tab
                     _tabManagementService.CloseTab(TabRegionName);
                 }
             }));
+            SaveChangesCommand = commandFactory.CreatePresentationCommand((async () =>
+            {
+                await _globalSavingService.SaveСhangesToRegion(_tabRegionName, true);
+            }));
             _globalEventsService.Subscribe<SaveCheckEvent>(OnSaveCheck);
         }
 
@@ -62,6 +66,7 @@ namespace BISC.Presentation.ViewModels.Tab
         }
 
         public ICommand CloseFragmentCommand { get; }
+        public ICommand SaveChangesCommand { get; }
 
         #region Overrides of ViewModelBase
 

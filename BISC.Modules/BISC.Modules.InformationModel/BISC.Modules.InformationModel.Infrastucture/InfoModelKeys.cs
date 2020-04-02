@@ -50,7 +50,6 @@ namespace BISC.Modules.InformationModel.Infrastucture
 
 
         public static string InfoModelTreeItemViewKey = "InfoModelTreeItemView";
-        public static string InfoModelTreeItemDetailsViewKey = "InfoModelTreeItemDetailsView";
 
         public static string LdeviceTreeItemViewKey = "LDeviceTreeItemView";
 

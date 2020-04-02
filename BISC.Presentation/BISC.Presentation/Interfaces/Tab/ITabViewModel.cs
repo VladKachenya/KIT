@@ -12,5 +12,7 @@ namespace BISC.Presentation.Interfaces
         bool IsHaveChanges { get; set; }
 
         ICommand CloseFragmentCommand { get; }
+        ICommand SaveChangesCommand { get; }
+
     }
 }

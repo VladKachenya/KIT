@@ -13,6 +13,7 @@ using BISC.Modules.InformationModel.Presentation.Interfaces;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Factories;
 using BISC.Presentation.Infrastructure.HelperEntities;
+using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Navigation;
 using BISC.Presentation.Infrastructure.Services;
 
@@ -32,7 +33,7 @@ namespace BISC.Modules.InformationModel.Presentation.ViewModels
 
         private void OnNavigateToDetailsExecute()
         {
-            _tabManagementService.NavigateToTab(InfoModelKeys.InfoModelTreeItemDetailsViewKey,
+            _tabManagementService.NavigateToTab(KeysForNavigation.RegionNames.InfoModelTreeItemDetailsViewKey,
                 _navigationContext.BiscNavigationParameters,
                 $"Model {_navigationContext.BiscNavigationParameters.GetParameterByName<IDevice>(DeviceKeys.DeviceModelKey).Name}",
                 _navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(UiEntityIdentifier

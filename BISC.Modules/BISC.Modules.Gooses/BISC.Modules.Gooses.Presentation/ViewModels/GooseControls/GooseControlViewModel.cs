@@ -8,7 +8,7 @@ using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
 {
-   public class GooseControlViewModel:ComplexViewModelBase
+    public class GooseControlViewModel : ComplexViewModelBase
     {
         private bool _fixedOffs;
         private uint _minTime;
@@ -31,7 +31,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
             set
             {
                 if (!StaticStringValidationService.NameValidation(value)) return;
-                SetProperty(ref _name , value);
+                SetProperty(ref _name, value);
             }
         }
 
@@ -64,7 +64,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
             get { return _fixedOffs; }
             set
             {
-               SetProperty(ref _fixedOffs , value);
+                SetProperty(ref _fixedOffs, value);
             }
         }
 
@@ -141,32 +141,26 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.GooseControls
         }
 
         public string GseType { get; set; }
-    
-
-        
 
         public int ConfRev
         {
             get => _confRev;
             set => SetProperty(ref _confRev, value);
-
         }
 
         public string LdInst { get; set; }
 
         public bool IsDynamic => true;
-        //{
-        //    get { return _isDynamic; }
-        //    set
-        //    {
-        //        SetProperty(ref _isDynamic, value, true);
-        //    }
-        //}
 
+        public override void SetIsReadOnly(bool isReadOnly)
+        {
+            base.SetIsReadOnly(isReadOnly || !IsDynamic);
+        }
+        
         public bool IsChanged
         {
             get => _isChanged;
-            set => SetProperty(ref _isChanged , value,true);
+            set => SetProperty(ref _isChanged, value, true);
         }
     }
 }

@@ -106,8 +106,12 @@
             <docking:DockingManagerTemplateSelector>
                 <docking:DockingManagerTemplateSelector.TabTemplate>
                     <DataTemplate DataType="interfaces:ITabViewModel">
-                        <views:DynamicRegion RegionKey="{Binding TabRegionName}">
-                        </views:DynamicRegion>
+                        <ContentControl>
+                            <ContentControl.InputBindings>
+                                <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveChangesCommand}"/>
+                            </ContentControl.InputBindings>
+                            <views:DynamicRegion RegionKey="{Binding TabRegionName}"/>
+                        </ContentControl>
                     </DataTemplate>
                 </docking:DockingManagerTemplateSelector.TabTemplate>
 

@@ -19,6 +19,7 @@ using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Reports.Infrastructure.Presentation.Services;
 using BISC.Modules.Reports.Model.Services;
 using BISC.Modules.Reports.Presentation.Commands;
+using BISC.Presentation.Infrastructure.Keys;
 
 namespace BISC.Modules.Reports.Presentation.Module
 {
@@ -37,7 +38,7 @@ namespace BISC.Modules.Reports.Presentation.Module
 
             _injectionContainer.ResolveType<IUiFromModelElementRegistryService>().RegisterModelElement(_injectionContainer.ResolveType<ReportsUiHandlingService>(), "IED");
             _injectionContainer.RegisterType<IReportControlViewModel, ReportControlViewModel>();
-            _injectionContainer.RegisterType<object, ReportsDetailsView>(ReportsKeys.ReportsPresentationKeys.ReportsDetailsView);
+            _injectionContainer.RegisterType<object, ReportsDetailsView>(KeysForNavigation.RegionNames.ReportsDetailsViewKey);
             _injectionContainer.RegisterType<object, ReportsTreeItemView>(ReportsKeys.ReportsPresentationKeys.ReportsTreeItemView);
             _injectionContainer.RegisterType<object, ReportsConflictsWindow>(ReportsKeys.ReportsPresentationKeys.ReportsConflictsWindow);
 

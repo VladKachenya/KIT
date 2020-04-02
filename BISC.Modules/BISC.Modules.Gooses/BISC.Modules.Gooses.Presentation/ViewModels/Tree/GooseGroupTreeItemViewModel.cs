@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Modules.Device.Infrastructure.Keys;
+using BISC.Presentation.Infrastructure.Keys;
 
 namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
 {
@@ -85,24 +86,22 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
                 var confirmationList = new List<string>() { "Легковесная версия", "Тяжеловеса версия" };
                 var res = await _userInteractionService.ShowOptionToUser("Выберите способ подписки на GOOSE",
                     "Для средних и слабых компьютеров рекомендуется легковесная версия", confirmationList);
-                if (res == 1)
-                {
-                    await Task.Delay(100);
-                    OnNavigateToMatrixHeavyweight();
-                }
-                else
+                if (res != 1)
                 {
                     OnNavigateToMatrixLight();
+                    return;
                 }
             }
-            
+
+            await Task.Delay(100);
+            OnNavigateToMatrixHeavyweight();
         }
 
         private void NavigateToGooseControls()
         {
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
             biscNavigationParameters.AddParameterByName("IED", _device);
-            _tabManagementService.NavigateToTab(GooseKeys.GoosePresentationKeys.GooseControlsTabKey, biscNavigationParameters, $"Блоки управления GOOSE {_device.Name}", _gooseEditIdentifier);
+            _tabManagementService.NavigateToTab(KeysForNavigation.RegionNames.GooseControlsTabViewKey, biscNavigationParameters, $"Блоки управления GOOSE {_device.Name}", _gooseEditIdentifier);
         }
 
         private void OnNavigateToMatrixHeavyweight()
@@ -116,7 +115,7 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
         {
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
             biscNavigationParameters.AddParameterByName("IED", _device);
-            _tabManagementService.NavigateToTab(GooseKeys.GoosePresentationKeys.GooseMatrixTabLightKey, biscNavigationParameters, $"Подписка на GOOSE {_device.Name}", _matrixIdentifier);
+            _tabManagementService.NavigateToTab(KeysForNavigation.RegionNames.GooseMatrixTabLightKey, biscNavigationParameters, $"Подписка на GOOSE {_device.Name}", _matrixIdentifier);
         }
 
         public ICommand NavigateToGooseControlsCommand { get; }
@@ -143,10 +142,10 @@ namespace BISC.Modules.Gooses.Presentation.ViewModels.Tree
                 (NavigateToMatrixCommand as IPresentationCommand)?.RaiseCanExecute();
             }
 
-            if (_device.Type == DeviceKeys.DeviceTypes.MR5)
-            {
-                _isNavigateToMatrixLightCommandEnable = false;
-            }
+            //if (_device.Type == DeviceKeys.DeviceTypes.MR5)
+            //{
+            //    _isNavigateToMatrixLightCommandEnable = false;
+            //}
 
             var treeItemIdentifier =
                 navigationContext.BiscNavigationParameters.GetParameterByName<UiEntityIdentifier>(

@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 namespace BISC.Modules.DataSets.Presentation.Views
 {
     /// <summary>
-    /// Логика взаимодействия для DataSetsDetailsView.xaml
+    /// Логика взаимодействия для DataSetsDetailsViewKey.xaml
     /// </summary>
     public partial class DataSetsDetailsView : UserControl
     {

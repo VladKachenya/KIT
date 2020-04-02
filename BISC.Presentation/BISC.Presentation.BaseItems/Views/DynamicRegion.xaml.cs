@@ -27,6 +27,18 @@ namespace BISC.Presentation.BaseItems.Views
     public partial class DynamicRegion : UserControl
     {
 
+        public DynamicRegion()
+        {
+            InitializeComponent();
+
+            var globalEventsService = ServiceLocator.Current.GetInstance<IGlobalEventsService>();
+            globalEventsService.Subscribe<RegionDisposingEvent>((DisposeRegion));
+
+            regionContentControl.Unloaded += DynamicRegionBehavior_Unloaded;
+            regionContentControl.Loaded += DynamicRegionBehavior_Loaded;
+
+        }
+
         public static void SetRegionKey(DependencyObject target, string value)
         {
             target.SetValue(RegionKeyProperty, value);
@@ -54,19 +66,6 @@ namespace BISC.Presentation.BaseItems.Views
             }
             RegionManager.SetRegionName(regionContentControl, regionKey);
             RegionManager.SetRegionManager(regionContentControl, regionManager);
-        }
-
-
-        public DynamicRegion()
-        {
-            InitializeComponent();
-
-            var globalEventsService = ServiceLocator.Current.GetInstance<IGlobalEventsService>();
-            globalEventsService.Subscribe<RegionDisposingEvent>((DisposeRegion));
-
-            regionContentControl.Unloaded += DynamicRegionBehavior_Unloaded;
-            regionContentControl.Loaded += DynamicRegionBehavior_Loaded;
-          
         }
 
         private void DynamicRegionBehavior_Loaded(object sender, RoutedEventArgs e)

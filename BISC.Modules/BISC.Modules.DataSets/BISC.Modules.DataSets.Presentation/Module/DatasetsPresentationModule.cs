@@ -19,6 +19,7 @@ using BISC.Modules.DataSets.Presentation.ViewModels;
 using BISC.Modules.DataSets.Presentation.Views;
 using BISC.Modules.Device.Infrastructure.Saving;
 using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.UiFromModel;
 
 namespace BISC.Modules.DataSets.Presentation.Module
@@ -41,7 +42,7 @@ namespace BISC.Modules.DataSets.Presentation.Module
             _injectionContainer.ResolveType<IUiFromModelElementRegistryService>().RegisterModelElement(_injectionContainer.ResolveType<DataSetsUiHandlingService>(), "IED");
 
             _injectionContainer.RegisterType<object, DataSetsTreeItemView>(DatasetKeys.DatasetViewModelKeys.DataSetsTreeItemView);
-            _injectionContainer.RegisterType<object, DataSetsDetailsView>(DatasetKeys.DatasetViewModelKeys.DataSetsDetailsView);
+            _injectionContainer.RegisterType<object, DataSetsDetailsView>(KeysForNavigation.RegionNames.DataSetsDetailsViewKey);
             _injectionContainer.RegisterType<object, FcdaAdderView>(DatasetKeys.DatasetViewModelKeys.FcdaAdderViewModel);
             _injectionContainer.RegisterType<object, DatasetConflictsWindow>(DatasetKeys.DatasetViewModelKeys.DatasetConflictsWindow);
 

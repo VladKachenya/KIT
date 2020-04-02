@@ -11,6 +11,7 @@ using BISC.Presentation.Infrastructure.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using BISC.Presentation.Infrastructure.Keys;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
 {
@@ -43,7 +44,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         {
             BiscNavigationParameters biscNavigationParameters = new BiscNavigationParameters();
             biscNavigationParameters.AddParameterByName("IED", _device);
-            _tabManagementService.NavigateToTab(ReportsKeys.ReportsPresentationKeys.ReportsDetailsView, biscNavigationParameters, $"Reports {_device.Name}", _reportsDetailsIdentifier);
+            _tabManagementService.NavigateToTab(KeysForNavigation.RegionNames.ReportsDetailsViewKey, biscNavigationParameters, $"Reports {_device.Name}", _reportsDetailsIdentifier);
         }
         #endregion
 

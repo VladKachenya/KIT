@@ -16,8 +16,11 @@ using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
+using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Presentation.Infrastructure.Commands;
+using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Services;
 
 namespace BISC.Modules.Device.Presentation.ViewModels
@@ -30,6 +33,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IBiscProject _biscProject;
         private readonly IIpAddressViewModelFactory _ipAddressViewModelFactory;
         private readonly IGlobalEventsService _globalEventsService;
+        private readonly INavigationService _navigationService;
         private readonly IDeviceIdentificationService _deviceIdentificationService;
         private readonly IDeviceIpChangingService _deviceIpChangingService;
         private readonly IUserInteractionService _userInteractionService;
@@ -40,6 +44,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private UiEntityIdentifier _uiEntityIdentifier;
         private string _deviceIp;
         private bool _isIpUnchangeable;
+        private KeyValuePair<string, string> _selectiedConfigView;
+
 
         public DeviceDetailsViewModel(
             ISclCommunicationModelService sclCommunicationModel,
@@ -47,7 +53,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             IBiscProject biscProject,
             IIpAddressViewModelFactory ipAddressViewModelFactory, 
             IGlobalEventsService globalEventsService,
-            ICommandFactory commandFactory, 
+            ICommandFactory commandFactory,
+            INavigationService navigationService,
             IDeviceIdentificationService deviceIdentificationService,
             IDeviceIpChangingService deviceIpChangingService, 
             IUserInteractionService userInteractionService, 
@@ -59,14 +66,46 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _biscProject = biscProject;
             _ipAddressViewModelFactory = ipAddressViewModelFactory;
             _globalEventsService = globalEventsService;
+            _navigationService = navigationService;
             _deviceIdentificationService = deviceIdentificationService;
             _deviceIpChangingService = deviceIpChangingService;
             _userInteractionService = userInteractionService;
             _treeManagementService = treeManagementService;
+            ModelRegionKey = Guid.NewGuid().ToString();
+
+            ConfigKeysDictionary = new Dictionary<string, string>()
+            {
+                {KeysForNavigation.RegionNames.InfoModelTreeItemDetailsViewKey, "Информационная модель" },
+                {KeysForNavigation.RegionNames.DataSetsDetailsViewKey, "Наборы данных" },
+                {KeysForNavigation.RegionNames.ReportsDetailsViewKey, "Отчёты" },
+                {KeysForNavigation.RegionNames.GooseControlsTabViewKey, "GOOSE" },
+                {KeysForNavigation.RegionNames.GooseMatrixTabLightKey, "Подписки на GOOSE" }
+            };
+
             ChengeIpCommand = commandFactory.CreatePresentationCommand(OnChengeIpCommand, () => !IsIpUnchangeable);
         }
 
+        public string ModelRegionKey { get; }
+
+
         #region public methods
+
+        public Dictionary<string, string> ConfigKeysDictionary { get; private set; }
+
+        public KeyValuePair<string, string> SelectedConfigView
+        {
+            get => _selectiedConfigView;
+            set
+            {
+                _navigationService.NavigateViewToRegion(value.Key, ModelRegionKey,
+                    new BiscNavigationParameters().AddParameterByName("IED", _device)
+                        .AddParameterByName(KeysForNavigation.NavigationParameter.IsFromDeviceDetails, true)
+                        .AddParameterByName(KeysForNavigation.NavigationParameter.IsReadOnly, true)
+                        .AddParameterByName(UiEntityIdentifier.Key, _uiEntityIdentifier));
+                SetProperty(ref _selectiedConfigView, value, true);
+            }
+        }
+
         public bool IsBemnManufacturer { get; protected set; }
         public string DeviceName
         {
@@ -104,6 +143,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             IpAddressViewModel = string.IsNullOrWhiteSpace(ip) ? _ipAddressViewModelFactory.GetPingItemViewModel(isReadonly: IsIpUnchangeable) :
                 _ipAddressViewModelFactory.GetPingItemViewModel(ip, IsIpUnchangeable);
 
+            SelectedConfigView = ConfigKeysDictionary.First();
 
             _globalEventsService.Subscribe<LossConnectionEvent>(OnLostConnectionEvent);
             base.OnNavigatedTo(navigationContext);

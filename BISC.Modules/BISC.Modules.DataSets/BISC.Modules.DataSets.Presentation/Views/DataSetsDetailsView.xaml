@@ -11,12 +11,17 @@
              xmlns:behaviors="clr-namespace:BISC.Presentation.BaseItems.Behaviors;assembly=BISC.Presentation.BaseItems"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Name="DataSetsDitailsViewModel">
+             d:DesignHeight="450" d:DesignWidth="800" 
+             Name="DataSetsDitails">
     <UserControl.Resources>
         <converters:InverseConverter x:Key="inverseConverter"></converters:InverseConverter>
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"></BooleanToVisibilityConverter>
         <converters:BoolToVisConverter Invert="True" x:Key="boolToInVisConverter"></converters:BoolToVisConverter>
+        <converters:IsReadOnlyToVisibilityConverter x:Key="ReadOnlyToVisibility"/>
 
+        <Style TargetType="FrameworkElement" x:Key="IsReadOnly">
+            <Setter Property="Visibility" Value="{Binding ElementName=DataSetsDitails, Path=DataContext.IsReadOnly, Converter={StaticResource ReadOnlyToVisibility}}"/>
+        </Style>
         <Style x:Key ="IsEditebleStyle" TargetType="ContentControl">
             <Style.Triggers >
                 <DataTrigger Binding="{Binding IsEditable}" Value="true">
@@ -46,7 +51,7 @@
                         </Style>
                     </ColumnDefinition.Style>
                 </ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -56,34 +61,38 @@
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <views:DynamicRegion Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" RegionKey="{Binding ModelRegionKey}" Visibility="{Binding IsModelShowed,Converter={StaticResource booleanToVisibilityConverter}}"></views:DynamicRegion>
+            <!--Это нужно отделить-->
             <Grid Grid.Row="0" Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal" Grid.Column="0">
-                    <Button  Command="{Binding ExpandModelCommand}" Visibility="{Binding IsModelShowed,Converter={StaticResource boolToInVisConverter}}" Margin="10,5" Height="20" Width="20"
+                <ContentControl Grid.Column="0" Style="{DynamicResource IsReadOnly}">
+                    <StackPanel Orientation="Horizontal">
+                        <Button  Command="{Binding ExpandModelCommand}" Visibility="{Binding IsModelShowed,Converter={StaticResource boolToInVisConverter}}" Margin="10,5" Height="20" Width="20"
                          Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
                          ToolTip="Развернуть модель">
-                        <Button.Content>
-                            <ContentControl ContentTemplate="{DynamicResource ArrowExpandRightIcon}"/>
-                        </Button.Content>
-                    </Button>
-                    <Button  Command="{Binding CollapseModelCommand}" Visibility="{Binding IsModelShowed,Converter={StaticResource booleanToVisibilityConverter}}" Margin="10,5" Height="20" Width="20" 
+                            <Button.Content>
+                                <ContentControl ContentTemplate="{DynamicResource ArrowExpandRightIcon}"/>
+                            </Button.Content>
+                        </Button>
+                        <Button  Command="{Binding CollapseModelCommand}" Visibility="{Binding IsModelShowed,Converter={StaticResource booleanToVisibilityConverter}}" Margin="10,5" Height="20" Width="20" 
                          Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
                          ToolTip="Свернуть модель">
-                        <Button.Content>
-                            <ContentControl ContentTemplate="{DynamicResource ArrowCollapseLeftIcon}"/>
-                        </Button.Content>
-                    </Button>
-                    <Button  Margin="10,5" Height="20" Width="20" Visibility="Collapsed"
+                            <Button.Content>
+                                <ContentControl ContentTemplate="{DynamicResource ArrowCollapseLeftIcon}"/>
+                            </Button.Content>
+                        </Button>
+                        <Button  Margin="10,5" Height="20" Width="20" Visibility="Collapsed"
                         Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
                         ToolTip="Записать в устройство">
-                        <Button.Content>
-                            <ContentControl ContentTemplate="{DynamicResource ChevronDoubleUpIcon}"/>
-                        </Button.Content>
-                    </Button>
-                </StackPanel>
+                            <Button.Content>
+                                <ContentControl ContentTemplate="{DynamicResource ChevronDoubleUpIcon}"/>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                </ContentControl>
+
                 <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="10, 0">
                     <TextBlock Text="{Binding DataSets.Count}"/>
                     <TextBlock Text="/"/>
@@ -177,30 +186,31 @@
                                             </Style>
                                         </ContentControl.Style>
                                     </ContentControl>
-
-                                    <StackPanel  Grid.Column="1" Orientation="Horizontal">
-                                        <Label Visibility="{Binding IsWarning, Converter={StaticResource booleanToVisibilityConverter}}">
-                                            <Label.Content>
-                                                <ContentControl ContentTemplate="{DynamicResource AlertIcon}" Foreground="DarkRed" Width="20" Height="20"/>
-                                            </Label.Content>
-                                        </Label>
-                                        <Button Margin="5" Padding="3" Visibility="{Binding IsEditable,Converter={StaticResource booleanToVisibilityConverter}}"
-                                                            Command="{Binding DataContext.DeleteDataSetViewModelCommand,Source={x:Reference ExpanderItemsControl}}"
+                                    <ContentControl Grid.Column="1" Style="{DynamicResource IsReadOnly}">
+                                        <StackPanel  Orientation="Horizontal">
+                                            <Label Visibility="{Binding IsWarning, Converter={StaticResource booleanToVisibilityConverter}}">
+                                                <Label.Content>
+                                                    <ContentControl ContentTemplate="{DynamicResource AlertIcon}" Foreground="DarkRed" Width="20" Height="20"/>
+                                                </Label.Content>
+                                            </Label>
+                                            <Button Margin="5" Padding="3" Visibility="{Binding IsEditable,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                            Command="{Binding DataContext.DeleteDataSetViewModelCommand, Source={x:Reference ExpanderItemsControl}}"
                                                             CommandParameter="{Binding .}"
                                                             IsEnabled="{Binding ElementName = EditToggleButton, Path= IsChecked}"
                                                             Style="{DynamicResource MaterialDesignRaisedButton}"
                                                             Width="20" Height="20"
                                                             Grid.Column="1">
-                                            <Button.Content>
-                                                <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
-                                            </Button.Content>
-                                        </Button>
-                                        <ToggleButton x:Name="EditToggleButton" IsChecked="{Binding IsEditing}" 
+                                                <Button.Content>
+                                                    <ContentControl ContentTemplate="{DynamicResource CloseIcon}"/>
+                                                </Button.Content>
+                                            </Button>
+                                            <ToggleButton x:Name="EditToggleButton" IsChecked="{Binding IsEditing}" 
                                                       IsEnabled="{Binding IsEditable}"
                                                            Visibility="{Binding IsEditable,Converter={StaticResource booleanToVisibilityConverter}}"   
                                                       Style="{StaticResource MaterialDesignSwitchToggleButton}"
                                                       ToolTip="Разрешить редактирование датасета"/>
-                                    </StackPanel>
+                                        </StackPanel>
+                                    </ContentControl>
                                 </Grid>
                             </Grid>
                         </Border>
@@ -267,60 +277,6 @@
                                     <ContentControl Content="{Binding .}">
                                         <ContentControl.Style>
                                             <Style TargetType="ContentControl">
-                                                <!--<Style.Triggers>
-                                                    -->
-                                                <!--Тут устанавливается ComboBox с Fc-->
-                                                <!--<MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding ="{ Binding Path=SelectedItem.IsEditing,Source={x:Reference ExpanderItemsControl}}" Value="True"/>
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter Property="ContentTemplate">
-                                                            <Setter.Value>
-                                                                <DataTemplate>
-                                                                    <StackPanel Orientation="Horizontal">
-                                                                        <ComboBox ItemsSource="{Binding FcCollection}" SelectedItem="{Binding SellectedFc}"
-                                                                              Margin="20,0" VerticalContentAlignment="Center" Style="{x:Null}" 
-                                                                              IsEnabled="{Binding ElementName = EditToggleButton, Path= IsChecked}" >
-                                                                            <ComboBox.ItemContainerStyle>
-                                                                                <Style TargetType="ComboBoxItem" >
-                                                                                    <Setter Property="IsEnabled"  Value="{Binding IsSellecteble}" />
-                                                                                </Style>
-                                                                            </ComboBox.ItemContainerStyle>
-                                                                            <ItemsControl.ItemTemplate>
-                                                                                <DataTemplate>
-                                                                                    <StackPanel Orientation="Horizontal">
-                                                                                        <TextBlock Text="{Binding Fc}" Padding="0"/>
-                                                                                        <TextBlock Text="[" Padding="0"/>
-                                                                                        <TextBlock Text="{Binding FcWeight}" Padding="0"/>
-                                                                                        <TextBlock Text="]" Padding="0"/>
-                                                                                    </StackPanel>
-                                                                                </DataTemplate>
-                                                                            </ItemsControl.ItemTemplate>
-                                                                        </ComboBox>
-                                                                    </StackPanel>
-                                                                </DataTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </MultiDataTrigger>-->
-                                                <!--
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding ="{ Binding Path=SelectedItem.IsEditing,Source={x:Reference ExpanderItemsControl}}" Value="False"/>
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter Property="ContentTemplate">
-                                                            <Setter.Value>
-                                                                <DataTemplate>
-                                                                    <StackPanel Orientation="Horizontal">
-                                                                        <TextBlock Text="{Binding SellectedFc.Fc}" Padding="0"/>
-                                                                        <TextBlock Text="[" Padding="0"/>
-                                                                        <TextBlock Text="{Binding SellectedFc.FcWeight}" Padding="0"/>
-                                                                        <TextBlock Text="]" Padding="0"/>
-                                                                    </StackPanel>
-                                                                </DataTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </MultiDataTrigger>
-                                                </Style.Triggers>-->
                                                 <Setter Property="ContentTemplate">
                                                     <Setter.Value>
                                                         <DataTemplate>
@@ -347,7 +303,6 @@
                                         </Button.Content>
                                     </Button>
                                 </StackPanel>
-
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

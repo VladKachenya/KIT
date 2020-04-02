@@ -53,8 +53,6 @@
          
         </ListBox>
 
-
-
         <GroupBox Grid.Column="1" Visibility="{Binding Source={x:Reference Name=ListBox},Path=SelectedItem,Converter={StaticResource IsNullToVisibilityConverter}}" DataContext="{Binding Source={x:Reference Name=ListBox},Path=SelectedItem}" Header="Goose Control Block">
             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
@@ -63,7 +61,7 @@
                 <StackPanel>
                     <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.GOOSEName}" Columns="2">
                         <TextBlock Margin="4" Text="Название" HorizontalAlignment="Stretch"></TextBlock>
-                        <TextBox MinWidth="200" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Margin="2" Text="{Binding Name,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                            <TextBox MinWidth="200" IsReadOnly="{Binding IsReadOnly}" Margin="2" Text="{Binding Name,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
                     </UniformGrid>
                     <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.GseType}" Columns="2">
                         <TextBlock Margin="4" Text="GseType" HorizontalAlignment="Stretch"></TextBlock>
@@ -71,23 +69,23 @@
                     </UniformGrid>
                     <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.GoID}" Columns="2">
                         <TextBlock Margin="4" Text="GoId" HorizontalAlignment="Stretch"></TextBlock>
-                        <TextBox  Margin="2" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Text="{Binding GoId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                            <TextBox  Margin="2" IsReadOnly="{Binding IsReadOnly}" Text="{Binding GoId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
                     </UniformGrid>
                     <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.DataSet}" Columns="2">
                         <TextBlock Margin="4" Text="DataSet"></TextBlock>
-                        <ComboBox Margin="2" IsEnabled="{Binding IsDynamic}" IsReadOnly="False" SelectedItem="{Binding SelectedDataset, Mode=TwoWay}" ItemsSource="{Binding AvailableDatasets}"></ComboBox>
+                            <ComboBox Margin="2" IsEnabled="{Binding IsReadOnly, Converter={StaticResource inverseConverter}}" IsReadOnly="False" SelectedItem="{Binding SelectedDataset, Mode=TwoWay}" ItemsSource="{Binding AvailableDatasets}"></ComboBox>
                     </UniformGrid>
                     <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.MinTime}" Columns="2">
                         <TextBlock Margin="4" Text="MinTime" HorizontalAlignment="Stretch"></TextBlock>
-                        <TextBox  Margin="2" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Text="{Binding MinTime,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                            <TextBox  Margin="2" IsReadOnly="{Binding IsReadOnly}" Text="{Binding MinTime,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
                     </UniformGrid>
                     <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.MaxTime}" Columns="2">
                         <TextBlock Margin="4" Text="MaxTime"></TextBlock>
-                        <TextBox  Margin="2" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Text="{Binding MaxTime,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                            <TextBox  Margin="2" IsReadOnly="{Binding IsReadOnly}" Text="{Binding MaxTime,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
                     </UniformGrid>
                     <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.ConfRev}" Columns="2">
                         <TextBlock Margin="4" Text="ConfRev"></TextBlock>
-                        <TextBox  Margin="2" IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Text="{Binding ConfRev,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                            <TextBox  Margin="2" IsReadOnly="{Binding IsReadOnly}" Text="{Binding ConfRev,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
                     </UniformGrid>
                     <!--<UniformGrid Columns="2">
                                     <TextBlock Margin="4" Text="ConfRev" HorizontalAlignment="Stretch"></TextBlock>
@@ -104,19 +102,19 @@
                         <StackPanel>
                             <UniformGrid  ToolTip="{x:Static constants:StringConstants+GooseDescriptions.Addr}" Columns="2">
                                 <TextBlock Margin="4" Text="Addr"></TextBlock>
-                                <TextBox  IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Margin="2" Text="{Binding MacAddress,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                                    <TextBox  IsReadOnly="{Binding IsReadOnly}" Margin="2" Text="{Binding MacAddress,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
                             </UniformGrid>
                             <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.Priority}" Columns="2">
                                 <TextBlock Margin="4" Text="VlanPriority"></TextBlock>
-                                <TextBox  IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Margin="2" Text="{Binding VlanPriority,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                                    <TextBox  IsReadOnly="{Binding IsReadOnly}" Margin="2" Text="{Binding VlanPriority,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
                             </UniformGrid>
                             <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.VID}" Columns="2">
                                 <TextBlock Margin="4" Text="VlanId"></TextBlock>
-                                <TextBox  IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}" Margin="2" Text="{Binding VlanId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                                    <TextBox  IsReadOnly="{Binding IsReadOnly}" Margin="2" Text="{Binding VlanId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
                             </UniformGrid>
                             <UniformGrid ToolTip="{x:Static constants:StringConstants+GooseDescriptions.APPID}" Columns="2">
                                 <TextBlock Margin="4" Text="AppId"></TextBlock>
-                                <TextBox IsReadOnly="{Binding IsDynamic,Converter={StaticResource inverseConverter}}"  Margin="2" Text="{Binding AppId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
+                                    <TextBox IsReadOnly="{Binding IsReadOnly}"  Margin="2" Text="{Binding AppId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"></TextBox>
                             </UniformGrid>
 
                         </StackPanel>

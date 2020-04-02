@@ -8,10 +8,26 @@
              xmlns:gooseSubscriptionLight="clr-namespace:BISC.Modules.Gooses.Presentation.Interfaces.GooseSubscriptionLight"
              xmlns:converters="clr-namespace:BISC.Presentation.BaseItems.Converters;assembly=BISC.Presentation.BaseItems"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             x:Name="GooseMatrixTabLightView"
+             d:DesignHeight="450" 
+             d:DesignWidth="800">
     <UserControl.Resources>
         <converters:BoolToVisConverter x:Key="boolToVisConverter"></converters:BoolToVisConverter>
+        <converters:InverseConverter x:Key="InverseConverter"></converters:InverseConverter>
         <converters:BoolToVisConverter Invert="True" x:Key="boolToInVisConverter"></converters:BoolToVisConverter>
+        <converters:IsReadOnlyToVisibilityConverter x:Key="ReadOnlyToVisibility"/>
+        <Style TargetType="FrameworkElement" x:Key="IsReadOnly">
+            <Setter Property="Visibility" Value="{Binding ElementName=GooseMatrixTabLightView, Path=DataContext.IsReadOnly, Converter={StaticResource ReadOnlyToVisibility}}"/>
+        </Style>
+        <!--<Style TargetType="CheckBox" x:Key="IsReadOnlyCheckBox">
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="" va/>
+                    </MultiDataTrigger.Conditions>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>-->
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -77,14 +93,30 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition >
+                    <ColumnDefinition.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsReadOnly}" Value="True">
+                                    <Setter Property="ColumnDefinition.Width" Value="0"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsReadOnly}" Value="False">
+                                    <Setter Property="ColumnDefinition.Width" Value="*"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ColumnDefinition.Style>
+                </ColumnDefinition>
             </Grid.ColumnDefinitions>
 
             <TextBlock Text="{Binding SelectedGoInViewModel.GooseDataReferenceViewModel.DoiDataReference}" TextWrapping="Wrap" Grid.Column="0" Grid.Row="1" Padding="0, 5, 0, 5"/>
             <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="0" Grid.Row="2" Padding="0, 5, 0, 5">
                 <StackPanel  Orientation="Vertical">
                     <StackPanel  Orientation="Horizontal">
-                        <CheckBox IsChecked="{Binding SelectedGoInViewModel.EnableState}" IsEnabled="{Binding SelectedGoInViewModel.IsSetSateEnable}"/>
+
+                        <ContentControl IsEnabled="{Binding IsReadOnly, Converter={StaticResource InverseConverter}}">
+                            <CheckBox IsChecked="{Binding SelectedGoInViewModel.EnableState}" IsEnabled="{Binding SelectedGoInViewModel.IsSetSateEnable}"/>
+                        </ContentControl>
                         <TextBlock Text=" (Состояние)"/>
                     </StackPanel>
                     <TextBlock Text="{Binding SelectedGoInViewModel.GooseDataReferenceViewModel.DataSetReferenceState}" TextWrapping="Wrap"/>
@@ -93,7 +125,11 @@
             <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="0" Grid.Row="3" Padding="0, 5, 0, 5">
                 <StackPanel  Orientation="Vertical">
                     <StackPanel  Orientation="Horizontal">
-                        <CheckBox IsChecked="{Binding SelectedGoInViewModel.EnableQuality}" IsEnabled="{Binding SelectedGoInViewModel.IsSetQualityEnable}"/>
+                        <ContentControl IsEnabled="{Binding IsReadOnly, Converter={StaticResource InverseConverter}}">
+
+                            <CheckBox IsChecked="{Binding SelectedGoInViewModel.EnableQuality}" IsEnabled="{Binding SelectedGoInViewModel.IsSetQualityEnable}" />
+                        </ContentControl>
+
                         <TextBlock Text=" (Качество)"/>
                     </StackPanel>
                     <TextBlock Text="{Binding SelectedGoInViewModel.GooseDataReferenceViewModel.DataSetReferenceQuality}" TextWrapping="Wrap"/>
@@ -101,7 +137,9 @@
             </Border>
             <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="0" Grid.Row="4" Padding="0, 5, 0, 5">
                 <StackPanel  Orientation="Vertical">
-                    <CheckBox IsChecked="{Binding SelectedGoInViewModel.EnableGooseMonitoring}" IsEnabled="{Binding SelectedGoInViewModel.IsSetGooseMonitoringEnable}"/>
+                    <ContentControl IsEnabled="{Binding IsReadOnly, Converter={StaticResource InverseConverter}}">
+                        <CheckBox IsChecked="{Binding SelectedGoInViewModel.EnableGooseMonitoring}" IsEnabled="{Binding SelectedGoInViewModel.IsSetGooseMonitoringEnable}"/>
+                    </ContentControl>
                     <TextBlock Text="Контроль потери связи" TextWrapping="Wrap"/>
                 </StackPanel>
             </Border>
@@ -119,12 +157,12 @@
                     <TextBlock Text="{Binding SelectedGooseDataReferenceViewModel.DataSetReferenceQuality}" TextWrapping="Wrap"/>
                 </StackPanel>
             </Border>
-            <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="1" Grid.Row="5" Padding="0, 5, 0, 5">
+            <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="1" Grid.Row="5" Padding="0, 5, 0, 5" Style="{DynamicResource IsReadOnly}">
                 <StackPanel  Orientation="Vertical">
                     <Button Content="Применить" Command="{Binding ApplySubscriptionCommand}" Margin="5"/>
                 </StackPanel>
             </Border>
-            <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="0" Grid.Row="5" Padding="0, 5, 0, 5">
+            <Border BorderBrush="#6a7e91" BorderThickness="0" Grid.Column="0" Grid.Row="5" Padding="0, 5, 0, 5" Style="{DynamicResource IsReadOnly}">
                 <StackPanel  Orientation="Vertical">
                     <Button Content="Очистить" Command="{Binding ClearCurrentSubscriptionCommand}" Margin="5"/>
                 </StackPanel>
@@ -133,8 +171,8 @@
         </Grid>
         <GridSplitter Grid.Column="3" ShowsPreview="False" Width="4" Background="Black"
                       HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.RowSpan="2" />
-        <Border Grid.Column="4" Grid.Row="0" BorderBrush="#607D8B" BorderThickness="0, 0, 0, 4">
-            <StackPanel Orientation="Horizontal" Margin="5, 5" Grid.Row="0">
+        <Border Grid.Column="4" Grid.Row="0" BorderBrush="#607D8B" BorderThickness="0, 0, 0, 4" >
+            <StackPanel Orientation="Horizontal" Margin="5, 5" Grid.Row="0" Style="{DynamicResource IsReadOnly}">
                 <Border Background="#D0D7DB" CornerRadius="3" Margin="0,0,5,0" BorderThickness="1" BorderBrush="Black">
                     <Label Height="Auto"  VerticalAlignment="Center" ContentTemplate="{DynamicResource MagnifyIcon}" Padding="0" />
                 </Border>

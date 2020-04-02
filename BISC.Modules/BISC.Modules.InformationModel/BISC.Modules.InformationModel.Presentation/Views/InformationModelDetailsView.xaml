@@ -22,8 +22,15 @@
         <converters:DataAttributeHeaderToToggleButtonVisibilityConverter x:Key="ToggleButtonVisibilityConverter"/>
         <converters:IsGroupedToMarginConverter x:Key="GroupedToMarginConverter"/>
         <baseConverters:TriggerConverter x:Key="TriggerConverter"/>
+        <baseConverters:InverseConverter x:Key="InverseConverter"/>
+        <baseConverters:BoolToVisConverter x:Key="BoolToVisConverter"/>
+        <baseConverters:IsReadOnlyToVisibilityConverter x:Key="ReadOnlyToVisibility"/>
 
+        <Style TargetType="FrameworkElement" x:Key="IsReadOnly">
+            <Setter Property="Visibility" Value="{Binding ElementName=MainGrid, Path=DataContext.IsReadOnly, Converter={StaticResource ReadOnlyToVisibility}}"/>
+        </Style>
     </UserControl.Resources>
+
     <Grid HorizontalAlignment="Stretch" Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -43,7 +50,16 @@
                 </RowDefinition.Style>
             </RowDefinition>
         </Grid.RowDefinitions>
-        <CheckBox HorizontalAlignment="Left" Content="Группировать по FC" IsChecked="{Binding IsFcSortChecked}"></CheckBox>
+        <Grid Visibility="{Binding IsSortingVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox Grid.Column="0" HorizontalAlignment="Left" Content="Группировать по FC" Margin="10, 0" IsChecked="{Binding IsFcSortChecked}"/>
+            <CheckBox Grid.Column="1" HorizontalAlignment="Left" Content="Фильтровать по DB" Margin="10, 0" IsChecked="{Binding IsDbFilterEnable}"/>
+        </Grid>
         <Grid Grid.Row="1">
             <Grid
             Name="dummygrid"
@@ -69,7 +85,7 @@
                 dd:DragDrop.IsDropTarget="False">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
-                        <Setter Property="IsExpanded" Value="False"/>
+                        <Setter Property="IsExpanded" Value="{Binding DataContext.IsExpanded, ElementName=MainGrid, Mode=TwoWay}"/>
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     </Style>
                 </TreeView.ItemContainerStyle>
@@ -90,22 +106,24 @@
                                     </Border>
                                     <TextBlock Grid.Column="1" Margin="4" Text="{Binding Header}"/>
 
-                                    <StackPanel Grid.Column="3" Orientation="Horizontal" Visibility="{Binding Header, Converter={StaticResource ToggleButtonVisibilityConverter}}">
-                                        <Button IsEnabled="{Binding IsValueChanged}"  
+                                    <ContentControl Grid.Column="3" Style="{DynamicResource IsReadOnly}">
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding Header, Converter={StaticResource ToggleButtonVisibilityConverter}}">
+                                            <Button IsEnabled="{Binding IsValueChanged}"  
                                                 Height="25" Width="25" Padding="3" 
                                                 CommandParameter="{Binding}"
                                                 Command="{Binding DataContext.WriteDbValueOfDaiCommand,ElementName=SclTreeView}"
                                                 Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}">
-                                            <Button.Content>
-                                                <ContentControl ContentTemplate="{DynamicResource UploadNetworkIcon}"/>
-                                            </Button.Content>
-                                        </Button>
-                                        <ToggleButton 
+                                                <Button.Content>
+                                                    <ContentControl ContentTemplate="{DynamicResource UploadNetworkIcon}"/>
+                                                </Button.Content>
+                                            </Button>
+                                            <ToggleButton 
                                             CommandParameter="{Binding}"
                                             Command="{Binding DataContext.AddItemToSaveCommand,ElementName=SclTreeView}"
                                             IsChecked="{Binding CanEditingValue}" 
                                                       Margin="10, 0"/>
-                                    </StackPanel>
+                                        </StackPanel>
+                                    </ContentControl>
 
                                     <ContentControl Content="{Binding .}"  Grid.Column="4" >
                                         <ContentControl.Style>
@@ -115,7 +133,7 @@
                                                         <Setter Property="ContentTemplate">
                                                             <Setter.Value>
                                                                 <DataTemplate>
-                                                                    <TextBlock Text="{Binding Value}" TextAlignment="Right" Height="Auto" Padding="0, 4" MinWidth="150"/>
+                                                                    <TextBlock Text="{Binding Value}" TextAlignment="Right" Height="Auto" Padding="0, 4" MinWidth="150" Background="#f0f3f5"/>
                                                                 </DataTemplate>
                                                             </Setter.Value>
                                                         </Setter>
@@ -125,7 +143,7 @@
                                                             <Setter.Value>
                                                                 <DataTemplate>
                                                                     <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Margin="0" Padding="0" TextAlignment="Right" VerticalAlignment="Center" MinWidth="150"
-                                                                             ToolTip="{Binding ValueToolTip}">
+                                                                             ToolTip="{Binding ValueToolTip}" Background="#f0f3f5">
                                                                     </TextBox>
                                                                 </DataTemplate>
                                                             </Setter.Value>
@@ -152,29 +170,30 @@
                                             </Border>
                                             <TextBlock Margin="4" Text="{Binding Header}"/>
                                         </StackPanel>
-
-                                        <Button Margin="0" Padding="0" Grid.Column="1"
+                                        <ContentControl Grid.Column="1" Style="{DynamicResource IsReadOnly}">
+                                            <Button Margin="0" Padding="0"
                                                 Height="25" Width="25"
                                                 Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
                                                 CommandParameter="{Binding .}" >
-                                            <Button.Command>
-                                                <MultiBinding Converter="{StaticResource TriggerConverter}">
-                                                    <Binding Path="DataContext.LoadDoiValuesCommand"
+                                                <Button.Command>
+                                                    <MultiBinding Converter="{StaticResource TriggerConverter}">
+                                                        <Binding Path="DataContext.LoadDoiValuesCommand"
                                                              ElementName="SclTreeView"/>
-                                                </MultiBinding>
-                                            </Button.Command>
-                                            <Button.Content>
-                                                <ContentControl ContentTemplate="{DynamicResource ArrowDownBoldCircleOutlineIcon}"/>
-                                            </Button.Content>
-                                            <Button.ToolTip>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="Прочитать значения "/>
-                                                    <TextBlock Text="{Binding TypeName}"/>
-                                                    <TextBlock Text="/"/>
-                                                    <TextBlock Text="{Binding Header}"/>
-                                                </StackPanel>
-                                            </Button.ToolTip>
-                                        </Button>
+                                                    </MultiBinding>
+                                                </Button.Command>
+                                                <Button.Content>
+                                                    <ContentControl ContentTemplate="{DynamicResource ArrowDownBoldCircleOutlineIcon}"/>
+                                                </Button.Content>
+                                                <Button.ToolTip>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="Прочитать значения "/>
+                                                        <TextBlock Text="{Binding TypeName}"/>
+                                                        <TextBlock Text="/"/>
+                                                        <TextBlock Text="{Binding Header}"/>
+                                                    </StackPanel>
+                                                </Button.ToolTip>
+                                            </Button>
+                                        </ContentControl>
                                     </Grid>
                                 </ContentControl>
                             </HierarchicalDataTemplate>
@@ -196,7 +215,7 @@
             </TreeView>
         </Grid>
         <Grid HorizontalAlignment="Stretch" Grid.Row="2" DataContext="{Binding Source={x:Reference Name=SclTreeView},Path=SelectedItem}">
-            <Expander Name="expanderBottom" IsExpanded="True" Header="Выбранный элемент">
+            <Expander Name="expanderBottom" IsExpanded="False" Header="Выбранный элемент">
                 <ListView  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" AlternationCount="2"  Margin="0" ItemsSource="{Binding TreeItemDetails}">
                     <ItemsControl.Resources>
                         <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
