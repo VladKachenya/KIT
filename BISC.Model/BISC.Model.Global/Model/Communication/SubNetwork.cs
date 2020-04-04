@@ -13,12 +13,12 @@ namespace BISC.Model.Global.Model.Communication
     {
         public SubNetwork()
         {
-            ElementName = ModelKeys.SubNetworkKey;
+            ElementName = InfrastructureKeys.ModelKeys.SubNetworkKey;
         }
         public string Name { get; set; }
         public string Desc { get; set; }
         public string Type { get; set; }
-        public ChildModelsList<IConnectedAccessPoint> ConnectedAccessPoints=>new ChildModelsList<IConnectedAccessPoint>(this, ModelKeys.ConnectedAccessPointKey);
+        public ChildModelsList<IConnectedAccessPoint> ConnectedAccessPoints=>new ChildModelsList<IConnectedAccessPoint>(this, InfrastructureKeys.ModelKeys.ConnectedAccessPointKey);
         public override bool ModelElementCompareTo(IModelElement obj)
         {
             if (!base.ModelElementCompareTo(obj)) return false;

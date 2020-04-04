@@ -14,9 +14,9 @@ namespace BISC.Model.Global.Model.Communication
     {
         public SclCommunicationModel()
         {
-            ElementName = ModelKeys.CommunicationModelKey;
+            ElementName = InfrastructureKeys.ModelKeys.CommunicationModelKey;
         }
-        public ChildModelsList<ISubNetwork> SubNetworks =>new ChildModelsList<ISubNetwork>(this, ModelKeys.SubNetworkKey);
+        public ChildModelsList<ISubNetwork> SubNetworks =>new ChildModelsList<ISubNetwork>(this, InfrastructureKeys.ModelKeys.SubNetworkKey);
 
     }
 }

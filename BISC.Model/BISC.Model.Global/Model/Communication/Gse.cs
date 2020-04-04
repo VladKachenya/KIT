@@ -14,7 +14,7 @@ namespace BISC.Model.Global.Model.Communication
     {
         public Gse()
         {
-            ElementName = ModelKeys.GseKey;
+            ElementName = InfrastructureKeys.ModelKeys.GseKey;
         }
         public string VlanId
         {
@@ -63,7 +63,7 @@ namespace BISC.Model.Global.Model.Communication
         public string CbName { get; set; }
         public ChildModelProperty<IDurationInMilliSec> MinTime => new ChildModelProperty<IDurationInMilliSec>(this, "MinTime");
         public ChildModelProperty<IDurationInMilliSec> MaxTime => new ChildModelProperty<IDurationInMilliSec>(this, "MaxTime");
-        public ChildModelProperty<ISclAddress> SclAddress => new ChildModelProperty<ISclAddress>(this, ModelKeys.SclAddressKey);
+        public ChildModelProperty<ISclAddress> SclAddress => new ChildModelProperty<ISclAddress>(this, InfrastructureKeys.ModelKeys.SclAddressKey);
         public override bool ModelElementCompareTo(IModelElement obj)
         {
             if (!base.ModelElementCompareTo(obj)) return false;

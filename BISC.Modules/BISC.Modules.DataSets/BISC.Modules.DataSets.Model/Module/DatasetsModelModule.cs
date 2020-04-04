@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
+using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure;
+using BISC.Model.Infrastructure.Keys;
 using BISC.Model.Infrastructure.Serializing;
 using BISC.Modules.DataSets.Infrastructure.Factorys;
 using BISC.Modules.DataSets.Infrastructure.Keys;
@@ -38,6 +40,8 @@ namespace BISC.Modules.DataSets.Model.Module
             _injectionContainer.RegisterType<IDeviceElementLoadingService,DatasetsLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IDatasetModelService, DatasetModelService>();
             _injectionContainer.RegisterType<IDataSetNameService, DataSetNameService>();
+
+            _injectionContainer.RegisterType<IConfigurationParser, DataSetConfigurationParser>(InfrastructureKeys.ModulesKeys.DataSetModule);
 
             _injectionContainer.RegisterType<IFcdaFactory, FcdaFactory>(true);
             _injectionContainer.RegisterType<IDataSetFactory, DataSetFactory>(true);

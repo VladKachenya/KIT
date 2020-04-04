@@ -16,15 +16,15 @@ namespace BISC.Model.Global.Project
         
         public BiscProject()
         {
-            ElementName = ModelKeys.BiscProjectKey;
+            ElementName = InfrastructureKeys.ModelKeys.BiscProjectKey;
 
         }
        
         #region Implementation of IBiscProject
 
-        public ChildModelProperty<ISclModel> MainSclModel =>new ChildModelProperty<ISclModel>(this,ModelKeys.SclModelKey);
+        public ChildModelProperty<ISclModel> MainSclModel =>new ChildModelProperty<ISclModel>(this,InfrastructureKeys.ModelKeys.SclModelKey);
 
-        public ChildModelProperty<IModelElement> CustomElements =>new ChildModelProperty<IModelElement>(this, ModelKeys.CustomElementsKey);
+        public ChildModelProperty<IModelElement> CustomElements =>new ChildModelProperty<IModelElement>(this, InfrastructureKeys.ModelKeys.CustomElementsKey);
 
 
 

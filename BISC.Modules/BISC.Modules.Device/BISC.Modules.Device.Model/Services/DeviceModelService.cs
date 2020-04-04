@@ -64,9 +64,14 @@ namespace BISC.Modules.Device.Model.Services
 
         public IDevice GetDeviceByGuid(ISclModel sclModel, Guid deviceGuid)
         {
-            List<IDevice> devices = new List<IDevice>();
-            sclModel.GetAllChildrenOfType<IDevice>(ref devices);
-            return devices.FirstOrDefault((device => device.DeviceGuid == deviceGuid));
+            return GetDevicesFromModel(sclModel).
+                FirstOrDefault((device => device.DeviceGuid == deviceGuid));
+        }
+
+        public IDevice GetDeviceByIp(ISclModel sclModel, string deviceIp)
+        {
+            return GetDevicesFromModel(sclModel).
+                FirstOrDefault((device => device.Ip == deviceIp));
         }
 
         public OperationResult AddDeviceInModel(ISclModel sclModel, IDevice device, ISclModel modelFrom, bool isSubstationScl)

@@ -7,17 +7,26 @@ using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using System.Collections.Generic;
 using System.Linq;
+using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Device.Infrastructure.Services;
 
 namespace BISC.Modules.DataSets.Model.Services
 {
     public class DatasetModelService : IDatasetModelService
     {
         private readonly IInfoModelService _infoModelService;
+        private readonly IBiscProject _biscProject;
+        private readonly IDeviceModelService _deviceModelService;
 
-        public DatasetModelService(IInfoModelService infoModelService)
+        public DatasetModelService(
+            IInfoModelService infoModelService, 
+            IBiscProject biscProject, 
+            IDeviceModelService deviceModelService)
         {
             _infoModelService = infoModelService;
+            _biscProject = biscProject;
+            _deviceModelService = deviceModelService;
         }
 
         #region private methods
@@ -152,6 +161,12 @@ namespace BISC.Modules.DataSets.Model.Services
             }
 
             return dataSets;
+        }
+
+        public List<IDataSet> GetDynamicDataSetsFromProject(string deviceIp)
+        {
+            var device = _deviceModelService.GetDeviceByIp(_biscProject.MainSclModel.Value, deviceIp);
+            return GetAllDataSetOfDevice(device).Where(ds => ds.IsDynamic).ToList();
         }
 
 

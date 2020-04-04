@@ -69,29 +69,29 @@ namespace BISC.Model.Global.Module
 
 
             modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<SclModelElementSerializer>(),
-                    ModelKeys.SclModelKey);
+                    InfrastructureKeys.ModelKeys.SclModelKey);
             modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<BiscProjectSerializer>(),
-                    ModelKeys.BiscProjectKey);
+                    InfrastructureKeys.ModelKeys.BiscProjectKey);
 
             modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<ConnectedAccessPointSerializer>(),
-                ModelKeys.ConnectedAccessPointKey);
+                InfrastructureKeys.ModelKeys.ConnectedAccessPointKey);
             modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<AddressPropertySerializer>(),
-                ModelKeys.AddressPropertyKey);
+                InfrastructureKeys.ModelKeys.AddressPropertyKey);
 
             modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<DurationInMillisecondsSerializer>(),
-                ModelKeys.DurationInMillisecMaxTimeKey);
+                InfrastructureKeys.ModelKeys.DurationInMillisecMaxTimeKey);
             modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<DurationInMillisecondsSerializer>(),
-                ModelKeys.DurationInMillisecMinTimeKey);
+                InfrastructureKeys.ModelKeys.DurationInMillisecMinTimeKey);
             modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<GseSerializer>(),
-                ModelKeys.GseKey);
+                InfrastructureKeys.ModelKeys.GseKey);
 
             modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<SclAddressSerializer>(),
-                ModelKeys.SclAddressKey);
+                InfrastructureKeys.ModelKeys.SclAddressKey);
             modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<SubNetworkSerializer>(),
-                ModelKeys.SubNetworkKey);
+                InfrastructureKeys.ModelKeys.SubNetworkKey);
 
             modelElementsRegistryService.RegisterModelElement(_injectionContainer.ResolveType<CommunicationSerializer>(),
-                ModelKeys.CommunicationModelKey);
+                InfrastructureKeys.ModelKeys.CommunicationModelKey);
 
         }
 

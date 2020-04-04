@@ -4,27 +4,30 @@ using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.FTP.Infrastructure.Serviсes;
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
-using BISC.Model.Infrastructure.Common;
-using BISC.Modules.DataSets.Infrastructure.ViewModels;
+using BISC.Infrastructure.Global.IoC;
+using BISC.Model.Infrastructure.Keys;
 using BISC.Modules.DataSets.Presentation.Services.Interfaces;
-using BISC.Modules.InformationModel.Infrastucture.Elements;
-using BISC.Modules.InformationModel.Infrastucture.Services;
+using BISC.Modules.Device.Infrastructure.Services;
+
 
 
 namespace BISC.Modules.DataSets.Presentation.Services
 {
+    //It needs move to model!
     public class FtpDataSetModelService : IFtpDataSetModelService
     {
         private readonly IDeviceFileWritingServices _deviceFileWritingServices;
+        private IConfigurationParser _dataSetConfigurationParser;
 
         #region ctor
 
-        public FtpDataSetModelService(IDeviceFileWritingServices deviceFileWritingServices)
+        public FtpDataSetModelService(
+            IDeviceFileWritingServices deviceFileWritingServices,
+            IInjectionContainer injectionContainer)
         {
+            _dataSetConfigurationParser =
+                injectionContainer.ResolveType<IConfigurationParser>(InfrastructureKeys.ModulesKeys.DataSetModule);
             _deviceFileWritingServices = deviceFileWritingServices;
         }
 
@@ -33,16 +36,14 @@ namespace BISC.Modules.DataSets.Presentation.Services
 
         #region Implementation of IFtpDataSetMpdelService
 
-       public async Task<OperationResult> WriteDatasetsToDevice(string ip, List<IDataSet> dataSetsToSave)
+        public async Task<OperationResult> WriteDatasetsToDevice(string ip, IEnumerable<IDataSet> dataSetsToSave)
         {
             try
             {
-                StringBuilder sb = new StringBuilder();
-                TextWriter streamWriter = new StringWriter(sb);
-                Write(dataSetsToSave, streamWriter);
-                var fileString = sb.ToString();
-	            var res = await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() {fileString},
-		            new List<string>() {"DATASETS.CFG"});
+                var fileString = _dataSetConfigurationParser.GetConfiguration(dataSetsToSave).Item;
+
+                var res = await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() { fileString },
+                    new List<string>() { "DATASETS.CFG" });
                 if (!res.IsSucceed)
                 {
                     return new OperationResult($"{ip}: FTP не отвечает: {res.GetFirstError()}");
@@ -57,33 +58,33 @@ namespace BISC.Modules.DataSets.Presentation.Services
 
         #endregion
 
-        private void Write(List<IDataSet> dataSetsToParse, TextWriter streamTextWriter)
-        {
-            foreach (var dataSet in dataSetsToParse)
-            {
-                var lnParent = dataSet.GetFirstParentOfType<ILogicalNode>();
-                var ldParent = dataSet.GetFirstParentOfType<ILDevice>();
+        //private void Write(List<IDataSet> dataSetsToParse, TextWriter streamTextWriter)
+        //{
+        //    foreach (var dataSet in dataSetsToParse)
+        //    {
+        //        var lnParent = dataSet.GetFirstParentOfType<ILogicalNode>();
+        //        var ldParent = dataSet.GetFirstParentOfType<ILDevice>();
 
-                streamTextWriter.WriteLine(
-                    $"DSN({ldParent.Inst} {lnParent.Name}${dataSet.Name})");
-                foreach (var fcda in dataSet.FcdaList)
-                {
-                    string ld = fcda.LdInst;
-                    var ln = fcda.Prefix + fcda.LnClass + fcda.LnInst;
-                    var fc = fcda.Fc;
-                    var doName = fcda.DoName.Replace(".", "$");
-                    var daName = fcda.DaName;
-                    if (daName == null)
-                    {
-                        streamTextWriter.WriteLine($"DSE({ld} {ln}${fc}${doName})");
-                    }
-                    else
-                    {
-                        streamTextWriter.WriteLine($"DSE({ld} {ln}${fc}${doName}${daName})");
-                    }
-                }
-            }
-        }
+        //        streamTextWriter.WriteLine(
+        //            $"DSN({ldParent.Inst} {lnParent.Name}${dataSet.Name})");
+        //        foreach (var fcda in dataSet.FcdaList)
+        //        {
+        //            string ld = fcda.LdInst;
+        //            var ln = fcda.Prefix + fcda.LnClass + fcda.LnInst;
+        //            var fc = fcda.Fc;
+        //            var doName = fcda.DoName.Replace(".", "$");
+        //            var daName = fcda.DaName;
+        //            if (daName == null)
+        //            {
+        //                streamTextWriter.WriteLine($"DSE({ld} {ln}${fc}${doName})");
+        //            }
+        //            else
+        //            {
+        //                streamTextWriter.WriteLine($"DSE({ld} {ln}${fc}${doName}${daName})");
+        //            }
+        //        }
+        //    }
+        //}
 
     }
 }

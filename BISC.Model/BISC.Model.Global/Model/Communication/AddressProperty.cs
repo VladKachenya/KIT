@@ -13,7 +13,7 @@ namespace BISC.Model.Global.Model.Communication
     {
         public AddressProperty()
         {
-            ElementName = ModelKeys.AddressPropertyKey;
+            ElementName = InfrastructureKeys.ModelKeys.AddressPropertyKey;
         }
         public string Type { get; set; }
         public string Value { get; set; }

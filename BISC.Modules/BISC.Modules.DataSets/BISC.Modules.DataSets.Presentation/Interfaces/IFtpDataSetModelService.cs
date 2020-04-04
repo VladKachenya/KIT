@@ -8,7 +8,6 @@ namespace BISC.Modules.DataSets.Presentation.Services.Interfaces
 {
     public interface IFtpDataSetModelService
     {
-        Task<OperationResult> WriteDatasetsToDevice(string ip, List<IDataSet> dataSetsToSave);
-
+        Task<OperationResult> WriteDatasetsToDevice(string ip, IEnumerable<IDataSet> dataSetsToSave);
     }
 }

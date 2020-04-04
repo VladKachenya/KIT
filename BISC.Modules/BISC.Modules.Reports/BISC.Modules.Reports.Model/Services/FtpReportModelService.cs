@@ -36,8 +36,6 @@ namespace BISC.Modules.Reports.Model.Services
             List<IReportControl> reportControls = new List<IReportControl>();
             try
             {
-
-
                 var fileStringRes = await _deviceFileWritingServices.ReadFileStringFromDevice(ip, "1:/CFG", "XRCB.CFG");
                 if (!fileStringRes.IsSucceed)
                 {

@@ -9,10 +9,10 @@ namespace BISC.Model.Global.Model.Communication
     {
         public SclAddress()
         {
-            ElementName = ModelKeys.SclAddressKey;
+            ElementName = InfrastructureKeys.ModelKeys.SclAddressKey;
         }
 
-        public ChildModelsList<IAddressProperty> AddressProperties => new ChildModelsList<IAddressProperty>(this, ModelKeys.AddressPropertyKey);
+        public ChildModelsList<IAddressProperty> AddressProperties => new ChildModelsList<IAddressProperty>(this, InfrastructureKeys.ModelKeys.AddressPropertyKey);
 
         public void SetProperty(string addressPropertyName, string value)
         {

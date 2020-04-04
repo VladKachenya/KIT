@@ -15,12 +15,12 @@ namespace BISC.Model.Global.Model.Communication
         public ConnectedAccessPoint()
         {
         
-            ElementName = ModelKeys.ConnectedAccessPointKey;
+            ElementName = InfrastructureKeys.ModelKeys.ConnectedAccessPointKey;
         }
         public string IedName { get; set; }
         public string ApName { get; set; }
-        public ChildModelsList<ISclAddress> SclAddresses=>new ChildModelsList<ISclAddress>(this,ModelKeys.SclAddressKey);
-        public ChildModelsList<IGse> GseList=>new ChildModelsList<IGse>(this,ModelKeys.GseKey);
+        public ChildModelsList<ISclAddress> SclAddresses=>new ChildModelsList<ISclAddress>(this,InfrastructureKeys.ModelKeys.SclAddressKey);
+        public ChildModelsList<IGse> GseList=>new ChildModelsList<IGse>(this,InfrastructureKeys.ModelKeys.GseKey);
         public override bool ModelElementCompareTo(IModelElement obj)
         {
             if (!base.ModelElementCompareTo(obj)) return false;

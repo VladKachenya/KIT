@@ -71,7 +71,7 @@ namespace BISC.Model.Global.Serializators
             }
             XElement xElement;
             XNamespace iecNameSpace = "http://www.iec.ch/61850/2003/SCL";
-            if (modelElement.ElementName == ModelKeys.SclModelKey)
+            if (modelElement.ElementName == InfrastructureKeys.ModelKeys.SclModelKey)
             {
                 StringBuilder stringSclXElement = new StringBuilder();
 
@@ -82,7 +82,7 @@ namespace BISC.Model.Global.Serializators
 
                 XmlWriter xw = System.Xml.XmlWriter.Create(stringSclXElement, xSettings);
 
-                xw.WriteStartElement(ModelKeys.SclModelKey, "http://www.iec.ch/61850/2003/SCL");
+                xw.WriteStartElement(InfrastructureKeys.ModelKeys.SclModelKey, "http://www.iec.ch/61850/2003/SCL");
                 xw.WriteAttributeString("xsi", "schemaLocation",
                     "http://www.3w.org/2001/XMLSchema-instance", "http://www.iec.ch/61850/2003/SCL SCL.xsd");
 

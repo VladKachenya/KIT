@@ -7,7 +7,7 @@ namespace BISC.Model.Global.Model
     {
         public SclModel()
         {
-            ElementName = ModelKeys.SclModelKey;
+            ElementName = InfrastructureKeys.ModelKeys.SclModelKey;
             //Version = "2007";
             //Revision = "B";
         }
