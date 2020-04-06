@@ -7,6 +7,7 @@ using BISC.Infrastructure.Global.Common;
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
 using BISC.Model.Infrastructure.Common;
+using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Saving;
 using BISC.Modules.InformationModel.Infrastucture.Services;
@@ -20,15 +21,18 @@ namespace BISC.Modules.Reports.Presentation.Services
         private readonly IFtpReportModelService _ftpReportModelService;
         private readonly IInfoModelService _infoModelService;
         private readonly ILoggingService _loggingService;
+        private readonly IReportsModelService _reportsModelService;
 
         public ReportsSavingService(
             IFtpReportModelService ftpReportModelService,
             IInfoModelService infoModelService,
-            ILoggingService loggingService)
+            ILoggingService loggingService, 
+            IReportsModelService reportsModelService)
         {
             _ftpReportModelService = ftpReportModelService;
             _infoModelService = infoModelService;
             _loggingService = loggingService;
+            _reportsModelService = reportsModelService;
         }
 
 
@@ -38,11 +42,9 @@ namespace BISC.Modules.Reports.Presentation.Services
         public int Priority => 5;
         public async Task<OperationResult> Save(IDevice device)
         {
-            var reportControlsToSave=new List<IReportControl>();
-            device.GetAllChildrenOfType(ref reportControlsToSave);
-
-            var res = await _ftpReportModelService.WriteReportsToDevice(device.Ip, reportControlsToSave.Where(r => r.IsDynamic).ToList(),
-                _infoModelService.GetZeroLDevicesOfDevice(device));
+            var reportControlsToSave =
+                _reportsModelService.GetDynamicReports(device.DeviceGuid, device.GetFirstParentOfType<ISclModel>());
+            var res = await _ftpReportModelService.WriteReportsToDevice(device.Ip, reportControlsToSave);
             if (res.IsSucceed)
             {
                 return OperationResult.SucceedResult;

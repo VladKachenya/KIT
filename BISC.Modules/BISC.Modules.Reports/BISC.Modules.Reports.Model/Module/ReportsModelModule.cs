@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BISC.Model.Infrastructure.Keys;
 using BISC.Model.Infrastructure.Serializing;
 using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Services;
@@ -41,6 +42,10 @@ namespace BISC.Modules.Reports.Model.Module
             _injectionContainer.RegisterType<IReportsModelService, ReportsModelService>();
             _injectionContainer.RegisterType<IReportControlsFactory, ReportControlsFactory>();
             _injectionContainer.RegisterType<IReportControlNameService, ReportControlNameService>();
+
+            _injectionContainer.RegisterType<IConfigurationParser, ReportConfigurationParser>(InfrastructureKeys.ModulesKeys.ReportModule);
+            _injectionContainer.RegisterType<IConfigurableModelElementsGetter, ReportConfigurableModelElementsGetter>(Guid.NewGuid().ToString());
+
             
             _injectionContainer.RegisterType<IFtpReportModelService, FtpReportModelService>();
             _injectionContainer.RegisterType<IDeviceElementLoadingService, ReportControlLoadingService>(Guid.NewGuid().ToString());

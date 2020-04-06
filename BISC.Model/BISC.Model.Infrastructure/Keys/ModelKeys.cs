@@ -27,6 +27,8 @@ namespace BISC.Model.Infrastructure.Keys
         public static class ModulesKeys
         {
             public static string DataSetModule = nameof(DataSetModule);
+            public static string ReportModule = nameof(ReportModule);
+
         }
     }
 }

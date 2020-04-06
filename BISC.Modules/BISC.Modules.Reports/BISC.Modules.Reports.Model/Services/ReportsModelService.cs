@@ -1,20 +1,26 @@
-﻿using BISC.Model.Infrastructure.Elements;
+﻿using System;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.Reports.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Services;
 using System.Collections.Generic;
 using System.Linq;
+using BISC.Model.Infrastructure.Project;
+using BISC.Modules.Device.Infrastructure.Services;
 
 namespace BISC.Modules.Reports.Model.Services
 {
     public class ReportsModelService : IReportsModelService
     {
         private readonly IInfoModelService _infoModelService;
+        private readonly IDeviceModelService _deviceModelService;
 
-        public ReportsModelService(IInfoModelService infoModelService)
+
+        public ReportsModelService(IInfoModelService infoModelService, IDeviceModelService deviceModelService)
         {
             _infoModelService = infoModelService;
+            _deviceModelService = deviceModelService;
         }
 
         public List<IReportControl> GetAllReportControlsOfDevice(IModelElement device)
@@ -45,8 +51,11 @@ namespace BISC.Modules.Reports.Model.Services
             return ReportControls;
         }
 
-
-
+        public IEnumerable<IReportControl> GetDynamicReports(Guid deviceGuid, ISclModel sclModel)
+        {
+            var device = _deviceModelService.GetDeviceByGuid(sclModel, deviceGuid);
+            return GetAllReportControlsOfDevice(device).Where(r => r.IsDynamic);
+        }
 
 
         public void DeleteAllReportsOfDevice(IDevice device)

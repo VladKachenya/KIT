@@ -15,9 +15,13 @@ namespace BISC.Modules.Device.Infrastructure.Services
             try
             {
                 StringBuilder sb = new StringBuilder();
-                TextWriter streamWriter = new StringWriter(sb);
-                WriteConfiguration(modelElements, streamWriter);
-                return new OperationResult<string>(streamWriter.ToString(), true) ;
+                string configuration;
+                using (TextWriter streamWriter = new StringWriter(sb))
+                {
+                    WriteConfiguration(modelElements, streamWriter);
+                    configuration = streamWriter.ToString();
+                }
+                return new OperationResult<string>(configuration, true);
             }
             catch (Exception e)
             {

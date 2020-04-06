@@ -9,6 +9,6 @@ namespace BISC.Modules.Reports.Infrastructure.Services
     public interface IFtpReportModelService
     {
         Task<List<IReportControl>> GetReportsFromDevice(string ip);
-        Task<OperationResult> WriteReportsToDevice(string ip, List<IReportControl> reportControlsToSave, ILDevice iLDevice);
+        Task<OperationResult> WriteReportsToDevice(string ip, IEnumerable<IReportControl> reportControlsToSave);
     }
 }

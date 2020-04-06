@@ -13,6 +13,9 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BISC.Infrastructure.Global.IoC;
+using BISC.Model.Infrastructure.Keys;
+using BISC.Modules.Device.Infrastructure.Services;
 
 namespace BISC.Modules.Reports.Model.Services
 {
@@ -20,11 +23,16 @@ namespace BISC.Modules.Reports.Model.Services
     {
         private readonly IDeviceFileWritingServices _deviceFileWritingServices;
         private readonly ILoggingService _loggingService;
+        private readonly IInjectionContainer _injectionContainer;
 
-        public FtpReportModelService(IDeviceFileWritingServices deviceFileWritingServices, ILoggingService loggingService)
+        public FtpReportModelService(
+            IDeviceFileWritingServices deviceFileWritingServices, 
+            ILoggingService loggingService, 
+            IInjectionContainer injectionContainer)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
             _loggingService = loggingService;
+            _injectionContainer = injectionContainer;
         }
 
 
@@ -88,14 +96,15 @@ namespace BISC.Modules.Reports.Model.Services
             return reportControls;
         }
 
-        public async Task<OperationResult> WriteReportsToDevice(string ip, List<IReportControl> reportControls, ILDevice lDevice)
+        public async Task<OperationResult> WriteReportsToDevice(string ip, IEnumerable<IReportControl> reportControls)
         {
             try
             {
                 StringBuilder sb = new StringBuilder();
-                TextWriter streamWriter = new StringWriter(sb);
-                Write(reportControls, streamWriter, lDevice);
-                var fileString = sb.ToString();
+                var fileString =
+                    _injectionContainer.ResolveType<IConfigurationParser>(InfrastructureKeys.ModulesKeys.ReportModule).
+                        GetConfiguration(reportControls).Item;
+
                 var res = await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() { fileString },
                     new List<string>() { "XRCB.CFG" });
                 if (!res.IsSucceed)
