@@ -61,6 +61,7 @@
     <Compile Include="Saving\IDeviceElementSavingService.cs" />
     <Compile Include="Saving\IDeviceSavingService.cs" />
     <Compile Include="Services\ConfigurationParser.cs" />
+    <Compile Include="Services\IConfigurableModelElementsGetter.cs" />
     <Compile Include="Services\IConfigurationParser.cs" />
     <Compile Include="Services\IDeviceFtpConfigService.cs" />
     <Compile Include="Services\IDeviceConnectionService.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Services\IDeviceSerializingService.cs" />
     <Compile Include="Services\IDeviceWarningsService.cs" />
     <Compile Include="Services\IElementConflictResolver.cs" />
+    <Compile Include="Services\IConfigurationFileService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BISC.Infrastructure\BISC.Infrastructure.Global\BISC.Infrastructure.Global.csproj">

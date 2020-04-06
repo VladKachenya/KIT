@@ -33,7 +33,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
         private ITriggerOptionsViewModel _triggerOptionsViewModel;
         private IOprionalFildsViewModel _oprionalFildsViewModel;
         private IGlobalEventsService _globalEventsService;
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
         private ILDevice _lDevice;
         private bool _giBool;
         private int _configurationRevision;
@@ -42,13 +42,13 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 
         #region ctor
         public ReportControlViewModel(IReportEnabledViewModel reportEnabledViewModel, ITriggerOptionsViewModel triggerOptionsViewModel,
-            IOprionalFildsViewModel oprionalFildsViewModel, IGlobalEventsService globalEventsService, ICommandFactory commandFactory, IDatasetModelService datasetModelService)
+            IOprionalFildsViewModel oprionalFildsViewModel, IGlobalEventsService globalEventsService, ICommandFactory commandFactory, IDataSetModelService dataSetModelService)
         {
             ReportEnabledViewModel = reportEnabledViewModel;
             TriggerOptionsViewModel = triggerOptionsViewModel;
             OprionalFildsViewModel = oprionalFildsViewModel;
             _globalEventsService = globalEventsService;
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
             UndoChengestCommand = commandFactory.CreatePresentationCommand(UpdateViewModel);
             _globalEventsService.Subscribe<SaveCheckEvent>(OnSaveCheck);
             UpdateAvailableDatasetsCommand = commandFactory.CreatePresentationCommand(OnUpdateAvailableDatasets);
@@ -56,7 +56,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 
         private void OnUpdateAvailableDatasets()
         {
-            var datasets = _datasetModelService.GetAllDataSetOfDevice(_lDevice.GetFirstParentOfType<IDevice>());
+            var datasets = _dataSetModelService.GetAllDataSetOfDevice(_lDevice.GetFirstParentOfType<IDevice>());
             var selectedDataset = SelectidDataSetName;
             var itemList = datasets.Select((ds => ds.Name)).ToList();
             if(!itemList.Contains(selectedDataset))

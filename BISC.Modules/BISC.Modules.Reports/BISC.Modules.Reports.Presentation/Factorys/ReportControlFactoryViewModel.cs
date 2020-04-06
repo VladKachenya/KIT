@@ -25,17 +25,17 @@ namespace BISC.Modules.Reports.Presentation.Factorys
     {
         private readonly IInjectionContainer _injectionContainer;
         private readonly IReportControlsFactory _reportControlsFactory;
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
         private readonly IInfoModelService _infoModelService;
         private readonly IUniqueNameService _uniqueNameService;
         private readonly IModelElementsRegistryService _modelElementsRegistryService;
 
-        public ReportControlFactoryViewModel(IInjectionContainer injectionContainer, IReportControlsFactory reportControlsFactory, IDatasetModelService datasetModelService,
+        public ReportControlFactoryViewModel(IInjectionContainer injectionContainer, IReportControlsFactory reportControlsFactory, IDataSetModelService dataSetModelService,
             IInfoModelService infoModelService, IUniqueNameService uniqueNameService, IModelElementsRegistryService modelElementsRegistryService)
         {
             _injectionContainer = injectionContainer;
             _reportControlsFactory = reportControlsFactory;
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
             _infoModelService = infoModelService;
             _uniqueNameService = uniqueNameService;
             _modelElementsRegistryService = modelElementsRegistryService;

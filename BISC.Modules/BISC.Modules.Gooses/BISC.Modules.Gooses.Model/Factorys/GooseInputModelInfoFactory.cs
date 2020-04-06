@@ -22,14 +22,14 @@ namespace BISC.Modules.Gooses.Model.Factorys
 
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IBiscProject _biscProject;
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
 
         public GooseInputModelInfoFactory(ISclCommunicationModelService sclCommunicationModelService, 
-            IBiscProject biscProject, IDatasetModelService datasetModelService)
+            IBiscProject biscProject, IDataSetModelService dataSetModelService)
         {
             _sclCommunicationModelService = sclCommunicationModelService;
             _biscProject = biscProject;
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
         }
 
         public IGooseInputModelInfo CreateGooseInputModelInfo(IDevice parientDevice, IGooseControl gooseControl)
@@ -41,7 +41,7 @@ namespace BISC.Modules.Gooses.Model.Factorys
             res.EmittingGse.Value = _sclCommunicationModelService
                 .GetGsesForDevice(parientDevice.Name, _biscProject.MainSclModel.Value)
                 .First(gse => gse.CbName == gooseControl.Name).DeepClone();
-            res.EmittingDataSet.Value = _datasetModelService.GetDataSetOfDevice(parientDevice, gooseControl.DataSet).DeepClone();
+            res.EmittingDataSet.Value = _dataSetModelService.GetDataSetOfDevice(parientDevice, gooseControl.DataSet).DeepClone();
             return res;
         }
 

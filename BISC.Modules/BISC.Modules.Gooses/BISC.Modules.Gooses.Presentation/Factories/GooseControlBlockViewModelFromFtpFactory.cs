@@ -24,7 +24,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
     public class GooseControlBlockViewModelFromFtpFactory : IGooseControlBlockViewModelFactory
     {
         private readonly IGoosesModelService _goosesModelService;
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
         private readonly Func<GooseControlBlockViewModel> _gooseControlBlockViewModelFunc;
         private readonly IBiscProject _biscProject;
         private readonly IDeviceModelService _deviceModelService;
@@ -37,7 +37,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
         public GooseControlBlockViewModelFromFtpFactory(
             IGoosesModelService goosesModelService,
-            IDatasetModelService datasetModelService,
+            IDataSetModelService dataSetModelService,
             Func<GooseControlBlockViewModel> gooseControlBlockViewModelFunc,
             IBiscProject biscProject,
             IDeviceModelService deviceModelService,
@@ -56,7 +56,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             _gooseMatrixSelectableCellViewModelFunc = gooseMatrixSelectableCellViewModelFunc;
 
             _goosesModelService = goosesModelService;
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
             _gooseControlBlockViewModelFunc = gooseControlBlockViewModelFunc;
             _biscProject = biscProject;
             _deviceModelService = deviceModelService;

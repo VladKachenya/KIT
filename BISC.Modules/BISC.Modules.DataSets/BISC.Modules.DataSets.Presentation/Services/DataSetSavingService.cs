@@ -30,16 +30,16 @@ namespace BISC.Modules.DataSets.Presentation.Services
     {
         private readonly IFtpDataSetModelService _ftpDataSetModelService;
         private readonly IConnectionPoolService _connectionPoolService;
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
 
         public DataSetSavingService(
             IFtpDataSetModelService ftpDataSetModelService,
             IConnectionPoolService connectionPoolService,
-            IDatasetModelService datasetModelService)
+            IDataSetModelService dataSetModelService)
         {
             _ftpDataSetModelService = ftpDataSetModelService;
             _connectionPoolService = connectionPoolService;
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
         }
         
 
@@ -51,7 +51,7 @@ namespace BISC.Modules.DataSets.Presentation.Services
         {
             if (_connectionPoolService.GetConnection(device.Ip).IsConnected)
             {
-                var dsToSaveByFtp = _datasetModelService.GetDynamicDataSetsFromProject(device.Ip);
+                var dsToSaveByFtp = _dataSetModelService.GetDynamicDataSets(device.Ip);
                 return await _ftpDataSetModelService.WriteDatasetsToDevice(device.Ip, dsToSaveByFtp);
             }
             return new OperationResult("Ошибка загрузки DataSet");

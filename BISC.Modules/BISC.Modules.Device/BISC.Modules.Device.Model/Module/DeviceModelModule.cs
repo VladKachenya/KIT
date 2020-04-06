@@ -35,6 +35,7 @@ namespace BISC.Modules.Device.Model.Module
             _injectionContainer.RegisterType<IDeviceSerializingService, DeviceSerializingService>();
             _injectionContainer.RegisterType<IDeviceIdentificationService, DeviceIdentificationService>();
             _injectionContainer.RegisterType<IDeviceFtpConfigService, DeviceFtpConfigService>();
+            _injectionContainer.RegisterType<IConfigurationFileService, ConfigurationFileService>();
 
             _injectionContainer.ResolveType<IModelElementsRegistryService>().RegisterModelElement(_injectionContainer.ResolveType<DeviceSerializer>(), DeviceKeys.DeviceModelKey);
         }

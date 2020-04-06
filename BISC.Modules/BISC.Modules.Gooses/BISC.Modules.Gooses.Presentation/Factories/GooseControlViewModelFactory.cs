@@ -19,7 +19,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
     {
         private readonly IGoosesModelService _goosesModelService;
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
         private readonly IBiscProject _biscProject;
         private readonly IInfoModelService _infoModelService;
         private readonly IUniqueNameService _uniqueNameService;
@@ -28,11 +28,11 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
         public GooseControlViewModelFactory(IGoosesModelService goosesModelService,
             ISclCommunicationModelService sclCommunicationModelService,
-            IDatasetModelService datasetModelService, IBiscProject biscProject, IInfoModelService infoModelService, IUniqueNameService uniqueNameService)
+            IDataSetModelService dataSetModelService, IBiscProject biscProject, IInfoModelService infoModelService, IUniqueNameService uniqueNameService)
         {
             _goosesModelService = goosesModelService;
             _sclCommunicationModelService = sclCommunicationModelService;
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
             _biscProject = biscProject;
             _infoModelService = infoModelService;
             _uniqueNameService = uniqueNameService;
@@ -80,7 +80,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
                 }
 
-                var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
+                var datasets = _dataSetModelService.GetAllDataSetOfDevice(device);
                 gooseControlViewModel.GoId = gooseControl.AppId;
                 gooseControlViewModel.Name = gooseControl.Name;
                 gooseControlViewModel.AvailableDatasets = datasets.Select((set => set.Name)).ToList();
@@ -140,7 +140,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             //{
             //    lDevice = scl.IED[0].AccessPoint[0].Server.LDevice.First();
             //}
-            var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
+            var datasets = _dataSetModelService.GetAllDataSetOfDevice(device);
             var dsList = datasets.Select((set => set.Name)).ToList();
             gooseControlViewModel.SelectedDataset = dsList.FirstOrDefault();
             dsList.Add(String.Empty);

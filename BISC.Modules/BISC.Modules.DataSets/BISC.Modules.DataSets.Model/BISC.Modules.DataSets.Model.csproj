@@ -54,8 +54,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers\DataSetSerializer.cs" />
     <Compile Include="Serializers\FcdaSerializer.cs" />
+    <Compile Include="Services\DataSetConfigurableModelElementsGetter.cs" />
     <Compile Include="Services\DataSetConfigurationParser.cs" />
-    <Compile Include="Services\DatasetModelService.cs" />
+    <Compile Include="Services\DataSetModelService.cs" />
     <Compile Include="Services\DataSetNameService.cs" />
     <Compile Include="Services\DatasetsLoadingService.cs" />
     <Compile Include="Services\FcdaInfoService.cs" />

@@ -16,9 +16,12 @@ using BISC.Presentation.Infrastructure.HelperEntities;
 using BISC.Presentation.Infrastructure.Navigation;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
-using BISC.Modules.InformationModel.Infrastucture;
+using BISC.Infrastructure.Global.Common;
+using BISC.Infrastructure.Global.Logging;
+using BISC.Presentation.BaseItems.Common;
 using BISC.Presentation.Infrastructure.Commands;
 using BISC.Presentation.Infrastructure.Keys;
 using BISC.Presentation.Infrastructure.Services;
@@ -37,6 +40,9 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         private readonly IDeviceIdentificationService _deviceIdentificationService;
         private readonly IDeviceIpChangingService _deviceIpChangingService;
         private readonly IUserInteractionService _userInteractionService;
+        private readonly IUserInterfaceComposingService _userInterfaceComposingService;
+        private readonly IConfigurationFileService _configurationFileService;
+        private readonly ILoggingService _loggingService;
         private readonly ITreeManagementService _treeManagementService;
 
         private string _deviceName;
@@ -58,6 +64,9 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             IDeviceIdentificationService deviceIdentificationService,
             IDeviceIpChangingService deviceIpChangingService, 
             IUserInteractionService userInteractionService, 
+            IUserInterfaceComposingService userInterfaceComposingService,
+            IConfigurationFileService configurationFileService,
+            ILoggingService loggingService,
             ITreeManagementService treeManagementService)
             : base(globalEventsService)
         {
@@ -70,6 +79,9 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             _deviceIdentificationService = deviceIdentificationService;
             _deviceIpChangingService = deviceIpChangingService;
             _userInteractionService = userInteractionService;
+            _userInterfaceComposingService = userInterfaceComposingService;
+            _configurationFileService = configurationFileService;
+            _loggingService = loggingService;
             _treeManagementService = treeManagementService;
             ModelRegionKey = Guid.NewGuid().ToString();
 
@@ -83,6 +95,7 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             };
 
             ChengeIpCommand = commandFactory.CreatePresentationCommand(OnChengeIpCommand, () => !IsIpUnchangeable);
+            SaveConfigurationToFileCommand = commandFactory.CreatePresentationCommand(OnSaveConfigurationToFile);
         }
 
         public string ModelRegionKey { get; }
@@ -126,6 +139,8 @@ namespace BISC.Modules.Device.Presentation.ViewModels
         public IIpAddressViewModel IpAddressViewModel { get; protected set; }
 
         public ICommand ChengeIpCommand { get; }
+        public ICommand SaveConfigurationToFileCommand { get; }
+
 
         #endregion
 
@@ -149,14 +164,67 @@ namespace BISC.Modules.Device.Presentation.ViewModels
             base.OnNavigatedTo(navigationContext);
         }
 
+        public override void OnActivate()
+        {
+            _userInterfaceComposingService.AddGlobalCommand(SaveConfigurationToFileCommand, 
+                $"Сохранить конфигурацию устройства {_device.Name} в файл", IconsKeys.FileImportIcon, false, true);
+            base.OnActivate();
+        }
+
+        public override void OnDeactivate()
+        {
+            _userInterfaceComposingService.DeleteGlobalCommand(SaveConfigurationToFileCommand);
+            base.OnDeactivate();
+        }
+
         protected override void OnDisposing()
         {
             _globalEventsService.Unsubscribe<LossConnectionEvent>(OnLostConnectionEvent);
+            _navigationService.DisposeRegionViewModel(ModelRegionKey);
             base.OnDisposing();
         }
         #endregion
 
         #region private methods
+
+        private async void OnSaveConfigurationToFile()
+        {
+            Maybe<string> listOfPaths = FileHelper.SelectFilePathToSave(
+                "Сохранение файла", ".conf", 
+                "Config files (*.conf)|*.conf| All Files (*.*)|*.*", $"{_device.Name} config");
+            if (!listOfPaths.Any())
+            {
+                return;
+            }
+
+            FileInfo savingFile;
+            try
+            {
+                savingFile = new FileInfo(listOfPaths.GetFirstValue());
+            }
+            catch
+            {
+                _loggingService.LogMessage($"Возникла ошибка при пути {listOfPaths.GetFirstValue()}\nКонфигурация не может быть сохранена!", SeverityEnum.Warning);
+                return;
+            }
+
+            if (savingFile.Exists)
+            {
+                savingFile.Delete();
+            }
+
+            var res = await _configurationFileService.SaveConfigurationToFile(_biscProject.MainSclModel.Value, _device,
+                listOfPaths.GetFirstValue());
+
+            if (res.IsSucceed)
+            {
+                _loggingService.LogMessage($"Конфигурация устройства {_device.Name} успешно сохранена в файл {listOfPaths.GetFirstValue()}", SeverityEnum.Info);
+            }
+            else
+            {
+                _loggingService.LogMessage($"Возникла ошибка при сохранении конфигурации устройства {_device.Name} в файл по пути {listOfPaths.GetFirstValue()}", SeverityEnum.Warning);
+            }
+        }
 
         private void OnLostConnectionEvent(LossConnectionEvent lossConnectionEvent)
         {

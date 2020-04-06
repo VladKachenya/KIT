@@ -21,7 +21,7 @@ namespace BISC.Modules.DataSets.Model.Services
 {
     public class DatasetsConflictResolver : IElementConflictResolver
     {
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
         private readonly IDeviceModelService _deviceModelService;
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly INavigationService _navigationService;
@@ -31,11 +31,11 @@ namespace BISC.Modules.DataSets.Model.Services
         private readonly DataSetSavingService _dataSetSavingService;
 
 
-        public DatasetsConflictResolver(IDatasetModelService datasetModelService, IDeviceModelService deviceModelService, IConnectionPoolService connectionPoolService,
+        public DatasetsConflictResolver(IDataSetModelService dataSetModelService, IDeviceModelService deviceModelService, IConnectionPoolService connectionPoolService,
             INavigationService navigationService, IDatasetViewModelFactory datasetViewModelFactory, IInfoModelService infoModelService,
             DataSetsProjectSavingCommand dataSetsProjectSavingCommand, DataSetSavingService dataSetSavingService)
         {
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
             _deviceModelService = deviceModelService;
             _connectionPoolService = connectionPoolService;
             _navigationService = navigationService;
@@ -55,8 +55,8 @@ namespace BISC.Modules.DataSets.Model.Services
             var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
             var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
-            var datasetsInDevice = _datasetModelService.GetAllDataSetOfDevice(deviceInsclModelInDevice);
-            var datasetsInProject = _datasetModelService.GetAllDataSetOfDevice(devicesclModelInProject);
+            var datasetsInDevice = _dataSetModelService.GetAllDataSetOfDevice(deviceInsclModelInDevice);
+            var datasetsInProject = _dataSetModelService.GetAllDataSetOfDevice(devicesclModelInProject);
 
             if (datasetsInProject.Count != datasetsInDevice.Count)
             {
@@ -85,8 +85,8 @@ namespace BISC.Modules.DataSets.Model.Services
             var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
             var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
-            var datasetsInDevice = _datasetModelService.GetAllDataSetOfDevice(deviceInsclModelInDevice);
-            var datasetsInProject = _datasetModelService.GetAllDataSetOfDevice(devicesclModelInProject);
+            var datasetsInDevice = _dataSetModelService.GetAllDataSetOfDevice(deviceInsclModelInDevice);
+            var datasetsInProject = _dataSetModelService.GetAllDataSetOfDevice(devicesclModelInProject);
 
             var datasetsViewModelsInDevice = _datasetViewModelFactory.GetDataSetsViewModel(datasetsInDevice);
             var datasetsViewModelsInProject = _datasetViewModelFactory.GetDataSetsViewModel(datasetsInProject);
@@ -116,10 +116,10 @@ namespace BISC.Modules.DataSets.Model.Services
 
             if (isFromDevice)//подтянуть различия из устройства
             {
-                _datasetModelService.DeleteAllDatasetsFromDevice(devicesclModelInProject);
+                _dataSetModelService.DeleteAllDatasetsFromDevice(devicesclModelInProject);
                 foreach (var dataSetToAdd in datasetsInDevice)
                 {
-                    _datasetModelService.AddDatasetToDevice(dataSetToAdd, devicesclModelInProject, _infoModelService.GetParentLDevice(dataSetToAdd).Inst, _infoModelService.GetFullNameOfLogicalNode(_infoModelService.GetParentLogicalNode(dataSetToAdd)));
+                    _dataSetModelService.AddDatasetToDevice(dataSetToAdd, devicesclModelInProject, _infoModelService.GetParentLDevice(dataSetToAdd).Inst, _infoModelService.GetFullNameOfLogicalNode(_infoModelService.GetParentLogicalNode(dataSetToAdd)));
                 }
             }
             else
@@ -142,8 +142,8 @@ namespace BISC.Modules.DataSets.Model.Services
             var deviceInsclModelInDevice = _deviceModelService.GetDeviceByGuid(sclModelInDevice, deviceGuid);
             var devicesclModelInProject = _deviceModelService.GetDeviceByGuid(sclModelInProject, deviceGuid);
 
-            var datasetsInDevice = _datasetModelService.GetAllDataSetOfDevice(deviceInsclModelInDevice);
-            var datasetsInProject = _datasetModelService.GetAllDataSetOfDevice(devicesclModelInProject);
+            var datasetsInDevice = _dataSetModelService.GetAllDataSetOfDevice(deviceInsclModelInDevice);
+            var datasetsInProject = _dataSetModelService.GetAllDataSetOfDevice(devicesclModelInProject);
 
             var projectOnlydatasets = GetProjectOnlyList(datasetsInDevice, datasetsInProject);
             var deviceOnlydatasets = GetDeviceOnlyList(datasetsInDevice, datasetsInProject);

@@ -13,13 +13,13 @@ using BISC.Modules.Device.Infrastructure.Services;
 
 namespace BISC.Modules.DataSets.Model.Services
 {
-    public class DatasetModelService : IDatasetModelService
+    public class DataSetModelService : IDataSetModelService
     {
         private readonly IInfoModelService _infoModelService;
         private readonly IBiscProject _biscProject;
         private readonly IDeviceModelService _deviceModelService;
 
-        public DatasetModelService(
+        public DataSetModelService(
             IInfoModelService infoModelService, 
             IBiscProject biscProject, 
             IDeviceModelService deviceModelService)
@@ -73,7 +73,7 @@ namespace BISC.Modules.DataSets.Model.Services
         #endregion
 
 
-        #region Implementation of IDatasetModelService
+        #region Implementation of IDataSetModelService
         public void DeleteDatasetFromDevice(IDataSet dataSet, IModelElement device, string ldName = null, string lnFullName = null)
         {
             string dsName = dataSet.Name;
@@ -163,10 +163,16 @@ namespace BISC.Modules.DataSets.Model.Services
             return dataSets;
         }
 
-        public List<IDataSet> GetDynamicDataSetsFromProject(string deviceIp)
+        public IEnumerable<IDataSet> GetDynamicDataSets(string deviceIp)
         {
             var device = _deviceModelService.GetDeviceByIp(_biscProject.MainSclModel.Value, deviceIp);
-            return GetAllDataSetOfDevice(device).Where(ds => ds.IsDynamic).ToList();
+            return GetAllDataSetOfDevice(device).Where(ds => ds.IsDynamic);
+        }
+
+        public IEnumerable<IDataSet> GetDynamicDataSets(Guid deviceGuid, ISclModel sclModel)
+        {
+            var device = _deviceModelService.GetDeviceByGuid(sclModel, deviceGuid);
+            return GetAllDataSetOfDevice(device).Where(ds => ds.IsDynamic);
         }
 
 

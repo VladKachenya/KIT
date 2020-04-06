@@ -32,7 +32,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
     public class DataSetsProjectSavingCommand : ISavingCommand
     {
 
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
         private readonly IInfoModelService _infoModelService;
         private readonly IDataSetFactory _dataSetFactory;
 
@@ -51,7 +51,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
         private ObservableCollection<IDataSetViewModel> _dataSetsToSave;
 
         public DataSetsProjectSavingCommand(
-            IDatasetModelService datasetModelService, 
+            IDataSetModelService dataSetModelService, 
             IInfoModelService infoModelService,
             IDataSetFactory dataSetFactory, 
             IProjectService projectService, 
@@ -64,7 +64,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             IReportVeiwModelService reportVeiwModelService,
             IDataSetNameService dataSetNameService)
         {
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
             _infoModelService = infoModelService;
             _dataSetFactory = dataSetFactory;
             _loggingService = loggingService;
@@ -94,7 +94,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             try
             {
 
-                var dataSetsExisting = _datasetModelService.GetAllDataSetOfDevice(_device);
+                var dataSetsExisting = _dataSetModelService.GetAllDataSetOfDevice(_device);
 
                 // Проверка удалённых датасетов
                 foreach (var dataSetExiting in dataSetsExisting)

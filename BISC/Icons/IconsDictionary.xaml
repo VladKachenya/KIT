@@ -175,6 +175,9 @@
     <DataTemplate x:Key="ArrowDownBoldCircleOutlineIcon">
         <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="ArrowDownBoldCircleOutline" />
     </DataTemplate>
+    <DataTemplate x:Key="FileImportIcon">
+        <materialDesign:PackIcon Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Kind="FileImport" />
+    </DataTemplate>
     <Style x:Key="FlatButtonLight" BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
         <Style.Resources >
             <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#44111121" />

@@ -31,7 +31,7 @@ namespace BISC.Modules.Reports.Presentation.Commands
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly IProjectService _projectService;
         private readonly IReportsModelService _reportsModelService;
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
         private readonly IDeviceWarningsService _deviceWarningsService;
         private readonly IReportControlNameService _reportControlNameService;
         private readonly IReportControlsFactory _IReportControlsFactory;
@@ -47,7 +47,7 @@ namespace BISC.Modules.Reports.Presentation.Commands
         public ReportsSavingCommand(IInfoModelService infoModelService, ILoggingService loggingService,
             IConnectionPoolService connectionPoolService,
             IProjectService projectService, IReportsModelService reportModelService,
-            IDatasetModelService datasetModelService,IDeviceWarningsService deviceWarningsService, 
+            IDataSetModelService dataSetModelService,IDeviceWarningsService deviceWarningsService, 
             IReportControlNameService reportControlNameService)
         {
             _infoModelService = infoModelService;
@@ -55,7 +55,7 @@ namespace BISC.Modules.Reports.Presentation.Commands
             _connectionPoolService = connectionPoolService;
             _projectService = projectService;
             _reportsModelService = reportModelService;
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
             _deviceWarningsService = deviceWarningsService;
             _reportControlNameService = reportControlNameService;
         }
@@ -340,7 +340,7 @@ namespace BISC.Modules.Reports.Presentation.Commands
 
             if (reportControl.DataSet != reportToSave.SelectidDataSetName)
             {
-                var dataSet = _datasetModelService.GetAllDataSetOfDevice(device)
+                var dataSet = _dataSetModelService.GetAllDataSetOfDevice(device)
                     .FirstOrDefault((set => set.Name == reportToSave.SelectidDataSetName));
 
                 string dspath = String.Empty;

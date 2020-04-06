@@ -38,10 +38,13 @@ namespace BISC.Modules.DataSets.Model.Module
             modelElementsRegistryService.RegisterModelElement(new DataSetSerializer(), DatasetKeys.DatasetModelKeys.DataSetModelKey);
             modelElementsRegistryService.RegisterModelElement(new FcdaSerializer(), DatasetKeys.DatasetModelKeys.FcdaModelKey);
             _injectionContainer.RegisterType<IDeviceElementLoadingService,DatasetsLoadingService>(Guid.NewGuid().ToString());
-            _injectionContainer.RegisterType<IDatasetModelService, DatasetModelService>();
+            _injectionContainer.RegisterType<IDataSetModelService, DataSetModelService>();
             _injectionContainer.RegisterType<IDataSetNameService, DataSetNameService>();
 
-            _injectionContainer.RegisterType<IConfigurationParser, DataSetConfigurationParser>(InfrastructureKeys.ModulesKeys.DataSetModule);
+            _injectionContainer.RegisterType<IConfigurationParser,
+                DataSetConfigurationParser>(InfrastructureKeys.ModulesKeys.DataSetModule);
+            _injectionContainer.RegisterType<IConfigurableModelElementsGetter,
+                DataSetConfigurableModelElementsGetter>(Guid.NewGuid().ToString());
 
             _injectionContainer.RegisterType<IFcdaFactory, FcdaFactory>(true);
             _injectionContainer.RegisterType<IDataSetFactory, DataSetFactory>(true);

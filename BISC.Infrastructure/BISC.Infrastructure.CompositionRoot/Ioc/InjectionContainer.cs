@@ -9,7 +9,7 @@ using Prism.Unity;
 
 namespace BISC.Infrastructure.CompositionRoot.Ioc
 {
-   public class InjectionContainer: IInjectionContainer
+    public class InjectionContainer : IInjectionContainer
     {
         private readonly IUnityContainer _container;
 
@@ -17,7 +17,7 @@ namespace BISC.Infrastructure.CompositionRoot.Ioc
         {
             _container = container;
         }
-        
+
         public T ResolveType<T>()
         {
             return _container.Resolve<T>();
@@ -30,12 +30,12 @@ namespace BISC.Infrastructure.CompositionRoot.Ioc
 
         public List<object> ResolveAll(Type type)
         {
-            return _container.ResolveAll(type).ToList() ;
+            return _container.ResolveAll(type).ToList();
         }
 
-        public object ResolveType(Type t,string key)
+        public object ResolveType(Type t, string key)
         {
-            return _container.Resolve(t,key);
+            return _container.Resolve(t, key);
         }
 
         public object ResolveType(Type t)
@@ -48,7 +48,7 @@ namespace BISC.Infrastructure.CompositionRoot.Ioc
             _container.RegisterType(t);
         }
 
-        public void RegisterType<TFrom, TTo>(bool isSingleton=false) where TTo:TFrom
+        public void RegisterType<TFrom, TTo>(bool isSingleton = false) where TTo : TFrom
         {
             if (isSingleton)
             {
@@ -72,11 +72,11 @@ namespace BISC.Infrastructure.CompositionRoot.Ioc
             }
         }
 
-        public void RegisterType<TFrom, TTo>(string key, bool isSingleton=false) where TTo : TFrom
+        public void RegisterType<TFrom, TTo>(string key, bool isSingleton = false) where TTo : TFrom
         {
             if (isSingleton)
             {
-                _container.RegisterType<TFrom, TTo>(key,new ContainerControlledLifetimeManager());
+                _container.RegisterType<TFrom, TTo>(key, new ContainerControlledLifetimeManager());
             }
             else
             {

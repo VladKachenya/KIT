@@ -13,11 +13,11 @@ namespace BISC.Modules.DataSets.Model.Services
 {
     public class DataSetConfigurationParser : ConfigurationParser
     {
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
 
-        public DataSetConfigurationParser(IDatasetModelService datasetModelService)
+        public DataSetConfigurationParser(IDataSetModelService dataSetModelService)
         {
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
         }
         protected override void WriteConfiguration(IEnumerable<IModelElement> modelElements, TextWriter streamTextWriter)
         {

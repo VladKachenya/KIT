@@ -34,7 +34,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
     {
         private IDevice _device;
         private List<IDataSet> _dataSets;
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
         private readonly IDatasetViewModelFactory _datasetViewModelFactory;
         private readonly DataSetsProjectSavingCommand _dataSetsProjectSavingCommand;
         private readonly ISaveCheckingService _saveCheckingService;
@@ -54,7 +54,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         public DataSetsDetailsViewModel(
             ICommandFactory commandFactory,
-            IDatasetModelService datasetModelService,
+            IDataSetModelService dataSetModelService,
             IDatasetViewModelFactory datasetViewModelFactory,
             ISaveCheckingService saveCheckingService, 
             IUserInterfaceComposingService userInterfaceComposingService,
@@ -70,7 +70,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
             _navigationService = navigationService;
             _loggingService = loggingService;
             _dataSetsProjectSavingCommand = dataSetsProjectSavingCommandCommand;
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
             _datasetViewModelFactory = datasetViewModelFactory;
             _saveCheckingService = saveCheckingService;
             _deviceWarningsService = deviceWarningsService;
@@ -116,7 +116,7 @@ namespace BISC.Modules.DataSets.Presentation.ViewModels
 
         private void UpdateViewModel()
         {
-            _dataSets = _datasetModelService.GetAllDataSetOfDevice(_device);
+            _dataSets = _dataSetModelService.GetAllDataSetOfDevice(_device);
             SortDataSetsByIsDynamic();
             try
             {

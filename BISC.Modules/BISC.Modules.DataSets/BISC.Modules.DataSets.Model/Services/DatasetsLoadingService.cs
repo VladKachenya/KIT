@@ -23,17 +23,17 @@ namespace BISC.Modules.DataSets.Model.Services
     {
         private readonly IConnectionPoolService _connectionPoolService;
         private readonly IInfoModelService _infoModelService;
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
         private readonly IDeviceWarningsService _deviceWarningsService;
 
         private Dictionary<string, List<string>> _ldDatasetDictionary = new Dictionary<string, List<string>>();
 
         public DatasetsLoadingService(IConnectionPoolService connectionPoolService, IInfoModelService infoModelService,
-            IDatasetModelService datasetModelService, IDeviceWarningsService deviceWarningsService)
+            IDataSetModelService dataSetModelService, IDeviceWarningsService deviceWarningsService)
         {
             _connectionPoolService = connectionPoolService;
             _infoModelService = infoModelService;
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
             _deviceWarningsService = deviceWarningsService;
         }
 
@@ -70,7 +70,7 @@ namespace BISC.Modules.DataSets.Model.Services
         public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel,CancellationToken cancellationToken)
         {
             var connection = _connectionPoolService.GetConnection(device.Ip);
-            _datasetModelService.DeleteAllDatasetsFromDevice(device);
+            _dataSetModelService.DeleteAllDatasetsFromDevice(device);
             try
             {
                 foreach (var ldevice in _ldDatasetDictionary.Keys)

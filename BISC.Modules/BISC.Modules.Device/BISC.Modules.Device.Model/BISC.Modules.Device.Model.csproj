@@ -70,6 +70,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Serialization\DeviceSerializer.cs" />
+    <Compile Include="Services\ConfigurationFileService.cs" />
     <Compile Include="Services\DeviceConnectionService.cs" />
     <Compile Include="Services\DeviceIdentificationService.cs" />
     <Compile Include="Services\DeviceFtpConfigService.cs" />

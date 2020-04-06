@@ -31,7 +31,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
         private string _successDeleteMessagePattern = $"DataSet {0} удален в устройстве: {1}";
 
 
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
         private readonly IInfoModelService _infoModelService;
         private readonly IDataSetFactory _dataSetFactory;
         private readonly IProjectService _projectService;
@@ -41,7 +41,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
         private readonly IBiscProject _biscProject;
 
         public DatasetsSavingByMmsCommand(
-            IDatasetModelService datasetModelService, 
+            IDataSetModelService dataSetModelService, 
             IInfoModelService infoModelService, 
             IDataSetFactory dataSetFactory,
             IProjectService projectService, 
@@ -50,7 +50,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             ISclCommunicationModelService sclCommunicationModelService, 
             IBiscProject biscProject)
         {
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
             _infoModelService = infoModelService;
             _dataSetFactory = dataSetFactory;
             _projectService = projectService;
@@ -87,7 +87,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             try
             {
 
-                var dataSetsExisting = _datasetModelService.GetAllDataSetOfDevice(_device);
+                var dataSetsExisting = _dataSetModelService.GetAllDataSetOfDevice(_device);
 
                 foreach (var dataSetExiting in dataSetsExisting)
                 {

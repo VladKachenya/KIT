@@ -27,19 +27,19 @@ namespace BISC.Modules.Gooses.Model.Services
         private readonly IDeviceModelService _deviceModelService;
         private readonly IBiscProject _biscProject;
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
-        private readonly IDatasetModelService _datasetModelService;
+        private readonly IDataSetModelService _dataSetModelService;
         private readonly IFtpGooseModelService _ftpGooseModelService;
         private readonly IGooseInputModelInfoFactory _gooseInputModelIngoFactory;
 
         public GoosesModelService(IInfoModelService infoModelService, IDeviceModelService deviceModelService, IBiscProject biscProject,
-            ISclCommunicationModelService sclCommunicationModelService, IDatasetModelService datasetModelService, IFtpGooseModelService ftpGooseModelService,
+            ISclCommunicationModelService sclCommunicationModelService, IDataSetModelService dataSetModelService, IFtpGooseModelService ftpGooseModelService,
             IGooseInputModelInfoFactory gooseInputModelIngoFactory)
         {
             _infoModelService = infoModelService;
             _deviceModelService = deviceModelService;
             _biscProject = biscProject;
             _sclCommunicationModelService = sclCommunicationModelService;
-            _datasetModelService = datasetModelService;
+            _dataSetModelService = dataSetModelService;
             _ftpGooseModelService = ftpGooseModelService;
             _gooseInputModelIngoFactory = gooseInputModelIngoFactory;
         }
@@ -176,7 +176,7 @@ namespace BISC.Modules.Gooses.Model.Services
 
             _sclCommunicationModelService.DeleteGseOfDevice(device.Name, name, device.GetFirstParentOfType<ISclModel>());
 
-            var datasets = _datasetModelService.GetAllDataSetOfDevice(device);
+            var datasets = _dataSetModelService.GetAllDataSetOfDevice(device);
             var datasetOfGoose = datasets.FirstOrDefault((set => set.Name == findedGooseControlToDelete.DataSet));
             if (datasetOfGoose != null)
             {
