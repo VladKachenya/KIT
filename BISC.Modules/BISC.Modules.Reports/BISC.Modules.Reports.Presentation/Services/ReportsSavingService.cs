@@ -44,7 +44,7 @@ namespace BISC.Modules.Reports.Presentation.Services
         {
             var reportControlsToSave =
                 _reportsModelService.GetDynamicReports(device.DeviceGuid, device.GetFirstParentOfType<ISclModel>());
-            var res = await _ftpReportModelService.WriteReportsToDevice(device.Ip, reportControlsToSave);
+            var res = await _ftpReportModelService.WriteReportsToDevice(device, reportControlsToSave);
             if (res.IsSucceed)
             {
                 return OperationResult.SucceedResult;

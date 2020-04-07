@@ -222,10 +222,6 @@ namespace BISC.Modules.Connection.MMS
                 tcps.receivedBytes = null;
 
                 var mmsPdu = await IsoTpkt.GetAnswer(tcps);
-                // if ((tcps as Iec61850State).ostate == IsoProtocolState.OSI_STATE_SHUTDOWN)
-                // {
-                //StopClient(tcps);
-                // }
                 return mmsPdu;
 
             }

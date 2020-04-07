@@ -52,7 +52,7 @@ namespace BISC.Modules.DataSets.Presentation.Services
             if (_connectionPoolService.GetConnection(device.Ip).IsConnected)
             {
                 var dsToSaveByFtp = _dataSetModelService.GetDynamicDataSets(device.Ip);
-                return await _ftpDataSetModelService.WriteDatasetsToDevice(device.Ip, dsToSaveByFtp);
+                return await _ftpDataSetModelService.WriteDataSetsToDevice(device, dsToSaveByFtp);
             }
             return new OperationResult("Ошибка загрузки DataSet");
         }

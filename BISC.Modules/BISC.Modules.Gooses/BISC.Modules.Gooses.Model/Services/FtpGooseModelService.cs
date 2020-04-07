@@ -13,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -31,26 +30,33 @@ namespace BISC.Modules.Gooses.Model.Services
         private readonly IDeviceFileWritingServices _deviceFileWritingServices;
         private readonly IModelElementsRegistryService _elementsRegistryService;
         private readonly IPingService _pingService;
-        private readonly IGooseMatrixParsersFactory _gooseMatrixParsersFactory;
         private readonly ILoggingService _loggingService;
         private readonly IConfigurationParser _gooseConfigurationParser;
+        private readonly IConfigurationParser _gooseMatrixConfigurationParser;
+        private readonly IConfigurationParser _gooseModelInfosConfigurationParser;
+
+
 
 
 
         public FtpGooseModelService(
-            IDeviceFileWritingServices deviceFileWritingServices, 
+            IDeviceFileWritingServices deviceFileWritingServices,
             IModelElementsRegistryService elementsRegistryService,
-            IPingService pingService, 
-            IGooseMatrixParsersFactory gooseMatrixParsersFactory, 
+            IPingService pingService,
             ILoggingService loggingService,
             IInjectionContainer injectionContainer)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
             _elementsRegistryService = elementsRegistryService;
             _pingService = pingService;
-            _gooseMatrixParsersFactory = gooseMatrixParsersFactory;
             _loggingService = loggingService;
-            _gooseConfigurationParser = injectionContainer.ResolveType<IConfigurationParser>(InfrastructureKeys.ModulesKeys.GooseModule);
+            _gooseConfigurationParser = injectionContainer.
+                ResolveType<IConfigurationParser>(InfrastructureKeys.ModulesKeys.GooseControlSubModule);
+            _gooseMatrixConfigurationParser = injectionContainer.
+                ResolveType<IConfigurationParser>(InfrastructureKeys.ModulesKeys.GooseMatrixSubModule);
+            _gooseModelInfosConfigurationParser =
+                injectionContainer.ResolveType<IConfigurationParser>(InfrastructureKeys.ModulesKeys.GooseInputModelInfoSubModule);
+
         }
 
 
@@ -84,13 +90,13 @@ namespace BISC.Modules.Gooses.Model.Services
             }
         }
 
-        public async Task<OperationResult> WriteGooseToDevice(string deviceIp, IEnumerable<IGooseControl> gooseControls)
+        public async Task<OperationResult> WriteGooseToDevice(IDevice device, IEnumerable<IGooseControl> gooseControls)
         {
             try
             {
-                string fileString = _gooseConfigurationParser.GetConfiguration(gooseControls).Item;
+                string fileString = _gooseConfigurationParser.GetConfiguration(gooseControls, device).Item;
 
-                var res = await _deviceFileWritingServices.WriteFileStringInDevice(deviceIp, new List<string>() { fileString },
+                var res = await _deviceFileWritingServices.WriteFileStringInDevice(device.Ip, new List<string>() { fileString },
                     new List<string>() { "GOOSETR.CFG" });
                 if (res.IsSucceed)
                 {
@@ -214,7 +220,7 @@ namespace BISC.Modules.Gooses.Model.Services
             }
         }
 
-        public async Task<OperationResult> DeletGoosesAndResetDevice(IDevice device)
+        public async Task<OperationResult> DeleteGoosesAndResetDevice(IDevice device)
         {
             await _deviceFileWritingServices.DeletFileStringFromDevice(device.Ip, "1:/CFG/GOOSERE.CFG");
             await _deviceFileWritingServices.DeletFileStringFromDevice(device.Ip, "1:/CFG/GOOSEIN.ZIP");
@@ -239,10 +245,9 @@ namespace BISC.Modules.Gooses.Model.Services
 
         public async Task<OperationResult> WriteGooseMatrixFtpToDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp)
         {
-            //RestartProces
             try
             {
-                var text = _gooseMatrixParsersFactory.GetGooseMatrixParser(device).GetFileStringFromMatrixModel(gooseMatrixFtp);
+                var text = _gooseMatrixConfigurationParser.GetConfiguration(new[] { gooseMatrixFtp }, device).Item;
 
                 if (text != null)
                 {
@@ -251,7 +256,6 @@ namespace BISC.Modules.Gooses.Model.Services
                 }
 
                 return OperationResult.SucceedResult;
-
             }
             catch (Exception e)
             {
@@ -283,15 +287,13 @@ namespace BISC.Modules.Gooses.Model.Services
             }
         }
 
-        public async Task<OperationResult> WriteGooseDeviceInputFromDevice(string ip,
+        public async Task<OperationResult> WriteGooseDeviceInputFromDevice(IDevice device,
             List<IGooseInputModelInfo> gooseInputModelInfos)
         {
-            var gooseDeviceInput = new GooseDeviceInput();
-            gooseInputModelInfos.ForEach(el => gooseDeviceInput.GooseInputModelInfoList.Add(el));
             try
             {
-                var text = _elementsRegistryService.SerializeModelElement(gooseDeviceInput, SerializingType.Extended).ToString();
-                return await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() { text },
+                var text = _gooseModelInfosConfigurationParser.GetConfiguration(gooseInputModelInfos, device).Item;
+                return await _deviceFileWritingServices.WriteFileStringInDevice(device.Ip, new List<string>() { text },
                     new List<string>() { "GOOSEIN.ZIP" });
             }
             catch (Exception e)
@@ -299,36 +301,6 @@ namespace BISC.Modules.Gooses.Model.Services
                 return new OperationResult(e.Message);
             }
 
-        }
-
-
-
-        private void Write(IDevice device, List<GooseFtpDto> gooseDtosToParse, TextWriter streamWriter)
-        {
-            using (streamWriter)
-            {
-                streamWriter.WriteLine($"Dev({device.Type})");
-                foreach (var gooseDtoObj in gooseDtosToParse)
-                {
-                    string ld = gooseDtoObj.LdInst;
-                    string goCBName = gooseDtoObj.Name;
-                    string goId = gooseDtoObj.GoId;
-                    string dataSet = gooseDtoObj.SelectedDataset;
-                    uint confRev = (uint)gooseDtoObj.ConfRev;
-                    string fixedOffs = gooseDtoObj.FixedOffs ? "1" : "0";
-                    string minTime = gooseDtoObj.MinTime.ToString();
-                    string maxTime = gooseDtoObj.MaxTime.ToString();
-                    string VlanPriority = gooseDtoObj.VlanPriority.ToString();
-                    string VlanId = gooseDtoObj.VlanId.ToString();
-                    string AppId = gooseDtoObj.AppId.ToString();
-                    string MacAddress = gooseDtoObj.MacAddress.Replace("-", String.Empty);
-
-                    streamWriter.WriteLine(
-                        $"GoCB({ld} {goCBName} {goId} {dataSet} {confRev} {fixedOffs} {minTime} {maxTime})");
-                    streamWriter.WriteLine($"GoDA({VlanPriority} {VlanId} {AppId} {MacAddress})");
-                    streamWriter.WriteLine();
-                }
-            }
         }
 
 

@@ -56,7 +56,7 @@
     <Compile Include="Serializers\RptEnabledSerializer.cs" />
     <Compile Include="Serializers\TrgOpsSerializer.cs" />
     <Compile Include="Services\FtpReportModelService.cs" />
-    <Compile Include="Services\ReportConfigurableModelElementsGetter.cs" />
+    <Compile Include="Services\ReportControlsGetter.cs" />
     <Compile Include="Services\ReportConfigurationParser.cs" />
     <Compile Include="Services\ReportControlLoadingService.cs" />
     <Compile Include="Services\ReportControlNameService.cs" />

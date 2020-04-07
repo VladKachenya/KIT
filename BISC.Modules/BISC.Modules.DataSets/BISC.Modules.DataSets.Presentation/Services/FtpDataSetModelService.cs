@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Model.Infrastructure.Keys;
 using BISC.Modules.DataSets.Presentation.Services.Interfaces;
+using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 
 
@@ -36,17 +37,17 @@ namespace BISC.Modules.DataSets.Presentation.Services
 
         #region Implementation of IFtpDataSetMpdelService
 
-        public async Task<OperationResult> WriteDatasetsToDevice(string ip, IEnumerable<IDataSet> dataSetsToSave)
+        public async Task<OperationResult> WriteDataSetsToDevice(IDevice device, IEnumerable<IDataSet> dataSetsToSave)
         {
             try
             {
-                var fileString = _dataSetConfigurationParser.GetConfiguration(dataSetsToSave).Item;
+                var fileString = _dataSetConfigurationParser.GetConfiguration(dataSetsToSave, device).Item;
 
-                var res = await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() { fileString },
+                var res = await _deviceFileWritingServices.WriteFileStringInDevice(device.Ip, new List<string>() { fileString },
                     new List<string>() { "DATASETS.CFG" });
                 if (!res.IsSucceed)
                 {
-                    return new OperationResult($"{ip}: FTP не отвечает: {res.GetFirstError()}");
+                    return new OperationResult($"{device.Ip}: FTP не отвечает: {res.GetFirstError()}");
                 }
             }
             catch (Exception e)

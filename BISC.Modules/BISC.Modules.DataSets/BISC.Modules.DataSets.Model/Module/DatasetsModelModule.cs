@@ -44,7 +44,7 @@ namespace BISC.Modules.DataSets.Model.Module
             _injectionContainer.RegisterType<IConfigurationParser,
                 DataSetConfigurationParser>(InfrastructureKeys.ModulesKeys.DataSetModule);
             _injectionContainer.RegisterType<IConfigurableModelElementsGetter,
-                DataSetConfigurableModelElementsGetter>(Guid.NewGuid().ToString());
+                DataSetsGetter>(Guid.NewGuid().ToString());
 
             _injectionContainer.RegisterType<IFcdaFactory, FcdaFactory>(true);
             _injectionContainer.RegisterType<IDataSetFactory, DataSetFactory>(true);

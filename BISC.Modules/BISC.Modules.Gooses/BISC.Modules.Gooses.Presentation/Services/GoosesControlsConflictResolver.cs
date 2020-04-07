@@ -108,7 +108,7 @@ namespace BISC.Modules.Gooses.Model.Services
             }
             else
             {
-                var res = await _ftpGooseModelService.WriteGooseToDevice(deviceInsclModelInDevice.Ip, gooseControlsInProject);
+                var res = await _ftpGooseModelService.WriteGooseToDevice(deviceInsclModelInDevice, gooseControlsInProject);
                 if (!res.IsSucceed)
                 {
                     return new ResolvingResult(res.GetFirstError());

@@ -39,7 +39,7 @@ namespace BISC.Modules.Gooses.Presentation.Services.SavingServices
             var gooseSubscriptions = _goosesModelService.GetGooseInputModelInfos(device);
             var gooseSubscriptionMatrix = _gooseMatrixFtpService.GetGooseMatrixFtpForDevice(device);
 
-            var res = await _ftpGooseModelService.DeletGoosesAndResetDevice(device);
+            var res = await _ftpGooseModelService.DeleteGoosesAndResetDevice(device);
             if (!res.IsSucceed)
             {
                 return res;
@@ -56,7 +56,7 @@ namespace BISC.Modules.Gooses.Presentation.Services.SavingServices
                 return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedWithErrors, false, res.GetFirstError());
             }
 
-            res = await _ftpGooseModelService.WriteGooseDeviceInputFromDevice(device.Ip, gooseSubscriptions);
+            res = await _ftpGooseModelService.WriteGooseDeviceInputFromDevice(device, gooseSubscriptions);
             if (res.IsSucceed)
             {
                 _loggingService.LogMessage($"Сохранение подписок на Goose-ы устройства {device.Name} с IP: {device.Ip} произошло успешно", SeverityEnum.Info);

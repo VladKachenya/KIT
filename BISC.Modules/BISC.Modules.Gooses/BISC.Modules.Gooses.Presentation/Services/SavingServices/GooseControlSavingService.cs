@@ -45,7 +45,7 @@ namespace BISC.Modules.Gooses.Presentation.Services.SavingServices
             }
             // Тут мы берём модель конвертируем её в вью модель а затем переводим в GooseFtpDto
             var gooseControls = _goosesModelService.GetGooseControlsOfDevice(device);
-            var res = await _ftpGooseModelService.WriteGooseToDevice(device.Ip, gooseControls);
+            var res = await _ftpGooseModelService.WriteGooseToDevice(device, gooseControls);
             if (res.IsSucceed)
             {
                 _loggingService.LogMessage($"Сохранение блоков управления GOOSE в устройство {device.Name} по FTP {device.Ip} произошло успешно", SeverityEnum.Info);

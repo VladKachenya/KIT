@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.ViewModels;
+using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.DataSets.Presentation.Services.Interfaces
 {
     public interface IFtpDataSetModelService
     {
-        Task<OperationResult> WriteDatasetsToDevice(string ip, IEnumerable<IDataSet> dataSetsToSave);
+        Task<OperationResult> WriteDataSetsToDevice(IDevice device, IEnumerable<IDataSet> dataSetsToSave);
     }
 }

@@ -152,15 +152,8 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             return gooseControlViewModel;
         }
 
-        public IEnumerable<GooseFtpDto> ConvertToDots(IEnumerable<IGooseControl> gooseControls)
+        public IEnumerable<GooseFtpDto> ConvertToDots(IEnumerable<IGooseControl> gooseControls, IDevice device)
         {
-            var firstGoose = gooseControls.FirstOrDefault();
-            if (firstGoose == null)
-            {
-                return new GooseFtpDto[0];
-            }
-
-            var device = firstGoose.GetFirstParentOfType<IDevice>();
             var viewModels = CreateGooseControlViewModel(device, gooseControls);
             return viewModels.Where((model => model.IsDynamic)).Select(GetGooseFtpDtosFromViewModel);
         }

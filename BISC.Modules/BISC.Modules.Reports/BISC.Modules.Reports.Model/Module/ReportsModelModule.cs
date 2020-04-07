@@ -44,7 +44,7 @@ namespace BISC.Modules.Reports.Model.Module
             _injectionContainer.RegisterType<IReportControlNameService, ReportControlNameService>();
 
             _injectionContainer.RegisterType<IConfigurationParser, ReportConfigurationParser>(InfrastructureKeys.ModulesKeys.ReportModule);
-            _injectionContainer.RegisterType<IConfigurableModelElementsGetter, ReportConfigurableModelElementsGetter>(Guid.NewGuid().ToString());
+            _injectionContainer.RegisterType<IConfigurableModelElementsGetter, ReportControlsGetter>(Guid.NewGuid().ToString());
 
             
             _injectionContainer.RegisterType<IFtpReportModelService, FtpReportModelService>();

@@ -4,6 +4,7 @@ using System.Linq;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.Connection.Infrastructure.Connection.Dto;
+using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.Reports.Infrastructure.Model;
@@ -12,7 +13,7 @@ namespace BISC.Modules.Reports.Model.Services
 {
     public class ReportConfigurationParser : ConfigurationParser
     {
-        protected override void WriteConfiguration(IEnumerable<IModelElement> modelElements, TextWriter streamTextWriter)
+        protected override void WriteConfiguration(IEnumerable<IModelElement> modelElements, IDevice device, TextWriter streamTextWriter)
         {
             var reportsToParse = modelElements.Cast<IReportControl>();
             foreach (var reportObj in reportsToParse)

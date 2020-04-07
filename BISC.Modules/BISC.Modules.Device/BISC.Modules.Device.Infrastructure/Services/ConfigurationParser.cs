@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BISC.Infrastructure.Global.Common;
-using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Elements;
+using BISC.Modules.Device.Infrastructure.Model;
 
 namespace BISC.Modules.Device.Infrastructure.Services
 {
     public abstract class ConfigurationParser : IConfigurationParser
     {
-        public OperationResult<string> GetConfiguration(IEnumerable<IModelElement> modelElements) 
+        public OperationResult<string> GetConfiguration(IEnumerable<IModelElement> modelElements, IDevice device) 
         {
             try
             {
@@ -18,7 +18,7 @@ namespace BISC.Modules.Device.Infrastructure.Services
                 string configuration;
                 using (TextWriter streamWriter = new StringWriter(sb))
                 {
-                    WriteConfiguration(modelElements, streamWriter);
+                    WriteConfiguration(modelElements, device, streamWriter);
                     configuration = streamWriter.ToString();
                 }
                 return new OperationResult<string>(configuration, true);
@@ -29,6 +29,6 @@ namespace BISC.Modules.Device.Infrastructure.Services
             }
         }
 
-        protected abstract void WriteConfiguration(IEnumerable<IModelElement> modelElements, TextWriter streamTextWriter);
+        protected abstract void WriteConfiguration(IEnumerable<IModelElement> modelElements, IDevice device, TextWriter streamTextWriter);
     }
 }

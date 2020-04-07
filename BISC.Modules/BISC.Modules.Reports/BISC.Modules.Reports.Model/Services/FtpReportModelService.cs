@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Model.Infrastructure.Keys;
+using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 
 namespace BISC.Modules.Reports.Model.Services
@@ -96,20 +97,20 @@ namespace BISC.Modules.Reports.Model.Services
             return reportControls;
         }
 
-        public async Task<OperationResult> WriteReportsToDevice(string ip, IEnumerable<IReportControl> reportControls)
+        public async Task<OperationResult> WriteReportsToDevice(IDevice device, IEnumerable<IReportControl> reportControls)
         {
             try
             {
                 StringBuilder sb = new StringBuilder();
                 var fileString =
                     _injectionContainer.ResolveType<IConfigurationParser>(InfrastructureKeys.ModulesKeys.ReportModule).
-                        GetConfiguration(reportControls).Item;
+                        GetConfiguration(reportControls, device).Item;
 
-                var res = await _deviceFileWritingServices.WriteFileStringInDevice(ip, new List<string>() { fileString },
+                var res = await _deviceFileWritingServices.WriteFileStringInDevice(device.Ip, new List<string>() { fileString },
                     new List<string>() { "XRCB.CFG" });
                 if (!res.IsSucceed)
                 {
-                    return new OperationResult($"{ip}: FTP не отвечает: {res.GetFirstError()}");
+                    return new OperationResult($"{device.Ip}: FTP не отвечает: {res.GetFirstError()}");
                 }
             }
             catch (Exception e)
@@ -117,37 +118,6 @@ namespace BISC.Modules.Reports.Model.Services
                 return new OperationResult(e.Message + Environment.NewLine + e.StackTrace);
             }
             return OperationResult.SucceedResult;
-
-
-        }
-
-        private void Write(List<IReportControl> reportsToParse, TextWriter streamWriter, ILDevice lDevice)
-        {
-            using (streamWriter)
-            {
-                foreach (var reportObj in reportsToParse)
-                {
-                    var ld = lDevice.Inst;
-                    string rptName = reportObj.Name;
-                    string rptId = reportObj.RptID;
-                    int isBuffered = reportObj.Buffered ? 1 : 0;
-                    string dsName = reportObj.DataSet;
-                    uint confRev = 0;
-                    confRev = (uint)reportObj.ConfRev;
-
-                    var trgOpt = reportObj.TrgOps.Value.TriggerOptionsToInt();
-                    var optFields = reportObj.OptFields.Value.ReportOptionsToInt();
-
-                    var bufTm = reportObj.BufTime;
-                    var intgPd = reportObj.IntgPd;
-
-                    for (int i = 0; i < reportObj.RptEnabled.Value.Max; i++)
-                    {
-                        streamWriter.WriteLine(
-                            $"RCB({ld} {rptName + "0" + (i + 1)} {rptId} {isBuffered} {dsName} {confRev} {trgOpt} {optFields} {bufTm} {intgPd})");
-                    }
-                }
-            }
         }
     }
     #endregion

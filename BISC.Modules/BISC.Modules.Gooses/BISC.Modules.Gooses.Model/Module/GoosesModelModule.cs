@@ -50,9 +50,15 @@ namespace BISC.Modules.Gooses.Model.Module
             _injectionContainer.RegisterType<IDeviceElementLoadingService, GooseMatrixLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IDeviceElementLoadingService, GooseInputModelInfosLoadingService>(Guid.NewGuid().ToString());
 
-            _injectionContainer.RegisterType<IConfigurableModelElementsGetter, GooseConfigurableModelElementsGetter>(Guid.NewGuid().ToString());
-            _injectionContainer.RegisterType<IConfigurationParser, GooseConfigurationParser>(InfrastructureKeys.ModulesKeys.GooseModule);
+            // Register configurable model element getters 
+            _injectionContainer.RegisterType<IConfigurableModelElementsGetter, GooseControlsGetter>(Guid.NewGuid().ToString());
+            _injectionContainer.RegisterType<IConfigurableModelElementsGetter, GooseMatrixGetter>(Guid.NewGuid().ToString());
+            _injectionContainer.RegisterType<IConfigurableModelElementsGetter, GooseInputModelInfosGetter>(Guid.NewGuid().ToString());
 
+            // Register configuration parsers
+            _injectionContainer.RegisterType<IConfigurationParser, GooseControlsConfigurationParser>(InfrastructureKeys.ModulesKeys.GooseControlSubModule);
+            _injectionContainer.RegisterType<IConfigurationParser, GooseMatrixConfigurationParser>(InfrastructureKeys.ModulesKeys.GooseMatrixSubModule);
+            _injectionContainer.RegisterType<IConfigurationParser, GooseInputModelInfosConfigurationParser>(InfrastructureKeys.ModulesKeys.GooseInputModelInfoSubModule);
 
             _injectionContainer.RegisterType<IGoosesModelService, GoosesModelService>();
             _injectionContainer.RegisterType<IFtpGooseModelService, FtpGooseModelService>();

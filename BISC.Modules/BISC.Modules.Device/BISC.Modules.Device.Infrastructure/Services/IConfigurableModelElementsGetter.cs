@@ -9,6 +9,6 @@ namespace BISC.Modules.Device.Infrastructure.Services
     public interface IConfigurableModelElementsGetter
     {
         string ModuleName { get; }
-        IEnumerable<IModelElement> GetConfigurableModelElements(Guid deviceGuid, ISclModel sclModel);
+        IEnumerable<IModelElement> GetConfigurableModelElements(IDevice device, ISclModel sclModel);
     }
 }

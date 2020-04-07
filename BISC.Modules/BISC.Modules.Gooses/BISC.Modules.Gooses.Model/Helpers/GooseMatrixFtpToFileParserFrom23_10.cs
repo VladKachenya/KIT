@@ -2,19 +2,23 @@
 using System.IO;
 using System.Text;
 using BISC.Modules.Gooses.Infrastructure.Helpers;
-using System.Globalization;
 
 namespace BISC.Modules.Gooses.Model.Helpers
 {
     internal class GooseMatrixFtpToFileParser23_10 : IGooseMatrixFtpToFileParser
     {
 
-        public string GetFileStringFromMatrixModel(IGooseMatrixFtp matrixFtp)
+        public string GetFileStringFromMatrixModel(IGooseMatrixFtp matrixFtp, TextWriter streamTextWriter = null)
         {
-            StringBuilder sb = new StringBuilder();
-            TextWriter streamWriter = new StringWriter(sb);
+            var streamWriter = streamTextWriter;
+            if (streamWriter == null)
+            {
+                StringBuilder sb = new StringBuilder();
+                streamWriter = new StringWriter(sb);
+            }
+
             Write(streamWriter, matrixFtp);
-            return sb.ToString();
+            return streamWriter.ToString();
         }
 
         private void Write(TextWriter streamWriter, IGooseMatrixFtp gooseMatrix)

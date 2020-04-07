@@ -27,7 +27,10 @@ namespace BISC.Model.Infrastructure.Keys
         {
             public static string DataSetModule => nameof(DataSetModule);
             public static string ReportModule => nameof(ReportModule);
-            public static string GooseModule => nameof(GooseModule);
+            public static string GooseControlSubModule => nameof(GooseControlSubModule);
+            public static string GooseMatrixSubModule => nameof(GooseMatrixSubModule);
+            public static string GooseInputModelInfoSubModule => nameof(GooseInputModelInfoSubModule);
+
         }
     }
 }

@@ -28,7 +28,7 @@ namespace BISC.Modules.Device.Model.Services
                 {
                     var configuration = getter.ModuleName + '\n';
                     var parsingRes = _injectionContainer.ResolveType<IConfigurationParser>(getter.ModuleName)
-                        .GetConfiguration(getter.GetConfigurableModelElements(device.DeviceGuid, sclModel));
+                        .GetConfiguration(getter.GetConfigurableModelElements(device, sclModel), device);
                     configuration += parsingRes.Item;
                     using (StreamWriter sw = new StreamWriter(path, true, Encoding.Default))
                     {

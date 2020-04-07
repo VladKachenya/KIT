@@ -12,7 +12,7 @@ using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 
 namespace BISC.Modules.Gooses.Model.Model.Matrix
 {
-   public class GooseDeviceInput:ModelElement, IGooseDeviceInput
+    public class GooseDeviceInput : ModelElement, IGooseDeviceInput
     {
         public GooseDeviceInput()
         {
@@ -22,8 +22,8 @@ namespace BISC.Modules.Gooses.Model.Model.Matrix
         #region Implementation of IGooseDeviceInput
 
         public string DeviceOwnerName { get; set; }
-        public ChildModelsList<IGooseInputModelInfo> GooseInputModelInfoList =>new ChildModelsList<IGooseInputModelInfo>(this, GooseKeys.GooseModelKeys.GooseInputModelInfoKey);
-        public ChildModelProperty<IGooseMatrixFtp> GooseMatrix=>new ChildModelProperty<IGooseMatrixFtp>(this, GooseKeys.GooseModelKeys.GooseMatrixFtpKey);
+        public ChildModelsList<IGooseInputModelInfo> GooseInputModelInfoList => new ChildModelsList<IGooseInputModelInfo>(this, GooseKeys.GooseModelKeys.GooseInputModelInfoKey);
+        public ChildModelProperty<IGooseMatrixFtp> GooseMatrix => new ChildModelProperty<IGooseMatrixFtp>(this, GooseKeys.GooseModelKeys.GooseMatrixFtpKey);
 
         #endregion
     }

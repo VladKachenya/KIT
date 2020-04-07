@@ -12,12 +12,12 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
     public interface IFtpGooseModelService
     {
         Task<OperationResult<List<GooseFtpDto>>> GetGooseDtosFromDevice(string ip);
-        Task<OperationResult> WriteGooseToDevice(string deviceIp, IEnumerable<IGooseControl> gooseControls);
-	    Task<OperationResult<IGooseMatrixFtp>> GetGooseMatrixByFtp(string ip);
-        Task<OperationResult> WriteGooseMatrixFtpToDevice(IDevice Device, IGooseMatrixFtp gooseMatrixFtp);
+        Task<OperationResult<IGooseMatrixFtp>> GetGooseMatrixByFtp(string ip);
         Task<OperationResult<List<IGooseInputModelInfo>>> GetGooseDeviceInputFromDevice(string ip, string deviceName);
-        Task<OperationResult> WriteGooseDeviceInputFromDevice(string ip, List<IGooseInputModelInfo> gooseInputModelInfos);
-        Task<OperationResult> DeletGoosesAndResetDevice(IDevice device);
+        Task<OperationResult> WriteGooseToDevice(IDevice device, IEnumerable<IGooseControl> gooseControls);
+        Task<OperationResult> WriteGooseMatrixFtpToDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp);
+        Task<OperationResult> WriteGooseDeviceInputFromDevice(IDevice device, List<IGooseInputModelInfo> gooseInputModelInfos);
+        Task<OperationResult> DeleteGoosesAndResetDevice(IDevice device);
 
     }
 }

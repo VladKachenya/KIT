@@ -18,7 +18,10 @@ namespace BISC.Modules.Gooses.Model.Services
         private readonly IBiscProject _biscProject;
         private readonly IGoCbFtpEntityFactory _goCbFtpEntityFactory; 
 
-        public GooseMatrixFtpService(IGoosesModelService goosesModelService, IBiscProject biscProject, IGoCbFtpEntityFactory goCbFtpEntityFactory)
+        public GooseMatrixFtpService(
+            IGoosesModelService goosesModelService, 
+            IBiscProject biscProject, 
+            IGoCbFtpEntityFactory goCbFtpEntityFactory)
         {
             _goosesModelService = goosesModelService;
             _biscProject = biscProject;

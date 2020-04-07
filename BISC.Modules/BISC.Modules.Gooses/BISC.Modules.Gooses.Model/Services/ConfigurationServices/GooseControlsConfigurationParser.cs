@@ -11,20 +11,19 @@ using BISC.Modules.Gooses.Infrastructure.Model;
 
 namespace BISC.Modules.Gooses.Model.Services.ConfigurationServices
 {
-    public class GooseConfigurationParser : ConfigurationParser
+    public class GooseControlsConfigurationParser : ConfigurationParser
     {
         private readonly IGooseControlToGooseFtpDotsConverter _gooseFtpDotsConverter;
 
-        public GooseConfigurationParser(IGooseControlToGooseFtpDotsConverter gooseFtpDotsConverter)
+        public GooseControlsConfigurationParser(IGooseControlToGooseFtpDotsConverter gooseFtpDotsConverter)
         {
             _gooseFtpDotsConverter = gooseFtpDotsConverter;
         }
-        protected override void WriteConfiguration(IEnumerable<IModelElement> modelElements, TextWriter streamTextWriter)
+        protected override void WriteConfiguration(IEnumerable<IModelElement> modelElements, IDevice device, TextWriter streamTextWriter)
         {
             if(!modelElements.Any()) return;
             var gooseControlToParse = modelElements.Cast<IGooseControl>();
-            var device = gooseControlToParse.First().GetFirstParentOfType<IDevice>();
-            var gooseDtosToParse = _gooseFtpDotsConverter.ConvertToDots(gooseControlToParse);
+            var gooseDtosToParse = _gooseFtpDotsConverter.ConvertToDots(gooseControlToParse, device);
             streamTextWriter.WriteLine($"Dev({device.Type})");
             foreach (var gooseDtoObj in gooseDtosToParse)
             {

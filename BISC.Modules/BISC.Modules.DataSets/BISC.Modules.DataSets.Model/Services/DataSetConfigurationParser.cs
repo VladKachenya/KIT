@@ -6,6 +6,7 @@ using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
+using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 
@@ -13,7 +14,7 @@ namespace BISC.Modules.DataSets.Model.Services
 {
     public class DataSetConfigurationParser : ConfigurationParser
     {
-        protected override void WriteConfiguration(IEnumerable<IModelElement> modelElements, TextWriter streamTextWriter)
+        protected override void WriteConfiguration(IEnumerable<IModelElement> modelElements, IDevice device, TextWriter streamTextWriter)
         {
             var dataSetsToParse = modelElements.Cast<IDataSet>();
             foreach (var dataSet in dataSetsToParse)
