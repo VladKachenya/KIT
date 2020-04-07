@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Factorys\IGoCbFtpEntityFactory.cs" />
+    <Compile Include="Factorys\IGooseControlToGooseFtpDotsConverter.cs" />
     <Compile Include="Factorys\IGooseInputModelInfoFactory.cs" />
     <Compile Include="Factorys\IGooseMatrixParsersFactory.cs" />
     <Compile Include="Helpers\IGooseMatrixFtpToFileParser.cs" />

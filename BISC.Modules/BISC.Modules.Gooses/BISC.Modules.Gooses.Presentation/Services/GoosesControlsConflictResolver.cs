@@ -108,15 +108,7 @@ namespace BISC.Modules.Gooses.Model.Services
             }
             else
             {
-                var gooseFtpDtos = new List<GooseFtpDto>();
-                foreach (var gooseControlInProject in gooseControlsInProject)
-                {
-                    var gses = _sclCommunicationModelService.GetGsesForDevice(devicesclModelInProject.Name,
-                        sclModelInProject);
-                    gooseFtpDtos.Add(GetGooseFtpDto(gooseControlInProject, gses.FirstOrDefault((gse => gse.CbName == gooseControlInProject.Name))));
-                }
-
-                var res = await _ftpGooseModelService.WriteGooseDtosToDevice(deviceInsclModelInDevice, gooseFtpDtos);
+                var res = await _ftpGooseModelService.WriteGooseToDevice(deviceInsclModelInDevice.Ip, gooseControlsInProject);
                 if (!res.IsSucceed)
                 {
                     return new ResolvingResult(res.GetFirstError());
@@ -201,25 +193,6 @@ namespace BISC.Modules.Gooses.Model.Services
             return projectOnlyOnlyGooseControls;
         }
         #endregion
-        private GooseFtpDto GetGooseFtpDto(IGooseControl gooseControl, IGse gse)
-        {
-            var gooseFtpDto = new GooseFtpDto();
-            gooseFtpDto.Name = gooseControl.Name;
-            gooseFtpDto.AppId = uint.Parse(gse.AppIdDec);
-            gooseFtpDto.FixedOffs = gooseControl.FixedOffs;
-            gooseFtpDto.GoId = gooseControl.AppId;
-            gooseFtpDto.GseType = gooseFtpDto.GseType;
-            gooseFtpDto.MacAddress = gse.MacAddress;
-            gooseFtpDto.MaxTime = (uint)gse.MaxTime.Value.Value;
-            gooseFtpDto.MinTime = (uint)gse.MinTime.Value.Value;
-            gooseFtpDto.SelectedDataset = gooseControl.DataSet;
-            gooseFtpDto.VlanId = uint.Parse(gse.VlanId);
-            gooseFtpDto.VlanPriority = (uint)gse.VlanPriority;
-            gooseFtpDto.ConfRev = gooseControl.ConfRev;
-            gooseFtpDto.LdInst = gooseControl.GetFirstParentOfType<ILDevice>().Inst;
-
-            return gooseFtpDto;
-        }
     }
 
 

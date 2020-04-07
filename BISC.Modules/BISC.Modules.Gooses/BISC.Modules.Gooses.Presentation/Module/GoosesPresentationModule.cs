@@ -19,6 +19,7 @@ using BISC.Modules.Gooses.Presentation.Views.Tree;
 using BISC.Presentation.Infrastructure.UiFromModel;
 using System;
 using BISC.Modules.Device.Infrastructure.Saving;
+using BISC.Modules.Gooses.Infrastructure.Factorys;
 using BISC.Modules.Gooses.Infrastructure.Services;
 using BISC.Modules.Gooses.Presentation.Interfaces.GooseSubscriptionLight;
 using BISC.Modules.Gooses.Presentation.Services.SavingServices;
@@ -75,6 +76,8 @@ namespace BISC.Modules.Gooses.Presentation.Module
             _injectionContainer.RegisterType<IDeviceElementSavingService, GooseSubscriptionsSavingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IDeviceElementSavingService, GooseControlSavingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<object, GooseControlsConflictsView>(GooseKeys.GoosePresentationKeys.GooseControlsConflictsView);
+
+            _injectionContainer.RegisterType<IGooseControlToGooseFtpDotsConverter, GooseControlViewModelFactory>();
 
             _injectionContainer.RegisterType<IGooseSubscriptionDataTableFactory, GooseSubscriptionDataTableFactory>();
             _injectionContainer.RegisterType<IGooseViewModelService, GooseViewModelService>();

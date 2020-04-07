@@ -12,12 +12,14 @@ using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using System.Collections.Generic;
 using System.Linq;
+using BISC.Modules.Gooses.Infrastructure.Factorys;
+using BISC.Modules.Gooses.Infrastructure.Model.FTP;
 
 namespace BISC.Modules.Gooses.Presentation.Factories
 {
-    public class GooseControlViewModelFactory
+    public class GooseControlViewModelFactory : IGooseControlToGooseFtpDotsConverter
     {
-        private readonly IGoosesModelService _goosesModelService;
+
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IDataSetModelService _dataSetModelService;
         private readonly IBiscProject _biscProject;
@@ -26,11 +28,13 @@ namespace BISC.Modules.Gooses.Presentation.Factories
 
 
 
-        public GooseControlViewModelFactory(IGoosesModelService goosesModelService,
-            ISclCommunicationModelService sclCommunicationModelService,
-            IDataSetModelService dataSetModelService, IBiscProject biscProject, IInfoModelService infoModelService, IUniqueNameService uniqueNameService)
+        public GooseControlViewModelFactory(ISclCommunicationModelService sclCommunicationModelService,
+            IDataSetModelService dataSetModelService, 
+            IBiscProject biscProject, 
+            IInfoModelService infoModelService, 
+            IUniqueNameService uniqueNameService)
         {
-            _goosesModelService = goosesModelService;
+
             _sclCommunicationModelService = sclCommunicationModelService;
             _dataSetModelService = dataSetModelService;
             _biscProject = biscProject;
@@ -39,7 +43,7 @@ namespace BISC.Modules.Gooses.Presentation.Factories
         }
 
         public List<GooseControlViewModel> CreateGooseControlViewModel(IDevice device,
-            List<IGooseControl> gooseControls)
+            IEnumerable<IGooseControl> gooseControls)
         {
             List<GooseControlViewModel> gooseControlViewModels = new List<GooseControlViewModel>();
             foreach (var gooseControl in gooseControls)
@@ -146,6 +150,38 @@ namespace BISC.Modules.Gooses.Presentation.Factories
             dsList.Add(String.Empty);
             gooseControlViewModel.AvailableDatasets = dsList;
             return gooseControlViewModel;
+        }
+
+        public IEnumerable<GooseFtpDto> ConvertToDots(IEnumerable<IGooseControl> gooseControls)
+        {
+            var firstGoose = gooseControls.FirstOrDefault();
+            if (firstGoose == null)
+            {
+                return new GooseFtpDto[0];
+            }
+
+            var device = firstGoose.GetFirstParentOfType<IDevice>();
+            var viewModels = CreateGooseControlViewModel(device, gooseControls);
+            return viewModels.Where((model => model.IsDynamic)).Select(GetGooseFtpDtosFromViewModel);
+        }
+
+        private GooseFtpDto GetGooseFtpDtosFromViewModel(GooseControlViewModel gooseControlViewModel)
+        {
+            var gooseFtpDto = new GooseFtpDto();
+            gooseFtpDto.Name = gooseControlViewModel.Name;
+            gooseFtpDto.AppId = gooseControlViewModel.AppId;
+            gooseFtpDto.FixedOffs = gooseControlViewModel.FixedOffs;
+            gooseFtpDto.GoId = gooseControlViewModel.GoId;
+            gooseFtpDto.GseType = gooseControlViewModel.GseType;
+            gooseFtpDto.MacAddress = gooseControlViewModel.MacAddress;
+            gooseFtpDto.MaxTime = gooseControlViewModel.MaxTime;
+            gooseFtpDto.MinTime = gooseControlViewModel.MinTime;
+            gooseFtpDto.SelectedDataset = gooseControlViewModel.SelectedDataset;
+            gooseFtpDto.VlanId = gooseControlViewModel.VlanId;
+            gooseFtpDto.VlanPriority = gooseControlViewModel.VlanPriority;
+            gooseFtpDto.ConfRev = gooseControlViewModel.ConfRev;
+            gooseFtpDto.LdInst = gooseControlViewModel.LdInst;
+            return gooseFtpDto;
         }
     }
 }

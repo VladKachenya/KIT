@@ -17,8 +17,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Logging;
 using BISC.Infrastructure.Global.Services;
+using BISC.Model.Infrastructure.Keys;
+using BISC.Modules.Device.Infrastructure.Services;
+using BISC.Modules.Gooses.Infrastructure.Model;
 
 namespace BISC.Modules.Gooses.Model.Services
 {
@@ -29,15 +33,24 @@ namespace BISC.Modules.Gooses.Model.Services
         private readonly IPingService _pingService;
         private readonly IGooseMatrixParsersFactory _gooseMatrixParsersFactory;
         private readonly ILoggingService _loggingService;
+        private readonly IConfigurationParser _gooseConfigurationParser;
 
-        public FtpGooseModelService(IDeviceFileWritingServices deviceFileWritingServices, IModelElementsRegistryService elementsRegistryService,
-            IPingService pingService, IGooseMatrixParsersFactory gooseMatrixParsersFactory, ILoggingService loggingService)
+
+
+        public FtpGooseModelService(
+            IDeviceFileWritingServices deviceFileWritingServices, 
+            IModelElementsRegistryService elementsRegistryService,
+            IPingService pingService, 
+            IGooseMatrixParsersFactory gooseMatrixParsersFactory, 
+            ILoggingService loggingService,
+            IInjectionContainer injectionContainer)
         {
             _deviceFileWritingServices = deviceFileWritingServices;
             _elementsRegistryService = elementsRegistryService;
             _pingService = pingService;
             _gooseMatrixParsersFactory = gooseMatrixParsersFactory;
             _loggingService = loggingService;
+            _gooseConfigurationParser = injectionContainer.ResolveType<IConfigurationParser>(InfrastructureKeys.ModulesKeys.GooseModule);
         }
 
 
@@ -71,16 +84,13 @@ namespace BISC.Modules.Gooses.Model.Services
             }
         }
 
-        public async Task<OperationResult> WriteGooseDtosToDevice(IDevice device, List<GooseFtpDto> gooseDtos)
+        public async Task<OperationResult> WriteGooseToDevice(string deviceIp, IEnumerable<IGooseControl> gooseControls)
         {
             try
             {
-                StringBuilder sb = new StringBuilder();
-                TextWriter streamWriter = new StringWriter(sb);
-                Write(device, gooseDtos, streamWriter);
-                string fileString = sb.ToString();
+                string fileString = _gooseConfigurationParser.GetConfiguration(gooseControls).Item;
 
-                var res = await _deviceFileWritingServices.WriteFileStringInDevice(device.Ip, new List<string>() { fileString },
+                var res = await _deviceFileWritingServices.WriteFileStringInDevice(deviceIp, new List<string>() { fileString },
                     new List<string>() { "GOOSETR.CFG" });
                 if (res.IsSucceed)
                 {
@@ -230,7 +240,6 @@ namespace BISC.Modules.Gooses.Model.Services
         public async Task<OperationResult> WriteGooseMatrixFtpToDevice(IDevice device, IGooseMatrixFtp gooseMatrixFtp)
         {
             //RestartProces
-
             try
             {
                 var text = _gooseMatrixParsersFactory.GetGooseMatrixParser(device).GetFileStringFromMatrixModel(gooseMatrixFtp);

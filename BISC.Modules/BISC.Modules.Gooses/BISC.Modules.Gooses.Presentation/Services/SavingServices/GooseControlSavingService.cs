@@ -17,31 +17,35 @@ namespace BISC.Modules.Gooses.Presentation.Services.SavingServices
 {
     public class GooseControlSavingService : IDeviceElementSavingService
     {
-        private readonly IConnectionPoolService _connectionPoolService;
+
         private readonly IFtpGooseModelService _ftpGooseModelService;
-        private readonly GooseControlViewModelFactory _gooseControlViewModelFactory;
+
         private readonly IGoosesModelService _goosesModelService;
         private readonly ILoggingService _loggingService;
+        private IConnectionPoolService _connectionPoolService;
 
-        public GooseControlSavingService(IConnectionPoolService connectionPoolService, IFtpGooseModelService ftpGooseModelService,
-            GooseControlViewModelFactory gooseControlViewModelFactory, IGoosesModelService goosesModelService, ILoggingService loggingService)
+        public GooseControlSavingService(
+            IConnectionPoolService connectionPoolService, 
+            IFtpGooseModelService ftpGooseModelService,
+            IGoosesModelService goosesModelService, 
+            ILoggingService loggingService)
         {
             _connectionPoolService = connectionPoolService;
             _ftpGooseModelService = ftpGooseModelService;
-            _gooseControlViewModelFactory = gooseControlViewModelFactory;
             _goosesModelService = goosesModelService;
             _loggingService = loggingService;
         }
         public int Priority => 10;
         public async Task<OperationResult> Save(IDevice device)
         {
+            if (!_connectionPoolService.GetIsDeviceConnect(device.Ip))
+            {
+                _loggingService.LogMessage($"Устройство {device.Name}  {device.Ip} не отвечает", SeverityEnum.Critical);
+                return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedWithErrors, false, "Устройство не подключено");
+            }
             // Тут мы берём модель конвертируем её в вью модель а затем переводим в GooseFtpDto
             var gooseControls = _goosesModelService.GetGooseControlsOfDevice(device);
-            var gooseControlViewModelsToSave =
-                _gooseControlViewModelFactory.CreateGooseControlViewModel(device, gooseControls);
-            List<GooseFtpDto> gooseFtpDtos = gooseControlViewModelsToSave.Where((model => model.IsDynamic)).Select((GetGooseFtpDtosFromViewModel)).ToList();
-
-            var res = await _ftpGooseModelService.WriteGooseDtosToDevice(device, gooseFtpDtos);
+            var res = await _ftpGooseModelService.WriteGooseToDevice(device.Ip, gooseControls);
             if (res.IsSucceed)
             {
                 _loggingService.LogMessage($"Сохранение блоков управления GOOSE в устройство {device.Name} по FTP {device.Ip} произошло успешно", SeverityEnum.Info);
@@ -52,25 +56,6 @@ namespace BISC.Modules.Gooses.Presentation.Services.SavingServices
                 _loggingService.LogMessage($"Сохранение блоков управления GOOSE в устройство {device.Name} по FTP {device.Ip} произошло с ошибкой", SeverityEnum.Critical);
                 return new OperationResult<SavingCommandResultEnum>(SavingCommandResultEnum.SavedWithErrors, false, res.GetFirstError());
             }
-        }
-
-        private GooseFtpDto GetGooseFtpDtosFromViewModel(GooseControlViewModel gooseControlViewModel)
-        {
-            var gooseFtpDto = new GooseFtpDto();
-            gooseFtpDto.Name = gooseControlViewModel.Name;
-            gooseFtpDto.AppId = gooseControlViewModel.AppId;
-            gooseFtpDto.FixedOffs = gooseControlViewModel.FixedOffs;
-            gooseFtpDto.GoId = gooseControlViewModel.GoId;
-            gooseFtpDto.GseType = gooseControlViewModel.GseType;
-            gooseFtpDto.MacAddress = gooseControlViewModel.MacAddress;
-            gooseFtpDto.MaxTime = gooseControlViewModel.MaxTime;
-            gooseFtpDto.MinTime = gooseControlViewModel.MinTime;
-            gooseFtpDto.SelectedDataset = gooseControlViewModel.SelectedDataset;
-            gooseFtpDto.VlanId = gooseControlViewModel.VlanId;
-            gooseFtpDto.VlanPriority = gooseControlViewModel.VlanPriority;
-            gooseFtpDto.ConfRev = gooseControlViewModel.ConfRev;
-            gooseFtpDto.LdInst = gooseControlViewModel.LdInst;
-            return gooseFtpDto;
         }
     }
 }

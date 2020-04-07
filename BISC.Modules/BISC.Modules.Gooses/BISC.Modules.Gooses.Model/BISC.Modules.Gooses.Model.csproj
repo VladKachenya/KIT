@@ -77,6 +77,8 @@
     <Compile Include="Serializers\GooseInputSerializer.cs" />
     <Compile Include="Serializers\GooseRowSerializer.cs" />
     <Compile Include="Serializers\SubscriberDeviceSerializer.cs" />
+    <Compile Include="Services\ConfigurationServices\GooseConfigurableModelElementsGetter.cs" />
+    <Compile Include="Services\ConfigurationServices\GooseConfigurationParser.cs" />
     <Compile Include="Services\FtpGooseModelService.cs" />
     <Compile Include="Services\GooseMatrixFtpService.cs" />
     <Compile Include="Services\GooseModelServicesFacade.cs" />

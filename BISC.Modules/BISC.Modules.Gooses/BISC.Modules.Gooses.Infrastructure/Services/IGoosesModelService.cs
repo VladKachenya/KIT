@@ -15,6 +15,7 @@ namespace BISC.Modules.Gooses.Infrastructure.Services
     {
         void AddGseControl(string lnName, string ldName, IModelElement devcice, IGooseControl gooseControl);
         List<IGooseControl> GetGooseControlsOfDevice(IDevice device);
+        IEnumerable<IGooseControl> GetGooseControls(Guid deviceGuid, ISclModel sclModel);
         void DeleteAllDeviceReferencesInGooseControlsInModel(IBiscProject biscProject, string iedName);
         
         IGooseDeviceInput GetGooseDeviceInputOfProject(IBiscProject biscProject, IDevice device);

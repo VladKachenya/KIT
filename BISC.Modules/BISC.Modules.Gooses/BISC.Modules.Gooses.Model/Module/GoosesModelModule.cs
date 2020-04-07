@@ -12,7 +12,10 @@ using BISC.Modules.Gooses.Model.Serializers.FtpMatrix;
 using BISC.Modules.Gooses.Model.Services;
 using BISC.Modules.Gooses.Model.Services.LoadingServices;
 using System;
+using BISC.Model.Infrastructure.Keys;
+using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Helpers;
+using BISC.Modules.Gooses.Model.Services.ConfigurationServices;
 
 namespace BISC.Modules.Gooses.Model.Module
 {
@@ -24,7 +27,6 @@ namespace BISC.Modules.Gooses.Model.Module
         {
             _injectionContainer = injectionContainer;
         }
-
 
         #region Implementation of IAppModule
 
@@ -47,6 +49,9 @@ namespace BISC.Modules.Gooses.Model.Module
             _injectionContainer.RegisterType<IDeviceElementLoadingService, GoosesLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IDeviceElementLoadingService, GooseMatrixLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IDeviceElementLoadingService, GooseInputModelInfosLoadingService>(Guid.NewGuid().ToString());
+
+            _injectionContainer.RegisterType<IConfigurableModelElementsGetter, GooseConfigurableModelElementsGetter>(Guid.NewGuid().ToString());
+            _injectionContainer.RegisterType<IConfigurationParser, GooseConfigurationParser>(InfrastructureKeys.ModulesKeys.GooseModule);
 
 
             _injectionContainer.RegisterType<IGoosesModelService, GoosesModelService>();

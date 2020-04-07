@@ -1,7 +1,6 @@
 ﻿using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
-using BISC.Model.Infrastructure.Serializing;
 using BISC.Model.Infrastructure.Services.Communication;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
@@ -9,15 +8,13 @@ using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Gooses.Infrastructure.Model;
 using BISC.Modules.Gooses.Infrastructure.Model.FTP;
-using BISC.Modules.Gooses.Infrastructure.Model.Matrix;
 using BISC.Modules.Gooses.Infrastructure.Services;
-using BISC.Modules.Gooses.Model.Model;
 using BISC.Modules.Gooses.Model.Model.Matrix;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BISC.Modules.Gooses.Infrastructure.Factorys;
+
 
 namespace BISC.Modules.Gooses.Model.Services
 {
@@ -28,20 +25,20 @@ namespace BISC.Modules.Gooses.Model.Services
         private readonly IBiscProject _biscProject;
         private readonly ISclCommunicationModelService _sclCommunicationModelService;
         private readonly IDataSetModelService _dataSetModelService;
-        private readonly IFtpGooseModelService _ftpGooseModelService;
-        private readonly IGooseInputModelInfoFactory _gooseInputModelIngoFactory;
 
-        public GoosesModelService(IInfoModelService infoModelService, IDeviceModelService deviceModelService, IBiscProject biscProject,
-            ISclCommunicationModelService sclCommunicationModelService, IDataSetModelService dataSetModelService, IFtpGooseModelService ftpGooseModelService,
-            IGooseInputModelInfoFactory gooseInputModelIngoFactory)
+
+        public GoosesModelService(
+            IInfoModelService infoModelService,
+            IDeviceModelService deviceModelService,
+            IBiscProject biscProject,
+            ISclCommunicationModelService sclCommunicationModelService,
+            IDataSetModelService dataSetModelService)
         {
             _infoModelService = infoModelService;
             _deviceModelService = deviceModelService;
             _biscProject = biscProject;
             _sclCommunicationModelService = sclCommunicationModelService;
             _dataSetModelService = dataSetModelService;
-            _ftpGooseModelService = ftpGooseModelService;
-            _gooseInputModelIngoFactory = gooseInputModelIngoFactory;
         }
         public void AddGseControl(string lnName, string ldName, IModelElement devcice, IGooseControl gooseControl)
         {
@@ -81,24 +78,13 @@ namespace BISC.Modules.Gooses.Model.Services
             return gooseControls;
         }
 
+        public IEnumerable<IGooseControl> GetGooseControls(Guid deviceGuid, ISclModel sclModel)
+        {
+            return GetGooseControlsOfDevice(_deviceModelService.GetDeviceByGuid(sclModel, deviceGuid));
+        }
+
         public void DeleteAllDeviceReferencesInGooseControlsInModel(IBiscProject biscProject, string iedName)
         {
-            //var devices = _deviceModelService.GetDevicesFromModel(biscProject.MainSclModel.Value);
-            //foreach (var device in devices)
-            //{
-            //    var gooses = GetGooseControlsOfDevice(device);
-            //    foreach (var goose in gooses)
-            //    {
-            //        var deviceSubsriber =
-            //            goose.SubscriberDevice.FirstOrDefault((subscriberDevice =>
-            //                subscriberDevice.DeviceName == iedName));
-            //        if (deviceSubsriber != null)
-            //        {
-            //            goose.SubscriberDevice.Remove(deviceSubsriber);
-            //        }
-            //    }
-            //}
-
             var customElements = biscProject.CustomElements?.Value?.ChildModelElements?.ToList();
             if (customElements != null)
             {
@@ -121,7 +107,7 @@ namespace BISC.Modules.Gooses.Model.Services
                 (element is IGooseDeviceInput gooseDeviceInput) && gooseDeviceInput.DeviceOwnerName == device.Name) as IGooseDeviceInput;
             if (gooseDeviceInputForDevice == null)
             {
-                gooseDeviceInputForDevice = new GooseDeviceInput(){DeviceOwnerName = device.Name};
+                gooseDeviceInputForDevice = new GooseDeviceInput() { DeviceOwnerName = device.Name };
                 biscProject.CustomElements?.Value?.ChildModelElements?.Add(gooseDeviceInputForDevice);
             }
             return gooseDeviceInputForDevice;
@@ -149,7 +135,7 @@ namespace BISC.Modules.Gooses.Model.Services
             gooseInputModelInfos.ForEach(el => inputs.GooseInputModelInfoList.Add(el));
         }
 
-      
+
         public void DeleteGooseCbAndGseByName(string name, IDevice device)
         {
             var ldevices = _infoModelService.GetLDevicesFromDevices(device);

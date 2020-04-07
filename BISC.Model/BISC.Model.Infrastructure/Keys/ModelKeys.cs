@@ -13,7 +13,6 @@ namespace BISC.Model.Infrastructure.Keys
             public static string BiscProjectKey => "BiscProject";
             public static string SclModelKey => "SCL";
             public static string CustomElementsKey => "CustomElements";
-
             public static string CommunicationModelKey => "Communication";
             public static string DurationInMillisecMinTimeKey => "MinTime";
             public static string DurationInMillisecMaxTimeKey => "MaxTime";
@@ -26,9 +25,9 @@ namespace BISC.Model.Infrastructure.Keys
 
         public static class ModulesKeys
         {
-            public static string DataSetModule = nameof(DataSetModule);
-            public static string ReportModule = nameof(ReportModule);
-
+            public static string DataSetModule => nameof(DataSetModule);
+            public static string ReportModule => nameof(ReportModule);
+            public static string GooseModule => nameof(GooseModule);
         }
     }
 }

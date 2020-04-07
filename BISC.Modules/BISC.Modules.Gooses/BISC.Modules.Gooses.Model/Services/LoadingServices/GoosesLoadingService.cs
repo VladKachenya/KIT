@@ -86,13 +86,8 @@ namespace BISC.Modules.Gooses.Model.Services.LoadingServices
             _goosesModelService.DeleteAllGoosesFromDevice(device);
             if (_ldGoosesDictionary.Values.Any())
             {
-
                 var res = await _ftpGooseModelService.GetGooseDtosFromDevice(device.Ip);
 
-                //await LoadGooseDeviceInput(device, sclModel.GetFirstParentOfType<IBiscProject>());
-
-                //   var resMatrix = await _ftpGooseModelService.GetGooseMatrixByFtp(device.Ip);
-                // Работать сдесь
                 if (!res.IsSucceed)
                 {
                     _deviceWarningsService.SetWarningOfDevice(device.DeviceGuid, GooseKeys.GooseWarningKeys.ErrorGettingGooseOutOfDeviceKey, "Ошибка вычитывания Goose из устройства");
