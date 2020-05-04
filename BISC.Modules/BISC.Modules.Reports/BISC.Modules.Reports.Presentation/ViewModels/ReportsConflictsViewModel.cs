@@ -10,11 +10,11 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
 {
     public class ReportsConflictsViewModel : NavigationViewModelBase
     {
-        private readonly IReportVeiwModelService _controlViewModelService;
+        private readonly IReportViewModelService _controlViewModelService;
         private ReportsConflictsContext _reportsConflictsContext;
 
 
-        public ReportsConflictsViewModel(IReportVeiwModelService controlViewModelService)
+        public ReportsConflictsViewModel(IReportViewModelService controlViewModelService)
             : base(null)
         {
             _controlViewModelService = controlViewModelService;

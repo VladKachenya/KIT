@@ -49,12 +49,13 @@ namespace BISC.Modules.InformationModel.Model.Services
 
             return fcList;
         }
-        public List<Tuple<string,IDai>> GetAllFcsWithDai(List<IDai> dais, List<ISdi> sdis)
+        public List<Tuple<string,IDai>> GetAllFcsWithDai(List<IDai> dais, List<ISdi> sdis, ISclModel sclModel = null)
         {
+            sclModel = sclModel ?? _biscProject.MainSclModel.Value;
             List < Tuple < string,IDai >> fcTuplesList=new List<Tuple<string, IDai>>();
             foreach (var dai in dais)
             {
-                var da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel.Value);
+                var da = _dataTypeTemplatesModelService.GetDaOfDai(dai, sclModel);
                 if (da == null)
                 {
                     continue;
@@ -64,7 +65,7 @@ namespace BISC.Modules.InformationModel.Model.Services
 
             foreach (var sdi in sdis)
             {
-                fcTuplesList.AddRange(GetAllFcsWithDai(sdi.DaiCollection.ToList(), sdi.SdiCollection.ToList()));
+                fcTuplesList.AddRange(GetAllFcsWithDai(sdi.DaiCollection.ToList(), sdi.SdiCollection.ToList(), sclModel));
             }
 
             return fcTuplesList;

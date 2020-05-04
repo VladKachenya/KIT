@@ -65,20 +65,18 @@ namespace BISC.Modules.InformationModel.Presentation.Helpers
 
             var ldSignature = logicalDevice.Inst;
 
-            if (_connectionPoolService.GetConnection(device.Ip).IsConnected && 
-                await _connectionPoolService.GetConnection(device.Ip).MmsConnection.WriteDaiValueAsync("CF", device.Name,
-                    lnSignature, ldSignature, path, viewModelToUpdate.Value))
+            if (_connectionPoolService.GetConnection(device.Ip).IsConnected)
             {
-                modelToUpdate.Value.Value = new Val();
-                modelToUpdate.Value.Value.Value = viewModelToUpdate.Value;
+                await _connectionPoolService.GetConnection(device.Ip).MmsConnection.WriteDaiValueAsync("CF",
+                    device.Name,
+                    lnSignature, ldSignature, path, viewModelToUpdate.Value);
             }
-            else
-            {
-                viewModelToUpdate.Value = modelToUpdate.Value?.Value?.Value;
-            }
+
+            modelToUpdate.Value.Value = new Val();
+            modelToUpdate.Value.Value.Value = viewModelToUpdate.Value;
+
 
             viewModelToUpdate.CheckValue();
-
         }
     }
 }

@@ -47,7 +47,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private readonly ReportsSavingCommand _reportsSavingCommand;
         private readonly IBiscProject _biscProject;
         private readonly ReportControlLoadingService _reportControlLoadingService;
-        private readonly IReportVeiwModelService _reportVeiwModelService;
+        private readonly IReportViewModelService _reportViewModelService;
         private readonly IGlobalSavingService _globalSavingService;
         private readonly IGlobalEventsService _globalEventsService;
         private bool _isUpdateReports = true;
@@ -66,7 +66,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             ReportsSavingCommand reportsSavingCommand,
             IBiscProject biscProject,
             ReportControlLoadingService reportControlLoadingService,
-            IReportVeiwModelService reportVeiwModelService,
+            IReportViewModelService reportViewModelService,
             IGlobalSavingService globalSavingService,
             IGlobalEventsService globalEventsService)
             : base(globalEventsService)
@@ -79,7 +79,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
             _reportsSavingCommand = reportsSavingCommand;
             _biscProject = biscProject;
             _reportControlLoadingService = reportControlLoadingService;
-            _reportVeiwModelService = reportVeiwModelService;
+            _reportViewModelService = reportViewModelService;
             _globalSavingService = globalSavingService;
             _globalEventsService = globalEventsService;
 
@@ -198,7 +198,7 @@ namespace BISC.Modules.Reports.Presentation.ViewModels
         private void UpdateViewModels()
         {
             _reportControlsModel = _reportsModelService.GetAllReportControlsOfDevice(_device);
-            ReportControlViewModels = _reportVeiwModelService.SortReportViewModels(_reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device));
+            ReportControlViewModels = _reportViewModelService.SortReportViewModels(_reportControlFactoryViewModel.GetReportControlsViewModel(_reportControlsModel, _device));
             foreach (var reportControlViewModel in ReportControlViewModels)
             {
                 reportControlViewModel.IsEditable = IsEditable;

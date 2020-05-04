@@ -28,7 +28,7 @@ namespace BISC.Modules.InformationModel.Model.Module
             _injectionContainer.RegisterType<IInfoModelService, InfoModelService>();
             _injectionContainer.RegisterType<IDataTypeTemplatesModelService, DataTypeTemplatesModelService>();
 
-            var modelElementsRegistryService =_injectionContainer.ResolveType<IModelElementsRegistryService>();
+            var modelElementsRegistryService = _injectionContainer.ResolveType<IModelElementsRegistryService>();
             modelElementsRegistryService.RegisterModelElement(new DataTypeTemplatesSerializer(), InfoModelKeys.DataTypeTemplateKeys.DataTypeTemplatesModelItemKey);
             modelElementsRegistryService.RegisterModelElement(new LNodeTypeSerializer(), InfoModelKeys.DataTypeTemplateKeys.LNodeTypeModelItemKey);
             modelElementsRegistryService.RegisterModelElement(new BdaSerializer(), InfoModelKeys.DataTypeTemplateKeys.BDAItemKey);
@@ -36,7 +36,7 @@ namespace BISC.Modules.InformationModel.Model.Module
             modelElementsRegistryService.RegisterModelElement(new DaTypeSerializer(), InfoModelKeys.DataTypeTemplateKeys.DaTypeItemKey);
             modelElementsRegistryService.RegisterModelElement(new DoTypeSerializer(), InfoModelKeys.DataTypeTemplateKeys.DOTypeModelItemKey);
             modelElementsRegistryService.RegisterModelElement(new DoSerializer(), InfoModelKeys.DataTypeTemplateKeys.DoItemKey);
-            modelElementsRegistryService.RegisterModelElement(new EnumTypeSerializer(),  InfoModelKeys.DataTypeTemplateKeys.EnumTypeModelItemKey);
+            modelElementsRegistryService.RegisterModelElement(new EnumTypeSerializer(), InfoModelKeys.DataTypeTemplateKeys.EnumTypeModelItemKey);
             modelElementsRegistryService.RegisterModelElement(new EnumValSerializer(), InfoModelKeys.DataTypeTemplateKeys.EnumValItemKey);
             modelElementsRegistryService.RegisterModelElement(new SdoSerializer(), InfoModelKeys.DataTypeTemplateKeys.SdoItemKey);
             modelElementsRegistryService.RegisterModelElement(new SettingControlSerializer(), InfoModelKeys.ModelKeys.SettingControlKey);
@@ -54,6 +54,7 @@ namespace BISC.Modules.InformationModel.Model.Module
 
             _injectionContainer.RegisterType<IDeviceElementLoadingService, InfoModelLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IDeviceElementLoadingService, InfoModelValuesLoadingService>(Guid.NewGuid().ToString());
+            _injectionContainer.RegisterType<IDoiValuesLoadingService, DoiValuesLoadingService>();
 
 
         }

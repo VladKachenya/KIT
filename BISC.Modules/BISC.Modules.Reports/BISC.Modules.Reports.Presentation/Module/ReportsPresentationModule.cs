@@ -47,7 +47,7 @@ namespace BISC.Modules.Reports.Presentation.Module
             _injectionContainer.RegisterType<ITriggerOptionsViewModel, TriggerOptionsViewModel>();
             _injectionContainer.RegisterType<ReportsSavingCommand>();
             _injectionContainer.RegisterType<IReportControlFactoryViewModel, ReportControlFactoryViewModel>(true);
-            _injectionContainer.RegisterType<IReportVeiwModelService, ReportVeiwModelService>();
+            _injectionContainer.RegisterType<IReportViewModelService, ReportViewModelService>();
             _injectionContainer.RegisterType<IDeviceElementSavingService, ReportsSavingService>(Guid.NewGuid().ToString());
 
         }
