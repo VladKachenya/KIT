@@ -22,7 +22,7 @@ namespace BISC.Modules.InformationModel.Infrastucture.Services
         string GetFullNameOfLogicalNode(ILogicalNode logicalNode);
         void UpdateLnTypesOfDevice(IDevice device, string newDeviceName);
         List<string> GetAllFcs(List<IDai> toList, List<ISdi> list);
-        List<Tuple<string, IDai>> GetAllFcsWithDai(List<IDai> dais, List<ISdi> sdis, ISclModel sclModel = null);
+        List<Tuple<string, IDai>> GetAllFcsWithDai(IEnumerable<IDai> dais, IEnumerable<ISdi> sdis, ISclModel sclModel = null);
     }
     
  

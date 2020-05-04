@@ -38,7 +38,7 @@ namespace BISC.Modules.InformationModel.Model.Services.LoadingServices
 
         public async Task<int> EstimateProgress(IDevice device)
         {
-            var resTack = new Task<int>(() => 100);
+            var resTack = new Task<int>(() => 5);
             resTack.Start();
             return await resTack;
         }
@@ -55,7 +55,5 @@ namespace BISC.Modules.InformationModel.Model.Services.LoadingServices
 
         public int Priority => 15;
 
-
-       
     }
 }

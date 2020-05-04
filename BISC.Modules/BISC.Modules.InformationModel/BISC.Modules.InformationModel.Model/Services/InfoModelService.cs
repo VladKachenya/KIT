@@ -21,7 +21,7 @@ namespace BISC.Modules.InformationModel.Model.Services
         private readonly IDataTypeTemplatesModelService _dataTypeTemplatesModelService;
         private readonly IBiscProject _biscProject;
 
-        public InfoModelService(ISclCommunicationModelService sclCommunicationModelService,IDataTypeTemplatesModelService dataTypeTemplatesModelService,IBiscProject biscProject)
+        public InfoModelService(ISclCommunicationModelService sclCommunicationModelService, IDataTypeTemplatesModelService dataTypeTemplatesModelService, IBiscProject biscProject)
         {
             _sclCommunicationModelService = sclCommunicationModelService;
             _dataTypeTemplatesModelService = dataTypeTemplatesModelService;
@@ -49,10 +49,10 @@ namespace BISC.Modules.InformationModel.Model.Services
 
             return fcList;
         }
-        public List<Tuple<string,IDai>> GetAllFcsWithDai(List<IDai> dais, List<ISdi> sdis, ISclModel sclModel = null)
+        public List<Tuple<string, IDai>> GetAllFcsWithDai(IEnumerable<IDai> dais, IEnumerable<ISdi> sdis, ISclModel sclModel = null)
         {
             sclModel = sclModel ?? _biscProject.MainSclModel.Value;
-            List < Tuple < string,IDai >> fcTuplesList=new List<Tuple<string, IDai>>();
+            List<Tuple<string, IDai>> fcTuplesList = new List<Tuple<string, IDai>>();
             foreach (var dai in dais)
             {
                 var da = _dataTypeTemplatesModelService.GetDaOfDai(dai, sclModel);
@@ -60,7 +60,7 @@ namespace BISC.Modules.InformationModel.Model.Services
                 {
                     continue;
                 }
-                fcTuplesList.Add(new Tuple<string, IDai>(da.Fc,dai));
+                fcTuplesList.Add(new Tuple<string, IDai>(da.Fc, dai));
             }
 
             foreach (var sdi in sdis)

@@ -1,8 +1,10 @@
 ﻿using System;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
+using BISC.Model.Infrastructure.Keys;
 using BISC.Model.Infrastructure.Serializing;
 using BISC.Modules.Device.Infrastructure.Loading;
+using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.Services;
@@ -55,7 +57,8 @@ namespace BISC.Modules.InformationModel.Model.Module
             _injectionContainer.RegisterType<IDeviceElementLoadingService, InfoModelLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IDeviceElementLoadingService, InfoModelValuesLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<IDoiValuesLoadingService, DoiValuesLoadingService>();
-
+            _injectionContainer.RegisterType<IConfigurableModelElementsGetter, DbValuesGetter>(Guid.NewGuid().ToString());
+            _injectionContainer.RegisterType<IConfigurationParser, DbValuesConfigurationParser>(InfrastructureKeys.ModulesKeys.InformationModelModule);
 
         }
     }
