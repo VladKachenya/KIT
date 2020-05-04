@@ -4,8 +4,6 @@ using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.HelpClasses;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Reports.Infrastructure.Keys;
-using BISC.Modules.Reports.Infrastructure.Presentation.Factorys;
-using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Infrastructure.Services;
 using BISC.Modules.Reports.Presentation.Commands;
 using BISC.Modules.Reports.Presentation.ViewModels.Helpers;
@@ -15,6 +13,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using BISC.Modules.Reports.Presentation.Interfaces.Factorys;
+using BISC.Modules.Reports.Presentation.Interfaces.ViewModels;
 
 namespace BISC.Modules.Reports.Presentation.Services
 {

@@ -1,5 +1,4 @@
 ﻿using BISC.Modules.Reports.Infrastructure.Model;
-using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Presentation.BaseItems.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BISC.Modules.Reports.Model.Model;
+using BISC.Modules.Reports.Presentation.Interfaces.ViewModels;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels
 {

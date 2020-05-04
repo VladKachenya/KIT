@@ -167,10 +167,6 @@ namespace BISC.Modules.InformationModel.Presentation.Helpers
                     throw;
                 }
             }
-
-
-
-
         }
 
         private void GetPathToDai(IModelElement modelElement, List<string> initialPath)

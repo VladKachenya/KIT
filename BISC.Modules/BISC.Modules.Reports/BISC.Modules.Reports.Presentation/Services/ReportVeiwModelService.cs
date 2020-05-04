@@ -5,12 +5,12 @@ using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Reports.Infrastructure.Events;
 using BISC.Modules.Reports.Infrastructure.Keys;
-using BISC.Modules.Reports.Infrastructure.Presentation.Services;
-using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Infrastructure.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using BISC.Modules.Reports.Presentation.Interfaces.Services;
+using BISC.Modules.Reports.Presentation.Interfaces.ViewModels;
 
 namespace BISC.Modules.Reports.Presentation.Services
 {
@@ -42,24 +42,7 @@ namespace BISC.Modules.Reports.Presentation.Services
 
         public void IncrementConfRevisionReportControl(IDevice device, List<string> dataSetsNames)
         {
-            var chengedReportControls = _reportsModelService.GetAllReportControlsOfDevice(device)
-                .Where(re => dataSetsNames.Any(dsN => re.DataSet == dsN)).ToList();
-            foreach (var report in chengedReportControls)
-            {
-                report.ConfRev++;
-                _loggingService.LogMessage($"ConfRev ReportControl {report.Name} устройства {device.Name} увеличен", SeverityEnum.Info);
-            }
-
-            if (chengedReportControls.Any())
-            {
-                _globalEventsService.SendMessage(new ReportConfRevisionChengEvent(device.DeviceGuid));
-                if (_connectionPoolService.GetConnection(device.Ip).IsConnected)
-                {
-                    _deviceWarningsService.SetWarningOfDevice(device.DeviceGuid,
-                        ReportsKeys.ReportsPresentationKeys.ReportsUnsavedWarningTag, 
-                        "ReportControls не соответствуют устройству");
-                }
-            }
+            
         }
 
         #endregion

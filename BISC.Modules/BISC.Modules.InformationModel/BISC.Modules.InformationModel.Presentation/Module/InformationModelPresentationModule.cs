@@ -1,16 +1,8 @@
 ﻿using BISC.Infrastructure.Global.Modularity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
-using BISC.Modules.Device.Infrastructure.Loading;
-using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Presentation.Factories;
 using BISC.Modules.InformationModel.Presentation.Helpers;
-using BISC.Modules.InformationModel.Presentation.Interfaces;
 using BISC.Modules.InformationModel.Presentation.Interfaces.Factories;
 using BISC.Modules.InformationModel.Presentation.Interfaces.Helpers;
 using BISC.Modules.InformationModel.Presentation.Services;
@@ -62,7 +54,6 @@ namespace BISC.Modules.InformationModel.Presentation.Module
             _injectionContainer.RegisterType<SettingsControlSavingService>();
             _injectionContainer.RegisterType<ModelValuesLoadingHelper>();
 
-            _injectionContainer.RegisterType<IDeviceElementLoadingService, InfoModelLoadingService>(Guid.NewGuid().ToString());
             _injectionContainer.RegisterType<InfoModelLoadingTreeItemViewModel>();
 
             _injectionContainer.RegisterType<object, InfoModelTreeItemView>(InfoModelKeys.InfoModelTreeItemViewKey);

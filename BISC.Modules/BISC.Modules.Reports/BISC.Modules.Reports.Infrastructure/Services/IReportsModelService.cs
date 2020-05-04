@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Model;
-using BISC.Modules.InformationModel.Infrastucture.Elements;
 
 namespace BISC.Modules.Reports.Infrastructure.Services
 {

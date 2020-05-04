@@ -1,12 +1,7 @@
 ﻿using BISC.Modules.Reports.Infrastructure.Model;
-using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BISC.Modules.Reports.Presentation.Interfaces.ViewModels.Base;
 
-namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
+namespace BISC.Modules.Reports.Presentation.Interfaces.ViewModels
 {
     public interface ITriggerOptionsViewModel : IReportElementBase<ITrgOps>
     {

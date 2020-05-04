@@ -11,7 +11,9 @@ namespace BISC.Modules.InformationModel.Infrastucture.Services
     {
         void AddOrReplaceLDevice(IDeviceAccessPoint deviceAccessPoint, ILDevice lDevice);
         void InitializeInfoModel(IModelElement device, string deviceName, ISclModel sclModel);
-        bool ContainsDb(IModelElement modelElement);
+        bool ContainsDbRecursive(IModelElement modelElement);
+        IEnumerable<IDoi> GetAllDoiWithDbRecursive(IModelElement modelElement);
+
         List<ILDevice> GetLDevicesFromDevices(IModelElement device);
         ILDevice GetZeroLDevicesOfDevice(IDevice device);
         ILDevice GetParentLDevice(IModelElement childElement);

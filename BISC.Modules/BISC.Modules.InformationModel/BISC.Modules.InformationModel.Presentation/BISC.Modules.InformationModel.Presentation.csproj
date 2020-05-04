@@ -91,7 +91,6 @@
     <Compile Include="Interfaces\IStronglyNamed.cs" />
     <Compile Include="Module\InformationModelPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\InfoModelLoadingService.cs" />
     <Compile Include="Services\InfoModelUiHandlingService.cs" />
     <Compile Include="Services\LDeviceUiHandlingService.cs" />
     <Compile Include="Services\SettingControlConflictResolver.cs" />

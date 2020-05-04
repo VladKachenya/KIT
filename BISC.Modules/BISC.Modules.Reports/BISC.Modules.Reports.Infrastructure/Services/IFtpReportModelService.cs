@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Common;
 using BISC.Modules.Device.Infrastructure.Model;
-using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.Reports.Infrastructure.Model;
 
 namespace BISC.Modules.Reports.Infrastructure.Services

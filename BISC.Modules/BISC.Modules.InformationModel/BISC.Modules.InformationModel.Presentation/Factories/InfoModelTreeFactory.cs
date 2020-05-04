@@ -68,7 +68,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
 
             foreach (var lDevice in lDevices)
             {
-                if (isDbOnly && !_infoModelService.ContainsDb(lDevice))
+                if (isDbOnly && !_infoModelService.ContainsDbRecursive(lDevice))
                 {
                     continue;
                 }
@@ -109,7 +109,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                     logicalNodeZeroInfoModelItemViewModel.ChildInfoModelItemViewModels);
             foreach (var lDeviceLogicalNode in lDevice.LogicalNodes)
             {
-                if (isDbOnly && !_infoModelService.ContainsDb(lDeviceLogicalNode))
+                if (isDbOnly && !_infoModelService.ContainsDbRecursive(lDeviceLogicalNode))
                 {
                     continue;
                 }
@@ -136,7 +136,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
 
             foreach (var doi in dois)
             {
-                if (isDbOnly && !_infoModelService.ContainsDb(doi))
+                if (isDbOnly && !_infoModelService.ContainsDbRecursive(doi))
                 {
                     continue;
                 }
@@ -243,7 +243,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
 
             foreach (var sdi in sdis)
             {
-                if (isDbOnly && !_infoModelService.ContainsDb(sdi))
+                if (isDbOnly && !_infoModelService.ContainsDbRecursive(sdi))
                 {
                     continue;
                 }
@@ -272,7 +272,7 @@ namespace BISC.Modules.InformationModel.Presentation.Factories
                 new ObservableCollection<IInfoModelItemViewModel>();
             if (isDbOnly)
             {
-                dais = dais.Where(dai => _infoModelService.ContainsDb(dai)).ToList();
+                dais = dais.Where(dai => _infoModelService.ContainsDbRecursive(dai)).ToList();
             }
 
             dais.ForEach(dai => infoModelItemViewModels.Add(GetDaiInfoModelItemViewModel(dai)));

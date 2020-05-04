@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Common;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Loading;
-using BISC.Modules.Device.Infrastructure.Loading.Events;
 using BISC.Modules.Device.Infrastructure.Model;
-using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 
-namespace BISC.Modules.InformationModel.Presentation.Services
+namespace BISC.Modules.InformationModel.Model.Services.LoadingServices
 {
     public class InfoModelLoadingService : IDeviceElementLoadingService
     {
@@ -23,8 +18,10 @@ namespace BISC.Modules.InformationModel.Presentation.Services
         private readonly ILogicalDevice _logicalDeviceLoadingService;
         private readonly IInfoModelService _infoModelService;
 
-        public InfoModelLoadingService(IConnectionPoolService connectionPoolService,
-            ILogicalDevice logicalDeviceLoadingService, IInfoModelService infoModelService)
+        public InfoModelLoadingService(
+            IConnectionPoolService connectionPoolService,
+            ILogicalDevice logicalDeviceLoadingService, 
+            IInfoModelService infoModelService)
         {
             _connectionPoolService = connectionPoolService;
             _logicalDeviceLoadingService = logicalDeviceLoadingService;
@@ -38,14 +35,14 @@ namespace BISC.Modules.InformationModel.Presentation.Services
             return _logicalDeviceLoadingService.GetLogicalNodeCount();
         }
 
-        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress,ISclModel sclModel,
+        public async Task Load(IDevice device, IProgress<object> deviceLoadingProgress, ISclModel sclModel,
             CancellationToken cancellationToken)
         {
             int loadedLns = 0;
             var devices = await _logicalDeviceLoadingService.GetLDeviceFromConnection(
                  new Progress<LogicalNodeLoadingEvent>(loadingEvent =>
-                     deviceLoadingProgress.Report(new object())),sclModel,device.Name,cancellationToken);
-            _infoModelService.InitializeInfoModel(device,device.Name,sclModel);
+                     deviceLoadingProgress.Report(new object())), sclModel, device.Name, cancellationToken);
+            _infoModelService.InitializeInfoModel(device, device.Name, sclModel);
             foreach (var ldevice in devices)
             {
                 IDeviceAccessPoint accessPoint;

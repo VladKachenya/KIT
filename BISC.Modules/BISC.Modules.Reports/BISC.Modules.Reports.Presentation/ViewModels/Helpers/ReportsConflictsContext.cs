@@ -1,6 +1,6 @@
-﻿using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using BISC.Modules.Reports.Presentation.Interfaces.ViewModels;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels.Helpers
 {

@@ -1,10 +1,10 @@
 ﻿using BISC.Modules.Reports.Infrastructure.Keys;
-using BISC.Modules.Reports.Infrastructure.Presentation.Services;
-using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Presentation.ViewModels.Helpers;
 using BISC.Presentation.BaseItems.ViewModels;
 using BISC.Presentation.Infrastructure.Navigation;
 using System.Collections.ObjectModel;
+using BISC.Modules.Reports.Presentation.Interfaces.Services;
+using BISC.Modules.Reports.Presentation.Interfaces.ViewModels;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels
 {

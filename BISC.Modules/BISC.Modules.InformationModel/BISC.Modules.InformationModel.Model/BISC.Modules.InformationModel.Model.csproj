@@ -91,6 +91,8 @@
     <Compile Include="Serializers\Model\ValSerializer.cs" />
     <Compile Include="Services\DataTypeTemplatesModelService.cs" />
     <Compile Include="Services\InfoModelService.cs" />
+    <Compile Include="Services\LoadingServices\InfoModelLoadingService.cs" />
+    <Compile Include="Services\LoadingServices\InfoModelValuesLoadingService.cs" />
     <Compile Include="Services\LogicalDeviceLoadingService.cs" />
   </ItemGroup>
   <ItemGroup />

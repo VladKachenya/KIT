@@ -1,18 +1,13 @@
-﻿using BISC.Model.Infrastructure.Elements;
-using BISC.Modules.InformationModel.Infrastucture.Elements;
-using BISC.Modules.Reports.Infrastructure.Model;
-using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows.Input;
 using System.Windows.Media;
+using BISC.Modules.InformationModel.Infrastucture.Elements;
+using BISC.Modules.Reports.Infrastructure.Model;
+using BISC.Modules.Reports.Presentation.Interfaces.ViewModels.Base;
 using BISC.Presentation.Infrastructure.ChangeTracker;
 using BISC.Presentation.Infrastructure.ViewModel;
 
-namespace BISC.Modules.Reports.Infrastructure.Presentation.ViewModels
+namespace BISC.Modules.Reports.Presentation.Interfaces.ViewModels
 {
     public interface IReportControlViewModel : IReportElementBase<IReportControl>,IObjectWithChangeTracker,IEditableViewModel
     {

@@ -98,7 +98,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             deviceAccessPoint.ParentModelElement = device;
         }
 
-        public bool ContainsDb(IModelElement modelElement)
+        public bool ContainsDbRecursive(IModelElement modelElement)
         {
             if (modelElement is IDai dai)
             {
@@ -116,7 +116,7 @@ namespace BISC.Modules.InformationModel.Model.Services
             {
                 foreach (var child in modelElement.ChildModelElements)
                 {
-                    if (ContainsDb(child))
+                    if (ContainsDbRecursive(child))
                     {
                         return true;
                     }
@@ -124,6 +124,28 @@ namespace BISC.Modules.InformationModel.Model.Services
             }
 
             return false;
+        }
+
+        public IEnumerable<IDoi> GetAllDoiWithDbRecursive(IModelElement modelElement)
+        {
+            var res = new List<IDoi>();
+            foreach (var child in modelElement.ChildModelElements)
+            {
+                if (!ContainsDbRecursive(child))
+                {
+                    continue;
+                }
+
+                if (child is IDoi doi)
+                {
+                    res.Add(doi);
+                }
+                else
+                {
+                    res.AddRange(GetAllDoiWithDbRecursive(child));
+                }
+            }
+            return res;
         }
 
         public List<ILDevice> GetLDevicesFromDevices(IModelElement device)

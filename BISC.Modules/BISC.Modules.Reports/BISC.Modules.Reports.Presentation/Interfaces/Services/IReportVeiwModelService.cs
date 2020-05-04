@@ -1,14 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using BISC.Modules.Device.Infrastructure.Model;
-using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
+using BISC.Modules.Reports.Presentation.Interfaces.ViewModels;
 
-namespace BISC.Modules.Reports.Infrastructure.Presentation.Services
+namespace BISC.Modules.Reports.Presentation.Interfaces.Services
 {
     public interface IReportVeiwModelService
     {
         ObservableCollection<IReportControlViewModel> SortReportViewModels(IEnumerable<IReportControlViewModel> reportControlViewModels);
-        void IncrementConfRevisionReportControl(IDevice device, List<string> dataSetsNames);
-
     }
 }

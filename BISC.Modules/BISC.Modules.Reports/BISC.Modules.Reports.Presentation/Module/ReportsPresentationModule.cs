@@ -1,8 +1,6 @@
 ﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
 using BISC.Modules.Reports.Infrastructure.Keys;
-using BISC.Modules.Reports.Infrastructure.Presentation.Factorys;
-using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Presentation.Factorys;
 using BISC.Modules.Reports.Presentation.Services;
 using BISC.Modules.Reports.Presentation.ViewModels;
@@ -10,15 +8,12 @@ using BISC.Modules.Reports.Presentation.ViewModels.ReportElementsViewModels;
 using BISC.Modules.Reports.Presentation.Views;
 using BISC.Presentation.Infrastructure.UiFromModel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BISC.Modules.Device.Infrastructure.Saving;
 using BISC.Modules.Device.Infrastructure.Services;
-using BISC.Modules.Reports.Infrastructure.Presentation.Services;
-using BISC.Modules.Reports.Model.Services;
 using BISC.Modules.Reports.Presentation.Commands;
+using BISC.Modules.Reports.Presentation.Interfaces.Factorys;
+using BISC.Modules.Reports.Presentation.Interfaces.Services;
+using BISC.Modules.Reports.Presentation.Interfaces.ViewModels;
 using BISC.Presentation.Infrastructure.Keys;
 
 namespace BISC.Modules.Reports.Presentation.Module

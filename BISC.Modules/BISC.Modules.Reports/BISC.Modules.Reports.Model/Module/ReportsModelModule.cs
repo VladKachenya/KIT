@@ -1,6 +1,5 @@
 ﻿using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
-using BISC.Model.Infrastructure;
 using BISC.Modules.Reports.Infrastructure.Factorys;
 using BISC.Modules.Reports.Infrastructure.Keys;
 using BISC.Modules.Reports.Infrastructure.Services;
@@ -8,10 +7,6 @@ using BISC.Modules.Reports.Model.Factorys;
 using BISC.Modules.Reports.Model.Serializers;
 using BISC.Modules.Reports.Model.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BISC.Model.Infrastructure.Keys;
 using BISC.Model.Infrastructure.Serializing;
 using BISC.Modules.Device.Infrastructure.Loading;
@@ -42,7 +37,7 @@ namespace BISC.Modules.Reports.Model.Module
             _injectionContainer.RegisterType<IReportsModelService, ReportsModelService>();
             _injectionContainer.RegisterType<IReportControlsFactory, ReportControlsFactory>();
             _injectionContainer.RegisterType<IReportControlNameService, ReportControlNameService>();
-
+            _injectionContainer.RegisterType<IReportConfRevisionService, ReportConfRevisionService>();
             _injectionContainer.RegisterType<IConfigurationParser, ReportConfigurationParser>(InfrastructureKeys.ModulesKeys.ReportModule);
             _injectionContainer.RegisterType<IConfigurableModelElementsGetter, ReportControlsGetter>(Guid.NewGuid().ToString());
 

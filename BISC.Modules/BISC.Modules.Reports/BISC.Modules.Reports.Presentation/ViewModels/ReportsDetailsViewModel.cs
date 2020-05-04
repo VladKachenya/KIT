@@ -5,9 +5,6 @@ using BISC.Modules.Connection.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Keys;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Reports.Infrastructure.Model;
-using BISC.Modules.Reports.Infrastructure.Presentation.Factorys;
-using BISC.Modules.Reports.Infrastructure.Presentation.Services;
-using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Infrastructure.Services;
 using BISC.Modules.Reports.Model.Services;
 using BISC.Modules.Reports.Presentation.Commands;
@@ -26,6 +23,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BISC.Modules.Reports.Infrastructure.Events;
+using BISC.Modules.Reports.Presentation.Interfaces.Factorys;
+using BISC.Modules.Reports.Presentation.Interfaces.Services;
+using BISC.Modules.Reports.Presentation.Interfaces.ViewModels;
 using BISC.Presentation.Infrastructure.Keys;
 
 namespace BISC.Modules.Reports.Presentation.ViewModels

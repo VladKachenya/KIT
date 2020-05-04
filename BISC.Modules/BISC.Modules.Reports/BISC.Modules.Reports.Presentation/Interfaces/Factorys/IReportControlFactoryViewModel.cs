@@ -1,14 +1,10 @@
-﻿using BISC.Modules.Device.Infrastructure.Model;
-using BISC.Modules.Reports.Infrastructure.Model;
-using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.Reports.Infrastructure.Model;
+using BISC.Modules.Reports.Presentation.Interfaces.ViewModels;
 
-namespace BISC.Modules.Reports.Infrastructure.Presentation.Factorys
+namespace BISC.Modules.Reports.Presentation.Interfaces.Factorys
 {
     public interface IReportControlFactoryViewModel
     {

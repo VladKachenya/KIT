@@ -25,7 +25,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using BISC.Modules.Gooses.Infrastructure.Services;
-using BISC.Modules.Reports.Infrastructure.Presentation.Services;
 
 namespace BISC.Modules.DataSets.Presentation.Commands
 {
@@ -43,7 +42,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
         private readonly IGooseViewModelService _gooseViewModelService;
 
-        private readonly IReportVeiwModelService _reportVeiwModelService;
+        private readonly IReportConfRevisionService _reportConfRevisionService;
 
         private readonly IDataSetNameService _dataSetNameService;
 
@@ -60,8 +59,8 @@ namespace BISC.Modules.DataSets.Presentation.Commands
             ISclCommunicationModelService sclCommunicationModelService, 
             IBiscProject biscProject, 
             IDeviceWarningsService deviceWarningsService, 
-            IGooseViewModelService gooseViewModelService, 
-            IReportVeiwModelService reportVeiwModelService,
+            IGooseViewModelService gooseViewModelService,
+            IReportConfRevisionService reportConfRevisionService,
             IDataSetNameService dataSetNameService)
         {
             _dataSetModelService = dataSetModelService;
@@ -72,7 +71,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
 
             _deviceWarningsService = deviceWarningsService;
             _gooseViewModelService = gooseViewModelService;
-            _reportVeiwModelService = reportVeiwModelService;
+            _reportConfRevisionService = reportConfRevisionService;
             _dataSetNameService = dataSetNameService;
         }
 
@@ -136,7 +135,7 @@ namespace BISC.Modules.DataSets.Presentation.Commands
                 }
 
                 _gooseViewModelService.IncrementConfRevisionGooseControls(_device, dataSetNamesWithChengests);
-                _reportVeiwModelService.IncrementConfRevisionReportControl(_device, dataSetNamesWithChengests);
+                _reportConfRevisionService.IncrementConfRevisionReportControl(_device, dataSetNamesWithChengests);
 
                 if (_connectionPoolService.GetConnection(_device.Ip).IsConnected)
                 {

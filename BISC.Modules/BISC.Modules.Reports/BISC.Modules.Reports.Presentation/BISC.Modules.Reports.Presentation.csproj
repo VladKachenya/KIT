@@ -52,6 +52,13 @@
     <Compile Include="Commands\ReportsSavingCommand.cs" />
     <Compile Include="Converters\BoolianToBufferidStringConverter.cs" />
     <Compile Include="Factorys\ReportControlFactoryViewModel.cs" />
+    <Compile Include="Interfaces\Factorys\IReportControlFactoryViewModel.cs" />
+    <Compile Include="Interfaces\Services\IReportVeiwModelService.cs" />
+    <Compile Include="Interfaces\ViewModels\Base\IReportElementBase.cs" />
+    <Compile Include="Interfaces\ViewModels\IOprionalFildsViewModel.cs" />
+    <Compile Include="Interfaces\ViewModels\IReportControlViewModel.cs" />
+    <Compile Include="Interfaces\ViewModels\IReportEnabledViewModel.cs" />
+    <Compile Include="Interfaces\ViewModels\ITriggerOptionsViewModel.cs" />
     <Compile Include="Module\ReportsPresentationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ReportsConflictResolver.cs" />

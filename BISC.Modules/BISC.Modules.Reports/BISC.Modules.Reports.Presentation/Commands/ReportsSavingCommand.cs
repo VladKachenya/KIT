@@ -10,7 +10,6 @@ using BISC.Modules.InformationModel.Infrastucture.Elements;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.Reports.Infrastructure.Factorys;
 using BISC.Modules.Reports.Infrastructure.Model;
-using BISC.Modules.Reports.Infrastructure.Presentation.ViewModels;
 using BISC.Modules.Reports.Infrastructure.Services;
 using BISC.Presentation.Infrastructure.Commands;
 using System;
@@ -20,6 +19,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BISC.Modules.Device.Infrastructure.Services;
 using BISC.Modules.Reports.Infrastructure.Keys;
+using BISC.Modules.Reports.Presentation.Interfaces.ViewModels;
 using BISC.Presentation.BaseItems.ViewModels;
 
 namespace BISC.Modules.Reports.Presentation.Commands

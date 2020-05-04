@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BISC.Infrastructure.Global.IoC;
 using BISC.Infrastructure.Global.Modularity;
-using BISC.Model.Infrastructure;
 using BISC.Model.Infrastructure.Serializing;
+using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.InformationModel.Infrastucture;
 using BISC.Modules.InformationModel.Infrastucture.DataTypeTemplates;
 using BISC.Modules.InformationModel.Infrastucture.Services;
 using BISC.Modules.InformationModel.Model.Serializers.DataTypeTemplates;
 using BISC.Modules.InformationModel.Model.Serializers.Model;
 using BISC.Modules.InformationModel.Model.Services;
+using BISC.Modules.InformationModel.Model.Services.LoadingServices;
 
 namespace BISC.Modules.InformationModel.Model.Module
 {
@@ -53,6 +50,11 @@ namespace BISC.Modules.InformationModel.Model.Module
             modelElementsRegistryService.RegisterModelElement(new ValSerializer(), InfoModelKeys.ModelKeys.ValKey);
             modelElementsRegistryService.RegisterModelElement(new DeviceServerSerializer(), InfoModelKeys.ModelKeys.ServerKey);
             modelElementsRegistryService.RegisterModelElement(new DeviceAccessPointSerializer(), InfoModelKeys.ModelKeys.AccessPointKey);
+
+
+            _injectionContainer.RegisterType<IDeviceElementLoadingService, InfoModelLoadingService>(Guid.NewGuid().ToString());
+            _injectionContainer.RegisterType<IDeviceElementLoadingService, InfoModelValuesLoadingService>(Guid.NewGuid().ToString());
+
 
         }
     }
