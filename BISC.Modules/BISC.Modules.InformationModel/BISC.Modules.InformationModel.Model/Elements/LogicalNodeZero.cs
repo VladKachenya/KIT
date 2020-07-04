@@ -15,6 +15,7 @@ namespace BISC.Modules.InformationModel.Model.Elements
         {
             ElementName = InfoModelKeys.ModelKeys.LogicalNodeZeroKey;
             LnClass = "LLN0";
+            Inst = string.Empty;
         }
         public ChildModelProperty<ISettingControl> SettingControl => new ChildModelProperty<ISettingControl>(this, InfoModelKeys.ModelKeys.SettingControlKey);
 
