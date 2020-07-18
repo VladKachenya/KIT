@@ -10,6 +10,7 @@ using BISC.Modules.InformationModel.Infrastucture.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BISC.Modules.InformationModel.Model.DataTypeTemplates.LNodeType;
 
 namespace BISC.Modules.DataSets.Model.Services
 {
@@ -51,11 +52,16 @@ namespace BISC.Modules.DataSets.Model.Services
                 return null;
             }
 
-            string[] Dos = fcda.DoName.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            List<string> Dos = $"{fcda.DoName}.{fcda.DaName}".Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+            //if (!string.IsNullOrEmpty(fcda.DaName))
+            //{
+            //    Dos.RemoveAt(Dos.Count - 1);
+            //}
 
             IModelElement daParint = lNode;
 
-            for (int i = 0; i < Dos.Length; i++)
+            for (int i = 0; i < Dos.Count; i++)
             {
                 if (i == 0)
                 {
@@ -67,7 +73,9 @@ namespace BISC.Modules.DataSets.Model.Services
                 {
                     List<ISdi> doSdis = new List<ISdi>();
                     daParint.GetAllChildrenOfType<ISdi>(ref doSdis);
-                    daParint = doSdis.Find(element => (element.Name == Dos[i]));
+                    var par = doSdis.FirstOrDefault(element => (element.Name == Dos[i]));
+                    if(par == null) continue;
+                    daParint = par;
                 }
             }
 
@@ -84,7 +92,15 @@ namespace BISC.Modules.DataSets.Model.Services
 
             List<IDai> dais = new List<IDai>();
             daParint.GetAllChildrenOfType<IDai>(ref dais);
-            return dais.Find(dai => dai.Name == fcda.DaName);
+
+            var resDai = dais.FirstOrDefault(dai => fcda.DaName.Split('.').Contains(dai.Name));
+
+            if (resDai == null)
+            {
+                return daParint;
+            }
+
+            return resDai;
         }
 
         public int GetFcdaWeight(IDevice device, IFcda fcda)

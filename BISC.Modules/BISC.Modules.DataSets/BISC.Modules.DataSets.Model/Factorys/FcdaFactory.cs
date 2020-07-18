@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BISC.Modules.DataSets.Infrastructure.Services;
 using BISC.Modules.Device.Infrastructure.Model;
+using BISC.Modules.InformationModel.Model.Elements;
 
 namespace BISC.Modules.DataSets.Model.Factorys
 {
@@ -41,8 +42,9 @@ namespace BISC.Modules.DataSets.Model.Factorys
             var ln = dai.GetFirstParentOfType<ILogicalNode>();
             result.LnClass = ln.LnClass;
             result.LnInst = ln.Inst;
-            result.DoName = GetDoNameRecursive(dai, String.Empty);
-            result.DaName = dai.Name;
+            var names = GetNamesRecursive(dai);
+            result.DoName = names.Item1;
+            result.DaName = names.Item2;
             result.Prefix = ln.Prefix;
             result.Fc = GetDaFc(dai);
             return result;
@@ -54,14 +56,6 @@ namespace BISC.Modules.DataSets.Model.Factorys
                 .Where(el => el != "CO");
             foreach (var fc in fcs)
             {
-                //var fcda = new Fcda();
-                //fcda.LdInst = modelElement.GetFirstParentOfType<ILDevice>().Inst;
-                //var ln = modelElement.GetFirstParentOfType<ILogicalNode>();
-                //fcda.LnClass = ln.LnClass;
-                //fcda.LnInst = ln.Inst;
-                //fcda.DoName = GetDoNameRecursive(modelElement, String.Empty);
-                //fcda.Prefix = ln.Prefix;
-                //fcda.Fc = fc;
                 res.Add(GetStructFcda(modelElement, fc));
             }
             return res;
@@ -74,49 +68,48 @@ namespace BISC.Modules.DataSets.Model.Factorys
             var ln = modelElement.GetFirstParentOfType<ILogicalNode>();
             result.LnClass = ln.LnClass;
             result.LnInst = ln.Inst;
-            result.DoName = GetDoNameRecursive(modelElement, String.Empty);
+            var names = GetNamesRecursive(modelElement);
+            result.DoName = names.Item1;
+            result.DaName = names.Item2;
             result.Prefix = ln.Prefix;
             result.Fc = _fcdaInfoService.GetFcsOfModelElement(modelElement.GetFirstParentOfType<IDevice>(), modelElement).First(el => el == fc); ;
             return result;
         }
 
-        //public IFcda GetStructFcda(IModelElement element)
-        //{
-        //    IFcda result = new Fcda();
-        //    result.LdInst = element.GetFirstParentOfType<ILDevice>().Inst;
-        //    var ln = element.GetFirstParentOfType<ILogicalNode>();
-        //    result.LnClass = ln.LnClass;
-        //    result.LnInst = ln.Inst;
-        //    result.DoName = GetDoNameRecursive(element, String.Empty);
-        //    result.Prefix = ln.Prefix;
-        //    // Запрет добавления CO
-        //    result.Fc = _fcdaInfoService.GetFcsOfModelElement(element.GetFirstParentOfType<IDevice>(), element).First(el => el != "CO");
-        //    return result;
-        //}
 
-       
 
         #region privats methods
 
 
 
-        private string GetDoNameRecursive(IModelElement modelElement, string daName)
+        private (string, string) GetNamesRecursive(IModelElement modelElement, string daName = "", int deep = 0)
         {
+            deep++;
             if (modelElement is IDoi doi)
             {
                 if (daName == "")
                 {
-                    return doi.Name;
+                    return (doi.Name, string.Empty);
                 }
                 else
                 {
-                    return doi.Name + "." + daName;
+                    var res = doi.Name + "." + daName;
+                    var arr = res.Split('.');
+                    if (arr.Length == 2)
+                    {
+                        return (arr[0], arr[1]);
+                    }
+
+                    var daiName = string.Empty;
+                    arr.ToList().GetRange(2, arr.Length - 2).ForEach(e => daiName = $"{daiName}.{e}");
+                    daiName = daiName.Trim('.');
+                    return ($"{arr[0]}.{arr[1]}", daiName);
                 }
             }
 
             if (modelElement is IDai dai)
             {
-
+                daName = dai.Name;
             }
             if (modelElement is ISdi sdi)
             {
@@ -129,7 +122,7 @@ namespace BISC.Modules.DataSets.Model.Factorys
                     daName = sdi.Name;
                 }
             }
-            return GetDoNameRecursive(modelElement.ParentModelElement, daName);
+            return GetNamesRecursive(modelElement.ParentModelElement, daName, deep);
         }
 
 
