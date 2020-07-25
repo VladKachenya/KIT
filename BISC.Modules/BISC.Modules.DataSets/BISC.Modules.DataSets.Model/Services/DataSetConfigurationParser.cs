@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BISC.Infrastructure.Global.Services;
@@ -29,16 +30,12 @@ namespace BISC.Modules.DataSets.Model.Services
                     string ld = fcda.LdInst;
                     var ln = fcda.Prefix + fcda.LnClass + fcda.LnInst;
                     var fc = fcda.Fc;
-                    var doName = fcda.DoName.Replace(".", "$");
-                    var daName = fcda.DaName;
-                    if (daName == null)
-                    {
-                        streamTextWriter.WriteLine($"DSE({ld} {ln}${fc}${doName})");
-                    }
-                    else
-                    {
-                        streamTextWriter.WriteLine($"DSE({ld} {ln}${fc}${doName}${daName})");
-                    }
+
+                    var refer = fcda.DoName + '.' + fcda.DaName;
+
+                    refer = refer.Trim(' ', '.').Replace('.', '$');
+
+                    streamTextWriter.WriteLine($"DSE({ld} {ln}${fc}${refer})");
                 }
             }
         }

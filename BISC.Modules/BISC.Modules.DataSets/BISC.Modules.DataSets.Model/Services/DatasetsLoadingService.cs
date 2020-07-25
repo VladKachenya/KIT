@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BISC.Infrastructure.Global.Services;
+using BISC.Model.Infrastructure.Elements;
 using BISC.Model.Infrastructure.Project;
 using BISC.Modules.Device.Infrastructure.Loading;
 using BISC.Modules.Device.Infrastructure.Model;
 using BISC.Modules.Connection.Infrastructure.Services;
+using BISC.Modules.DataSets.Infrastructure.Factorys;
 using BISC.Modules.DataSets.Infrastructure.Keys;
 using BISC.Modules.DataSets.Infrastructure.Model;
 using BISC.Modules.DataSets.Infrastructure.Services;
@@ -25,16 +27,22 @@ namespace BISC.Modules.DataSets.Model.Services
         private readonly IInfoModelService _infoModelService;
         private readonly IDataSetModelService _dataSetModelService;
         private readonly IDeviceWarningsService _deviceWarningsService;
+        private readonly IFcdaFactory _fcdaFactory;
 
         private Dictionary<string, List<string>> _ldDatasetDictionary = new Dictionary<string, List<string>>();
 
-        public DatasetsLoadingService(IConnectionPoolService connectionPoolService, IInfoModelService infoModelService,
-            IDataSetModelService dataSetModelService, IDeviceWarningsService deviceWarningsService)
+        public DatasetsLoadingService(
+            IConnectionPoolService connectionPoolService, 
+            IInfoModelService infoModelService,
+            IDataSetModelService dataSetModelService, 
+            IDeviceWarningsService deviceWarningsService,
+            IFcdaFactory fcdaFactory)
         {
             _connectionPoolService = connectionPoolService;
             _infoModelService = infoModelService;
             _dataSetModelService = dataSetModelService;
             _deviceWarningsService = deviceWarningsService;
+            _fcdaFactory = fcdaFactory;
         }
 
 
@@ -100,54 +108,29 @@ namespace BISC.Modules.DataSets.Model.Services
                             else
                             {
                                 lnOfFcda = ldOfFcda.LogicalNodes.FirstOrDefault((ln) => ln.Name == fcdaParts[1]);
-
                             }
 
                             if (lnOfFcda != null)
                             {
-                                if (fcdaParts.Length == 4)
+                                var modelElement = lnOfFcda as IModelElement;
+                                for (int i = 3; i < fcdaParts.Length; i++)
                                 {
-                                    try
-                                    {
-                                        var doiOfFcda = lnOfFcda.DoiCollection
-                                            .First((doi => doi.Name == fcdaParts[3]));
-                                        IFcda fcda = new Fcda(
-                                            ldOfFcda.Inst + "/" +
-                                            lnOfFcda.Name + "." +
-                                            doiOfFcda.Name, doiOfFcda.Name, null, fcdaParts[2]);
+                                    modelElement = modelElement.ChildModelElements.
+                                        First(me => me is INameable nameableElement && nameableElement.Name == fcdaParts[i]);
+                                }
 
-                                        dataSet.FcdaList.Add(fcda);
-                                    }
+                                IFcda fcda = null;
 
-                                    catch (Exception e)
-                                    {
-                                        IFcda fcda = new Fcda(ldOfFcda.Inst + "/" +
-                                                              lnOfFcda.Name + "." +
-                                                              fcdaParts[3], fcdaParts[3], null, fcdaParts[2]);
-                                        dataSet.FcdaList.Add(fcda);
-                                    }
+                                if (modelElement is IDai daModelElement)
+                                {
+                                    fcda = _fcdaFactory.GetFcda(daModelElement, fcdaParts[2]);
                                 }
                                 else
                                 {
-
-                                    if (lnOfFcda != null)
-                                    {
-                                        try
-                                        {
-
-                                            var doiOfFcda = lnOfFcda.DoiCollection
-                                                .First((doi => doi.Name == fcdaParts[3]));
-                                            IFcda fcda =
-                                                CreateComplexFcda(fcdaParts, doiOfFcda, ldOfFcda.Inst,
-                                                    lnOfFcda.Name);
-                                            dataSet.FcdaList.Add(fcda);
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            Console.WriteLine(e);
-                                        }
-                                    }
+                                    fcda = _fcdaFactory.GetStructFcda(modelElement, fcdaParts[2]);
                                 }
+
+                                dataSet.FcdaList.Add(fcda);
                             }
                         }
 

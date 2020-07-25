@@ -31,7 +31,7 @@ namespace BISC.Modules.DataSets.Model.Factorys
             _fcdaInfoService = fcdaInfoService;
         }
 
-        public IFcda GetFcda(IDai dai)
+        public IFcda GetFcda(IDai dai, string fc = null,  ISclModel sclModel = null)
         {
             //string iecAddress = string.Format("{0}/{1}.{2}", GetLdInst(dai), GetLnName(dai), doName);
             //IDa da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel.Value);
@@ -46,10 +46,10 @@ namespace BISC.Modules.DataSets.Model.Factorys
             result.DoName = names.Item1;
             result.DaName = names.Item2;
             result.Prefix = ln.Prefix;
-            result.Fc = GetDaFc(dai);
+            result.Fc = fc ?? GetDaFc(dai, sclModel ?? _biscProject.MainSclModel.Value);
             return result;
         }
-        public List<IFcda> GetFcdasFromModelElement(IModelElement modelElement)
+        public List<IFcda> GetFcdasFromModelElement(IModelElement modelElement, ISclModel sclModel = null)
         {
             var res = new List<IFcda>();
             var fcs = _fcdaInfoService.GetFcsOfModelElement(modelElement.GetFirstParentOfType<IDevice>(), modelElement)
@@ -61,7 +61,7 @@ namespace BISC.Modules.DataSets.Model.Factorys
             return res;
         }
 
-        public IFcda GetStructFcda(IModelElement modelElement, string fc)
+        public IFcda GetStructFcda(IModelElement modelElement, string fc, ISclModel sclModel = null)
         {
             IFcda result = new Fcda();
             result.LdInst = modelElement.GetFirstParentOfType<ILDevice>().Inst;
@@ -72,7 +72,7 @@ namespace BISC.Modules.DataSets.Model.Factorys
             result.DoName = names.Item1;
             result.DaName = names.Item2;
             result.Prefix = ln.Prefix;
-            result.Fc = _fcdaInfoService.GetFcsOfModelElement(modelElement.GetFirstParentOfType<IDevice>(), modelElement).First(el => el == fc); ;
+            result.Fc = fc;//_fcdaInfoService.GetFcsOfModelElement(modelElement.GetFirstParentOfType<IDevice>(), modelElement).First(el => el == fc); ;
             return result;
         }
 
@@ -126,9 +126,9 @@ namespace BISC.Modules.DataSets.Model.Factorys
         }
 
 
-        private string GetDaFc(IDai dai)
+        private string GetDaFc(IDai dai, ISclModel sclModel)
         {
-            IDa da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel.Value);
+            IDa da = _dataTypeTemplatesModelService.GetDaOfDai(dai, sclModel);
             return da.Fc;
         }
 

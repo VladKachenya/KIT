@@ -144,7 +144,7 @@ namespace BISC.Modules.DataSets.Model.Services
             foreach (var dai in daisOfModelEment)
             {
                 IDa da = _dataTypeTemplatesModelService.GetDaOfDai(dai, _biscProject.MainSclModel.Value);
-                if (!res.Any(el => el == da.Fc))
+                if (da != null && res.All(el => el != da.Fc))
                 {
                     res.Add(da.Fc);
                 }
